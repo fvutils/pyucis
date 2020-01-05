@@ -1,0 +1,355 @@
+# 
+# UCIS 1.0 XML Schema
+# Created by Colin Marquardt
+#
+default namespace ucis = "http://www.w3.org/2001/XMLSchema-instance"
+namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
+
+
+start =
+   element UCIS
+   {
+      element sourceFiles { SOURCE_FILE }+,
+      element historyNodes { HISTORY_NODE }+,
+      element instanceCoverages { INSTANCE_COVERAGE }+,
+      attribute ucisVersion { xsd:string },
+      attribute writtenBy { xsd:string },
+      attribute writtenTime { xsd:dateTime }
+   }
+
+NAME_VALUE = element name { xsd:string }, element value { xsd:string }
+
+USER_ATTR =
+   attribute key { xsd:string },
+   attribute type { "int" | "float" | "double" | "str" | "bits" | "int64" },
+   attribute len { xsd:integer }?
+
+BIN_CONTENTS =
+   element historyNodeId { xsd:nonNegativeInteger }*,
+   attribute nameComponent { xsd:string }?,
+   attribute typeComponent { xsd:string }?,
+   attribute coverageCount { xsd:nonNegativeInteger }
+
+binAttributes =
+   attribute alias { xsd:string }?,
+   attribute coverageCountGoal { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "false" ] attribute excluded { xsd:boolean }?,
+   attribute excludedReason { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?
+
+BIN =
+   element contents { BIN_CONTENTS },
+   element userAttr { USER_ATTR }*,
+   binAttributes
+
+objAttributes =
+   attribute alias { xsd:string }?,
+   [ a:defaultValue = "false" ] attribute excluded { xsd:boolean }?,
+   attribute excludedReason { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?
+
+metricAttributes =
+   attribute metricMode { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?
+
+SOURCE_FILE =
+   attribute fileName { xsd:string },
+   attribute id { xsd:positiveInteger }
+
+HISTORY_NODE =
+   element userAttr { USER_ATTR }*,
+   attribute historyNodeId { xsd:nonNegativeInteger },
+   attribute parentId { xsd:nonNegativeInteger }?,
+   attribute logicalName { xsd:string },
+   attribute physicalName { xsd:string }?,
+   attribute kind { xsd:string }?,
+   attribute testStatus { xsd:boolean },
+   attribute simtime { xsd:double }?,
+   attribute timeunit { xsd:string }?,
+   attribute runCwd { xsd:string }?,
+   attribute cpuTime { xsd:double }?,
+   attribute seed { xsd:string }?,
+   attribute cmd { xsd:string }?,
+   attribute args { xsd:string }?,
+   attribute compulsory { xsd:string }?,
+   attribute date { xsd:dateTime },
+   attribute userName { xsd:string }?,
+   attribute cost { xsd:decimal }?,
+   attribute toolCategory { xsd:string },
+   attribute ucisVersion { xsd:string },
+   attribute vendorId { xsd:string },
+   attribute vendorTool { xsd:string },
+   attribute vendorToolVersion { xsd:string },
+   attribute sameTests { xsd:nonNegativeInteger }?,
+   attribute comment { xsd:string }?
+
+DIMENSION =
+   attribute left { xsd:integer },
+   attribute right { xsd:integer },
+   attribute downto { xsd:boolean }
+
+TOGGLE =
+   element bin { BIN },
+   attribute from { xsd:string },
+   attribute to { xsd:string }
+
+TOGGLE_BIT =
+   element index { xsd:nonNegativeInteger }*,
+   element toggle { TOGGLE }+,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   objAttributes
+
+TOGGLE_OBJECT =
+   element dimension { DIMENSION }*,
+   element id { STATEMENT_ID },
+   element toggleBit { TOGGLE_BIT }+,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute type { xsd:string }?,
+   attribute portDirection { xsd:string }?,
+   objAttributes
+
+METRIC_MODE =
+   element userAttr { USER_ATTR }*,
+   attribute metricMode { xsd:string }
+
+TOGGLE_COVERAGE =
+   element toggleObject { TOGGLE_OBJECT }*,
+   element metricMode { METRIC_MODE }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+LINE_ID =
+   attribute file { xsd:positiveInteger },
+   attribute line { xsd:positiveInteger }
+
+STATEMENT_ID =
+   attribute file { xsd:positiveInteger },
+   attribute line { xsd:positiveInteger },
+   attribute inlineCount { xsd:positiveInteger }
+
+STATEMENT =
+   element id { STATEMENT_ID },
+   element bin { BIN },
+   element userAttr { USER_ATTR }*,
+   objAttributes
+
+BLOCK =
+   element statementId { STATEMENT_ID }*,
+   element hierarchicalBlock { BLOCK }*,
+   element blockBin { BIN },
+   element blockId { STATEMENT_ID },
+   element userAttr { USER_ATTR }*,
+   attribute parentProcess { xsd:string }?,
+   objAttributes
+
+PROCESS_BLOCK =
+   element block { BLOCK }*,
+   element userAttr { USER_ATTR }*,
+   attribute processType { xsd:string },
+   objAttributes
+
+BLOCK_COVERAGE =
+   (
+      element process { PROCESS_BLOCK }+
+    | element block { BLOCK }+
+    | element statement { STATEMENT }+
+   ),
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+EXPR =
+   element id { STATEMENT_ID },
+   element subExpr { xsd:string }+,
+   element bin { BIN }+,
+   element hierarchicalExpr { EXPR }*,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute exprString { xsd:string },
+   attribute index { xsd:nonNegativeInteger },
+   attribute width { xsd:nonNegativeInteger },
+   attribute statementType { xsd:string }?,
+   objAttributes
+
+CONDITION_COVERAGE =
+   element expr { EXPR }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+BRANCH =
+   element id { STATEMENT_ID },
+   element nestedBranch { BRANCH_STATEMENT }*,
+   element branchBin { BIN },
+   element userAttr { USER_ATTR }*
+
+BRANCH_STATEMENT =
+   element id { STATEMENT_ID },
+   element branch { BRANCH }*,
+   element userAttr { USER_ATTR }*,
+   attribute branchExpr { xsd:string }?,
+   attribute statementType { xsd:string },
+   objAttributes
+
+BRANCH_COVERAGE =
+   element statement { BRANCH_STATEMENT }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+FSM_STATE =
+   element stateBin { BIN },
+   element userAttr { USER_ATTR }*,
+   attribute stateName { xsd:string }?,
+   attribute stateValue { xsd:string }?
+
+FSM_TRANSITION =
+   element state { xsd:string }+,
+   element transitionBin { BIN },
+   element userAttr { USER_ATTR }*
+
+FSM =
+   element state { FSM_STATE }*,
+   element stateTransition { FSM_TRANSITION }*,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string }?,
+   attribute type { xsd:string }?,
+   attribute width { xsd:positiveInteger }?,
+   objAttributes
+
+FSM_COVERAGE =
+   element fsm { FSM }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+ASSERTION =
+   element coverBin { BIN }?,
+   element passBin { BIN }?,
+   element failBin { BIN }?,
+   element vacuousBin { BIN }?,
+   element disabledBin { BIN }?,
+   element attemptBin { BIN }?,
+   element activeBin { BIN }?,
+   element peakActiveBin { BIN }?,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute assertionKind { xsd:string },
+   objAttributes
+
+ASSERTION_COVERAGE =
+   element assertion { ASSERTION }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+SEQUENCE = element contents { BIN_CONTENTS }, element seqValue { xsd:integer }+
+
+RANGE_VALUE =
+   element contents { BIN_CONTENTS },
+   attribute from { xsd:integer },
+   attribute to { xsd:integer }
+
+COVERPOINT_BIN =
+   ( element range { RANGE_VALUE }+ | element sequence { SEQUENCE }+ ),
+   element userAttr { USER_ATTR }*,
+   attribute alias { xsd:string }?,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute type { xsd:string }
+
+CROSS_BIN =
+   element index { xsd:integer }+,
+   element contents { BIN_CONTENTS },
+   element userAttr { USER_ATTR }*,
+   [ a:defaultValue = "default" ] attribute type { xsd:string }?,
+   attribute alias { xsd:string }?
+
+CROSS_OPTIONS =
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "100" ] attribute goal { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "" ] attribute comment { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute at_least { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "0" ]
+   attribute cross_num_print_missing { xsd:nonNegativeInteger }?
+
+CROSS =
+   element options { CROSS_OPTIONS },
+   element crossExpr { xsd:string }*,
+   element crossBin { CROSS_BIN }*,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute alias { xsd:string }?
+
+COVERPOINT_OPTIONS =
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "100" ] attribute goal { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "" ] attribute comment { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute at_least { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "false" ] attribute detect_overlap { xsd:boolean }?,
+   [ a:defaultValue = "64" ] attribute auto_bin_max { xsd:nonNegativeInteger }?
+
+COVERPOINT =
+   element options { COVERPOINT_OPTIONS },
+   element coverpointBin { COVERPOINT_BIN }+,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute alias { xsd:string }?,
+   attribute exprString { xsd:string }?
+
+CG_ID =
+   element cginstSourceId { STATEMENT_ID },
+   element cgSourceId { STATEMENT_ID },
+   attribute cgName { xsd:string },
+   attribute moduleName { xsd:string }
+
+CGINST_OPTIONS =
+   [ a:defaultValue = "1" ] attribute weight { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "100" ] attribute goal { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "" ] attribute comment { xsd:string }?,
+   [ a:defaultValue = "1" ] attribute at_least { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "false" ] attribute detect_overlap { xsd:boolean }?,
+   [ a:defaultValue = "64" ] attribute auto_bin_max { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "0" ]
+   attribute cross_num_print_missing { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "false" ] attribute per_instance { xsd:boolean }?,
+   [ a:defaultValue = "false" ] attribute merge_instances { xsd:boolean }?
+
+CGINSTANCE =
+   element options { CGINST_OPTIONS },
+   element cgId { CG_ID },
+   element cgParms { NAME_VALUE }*,
+   element coverpoint { COVERPOINT }+,
+   element cross { CROSS }*,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute alias { xsd:string }?,
+   [ a:defaultValue = "false" ] attribute excluded { xsd:boolean }?,
+   attribute excludedReason { xsd:string }?
+
+COVERGROUP_COVERAGE =
+   element cgInstance { CGINSTANCE }*,
+   element userAttr { USER_ATTR }*,
+   metricAttributes
+
+INSTANCE_COVERAGE =
+   element designParameter { NAME_VALUE }*,
+   element id { STATEMENT_ID },
+   element toggleCoverage { TOGGLE_COVERAGE }*,
+   element blockCoverage { BLOCK_COVERAGE }*,
+   element conditionCoverage { CONDITION_COVERAGE }*,
+   element branchCoverage { BRANCH_COVERAGE }*,
+   element fsmCoverage { FSM_COVERAGE }*,
+   element assertionCoverage { ASSERTION_COVERAGE }*,
+   element covergroupCoverage { COVERGROUP_COVERAGE }*,
+   element userAttr { USER_ATTR }*,
+   attribute name { xsd:string },
+   attribute key { xsd:string },
+   attribute instanceId { xsd:integer }?,
+   attribute alias { xsd:string }?,
+   attribute moduleName { xsd:string }?,
+   attribute parentInstanceId { xsd:integer }?
+   
