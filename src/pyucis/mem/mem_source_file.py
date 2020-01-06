@@ -6,8 +6,12 @@ Created on Jan 5, 2020
 
 class MemSourceFile():
     
-    def __init__(self, fileid, filepath):
+    def __init__(self, fileid, filename):
         self.fileid = fileid
-        self.filepath = filepath
+        self.m_filename = filename
+        
+    def getFilename(self) -> str:
+        return self.m_filename
+        
         
         

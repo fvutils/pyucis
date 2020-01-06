@@ -7,6 +7,7 @@ Created on Jan 5, 2020
 from lxml import etree as et
 from pyucis.ucis import UCIS
 from lxml.etree import QName, tounicode, SubElement
+from pyucis.statement_id import StatementId
 
 class XmlWriter():
     
@@ -15,11 +16,19 @@ class XmlWriter():
     def __init__(self):
         self.db = None
         self.root = None
+        self.file_id_m = {}
         pass
     
     def write(self, file, db : UCIS):
         self.db = db
+
+        # Map each of the source files to a unique identifier
+        self.file_id_m = {}
+        for i,f in enumerate(self.db.getSourceFiles()):
+            self.file_id_m[f] = i
+        
         self.root = et.Element(QName(XmlWriter.UCIS, "UCIS"), nsmap={
+#        self.root = et.Element("UCIS", nsmap={
             "ucis" : XmlWriter.UCIS
             })
         
@@ -27,15 +36,18 @@ class XmlWriter():
 
         self.write_source_files()
         self.write_history_nodes()
-        
+        self.write_instance_coverages()
+
+#        file.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+#        file.write("<?xml version=\"1.0\"?>\n")
         file.write(tounicode(self.root, pretty_print=True))
         
     def write_source_files(self):
         
         for i,f in enumerate(self.db.getSourceFiles()):
-            fileN = SubElement(self.root, "sourceFiles")
-            fileN.set("fileName", f.getFilename())
-            fileN.set("id", str(i))
+            fileN = self.mkElem(self.root, "sourceFiles")
+            self.setAttr(fileN, "fileName", f.getFilename())
+            self.setAttr(fileN, "id", str(i))
         
     def write_history_nodes(self):
         
@@ -63,12 +75,31 @@ class XmlWriter():
             
             # TODO: userAttr
             
+    def write_instance_coverages(self):
+        
+        for i,c in enumerate(self.db.getCoverInstances()):
+            coverI = self.mkElem(self.root, "instanceCoverages")
+            self.setAttr(coverI, "name", c.getName())
+            self.setAttr(coverI, "key", c.getKey())
+            
+            self.write_statement_id(c.getId(), coverI)
+
+    def write_statement_id(self, stmt_id : StatementId, p, name="id"):
+        stmtN = self.mkElem(p, name)
+        # TODO: 
+        file_id = self.file_id_m[stmt_id.getFile()]
+        self.setAttr(stmtN, "file", str(file_id))
+        self.setAttr(stmtN, "line", str(stmt_id.getLine()))
+        self.setAttr(stmtN, "inlineCount", str(stmt_id.getItem()))
+        
+            
     def mkElem(self, p, name):
         # Creates a UCIS-qualified node
         return SubElement(p, QName(XmlWriter.UCIS, name))
         
     def setAttr(self, e, name, val):
-        e.set(QName(XmlWriter.UCIS, name), val)
+#        e.set(QName(XmlWriter.UCIS, name), val)
+        e.set(name, val)
             
     def setIfNonNull(self, n, attr, val):
         if val is not None:

@@ -8,6 +8,9 @@ from pyucis.ucis import UCIS
 from pyucis.history_node import HistoryNode
 from pyucis.source_file import SourceFile
 from pyucis.mem.mem_history_node import MemHistoryNode
+from pyucis.mem.mem_source_file import MemSourceFile
+from pyucis.mem.mem_instance_coverage import MemInstanceCoverage
+from pyucis.instance_coverage import InstanceCoverage
 
 
 class MemUCIS(UCIS):
@@ -25,17 +28,29 @@ class MemUCIS(UCIS):
     def getAPIVersion(self)->str:
         return "1.0"
     
+    def createFileHandle(self, filename, workdir):
+        ret = MemSourceFile(len(self.m_source_file_l), filename)
+        self.m_source_file_l.append(ret)
+        return ret
+    
     def createHistoryNode(self, parent, logicalname, physicalname=None, kind=None):
         ret = MemHistoryNode(parent, logicalname, physicalname, kind)
         self.m_history_node_l.append(ret)
-        
         return ret
-    
+
+    def createCoverInstance(self, name, fileinfo):
+        ret = MemInstanceCoverage(name, str(len(self.m_instance_coverage_l)), fileinfo)
+        self.m_instance_coverage_l.append(ret)
+        return ret
+        
     def getHistoryNodes(self) -> [HistoryNode]:
         return self.m_history_node_l
     
     def getSourceFiles(self)->[SourceFile]:
         return self.m_source_file_l
+    
+    def getCoverInstances(self)->[InstanceCoverage]:
+        return self.m_instance_coverage_l
 
     
     

@@ -7,6 +7,7 @@ from pyucis.unimpl_error import UnimplError
 from pyucis.scope import Scope
 from pyucis.history_node import HistoryNode
 from pyucis.source_file import SourceFile
+from pyucis.instance_coverage import InstanceCoverage
 
 class UCIS(Scope):
     
@@ -31,10 +32,16 @@ class UCIS(Scope):
     def createHistoryNode(self, parent, logicalname, physicalname, kind):
         raise UnimplError()
     
+    def createCoverInstance(self, name, fileinfo):
+        raise UnimplError()
+    
     def getHistoryNodes(self) -> [HistoryNode]:
         raise UnimplError()
     
     def getSourceFiles(self) -> [SourceFile]:
+        raise UnimplError()
+    
+    def getCoverInstances(self) -> [InstanceCoverage]:
         raise UnimplError()
     
     def write(self, file, scope=None, recurse=True, covertype=-1):

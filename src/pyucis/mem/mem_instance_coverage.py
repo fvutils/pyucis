@@ -4,8 +4,9 @@ Created on Jan 5, 2020
 @author: ballance
 '''
 from pyucis.statement_id import StatementId
+from pyucis.instance_coverage import InstanceCoverage
 
-class MemInstanceCoverage():
+class MemInstanceCoverage(InstanceCoverage):
     
     def __init__(self, 
                  name : str,
@@ -28,5 +29,12 @@ class MemInstanceCoverage():
         self.covergroup_coverage_l = []
         self.user_attr_l = []
         pass
+
+    def getId(self)->StatementId:
+        return self.stmt_id
     
+    def getName(self)->str:
+        return self.name
     
+    def getKey(self)->str:
+        return self.key

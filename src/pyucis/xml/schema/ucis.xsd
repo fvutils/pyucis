@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema xmlns="UCIS" targetNamespace="UCIS"
+<xsd:schema 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-	elementFormDefault="qualified" 
+	elementFormDefault="unqualified" 
 	attributeFormDefault="unqualified">
+	<!--
+	xmlns="UCIS" 
+	targetNamespace="UCIS"
+	-->
 	<!--  Definition of NAME_VALUE -->
 	<xsd:complexType name="NAME_VALUE">
 	<xsd:sequence>
@@ -178,7 +182,33 @@
 <xsd:attribute name="inlineCount" type="xsd:positiveInteger" use="required"/>
 </xsd:complexType>
 
-<!-- Definition of STATEMENT--><xsd:complexType name="STATEMENT"><xsd:sequence><xsd:element name="id" type="STATEMENT_ID"/><xsd:element name="bin" type="BIN"/><xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence><xsd:attributeGroup ref="objAttributes"/></xsd:complexType><!--  Definition of BLOCK --><xsd:complexType name="BLOCK"><xsd:sequence><xsd:element name="statementId" type="STATEMENT_ID" minOccurs="0" maxOccurs="unbounded"/><xsd:element name="hierarchicalBlock" type="BLOCK" minOccurs="0" maxOccurs="unbounded"/><xsd:element name="blockBin" type="BIN"/><xsd:element name="blockId" type="STATEMENT_ID"/><xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/></xsd:sequence><xsd:attribute name="parentProcess" type="xsd:string"/><xsd:attributeGroup ref="objAttributes"/></xsd:complexType><!--  Definition of PROCESS_BLOCK --><xsd:complexType name="PROCESS_BLOCK"><xsd:sequence><xsd:element name="block" type="BLOCK" minOccurs="0" maxOccurs="unbounded"/>	
+<!-- Definition of STATEMENT-->
+<xsd:complexType name="STATEMENT">
+<xsd:sequence>
+<xsd:element name="id" type="STATEMENT_ID"/>
+<xsd:element name="bin" type="BIN"/>
+<xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence>
+<xsd:attributeGroup ref="objAttributes"/>
+</xsd:complexType>
+
+<!--  Definition of BLOCK -->
+<xsd:complexType name="BLOCK">
+<xsd:sequence>
+<xsd:element name="statementId" type="STATEMENT_ID" minOccurs="0" maxOccurs="unbounded"/>
+<xsd:element name="hierarchicalBlock" type="BLOCK" minOccurs="0" maxOccurs="unbounded"/>
+<xsd:element name="blockBin" type="BIN"/>
+<xsd:element name="blockId" type="STATEMENT_ID"/>
+<xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/>
+</xsd:sequence>
+<xsd:attribute name="parentProcess" type="xsd:string"/>
+<xsd:attributeGroup ref="objAttributes"/>
+</xsd:complexType>
+
+<!--  Definition of PROCESS_BLOCK -->
+<xsd:complexType name="PROCESS_BLOCK">
+<xsd:sequence>
+<xsd:element name="block" type="BLOCK" minOccurs="0" maxOccurs="unbounded"/>	
 
 <!-- 249 -->
 <xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/>
@@ -350,29 +380,32 @@ minOccurs="0" maxOccurs="unbounded"/>
 minOccurs="1" maxOccurs="unbounded"/>
 </xsd:sequence>
 </xsd:complexType>
+
 <!-- Definition of RANGE_VALUE -->
 <xsd:complexType name="RANGE_VALUE">
-<xsd:sequence>
-<xsd:element name="contents" type="BIN_CONTENTS"/>
-</xsd:sequence>
-<xsd:attribute name="from" type="xsd:integer" use="required"/>
-<xsd:attribute name="to" type="xsd:integer" use="required"/>
+	<xsd:sequence>
+		<xsd:element name="contents" type="BIN_CONTENTS"/>
+	</xsd:sequence>
+	<xsd:attribute name="from" type="xsd:integer" use="required"/>
+	<xsd:attribute name="to" type="xsd:integer" use="required"/>
 </xsd:complexType>
+
 <!-- Definition of COVERPOINT_BIN -->
 <xsd:complexType name="COVERPOINT_BIN">
-<xsd:sequence>
-<xsd:choice>
-<xsd:element name="range" type="RANGE_VALUE"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="sequence" type="SEQUENCE"
-minOccurs="1" maxOccurs="unbounded"/>
-</xsd:choice>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="alias" type="xsd:string"/>
-<xsd:attribute name="type" type="xsd:string" use="required"/>
+	<xsd:sequence>
+		<xsd:choice>
+			<xsd:element name="range" type="RANGE_VALUE"
+				minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="sequence" type="SEQUENCE"
+				minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:choice>
+		<xsd:element name="userAttr" type="USER_ATTR" minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:attribute name="type" type="xsd:string" use="required"/>
 </xsd:complexType>
+
 <!-- Definition of CROSS_BIN -->
 <xsd:complexType name="CROSS_BIN">
 <xsd:sequence>
