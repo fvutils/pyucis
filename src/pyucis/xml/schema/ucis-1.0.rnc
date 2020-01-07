@@ -1,6 +1,6 @@
 # 
-# UCIS 1.0 XML Schema
-# Created by Colin Marquardt
+# UCIS 1.0 RELAX NG Compact Syntax Schema
+# Converted from the XML Schema by Colin Marquardt
 #
 default namespace ucis = "http://www.w3.org/2001/XMLSchema-instance"
 namespace a = "http://relaxng.org/ns/compatibility/annotations/1.0"
@@ -19,6 +19,7 @@ start =
 
 NAME_VALUE = element name { xsd:string }, element value { xsd:string }
 
+## A list of user defined attributes.
 USER_ATTR =
    attribute key { xsd:string },
    attribute type { "int" | "float" | "double" | "str" | "bits" | "int64" },
@@ -250,6 +251,7 @@ RANGE_VALUE =
    attribute from { xsd:integer },
    attribute to { xsd:integer }
 
+## A list of coverage bins to hold coverpoint coverage.
 COVERPOINT_BIN =
    ( element range { RANGE_VALUE }+ | element sequence { SEQUENCE }+ ),
    element userAttr { USER_ATTR }*,
@@ -270,8 +272,9 @@ CROSS_OPTIONS =
    [ a:defaultValue = "100" ] attribute goal { xsd:nonNegativeInteger }?,
    [ a:defaultValue = "" ] attribute comment { xsd:string }?,
    [ a:defaultValue = "1" ] attribute at_least { xsd:nonNegativeInteger }?,
-   [ a:defaultValue = "0" ]
-   attribute cross_num_print_missing { xsd:nonNegativeInteger }?
+   [ a:defaultValue = "false" ] attribute detect_overlap { xsd:boolean }?,
+   [ a:defaultValue = "64" ] attribute auto_bin_max { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "0" ] attribute cross_num_print_missing { xsd:nonNegativeInteger }?
 
 CROSS =
    element options { CROSS_OPTIONS },
@@ -312,8 +315,7 @@ CGINST_OPTIONS =
    [ a:defaultValue = "1" ] attribute at_least { xsd:nonNegativeInteger }?,
    [ a:defaultValue = "false" ] attribute detect_overlap { xsd:boolean }?,
    [ a:defaultValue = "64" ] attribute auto_bin_max { xsd:nonNegativeInteger }?,
-   [ a:defaultValue = "0" ]
-   attribute cross_num_print_missing { xsd:nonNegativeInteger }?,
+   [ a:defaultValue = "0" ] attribute cross_num_print_missing { xsd:nonNegativeInteger }?,
    [ a:defaultValue = "false" ] attribute per_instance { xsd:boolean }?,
    [ a:defaultValue = "false" ] attribute merge_instances { xsd:boolean }?
 
@@ -352,4 +354,3 @@ INSTANCE_COVERAGE =
    attribute alias { xsd:string }?,
    attribute moduleName { xsd:string }?,
    attribute parentInstanceId { xsd:integer }?
-   
