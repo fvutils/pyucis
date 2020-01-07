@@ -7,7 +7,7 @@ def validate_ucis_xml(file_or_filename):
     
     xml_pkg_dir = os.path.dirname(os.path.abspath(__file__))
     schema_dir = os.path.join(xml_pkg_dir, "schema")
-    ucis_xsd = os.path.join(schema_dir, "ucis.xsd")
+    ucis_xsd = os.path.join(schema_dir, "ucis-1.0.xsd")
     
     with open(ucis_xsd, "r") as xsd_fp:
         ucis_xsd_doc = etree.parse(xsd_fp)
