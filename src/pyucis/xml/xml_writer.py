@@ -8,6 +8,7 @@ from lxml import etree as et
 from pyucis.ucis import UCIS
 from lxml.etree import QName, tounicode, SubElement
 from pyucis.statement_id import StatementId
+from datetime import datetime
 
 class XmlWriter():
     
@@ -31,6 +32,8 @@ class XmlWriter():
 #        self.root = et.Element("UCIS", nsmap={
             "ucis" : XmlWriter.UCIS
             })
+        self.setAttr(self.root, "writtenBy", db.getWrittenBy())
+        self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
         
         self.setAttr(self.root, "ucisVersion", db.getAPIVersion())
 
@@ -47,7 +50,7 @@ class XmlWriter():
         for i,f in enumerate(self.db.getSourceFiles()):
             fileN = self.mkElem(self.root, "sourceFiles")
             self.setAttr(fileN, "fileName", f.getFilename())
-            self.setAttr(fileN, "id", str(i))
+            self.setAttr(fileN, "id", str(i+1))
         
     def write_history_nodes(self):
         
@@ -61,7 +64,7 @@ class XmlWriter():
             histN.set("logicalName", h.getLogicalName())
             self.setIfNonNull(histN, "physicalName", h.getPhysicalName())
             self.setIfNonNull(histN, "kind", h.getKind())
-            histN.set("testStatus", str(h.getTestStatus()))
+            self.setAttrBool(histN, "testStatus", h.getTestStatus())
             self.setIfNonNeg(histN, "simtime", h.getSimTime())
             self.setIfNonNull(histN, "timeunit", h.getTimeUnit())
             self.setIfNonNull(histN, "runCwd", h.getRunCwd())
@@ -70,8 +73,16 @@ class XmlWriter():
             self.setIfNonNull(histN, "cmd", h.getCmd())
             self.setIfNonNull(histN, "args", h.getArgs())
             self.setIfNonNull(histN, "compulsory", h.getCompulsory())
-            # TODO: date
+            self.setAttrDateTime(histN, "date", h.getDate())
             self.setIfNonNull(histN, "userName", h.getUserName())
+            self.setIfNonNeg(histN, "cost", h.getCost())
+            self.setAttr(histN, "toolCategory", h.getToolCategory())
+            self.setAttr(histN, "ucisVersion", h.getUCISVersion())
+            self.setAttr(histN, "vendorId", h.getVendorId())
+            self.setAttr(histN, "vendorTool", h.getVendorTool())
+            self.setAttr(histN, "vendorToolVersion", h.getVendorToolVersion())
+            self.setIfNonNeg(histN, "sameTests", h.getSameTests())
+            self.setIfNonNull(histN, "comment", h.getComment())
             
             # TODO: userAttr
             
@@ -87,7 +98,7 @@ class XmlWriter():
     def write_statement_id(self, stmt_id : StatementId, p, name="id"):
         stmtN = self.mkElem(p, name)
         # TODO: 
-        file_id = self.file_id_m[stmt_id.getFile()]
+        file_id = self.file_id_m[stmt_id.getFile()]+1
         self.setAttr(stmtN, "file", str(file_id))
         self.setAttr(stmtN, "line", str(stmt_id.getLine()))
         self.setAttr(stmtN, "inlineCount", str(stmt_id.getItem()))
@@ -100,6 +111,15 @@ class XmlWriter():
     def setAttr(self, e, name, val):
 #        e.set(QName(XmlWriter.UCIS, name), val)
         e.set(name, val)
+        
+    def setAttrBool(self, e, name, val):
+        if val:
+            e.set(name, "true")
+        else:
+            e.set(name, "false")
+
+    def setAttrDateTime(self, e, name, val):
+        self.setAttr(e, name, datetime.fromtimestamp(val).isoformat())
             
     def setIfNonNull(self, n, attr, val):
         if val is not None:

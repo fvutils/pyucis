@@ -88,10 +88,10 @@ class HistoryNode():
     def setCompulsory(self, compulsory : [str]):
         raise UnimplError()
     
-    def getDate(self):
+    def getDate(self)->int:
         raise UnimplError()
     
-    def setDate(self, date):
+    def setDate(self, date : int):
         raise UnimplError()
     
     def getUserName(self) -> str:
@@ -127,10 +127,16 @@ class HistoryNode():
     def setVendorTool(self, tool : str):
         raise UnimplError()
     
-    def getSameTests(self):
+    def getVendorToolVersion(self) -> str:
         raise UnimplError()
     
-    def setSameTests(self, test_l = []):
+    def setVendorToolVersion(self, version : str):
+        raise UnimplError()
+    
+    def getSameTests(self) -> int:
+        raise UnimplError()
+    
+    def setSameTests(self, test_l : int):
         raise UnimplError()
     
     def getComment(self):

@@ -4,6 +4,7 @@ Created on Jan 5, 2020
 @author: ballance
 '''
 from pyucis.history_node import HistoryNode
+from datetime import datetime
 
 class MemHistoryNode(HistoryNode):
     
@@ -17,7 +18,7 @@ class MemHistoryNode(HistoryNode):
         self.m_logicalname = logicalname
         self.m_physicalname = physicalname
         self.m_kind = kind
-        self.m_test_status = False
+        self.m_test_status = True
         self.m_sim_time = -1.0
         self.m_time_unit = None
         self.m_run_cwd = None
@@ -26,14 +27,15 @@ class MemHistoryNode(HistoryNode):
         self.m_cmd = None
         self.m_args = None
         self.m_compulsory = None
-        self.m_date = None
+        self.m_date = int(datetime.timestamp(datetime.now()))
         self.m_user_name = None
         self.m_cost = -1
-        self.m_tool_category = None
-        self.m_ucis_version = 1.0
-        self.m_vendor_id = None
-        self.m_vendor_tool = None
-        self.m_same_tests = []
+        self.m_tool_category = "unknown"
+        self.m_ucis_version = "1.0"
+        self.m_vendor_id = "unknown"
+        self.m_vendor_tool = "unknown"
+        self.m_vendor_tool_version = "unknown"
+        self.m_same_tests =  -1
         self.m_comment = None
     
     def getParent(self):
@@ -140,11 +142,17 @@ class MemHistoryNode(HistoryNode):
     
     def setVendorTool(self, tool : str):
         self.m_vendor_tool = tool
+        
+    def getVendorToolVersion(self) -> str:
+        return self.m_vendor_tool_version
     
-    def getSameTests(self):
+    def setVendorToolVersion(self, version : str):
+        self.m_vendor_tool_version = version
+    
+    def getSameTests(self) -> int:
         return self.m_same_tests
     
-    def setSameTests(self, test_l = []):
+    def setSameTests(self, test_l : int):
         self.m_same_tests = test_l
     
     def getComment(self):

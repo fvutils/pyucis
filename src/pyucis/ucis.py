@@ -8,6 +8,7 @@ from pyucis.scope import Scope
 from pyucis.history_node import HistoryNode
 from pyucis.source_file import SourceFile
 from pyucis.instance_coverage import InstanceCoverage
+from pyucis.statement_id import StatementId
 
 class UCIS(Scope):
     
@@ -15,6 +16,18 @@ class UCIS(Scope):
         pass
     
     def getAPIVersion(self) -> str:
+        raise UnimplError()
+    
+    def getWrittenBy(self)->str:
+        raise UnimplError()
+    
+    def setWrittenBy(self, by : str):
+        raise UnimplError()
+
+    def getWrittenTime(self)->int:
+        raise UnimplError()
+    
+    def setWrittenTime(self, time : int):
         raise UnimplError()
     
     def getDBVersion(self):
@@ -32,7 +45,7 @@ class UCIS(Scope):
     def createHistoryNode(self, parent, logicalname, physicalname, kind):
         raise UnimplError()
     
-    def createCoverInstance(self, name, fileinfo):
+    def createCoverInstance(self, name, stmt_id : StatementId):
         raise UnimplError()
     
     def getHistoryNodes(self) -> [HistoryNode]:

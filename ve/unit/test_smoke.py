@@ -4,7 +4,8 @@ from pyucis.xml.xml_writer import XmlWriter
 import io
 from pyucis.xml.xml_factory import XmlFactory
 from pyucis.statement_id import StatementId
-from pyucis.xml import validate_ucis_xml
+from pyucis.xml import validate_ucis_xml, xml_reader
+from pyucis.xml.xml_reader import XmlReader
 
 class TestSmoke(TestCase):
     
@@ -20,7 +21,15 @@ class TestSmoke(TestCase):
         print("output:\n" + out.getvalue())
         
         xml_in = io.StringIO(out.getvalue())
-        self.assertTrue(validate_ucis_xml(xml_in))
+        validate_ucis_xml(xml_in)
+        
+        xml_in = io.StringIO(out.getvalue())
+        db2 = XmlFactory.read(xml_in)
+        
+        out2 = io.StringIO()
+        XmlFactory.write(db2, out2)
+        print("output2:\n" + out2.getvalue())
+        
 
     def test_validate(self):
         document = """

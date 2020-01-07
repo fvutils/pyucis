@@ -11,15 +11,17 @@ from pyucis.mem.mem_history_node import MemHistoryNode
 from pyucis.mem.mem_source_file import MemSourceFile
 from pyucis.mem.mem_instance_coverage import MemInstanceCoverage
 from pyucis.instance_coverage import InstanceCoverage
-
+from datetime import datetime
+import getpass
+from pyucis.statement_id import StatementId
 
 class MemUCIS(UCIS):
     
     def __init__(self):
         super().__init__()
         self.ucis_version = "1.0"
-        self.writtenBy = "TODO"
-        self.writtenTime = "TODO"
+        self.writtenBy = getpass.getuser()
+        self.writtenTime = int(datetime.timestamp(datetime.now()))
         self.m_history_node_l = []
         self.m_source_file_l = []
         self.m_instance_coverage_l = []
@@ -27,6 +29,18 @@ class MemUCIS(UCIS):
     
     def getAPIVersion(self)->str:
         return "1.0"
+    
+    def getWrittenBy(self)->str:
+        return self.writtenBy
+    
+    def setWrittenBy(self, by):
+        self.writtenBy = by
+    
+    def getWrittenTime(self)->int:
+        return self.writtenTime
+    
+    def setWrittenTime(self, time : int):
+        self.writtenTime = time
     
     def createFileHandle(self, filename, workdir):
         ret = MemSourceFile(len(self.m_source_file_l), filename)
@@ -38,8 +52,8 @@ class MemUCIS(UCIS):
         self.m_history_node_l.append(ret)
         return ret
 
-    def createCoverInstance(self, name, fileinfo):
-        ret = MemInstanceCoverage(name, str(len(self.m_instance_coverage_l)), fileinfo)
+    def createCoverInstance(self, name, stmt_id : StatementId):
+        ret = MemInstanceCoverage(name, str(len(self.m_instance_coverage_l)), stmt_id)
         self.m_instance_coverage_l.append(ret)
         return ret
         
