@@ -5,6 +5,8 @@ Created on Jan 5, 2020
 '''
 from pyucis.history_node import HistoryNode
 from datetime import datetime
+from pyucis.test_data import TestData
+from pyucis import IntProperty
 
 class MemHistoryNode(HistoryNode):
     
@@ -37,9 +39,28 @@ class MemHistoryNode(HistoryNode):
         self.m_vendor_tool_version = "unknown"
         self.m_same_tests =  -1
         self.m_comment = None
-    
+        
     def getParent(self):
         return self.m_parent
+    
+    def getIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty)-> int:
+        if property == IntProperty.TEST_STATUS:
+            return 1 if self.m_test_status else 0
+        else:
+            return super().getIntProperty(coverindex, property)
+        
+    def setIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty, 
+        value:int):
+        if property == IntProperty.TEST_STATUS:
+            self.m_test_status = (value==1)
+        else:
+            super().setIntProperty(coverindex, property, value)
     
     def getLogicalName(self)->str:
         return self.m_logicalname
@@ -49,12 +70,6 @@ class MemHistoryNode(HistoryNode):
     
     def getKind(self)->str:
         return self.m_kind
-    
-    def setTestStatus(self, status:bool):
-        self.m_test_status = status
-        
-    def getTestStatus(self)->bool:
-        return self.m_test_status
     
     def getSimTime(self)->float:
         return self.m_sim_time

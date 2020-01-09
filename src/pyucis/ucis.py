@@ -9,11 +9,29 @@ from pyucis.history_node import HistoryNode
 from pyucis.source_file import SourceFile
 from pyucis.instance_coverage import InstanceCoverage
 from pyucis.statement_id import StatementId
+from pyucis import IntProperty
 
 class UCIS(Scope):
     
     def __init__(self):
         pass
+    
+    def getIntProperty(
+            self, 
+            coverindex : int,
+            property : IntProperty
+            )->int:
+        raise UnimplError()
+    
+    def setIntProperty(
+            self,
+            coverindex : int,
+            property : IntProperty,
+            value : int):
+        raise UnimplError()    
+    
+    def getNumTests(self):
+        return self.getIntProperty(-1, IntProperty.NUM_TESTS)
     
     def getAPIVersion(self) -> str:
         raise UnimplError()

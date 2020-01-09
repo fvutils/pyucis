@@ -4,11 +4,29 @@ Created on Jan 5, 2020
 @author: ballance
 '''
 from pyucis.unimpl_error import UnimplError
+from pyucis.test_data import TestData
+from pyucis.obj import Obj
+from pyucis import IntProperty
 
-class HistoryNode():
+class HistoryNode(Obj):
     
     def __init__(self):
-        pass
+        super().__init__()
+    
+    def setTestData(self, testdata : TestData):
+        self.setTestStatus(testdata.teststatus)
+        self.setToolCategory(testdata.toolcategory)
+        self.setDate(testdata.date)
+        self.setSimTime(testdata.simtime)
+        self.setTimeUnit(testdata.timeunit)
+        self.setRunCwd(testdata.runcwd)
+        self.setCpuTime(testdata.cputime)
+        self.setSeed(testdata.seed)
+        self.setCmd(testdata.cmd)
+        self.setArgs(testdata.args)
+        self.setCompulsory(testdata.compulsory)
+        self.setUserName(testdata.user)
+        self.setCost(testdata.cost)
    
     def getUserAttr(self):
         raise UnimplError()
@@ -35,10 +53,10 @@ class HistoryNode():
         raise UnimplError()
     
     def getTestStatus(self) -> bool:
-        raise UnimplError()
+        return self.getIntProperty(-1, IntProperty.TEST_STATUS) == 1
     
     def setTestStatus(self, status : bool):
-        raise UnimplError()
+        self.setIntProperty(-1, IntProperty.TEST_STATUS, 1 if status else 0)
     
     def getSimTime(self) -> float:
         raise UnimplError()

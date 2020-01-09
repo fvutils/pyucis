@@ -4,8 +4,9 @@ Created on Dec 22, 2019
 @author: ballance
 '''
 from pyucis.scope import Scope
+from pyucis.cvg_scope import CvgScope
 
-class Cross(Scope):
+class Cross(CvgScope):
     
     def __init__(self):
         pass
