@@ -3,9 +3,11 @@ Created on Jan 8, 2020
 
 @author: ballance
 '''
-from pyucis import IntProperty, RealProperty, StringProperty, HandleProperty
 from pyucis.unimpl_error import UnimplError
-from pyucis.scope import Scope
+from pyucis.int_property import IntProperty
+from pyucis.real_property import RealProperty
+from pyucis.string_property import StringProperty
+from pyucis.handle_property import HandleProperty
 
 class Obj():
     
@@ -55,12 +57,12 @@ class Obj():
     def getHandleProperty(
             self,
             coverindex : int,
-            property : HandleProperty):
+            property : HandleProperty) -> 'Scope':
         raise UnimplError()
     
     def setHandleProperty(
             self,
             coverindex : int,
             property : HandleProperty,
-            value : Scope):
+            value : 'Scope'):
         raise UnimplError()

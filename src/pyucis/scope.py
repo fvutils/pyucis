@@ -5,10 +5,8 @@ Created on Dec 22, 2019
 '''
 from pyucis.source_info import SourceInfo
 from pyucis.unimpl_error import UnimplError
-from pyucis.cover_type import CoverType
-from pyucis.covergroup import Covergroup
-from pyucis import IntProperty
 from pyucis.obj import Obj
+from pyucis.int_property import IntProperty
 
 class Scope(Obj):
     
@@ -28,7 +26,7 @@ class Scope(Obj):
                     name : str,
                     srcinfo : SourceInfo,
                     weight : int,
-                    source) -> Covergroup:
+                    source) -> 'Covergroup':
         raise UnimplError()
     
     def getWeight(self, coverindex):

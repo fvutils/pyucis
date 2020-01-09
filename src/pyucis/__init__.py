@@ -3,44 +3,18 @@ from pyucis.scope import Scope
 from pyucis.source_info import SourceInfo
 from pyucis.obj import Obj
 from enum import IntEnum, auto
+from pyucis.int_property import IntProperty
+from pyucis.real_property import RealProperty
+from pyucis.string_property import StringProperty
+from pyucis.handle_property import HandleProperty
+from pyucis.test_status import TestStatus
+from pyucis.history_node_kind import HistoryNodeKind
+from pyucis.history_node import HistoryNode
+from pyucis.test_data import TestData
 
 #********************************************************************
 #* Property Functions
 #********************************************************************
-
-class IntProperty(IntEnum):
-    IS_MODIFIED = auto() # Modified since opening stored UCISDB (In-memory and read only)
-    MODIFIED_SINCE_SIM = auto() # Modified since end of simulation run (In-memory and read only)
-    NUM_TESTS = auto() # Number of test history nodes (UCIS_HISTORYNODE_TEST) in UCISDB 
-    SCOPE_WEIGHT = auto() # Scope weight 
-    SCOPE_GOAL = auto() # Scope goal 
-    SCOPE_SOURCE_TYPE = auto() # Scope source type (ucisSourceT) 
-    NUM_CROSSED_CVPS = auto() # Number of coverpoints in a cross (read only) 
-    SCOPE_IS_UNDER_DU = auto() # Scope is underneath design unit scope (read only) 
-    SCOPE_IS_UNDER_COVERINSTANCE = auto() # Scope is underneath covergroup instance (read only) 
-    SCOPE_NUM_COVERITEMS = auto() # Number of coveritems underneath scope (read only) 
-    SCOPE_NUM_EXPR_TERMS = auto() # Number of input ordered expr term strings delimited by '#' 
-    TOGGLE_TYPE = auto() # Toggle type (ucisToggleTypeT) 
-    TOGGLE_DIR = auto() # Toggle direction (ucisToggleDirT) 
-    TOGGLE_COVERED = auto() # Toggle object is covered 
-    BRANCH_HAS_ELSE = auto() # Branch has an 'else' coveritem 
-    BRANCH_ISCASE = auto() # Branch represents 'case' statement 
-    COVER_GOAL = auto() # Coveritem goal 
-    COVER_LIMIT = auto() # Coverage count limit for coveritem 
-    COVER_WEIGHT = auto() # Coveritem weight 
-    TEST_STATUS = auto() # Test run status (ucisTestStatusT) 
-    TEST_COMPULSORY = auto() # Test run is compulsory 
-    STMT_INDEX = auto() # Index or number of statement on a line 
-    BRANCH_COUNT = auto() # Total branch execution count 
-    FSM_STATEVAL = auto() # FSM state value 
-    CVG_ATLEAST = auto() # Covergroup at_least option 
-    CVG_AUTOBINMAX = auto() # Covergroup auto_bin_max option 
-    CVG_DETECTOVERLAP = auto() # Covergroup detect_overlap option 
-    CVG_NUMPRINTMISSING = auto() # Covergroup cross_num_print_missing option 
-    CVG_STROBE = auto() # Covergroup strobe option 
-    CVG_PERINSTANCE = auto() # Covergroup per_instance option 
-    CVG_GETINSTCOV = auto() # Covergroup get_inst_coverage option 
-    CVG_MERGEINSTANCES = auto() # Covergroup merge_instances option     
 
 # Global declarations    
 UCIS_INT_IS_MODIFIED = IntProperty.IS_MODIFIED
@@ -75,15 +49,19 @@ UCIS_INT_CVG_STROBE = IntProperty.CVG_STROBE
 UCIS_INT_CVG_PERINSTANCE = IntProperty.CVG_PERINSTANCE
 UCIS_INT_CVG_GETINSTCOV = IntProperty.CVG_GETINSTCOV
 UCIS_INT_CVG_MERGEINSTANCES = IntProperty.CVG_MERGEINSTANCES
+
+UCIS_TESTSTATUS_OK = TestStatus.OK
+UCIS_TESTSTATUS_WARNING = TestStatus.WARNING    #/* test warning ($warning called) */
+UCIS_TESTSTATUS_ERROR = TestStatus.ERROR      #/* test error ($error called) */
+UCIS_TESTSTATUS_FATAL = TestStatus.FATAL      #/* fatal test error ($fatal called) */
+UCIS_TESTSTATUS_MISSING = TestStatus.MISSING         #/* test not run yet */
+UCIS_TESTSTATUS_MERGE_ERROR = TestStatus.MERGE_ERROR #/* testdata record was merged with inconsistent data values */
+
+UCIS_HISTORYNODE_NONE   = HistoryNodeKind.NONE
+UCIS_HISTORYNODE_ALL    = HistoryNodeKind.ALL
+UCIS_HISTORYNODE_TEST   = HistoryNodeKind.TEST
+UCIS_HISTORYNODE_MERGE  = HistoryNodeKind.MERGE
     
-class RealProperty(IntEnum):
-    b = 0
-    
-class StringProperty(IntEnum):
-    c = 0
-    
-class HandleProperty(IntEnum):
-    d = 0
     
 def ucis_GetIntProperty(
         db : ucis,
@@ -194,4 +172,19 @@ def ucis_RemoveScope(
         db : ucis,
         scope : Scope) -> int:
     return db.removeScope(scope)
+
+def ucis_CreateHistoryNode(
+    db : ucis,
+    parent : HistoryNode,
+    logicalname,   #/* primary key, never NULL */
+    physicalname,
+    kind : HistoryNodeKind):
+    # TODO: what if parent is non-null?
+    return db.createHistoryNode(logicalname, physicalname, kind)
+
+def ucis_SetTestData(
+    db : ucis,
+    testhistorynode : HistoryNode,
+    testdata : TestData):
+    testhistorynode.setTestData(testdata)
 

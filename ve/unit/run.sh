@@ -8,7 +8,8 @@ for i in 1 2; do
   pyucis_dir=`dirname $pyucis_dir`
 done
 
-export PYTHONPATH=${pyucis_dir}/src:/project/fun/portaskela/boolector/inst/lib
+export PYTHONPATH=${pyucis_dir}/src
+echo "PYTHONPATH=${PYTHONPATH}"
 
 # valgrind --tool=memcheck --suppressions=./valgrind-python.supp ${pyucis_dir}/packages/python/bin/python3 -m unittest ${@:1}
 # valgrind --tool=memcheck python3 -m unittest ${@:1}

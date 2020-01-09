@@ -6,7 +6,7 @@ Created on Jan 5, 2020
 from pyucis.unimpl_error import UnimplError
 from pyucis.test_data import TestData
 from pyucis.obj import Obj
-from pyucis import IntProperty
+from pyucis.int_property import IntProperty
 
 class HistoryNode(Obj):
     

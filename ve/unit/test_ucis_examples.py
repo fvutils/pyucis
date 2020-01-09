@@ -1,7 +1,11 @@
+
+import os
 from unittest.case import TestCase
 from pyucis.mem.mem_factory import MemFactory
 from pyucis.source_info import SourceInfo
 from pyucis.scope import Scope
+from pyucis.test_data import TestData
+from pyucis import *
 
 class TestUcisExamples(TestCase):
     
@@ -34,166 +38,122 @@ class TestUcisExamples(TestCase):
         ucis_SetStringProperty(db,duscope,-1,UCIS_STR_DU_SIGNATURE,"FAKE DU SIGNATURE")
         
         return duscope
-/*
- * Create a filehandle from the given file in the current directory
- * (Works on UNIX variants only, because of the reliance on the PWD
- * environment variable.)
- */
-ucisFileHandleT
-create_filehandle(ucisT db,
-                  const char* filename)
-{
-    ucisFileHandleT filehandle;
-    const char* pwd = getenv("PWD");
-    filehandle = ucis_CreateFileHandle(db,
-                                       filename,
-                                       pwd);
-    return filehandle;
-}
+    
+    #* Create a filehandle from the given file in the current directory
+    #* (Works on UNIX variants only, because of the reliance on the PWD
+    #* environment variable.)
+    def create_filehandle(self, db, filename):
+        pwd = os.getcwd()
+        filehandle = ucis_CreateFileHandle(db, filename, pwd)
+        return filehandle
 
-/*
- * Create test data. For the most part, this is hardcoded.
- */
-void
-create_testdata(ucisT db,
-                const char* ucisdb)
-{
-    ucisHistoryNodeT testnode;
-    ucisTestDataT    testdata = {
-        UCIS_TESTSTATUS_OK,  /* teststatus */
-        0.0,                 /* simtime */
-        "ns",                /* timeunit */
-        "./",                /* runcwd */
-        0.0,                 /* cputime */
-        "0",                 /* seed */
-        "toolname",          /* cmd */
-        "command arguments", /* args */
-        0,                   /* compulsory */
-        "20110824143300",    /* date */
-        "ucis_user",         /* username */
-        0.0,                 /* cost */
-        "UCIS:Simulator"     /* toolcategory */
-    };
+    #* Create test data. For the most part, this is hardcoded.
+    def create_testdata(self, db, ucisdb):
+        testdata = TestData(
+        UCIS_TESTSTATUS_OK,  #/* teststatus */
+        0.0,                 #/* simtime */
+        "ns",                #/* timeunit */
+        "./",                #/* runcwd */
+        0.0,                 #/* cputime */
+        "0",                 #/* seed */
+        "toolname",          #/* cmd */
+        "command arguments", #/* args */
+        0,                   #/* compulsory */
+        "20110824143300",    #/* date */
+        "ucis_user",         #/* username */
+        0.0,                 #/* cost */
+        "UCIS:Simulator"     #/* toolcategory */
+        )
 
-    testnode =  ucis_CreateHistoryNode(
+        testnode =  ucis_CreateHistoryNode(
                db,
-               NULL,                /* no parent since it is the only one */
-               "TestLogicalName",   /* primary key, never NULL */
-               (char *) ucisdb,   /* optional physical name at creation */
-               UCIS_HISTORYNODE_TEST);  /* It's a test history node */
+               None,                #/* no parent since it is the only one */
+               "TestLogicalName",   #/* primary key, never NULL */
+               ucisdb,              #/* optional physical name at creation */
+               UCIS_HISTORYNODE_TEST)  #/* It's a test history node */
 
-    if (testnode) ucis_SetTestData(db, testnode, &testdata);
-}
-/*
- * Create instance of the given design design unit.
- * This assumes INST_ONCE
- */
-ucisScopeT
-create_instance(ucisT db,
-                const char* instname,
-                ucisScopeT parent,
-                ucisScopeT duscope)
-{
-    return
-        ucis_CreateInstance(db,parent,instname,
-                            NULL, /* source info: not used */
-                            1, /* weight */
-                            UCIS_VLOG, /* source language */
-                            UCIS_INSTANCE, /* instance of module/architecture */
-                            duscope, /* reference to design unit */
-                            UCIS_INST_ONCE); /* flags */
-}
-/*
- * Create a statement bin under the given parent, at the given line number,
- * with the given count.
- */
-void
-create_statement(ucisT db,
-                 ucisScopeT parent,
-                 ucisFileHandleT filehandle,
-                 int fileno, /* 1-referenced wrt DU contributing files */
-                 int line,   /* 1-referenced wrt file */
-                 int item,   /* 1-referenced wrt statements starting on the line */
-                 int count)
-{
-    ucisCoverDataT coverdata;
-    ucisSourceInfoT srcinfo;
-    int coverindex;
-    char name[25];
-    /* UOR name generation */
-    sprintf(name,"#stmt#%d#%d#%d#",fileno, line, item);
+        if testnode is not None:
+            ucis_SetTestData(db, testnode, testdata)
 
-    coverdata.type = UCIS_STMTBIN;
-    coverdata.flags = UCIS_IS_32BIT; /* data type flag */
-    coverdata.data.int32 = count; /* must be set for 32 bit flag */
-    srcinfo.filehandle = filehandle;
-    srcinfo.line = line;
-    srcinfo.token = 17;/* fake token # */
-    coverindex = ucis_CreateNextCover(db,parent,
-                                      name, /* name: statements have none */
-                                      &coverdata,
-                                      &srcinfo);
-    ucis_SetIntProperty(db,parent,coverindex,UCIS_INT_STMT_INDEX,item);
-}
-/*
- * Create enum toggle
- * This hardcodes pretty much everything.
- */
-void
-create_enum_toggle(ucisT db,
-                   ucisScopeT parent)
-{
-    ucisCoverDataT coverdata;
-    ucisScopeT toggle;
-    toggle = ucis_CreateToggle(db,parent,
-                               "t", /* toggle name */
-                               NULL, /* canonical name */
-                               0, /* exclusions flags */
-                               UCIS_TOGGLE_METRIC_ENUM, /* metric */
-                               UCIS_TOGGLE_TYPE_REG,    /* type */
-                               UCIS_TOGGLE_DIR_INTERNAL); /* toggle "direction" */
-    coverdata.type = UCIS_TOGGLEBIN;
-    coverdata.flags = UCIS_IS_32BIT; /* data type flag */
-    coverdata.data.int32 = 0; /* must be set for 32 bit flag */
-    ucis_CreateNextCover(db,toggle,
-                         "a", /* enum name */
-                         &coverdata,
-                         NULL); /* no source data */
-    coverdata.data.int32 = 1; /* must be set for 32 bit flag */
-    ucis_CreateNextCover(db,toggle,
-                         "b", /* enum name */
-                         &coverdata,
-                         NULL); /* no source data */
-}
-/*
- * Create a covergroup of the given name under the given parent.
- * This hardcodes the type_options.
- */
-ucisScopeT
-create_covergroup(ucisT db,
-                  ucisScopeT parent,
-                  const char* name,
-                  ucisFileHandleT filehandle,
-                  int line)
-{
-    ucisScopeT cvg;
-    ucisSourceInfoT srcinfo;
-    srcinfo.filehandle = filehandle;
-    srcinfo.line = line;
-    srcinfo.token = 0; /* fake token # */
-    cvg = ucis_CreateScope(db,parent,name,
-                           &srcinfo,
-                           1, /* from type_option.weight */
-                           UCIS_VLOG, /* source language type */
+    #* Create instance of the given design design unit.
+    #* This assumes INST_ONCE
+    def create_instance(self, db, instname, parent, duscope):
+        return ucis_CreateInstance(db,parent,instname,
+                            None, #/* source info: not used */
+                            1, #/* weight */
+                            UCIS_VLOG, #/* source language */
+                            UCIS_INSTANCE, #/* instance of module/architecture */
+                            duscope, #/* reference to design unit */
+                            UCIS_INST_ONCE) #/* flags */
+        
+    #* Create a statement bin under the given parent, at the given line number,
+    #* with the given count.
+    def create_statement(self, db,
+                parent,
+                filehandle,
+                fileno, #/* 1-referenced wrt DU contributing files */
+                line,   #/* 1-referenced wrt file */
+                item,   #/* 1-referenced wrt statements starting on the line */
+                count):
+        #/* UOR name generation */
+        name = "#stmt#%d#%d#%d#" % (fileno, line, item)
+
+        coverdata = CoverData(UCIS_STMTBIN, UCIS_IS_32BIT)
+#        coverdata.data.int32 = count; /* must be set for 32 bit flag */
+
+        srcinfo = SourceInfo(filehandle, line, 17)        
+        
+        coverindex = ucis_CreateNextCover(db,parent,
+                                      name, #/* name: statements have none */
+                                      coverdata,
+                                      srcinfo)
+        
+        ucis_SetIntProperty(db,parent,coverindex,UCIS_INT_STMT_INDEX,item)
+        
+    #* Create enum toggle
+    #* This hardcodes pretty much everything.
+    def create_enum_toggle(self, db, parent):
+        toggle = ucis_CreateToggle(db,parent,
+                               "t", #/* toggle name */
+                               None, #/* canonical name */
+                               0, #/* exclusions flags */
+                               UCIS_TOGGLE_METRIC_ENUM, #/* metric */
+                               UCIS_TOGGLE_TYPE_REG,    #/* type */
+                               UCIS_TOGGLE_DIR_INTERNAL) #/* toggle "direction" */
+        coverdata = CoverData(UCIS_TOGGLEBIN, UCIS_IS_32BIT)
+        # coverdata.data.int32 = 0; /* must be set for 32 bit flag */
+        ucis_CreateNextCover(db,toggle,
+                             "a", #/* enum name */
+                             coverdata,
+                             None); #/* no source data */
+#        coverdata.data.int32 = 1; /* must be set for 32 bit flag */
+        ucis_CreateNextCover(db,toggle,
+                             "b", #/* enum name */
+                             coverdata,
+                             None) #/* no source data */
+
+    #* Create a covergroup of the given name under the given parent.
+    #* This hardcodes the type_options.
+    def create_covergroup(self, db,
+                  parent,
+                  name,
+                  filehandle,
+                  line):
+        srcinfo = SourceInfo(filehandle, line, 0)
+        cvg = ucis_CreateScope(db,parent,name,
+                           srcinfo,
+                           1, #/* from type_option.weight */
+                           UCIS_VLOG, #/* source language type */
                            UCIS_COVERGROUP,
-                           0); /* flags */
-    /* Hardcoding attribute values for type_options: */
-    ucis_SetIntProperty(db,cvg,-1,UCIS_INT_SCOPE_GOAL,100);
-    ucis_SetIntProperty(db,cvg,-1,UCIS_INT_CVG_STROBE,0);
-    ucis_SetIntProperty(db,cvg,-1,UCIS_INT_CVG_MERGEINSTANCES,1);
-    ucis_SetStringProperty(db,cvg,-1,UCIS_STR_COMMENT,"");
-    return cvg;
-}
+                           0) #/* flags */
+        #/* Hardcoding attribute values for type_options: */
+        ucis_SetIntProperty(db,cvg,-1,UCIS_INT_SCOPE_GOAL,100)
+        ucis_SetIntProperty(db,cvg,-1,UCIS_INT_CVG_STROBE,0)
+        ucis_SetIntProperty(db,cvg,-1,UCIS_INT_CVG_MERGEINSTANCES,1)
+        ucis_SetStringProperty(db,cvg,-1,UCIS_STR_COMMENT,"")
+    
+        return cvg
+
     # Create a coverpoint of the given name under the given parent.
     # This hardcodes the type_options.
     def create_coverpoint(
@@ -209,12 +169,12 @@ create_covergroup(ucisT db,
                            UCIS_VLOG, # source language type
                            UCIS_COVERPOINT,
                            0) # flags 
-    #* Hardcoding attribute values to defaults for type_options:
-    ucis_SetIntProperty(db,cvp,-1,UCIS_INT_SCOPE_GOAL,100)
-    ucis_SetIntProperty(db,cvp,-1,UCIS_INT_CVG_ATLEAST,1)
-    ucis_SetStringProperty(db,cvp,-1,UCIS_STR_COMMENT,"")
-    return cvp
-}
+        #* Hardcoding attribute values to defaults for type_options:
+        ucis_SetIntProperty(db,cvp,-1,UCIS_INT_SCOPE_GOAL,100)
+        ucis_SetIntProperty(db,cvp,-1,UCIS_INT_CVG_ATLEAST,1)
+        ucis_SetStringProperty(db,cvp,-1,UCIS_STR_COMMENT,"")
+        
+        return cvp
 
     #
     # Create a coverpoint bin of the given name, etc., under the given

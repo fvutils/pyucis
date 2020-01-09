@@ -9,7 +9,7 @@ from pyucis.history_node import HistoryNode
 from pyucis.source_file import SourceFile
 from pyucis.instance_coverage import InstanceCoverage
 from pyucis.statement_id import StatementId
-from pyucis import IntProperty
+from pyucis.int_property import IntProperty
 
 class UCIS(Scope):
     
