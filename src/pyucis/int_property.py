@@ -7,7 +7,7 @@ from enum import IntEnum, auto
 
 
 class IntProperty(IntEnum):
-    IS_MODIFIED = auto() # Modified since opening stored UCISDB (In-memory and read only)
+    IS_MODIFIED = 0 # Modified since opening stored UCISDB (In-memory and read only)
     MODIFIED_SINCE_SIM = auto() # Modified since end of simulation run (In-memory and read only)
     NUM_TESTS = auto() # Number of test history nodes (UCIS_HISTORYNODE_TEST) in UCISDB 
     SCOPE_WEIGHT = auto() # Scope weight 

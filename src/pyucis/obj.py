@@ -6,7 +6,7 @@ Created on Jan 8, 2020
 from pyucis.unimpl_error import UnimplError
 from pyucis.int_property import IntProperty
 from pyucis.real_property import RealProperty
-from pyucis.string_property import StringProperty
+from pyucis.str_property import StrProperty
 from pyucis.handle_property import HandleProperty
 
 class Obj():
@@ -44,13 +44,13 @@ class Obj():
     def getStringProperty(
             self,
             coverindex : int,
-            property : StringProperty) -> str:
+            property : StrProperty) -> str:
         raise UnimplError()
     
     def setStringProperty(
             self,
             coverindex : int,
-            property : StringProperty,
+            property : StrProperty,
             value : str):
         raise UnimplError()
         

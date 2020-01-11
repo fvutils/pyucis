@@ -53,10 +53,10 @@ class HistoryNode(Obj):
         raise UnimplError()
     
     def getTestStatus(self) -> bool:
-        return self.getIntProperty(-1, IntProperty.TEST_STATUS) == 1
+        raise UnimplError()
     
     def setTestStatus(self, status : bool):
-        self.setIntProperty(-1, IntProperty.TEST_STATUS, 1 if status else 0)
+        raise UnimplError()
     
     def getSimTime(self) -> float:
         raise UnimplError()
