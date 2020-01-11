@@ -8,14 +8,14 @@ from pyucis.lib.libucis import _lib, get_ucis_library, get_lib
 from pyucis.int_property import IntProperty
 from pyucis.file_handle import FileHandle
 from pyucis.lib.lib_file_handle import LibFileHandle
+from pyucis.lib.lib_scope import LibScope
 
-class LibUCIS(UCIS):
+class LibUCIS(LibScope,UCIS):
     
     def __init__(self, file : str=None):
-        self.db = get_lib().ucis_Open(file)
-        print("LibUCIS: db=" + str(self.db))
-        print("LibUCIS: db=" + str(self.db))
-        print("LibUCIS: db=" + str(self.db))
+        db = get_lib().ucis_Open(file)
+        super().__init__(db, None)
+        
         
     def isModified(self):
         return get_lib().ucis_GetIntProperty(self.db, -1, IntProperty.IS_MODIFIED) == 1

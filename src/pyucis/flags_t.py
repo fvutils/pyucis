@@ -3,9 +3,9 @@ Created on Jan 11, 2020
 
 @author: ballance
 '''
-from enum import Flag
+from enum import IntFlag
 
-class FlagsT(Flag):
+class FlagsT(IntFlag):
     
     # An instance is instantiated only once; 
     # code coverage is stored only in the instance

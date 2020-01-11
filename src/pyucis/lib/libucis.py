@@ -29,6 +29,7 @@ _funcs = FuncMap()
 #ucis_Open = None
 #ucis_CreateHistoryNode = None
 
+
 fspec = {
     "ucis_Open" : (
         CFUNCTYPE(c_void_p, c_wchar_p),
@@ -37,6 +38,18 @@ fspec = {
     "ucis_CreateHistoryNode" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_wchar_p, c_int),
         ((1,"db"),(1,"parent"),(1,"logicalname"),(1,"physicalname"),(1,"kind"))
+        ),
+    "ucis_CreateScope" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_void_p, c_int, c_int, c_int, c_int),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"sourceinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"flags"))
+        ),
+    "ucis_CreateInstance" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_void_p, c_int, c_int, c_int, c_void_p, c_int),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"du_scope"),(1,"flags"))
+        ),
+    "ucis_SetStringProperty" : (
+        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_wchar_p),
+        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))
         ),
     "ucis_CreateFileHandle" : (
         CFUNCTYPE(c_void_p, c_void_p, c_wchar_p, c_wchar_p),

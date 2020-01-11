@@ -3,9 +3,9 @@ Created on Jan 11, 2020
 
 @author: ballance
 '''
-from enum import Flag
+from enum import IntFlag
 
-class ScopeT(Flag):
+class ScopeTypeT(IntFlag):
     
     # /* cover scope- toggle coverage scope: */ \
     TOGGLE = 0x0000000000000001

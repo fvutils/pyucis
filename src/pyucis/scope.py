@@ -7,6 +7,9 @@ from pyucis.source_info import SourceInfo
 from pyucis.unimpl_error import UnimplError
 from pyucis.obj import Obj
 from pyucis.int_property import IntProperty
+from pyucis.scope_type_t import ScopeTypeT
+from pyucis.flags_t import FlagsT
+from pyucis.source_t import SourceT
 
 class Scope(Obj):
     
@@ -20,6 +23,16 @@ class Scope(Obj):
                     source,
                     type,
                     flags):
+        raise UnimplError()
+    
+    def createInstance(self,
+                    name : str,
+                    fileinfo : SourceInfo,
+                    weight : int,
+                    source : SourceT,
+                    type : ScopeTypeT,
+                    du_scope : 'Scope',
+                    flags : FlagsT) ->'Scope':
         raise UnimplError()
     
     def createCovergroup(self,

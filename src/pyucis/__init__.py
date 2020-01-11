@@ -13,8 +13,8 @@ from pyucis.str_property import StrProperty
 from pyucis.test_data import TestData
 from pyucis.test_status import TestStatus
 from pyucis.source_t import SourceT
-from pyucis.scope_t import ScopeT
 from pyucis.flags_t import FlagsT
+from pyucis.scope_type_t import ScopeTypeT
 
 
 #********************************************************************
@@ -112,42 +112,42 @@ UCIS_NONE = SourceT.NONE
 UCIS_OTHER = SourceT.OTHER
 UCIS_SOURCE_ERROR = SourceT.SOURCE_ERROR
     
-UCIS_TOGGLE = ScopeT.TOGGLE
-UCIS_BRANCH = ScopeT.BRANCH
-UCIS_EXPR = ScopeT.EXPR
-UCIS_COND = ScopeT.COND
-UCIS_INSTANCE = ScopeT.INSTANCE
-UCIS_PROCESS = ScopeT.PROCESS
-UCIS_BLOCK = ScopeT.BLOCK
-UCIS_FUNCTION = ScopeT.FUNCTION
-UCIS_FORKJOIN = ScopeT.FORKJOIN
-UCIS_GENERATE = ScopeT.GENERATE
-UCIS_GENERIC = ScopeT.GENERIC
-UCIS_CLASS = ScopeT.CLASS
-UCIS_COVERGROUP = ScopeT.COVERGROUP
-UCIS_COVERINSTANCE = ScopeT.COVERINSTANCE
-UCIS_COVERPOINT = ScopeT.COVERPOINT
-UCIS_CROSS = ScopeT.CROSS
-UCIS_COVER = ScopeT.COVER
-UCIS_ASSERT = ScopeT.ASSERT
-UCIS_PROGRAM = ScopeT.PROGRAM
-UCIS_PACKAGE = ScopeT.PACKAGE
-UCIS_TASK = ScopeT.TASK
-UCIS_INTERFACE = ScopeT.INTERFACE
-UCIS_FSM = ScopeT.FSM
-UCIS_DU_MODULE = ScopeT.DU_MODULE
-UCIS_DU_ARCH = ScopeT.DU_ARCH
-UCIS_DU_PACKAGE = ScopeT.DU_PACKAGE
-UCIS_DU_PROGRAM = ScopeT.DU_PROGRAM
-UCIS_DU_INTERFACE = ScopeT.DU_INTERFACE
-UCIS_FSM_STATES = ScopeT.FSM_STATES
-UCIS_FSM_TRANS = ScopeT.FSM_TRANS
-UCIS_COVBLOCK = ScopeT.COVBLOCK
-UCIS_CVGBINSCOPE = ScopeT.CVGBINSCOPE
-UCIS_ILLEGALBINSCOPE = ScopeT.ILLEGALBINSCOPE
-UCIS_IGNOREBINSCOPE = ScopeT.IGNOREBINSCOPE
-UCIS_RESERVEDSCOPE = ScopeT.RESERVEDSCOPE
-UCIS_SCOPE_ERROR = ScopeT.SCOPE_ERROR
+UCIS_TOGGLE = ScopeTypeT.TOGGLE
+UCIS_BRANCH = ScopeTypeT.BRANCH
+UCIS_EXPR = ScopeTypeT.EXPR
+UCIS_COND = ScopeTypeT.COND
+UCIS_INSTANCE = ScopeTypeT.INSTANCE
+UCIS_PROCESS = ScopeTypeT.PROCESS
+UCIS_BLOCK = ScopeTypeT.BLOCK
+UCIS_FUNCTION = ScopeTypeT.FUNCTION
+UCIS_FORKJOIN = ScopeTypeT.FORKJOIN
+UCIS_GENERATE = ScopeTypeT.GENERATE
+UCIS_GENERIC = ScopeTypeT.GENERIC
+UCIS_CLASS = ScopeTypeT.CLASS
+UCIS_COVERGROUP = ScopeTypeT.COVERGROUP
+UCIS_COVERINSTANCE = ScopeTypeT.COVERINSTANCE
+UCIS_COVERPOINT = ScopeTypeT.COVERPOINT
+UCIS_CROSS = ScopeTypeT.CROSS
+UCIS_COVER = ScopeTypeT.COVER
+UCIS_ASSERT = ScopeTypeT.ASSERT
+UCIS_PROGRAM = ScopeTypeT.PROGRAM
+UCIS_PACKAGE = ScopeTypeT.PACKAGE
+UCIS_TASK = ScopeTypeT.TASK
+UCIS_INTERFACE = ScopeTypeT.INTERFACE
+UCIS_FSM = ScopeTypeT.FSM
+UCIS_DU_MODULE = ScopeTypeT.DU_MODULE
+UCIS_DU_ARCH = ScopeTypeT.DU_ARCH
+UCIS_DU_PACKAGE = ScopeTypeT.DU_PACKAGE
+UCIS_DU_PROGRAM = ScopeTypeT.DU_PROGRAM
+UCIS_DU_INTERFACE = ScopeTypeT.DU_INTERFACE
+UCIS_FSM_STATES = ScopeTypeT.FSM_STATES
+UCIS_FSM_TRANS = ScopeTypeT.FSM_TRANS
+UCIS_COVBLOCK = ScopeTypeT.COVBLOCK
+UCIS_CVGBINSCOPE = ScopeTypeT.CVGBINSCOPE
+UCIS_ILLEGALBINSCOPE = ScopeTypeT.ILLEGALBINSCOPE
+UCIS_IGNOREBINSCOPE = ScopeTypeT.IGNOREBINSCOPE
+UCIS_RESERVEDSCOPE = ScopeTypeT.RESERVEDSCOPE
+UCIS_SCOPE_ERROR = ScopeTypeT.SCOPE_ERROR
 
 UCIS_INST_ONCE = FlagsT.INST_ONCE
 UCIS_ENABLED_STMT = FlagsT.ENABLED_STMT
@@ -273,12 +273,27 @@ def ucis_CreateScope(
         sourceinfo : SourceInfo,
         weight : int,
         source : SourceT,
-        type : ScopeT,
+        type : ScopeTypeT,
         flags) -> Scope:
     if parent is not None:
         return parent.createScope(name, sourceinfo, weight, source, type, flags)
     else:
         return db.createScope(name, sourceinfo, weight, source, type, flags)
+    
+def ucis_CreateInstance(
+        db : ucis,
+        parent : Scope,
+        name : str,
+        fileinfo : SourceInfo,
+        weight : int,
+        source : SourceT,
+        type : ScopeTypeT,
+        du_scope : Scope,
+        flags : FlagsT):
+    if parent is not None:
+        parent.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
+    else:
+        db.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
 
 def ucis_RemoveScope(
         db : ucis,

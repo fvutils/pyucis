@@ -197,7 +197,7 @@ def create_ucis(db):
     create_testdata(db,"file.ucis")
     filehandle = create_filehandle(db,"test.sv")
     du = create_design_unit(db,"work.top",filehandle,0)
-    instance = create_instance(db,"top",NULL,du)
+    instance = create_instance(db,"top",None,du)
     create_statement(db,instance, filehandle,1,6,1,17)
     create_statement(db,instance, filehandle,1,8,1,0)
     create_statement(db,instance, filehandle,1,9,2, 365)
@@ -207,7 +207,7 @@ def create_ucis(db):
     create_coverpoint_bin(db,cvp,"auto[a]",filehandle,4,1,0,"a")
     create_coverpoint_bin(db,cvp,"auto[b]",filehandle,4,1,1,"b")
     print("Writing UCIS file '" + ucisdb + "'")
-    ucis_Write(db,ucisdb,NULL,1,-1)
+    ucis_Write(db,ucisdb,None,1,-1)
     ucis_Close(db)    
 
 
