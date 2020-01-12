@@ -1,3 +1,4 @@
+from pyucis.test_status_t import TestStatusT
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -38,7 +39,7 @@ class MemHistoryNode(HistoryNode):
         self.m_logicalname = logicalname
         self.m_physicalname = physicalname
         self.m_kind = kind
-        self.m_test_status = True
+        self.m_test_status = TestStatusT.OK
         self.m_sim_time = -1.0
         self.m_time_unit = None
         self.m_run_cwd = None
@@ -88,6 +89,12 @@ class MemHistoryNode(HistoryNode):
     
     def getKind(self)->str:
         return self.m_kind
+    
+    def getTestStatus(self) -> TestStatusT:
+        return self.m_test_status
+    
+    def setTestStatus(self, status : TestStatusT):
+        self.m_test_status = status
     
     def getSimTime(self)->float:
         return self.m_sim_time

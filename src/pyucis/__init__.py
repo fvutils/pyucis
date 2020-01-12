@@ -29,13 +29,17 @@ from pyucis.real_property import RealProperty
 from pyucis.source_info import SourceInfo
 from pyucis.str_property import StrProperty
 from pyucis.test_data import TestData
-from pyucis.test_status import TestStatus
+from pyucis.test_status_t import TestStatusT
 from pyucis.source_t import SourceT
 from pyucis.flags_t import FlagsT
 from pyucis.scope_type_t import ScopeTypeT
 from pyucis.cover_type_t import CoverTypeT
 from pyucis.cover_flags_t import CoverFlagsT
 from pyucis.cover_data import CoverData
+from pyucis.toggle_metric_t import ToggleMetricT
+from pyucis.toggle_type_t import ToggleTypeT
+from pyucis.toggle_dir_t import ToggleDirT
+from lxml.etree import canonicalize
 
 
 #********************************************************************
@@ -107,12 +111,12 @@ UCIS_STR_HIST_TOOLCATEGORY = StrProperty.HIST_TOOLCATEGORY
 UCIS_STR_HIST_LOG_NAME = StrProperty.HIST_LOG_NAME
 UCIS_STR_HIST_PHYS_NAME = StrProperty.HIST_PHYS_NAME    
 
-UCIS_TESTSTATUS_OK = TestStatus.OK
-UCIS_TESTSTATUS_WARNING = TestStatus.WARNING    #/* test warning ($warning called) */
-UCIS_TESTSTATUS_ERROR = TestStatus.ERROR      #/* test error ($error called) */
-UCIS_TESTSTATUS_FATAL = TestStatus.FATAL      #/* fatal test error ($fatal called) */
-UCIS_TESTSTATUS_MISSING = TestStatus.MISSING         #/* test not run yet */
-UCIS_TESTSTATUS_MERGE_ERROR = TestStatus.MERGE_ERROR #/* testdata record was merged with inconsistent data values */
+UCIS_TESTSTATUS_OK = TestStatusT.OK
+UCIS_TESTSTATUS_WARNING = TestStatusT.WARNING    #/* test warning ($warning called) */
+UCIS_TESTSTATUS_ERROR = TestStatusT.ERROR      #/* test error ($error called) */
+UCIS_TESTSTATUS_FATAL = TestStatusT.FATAL      #/* fatal test error ($fatal called) */
+UCIS_TESTSTATUS_MISSING = TestStatusT.MISSING         #/* test not run yet */
+UCIS_TESTSTATUS_MERGE_ERROR = TestStatusT.MERGE_ERROR #/* testdata record was merged with inconsistent data values */
 
 UCIS_HISTORYNODE_NONE   = HistoryNodeKind.NONE
 UCIS_HISTORYNODE_ALL    = HistoryNodeKind.ALL
@@ -194,6 +198,33 @@ UCIS_SCOPE_IFF_EXISTS = FlagsT.SCOPE_IFF_EXISTS
 UCIS_ENABLED_BLOCK = FlagsT.ENABLED_BLOCK
 UCIS_SCOPE_BLOCK_ISBRANCH = FlagsT.SCOPE_BLOCK_ISBRANCH
 
+
+UCIS_CVGBIN      = CoverTypeT.CVGBIN
+UCIS_COVERBIN    = CoverTypeT.COVERBIN
+UCIS_ASSERTBIN   = CoverTypeT.ASSERTBIN
+UCIS_STMTBIN     = CoverTypeT.STMTBIN
+UCIS_BRANCHBIN   = CoverTypeT.BRANCHBIN
+UCIS_EXPRBIN     = CoverTypeT.EXPRBIN
+UCIS_CONDBIN     = CoverTypeT.CONDBIN
+UCIS_TOGGLEBIN   = CoverTypeT.TOGGLEBIN
+UCIS_PASSBIN     = CoverTypeT.PASSBIN
+UCIS_FSMBIN      = CoverTypeT.FSMBIN
+UCIS_USERBIN     = CoverTypeT.USERBIN
+UCIS_GENERICBIN  = CoverTypeT.GENERICBIN
+UCIS_COUNT       = CoverTypeT.COUNT
+UCIS_FAILBIN     = CoverTypeT.FAILBIN
+UCIS_VACUOUSBIN  = CoverTypeT.VACUOUSBIN
+UCIS_DISABLEDBIN = CoverTypeT.DISABLEDBIN
+UCIS_ATTEMPTBIN  = CoverTypeT.ATTEMPTBIN
+UCIS_ACTIVEBIN   = CoverTypeT.ACTIVEBIN
+UCIS_IGNOREBIN   = CoverTypeT.IGNOREBIN
+UCIS_ILLEGALBIN  = CoverTypeT.ILLEGALBIN
+UCIS_DEFAULTBIN  = CoverTypeT.DEFAULTBIN
+UCIS_PEAKACTIVEBIN = CoverTypeT.PEAKACTIVEBIN
+UCIS_BLOCKBIN    = CoverTypeT.BLOCKBIN
+UCIS_USERBITS    = CoverTypeT.USERBITS
+UCIS_RESERVEDBIN = CoverTypeT.RESERVEDBIN
+
 UCIS_CVGBIN = CoverTypeT.CVGBIN
 UCIS_COVERBIN = CoverTypeT.COVERBIN
 UCIS_ASSERTBIN = CoverTypeT.ASSERTBIN
@@ -204,6 +235,22 @@ UCIS_IS_64BIT = CoverFlagsT.IS_64BIT
 UCIS_IS_VECTOR = CoverFlagsT.IS_VECTOR
 UCIS_HAS_GOAL = CoverFlagsT.HAS_GOAL
 UCIS_HAS_WEIGHT = CoverFlagsT.HAS_WEIGHT
+
+UCIS_TOGGLE_METRIC_NOBINS      = ToggleMetricT.NOBINS
+UCIS_TOGGLE_METRIC_ENUM        = ToggleMetricT.ENUM
+UCIS_TOGGLE_METRIC_TRANSITION  = ToggleMetricT.TRANSITION
+UCIS_TOGGLE_METRIC_2STOGGLE    = ToggleMetricT._2STOGGLE
+UCIS_TOGGLE_METRIC_ZTOGGLE     = ToggleMetricT.ZTOGGLE
+UCIS_TOGGLE_METRIC_XTOGGLE     = ToggleMetricT.XTOGGLE
+
+UCIS_TOGGLE_TYPE_NET = ToggleTypeT.NET
+UCIS_TOGGLE_TYPE_REG = ToggleTypeT.REG
+
+UCIS_TOGGLE_DIR_INTERNAL = ToggleDirT.INTERNAL
+UCIS_TOGGLE_DIR_IN       = ToggleDirT.IN
+UCIS_TOGGLE_DIR_OUT      = ToggleDirT.OUT
+UCIS_TOGGLE_DIR_INOUT    = ToggleDirT.INOUT
+
     
 def ucis_GetIntProperty(
         db : ucis,
@@ -321,12 +368,28 @@ def ucis_CreateInstance(
         type : ScopeTypeT,
         du_scope : Scope,
         flags : FlagsT) ->Scope:
+    print("ucis_CreateInstance: parent=" + str(parent))
     if parent is not None:
         return parent.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
     else:
         return db.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
+   
+def ucis_CreateToggle(
+        db : ucis,
+        parent : Scope,
+        name : str,
+        canonical_name : str,
+        flags : FlagsT,
+        toggle_metric : ToggleMetricT,
+        toggle_type : ToggleTypeT,
+        toggle_dir : ToggleDirT) ->Scope:
+    if parent is not None:
+        return parent.createToggle(name, canonical_name, flags,
+                                   toggle_metric, toggle_type, toggle_dir)
+    else:
+        return db.createToggle(name, canonical_name, flags,
+                                   toggle_metric, toggle_type, toggle_dir)
 
-int
 def ucis_CreateNextCover(
         db : ucis,
         parent : Scope,

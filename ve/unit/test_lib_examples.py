@@ -35,3 +35,5 @@ class TestUcisExamples(TestCase):
     def test_create_ucis(self):
         db = LibFactory.create()
         example_create_ucis.create_ucis(db)
+        db.write("file.ucis", None, True, -1)
+        db.close()

@@ -61,11 +61,14 @@ fspec = {
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_int, c_int),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"sourceinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"flags"))),
     "ucis_CreateInstance" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_int, c_void_p, c_int),
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_ulonglong, c_void_p, c_int),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"du_scope"),(1,"flags"))),
     "ucis_CreateNextCover" : (
         CFUNCTYPE(c_int, c_void_p, c_void_p, c_char_p, c_void_p, c_void_p),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"data"),(1,"sourceinfo"))),
+    "ucis_CreateToggle" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_char_p, c_uint, c_int, c_int, c_int),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"canonical_name"),(1,"flags"),(1,"toggle_metric"),(1,"toggle_type"),(1,"toggle_dir"))),
     "ucis_SetIntProperty" : (
         CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_int),
         ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
@@ -74,8 +77,24 @@ fspec = {
         ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
     "ucis_CreateFileHandle" : (
         CFUNCTYPE(c_void_p, c_void_p, c_char_p, c_char_p),
-        ((1,"db"),(1,"filename"),(1,"workdir")))
+        ((1,"db"),(1,"filename"),(1,"workdir"))),
+    "ucis_RegisterErrorHandler" : (
+        CFUNCTYPE(None, c_void_p, c_void_p),
+        ((1,"cb"),(1,"userdata")))
     }
+
+class ucisErr_s(Structure):
+    _fields_ = [
+        ("msgno", c_int),
+        ("severity", c_int),
+        ("mststr", c_char_p)]
+    
+UCIS_ERR_FUNC_T = CFUNCTYPE(None,c_void_p, POINTER(ucisErr_s))
+
+def ucis_err_func_py(userdata, errdata):
+    print("ucis_err_func: " + str(userdata) + " " + str(errdata))
+    
+ucis_err_func = UCIS_ERR_FUNC_T(ucis_err_func_py)
 
 # Load the specified UCIS library
 def load_ucis_library(lib):
@@ -87,8 +106,9 @@ def load_ucis_library(lib):
         proto = fsig[0]
         attr = fsig[1]
         func = proto((f, _lib), attr)
-        print("Setting " + f + "=" + str(func))
         _funcs.add(f, func)
+        
+    _funcs.ucis_RegisterErrorHandler(ucis_err_func, None)
     
 def get_ucis_library():
     return _lib

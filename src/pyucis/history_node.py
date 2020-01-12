@@ -1,3 +1,4 @@
+from pyucis.test_status_t import TestStatusT
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -70,10 +71,10 @@ class HistoryNode(Obj):
     def setKind(self, kind : str):
         raise UnimplError()
     
-    def getTestStatus(self) -> bool:
+    def getTestStatus(self) -> TestStatusT:
         raise UnimplError()
     
-    def setTestStatus(self, status : bool):
+    def setTestStatus(self, status : TestStatusT):
         raise UnimplError()
     
     def getSimTime(self) -> float:

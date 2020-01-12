@@ -1,4 +1,7 @@
 from pyucis.cover_data import CoverData
+from pyucis.toggle_metric_t import ToggleMetricT
+from pyucis.toggle_type_t import ToggleTypeT
+from pyucis.toggle_dir_t import ToggleDirT
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -52,6 +55,15 @@ class Scope(Obj):
                     type : ScopeTypeT,
                     du_scope : 'Scope',
                     flags : FlagsT) ->'Scope':
+        raise UnimplError()
+    
+    def createToggle(self,
+                    name : str,
+                    canonical_name : str,
+                    flags : FlagsT,
+                    toggle_metric : ToggleMetricT,
+                    toggle_type : ToggleTypeT,
+                    toggle_dir : ToggleDirT) -> 'Scope':
         raise UnimplError()
     
     def createCovergroup(self,

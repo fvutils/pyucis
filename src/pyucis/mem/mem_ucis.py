@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,23 +14,30 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Jan 5, 2020
 
 @author: ballance
 '''
-from pyucis.ucis import UCIS
 
-from pyucis.history_node import HistoryNode
-from pyucis.source_file import SourceFile
-from pyucis.mem.mem_history_node import MemHistoryNode
-from pyucis.mem.mem_source_file import MemSourceFile
-from pyucis.mem.mem_instance_coverage import MemInstanceCoverage
-from pyucis.instance_coverage import InstanceCoverage
 from datetime import datetime
 import getpass
+from pyucis.ucis import UCIS
+
+from pyucis.flags_t import FlagsT
+from pyucis.history_node import HistoryNode
+from pyucis.instance_coverage import InstanceCoverage
+from pyucis.mem.mem_history_node import MemHistoryNode
+from pyucis.mem.mem_instance_coverage import MemInstanceCoverage
+from pyucis.mem.mem_instance_scope import MemInstanceScope
+from pyucis.mem.mem_scope import MemScope
+from pyucis.mem.mem_source_file import MemSourceFile
+from pyucis.scope_type_t import ScopeTypeT
+from pyucis.source_file import SourceFile
+from pyucis.source_info import SourceInfo
+from pyucis.source_t import SourceT
 from pyucis.statement_id import StatementId
+
 
 class MemUCIS(UCIS):
     
@@ -64,6 +70,28 @@ class MemUCIS(UCIS):
         ret = MemSourceFile(len(self.m_source_file_l), filename)
         self.m_source_file_l.append(ret)
         return ret
+    
+    def createScope(self,
+                name : str,
+                srcinfo : SourceInfo,
+                weight : int,
+                source,
+                type : ScopeTypeT,
+                flags):
+        # Creates a type scope and associates source information with it
+        return MemScope(None, name, srcinfo, weight,
+                        source, type, flags)
+    
+    def createInstance(self,
+                    name : str,
+                    fileinfo : SourceInfo,
+                    weight : int,
+                    source : SourceT,
+                    type : ScopeTypeT,
+                    du_scope : 'Scope',
+                    flags : FlagsT) ->'Scope':
+        # Create an instance of a type scope
+        return MemInstanceScope(None, name, fileinfo, weight, source, type, du_scope, flags)
     
     def createHistoryNode(self, parent, logicalname, physicalname=None, kind=None):
         ret = MemHistoryNode(parent, logicalname, physicalname, kind)

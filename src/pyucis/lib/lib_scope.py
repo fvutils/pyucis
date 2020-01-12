@@ -1,6 +1,3 @@
-from pyucis.cover_data import CoverData
-from pyucis.lib.lib_cover_data import LibCoverData
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,30 +14,35 @@ from pyucis.lib.lib_cover_data import LibCoverData
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Jan 11, 2020
 
 @author: ballance
 '''
+
 from _ctypes import byref
 from pyucis.scope import Scope
 from pyucis.unimpl_error import UnimplError
 
+from pyucis.cover_data import CoverData
 from pyucis.flags_t import FlagsT
+from pyucis.lib.lib_cover_data import LibCoverData
 from pyucis.lib.lib_obj import LibObj
 from pyucis.lib.lib_source_info import LibSourceInfo
 from pyucis.lib.libucis import get_lib
 from pyucis.scope_type_t import ScopeTypeT
 from pyucis.source_info import SourceInfo
 from pyucis.source_t import SourceT
+from pyucis.toggle_dir_t import ToggleDirT
+from pyucis.toggle_metric_t import ToggleMetricT
+from pyucis.toggle_type_t import ToggleTypeT
 
 
 class LibScope(LibObj, Scope):
     
     def __init__(self, db, scope):
         super().__init__(db, scope)
-        print("LibScope::init")
+        print("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
         
     def createScope(self, 
         name:str, 
@@ -83,7 +85,28 @@ class LibScope(LibObj, Scope):
             du_scope.obj,
             flags)
         
+        if sh is None:
+            raise Exception("ucis_CreateInstance failed")
+        
         return LibScope(self.db, sh)
+    
+    def createToggle(self,
+                    name : str,
+                    canonical_name : str,
+                    flags : FlagsT,
+                    toggle_metric : ToggleMetricT,
+                    toggle_type : ToggleTypeT,
+                    toggle_dir : ToggleDirT) -> 'Scope':
+        th = get_lib().ucis_CreateToggle(
+            self.db,
+            self.obj,
+            str.encode(name),
+            None if canonical_name is None else str.encode(canonical_name),
+            flags,
+            toggle_metric,
+            toggle_type,
+            toggle_dir)
+        return LibScope(self.db, th)
     
     def createNextCover(self,
                         name : str,

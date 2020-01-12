@@ -23,7 +23,7 @@ Created on Jan 9, 2020
 '''
 from enum import IntEnum, auto
 
-class TestStatus(IntEnum):
+class TestStatusT(IntEnum):
     OK = auto()
     WARNING = auto()     #/* test warning ($warning called) */
     ERROR = auto()       #/* test error ($error called) */

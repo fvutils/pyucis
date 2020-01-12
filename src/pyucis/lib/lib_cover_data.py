@@ -4,7 +4,7 @@ Created on Jan 11, 2020
 @author: ballance
 '''
 from _ctypes import Structure, Union
-from ctypes import c_int, c_ulonglong, c_uint, c_wchar_p
+from ctypes import c_int, c_ulonglong, c_uint, c_wchar_p, c_ulong
 from builtins import staticmethod
 from pyucis.cover_data import CoverData
 from pyucis.cover_flags_t import CoverFlagsT
@@ -19,7 +19,7 @@ class LibCoverDataValue(Union):
 class LibCoverData(Structure):
     
     _fields_ = [
-        ("type", c_int),
+        ("type", c_ulonglong),
         ("flags", c_int),
         ("data", LibCoverDataValue),
         ("goal", c_int),

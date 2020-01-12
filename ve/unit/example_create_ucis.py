@@ -90,13 +90,16 @@ def create_testdata(db, ucisdb):
 #* Create instance of the given design design unit.
 #* This assumes INST_ONCE
 def create_instance(db, instname, parent, duscope):
-    return ucis_CreateInstance(db,parent,instname,
-                        None, #/* source info: not used */
-                        1, #/* weight */
-                        UCIS_VLOG, #/* source language */
-                        UCIS_INSTANCE, #/* instance of module/architecture */
-                        duscope, #/* reference to design unit */
-                        UCIS_INST_ONCE) #/* flags */
+    return ucis_CreateInstance(
+                    db,
+                    parent,
+                    instname,
+                    None, #/* source info: not used */
+                    1, #/* weight */
+                    UCIS_VLOG, #/* source language */
+                    UCIS_INSTANCE, #/* instance of module/architecture */
+                    duscope, #/* reference to design unit */
+                    UCIS_INST_ONCE) #/* flags */
     
 #* Create a statement bin under the given parent, at the given line number,
 #* with the given count.
@@ -110,7 +113,8 @@ def create_statement(db,
     #/* UOR name generation */
     name = "#stmt#%d#%d#%d#" % (fileno, line, item)
 
-    coverdata = CoverData(UCIS_STMTBIN, UCIS_IS_32BIT, count)
+    coverdata = CoverData(UCIS_STMTBIN, UCIS_IS_32BIT)
+    coverdata.data = count
 
     srcinfo = SourceInfo(filehandle, line, 17)        
     
@@ -132,12 +136,12 @@ def create_enum_toggle(db, parent):
                            UCIS_TOGGLE_TYPE_REG,    #/* type */
                            UCIS_TOGGLE_DIR_INTERNAL) #/* toggle "direction" */
     coverdata = CoverData(UCIS_TOGGLEBIN, UCIS_IS_32BIT)
-    # coverdata.data.int32 = 0; /* must be set for 32 bit flag */
+    coverdata.data = 0
     ucis_CreateNextCover(db,toggle,
                          "a", #/* enum name */
                          coverdata,
                          None); #/* no source data */
-#        coverdata.data.int32 = 1; /* must be set for 32 bit flag */
+    coverdata.data = 1
     ucis_CreateNextCover(db,toggle,
                          "b", #/* enum name */
                          coverdata,
@@ -200,7 +204,8 @@ def create_coverpoint_bin(
         at_least,
         count,
         binrhs):
-    coverdata = CoverData(UCIS_CVGBIN, (UCIS_IS_32BIT|UCIS_HAS_GOAL|UCIS_HAS_WEIGHT), count)
+    coverdata = CoverData(UCIS_CVGBIN, (UCIS_IS_32BIT|UCIS_HAS_GOAL|UCIS_HAS_WEIGHT))
+    coverdata.data = count
     coverdata.at_least = at_least
     coverdata.weight = 1
 
@@ -220,19 +225,17 @@ def create_ucis(db):
     filehandle = create_filehandle(db,"test.sv")
     du = create_design_unit(db,"work.top",filehandle,0)
     instance = create_instance(db,"top",None,du)
-    print("instance=" + str(instance))
     create_statement(db,instance, filehandle,1,6,1,17)
     create_statement(db,instance, filehandle,1,8,1,0)
     create_statement(db,instance, filehandle,1,9,2, 365)
-    # TODO:
-#    create_enum_toggle(db,instance)
+    create_enum_toggle(db,instance)
     cvg = create_covergroup(db,instance,"cg",filehandle,3)
     cvp = create_coverpoint(db,cvg,"t",filehandle,4)
     create_coverpoint_bin(db,cvp,"auto[a]",filehandle,4,1,0,"a")
     create_coverpoint_bin(db,cvp,"auto[b]",filehandle,4,1,1,"b")
-    print("Writing UCIS file '" + ucisdb + "'")
-    ucis_Write(db,ucisdb,None,1,-1)
-    ucis_Close(db)    
+#    print("Writing UCIS file '" + ucisdb + "'")
+#    ucis_Write(db,ucisdb,None,1,-1)
+#    ucis_Close(db)    
 
 
 
