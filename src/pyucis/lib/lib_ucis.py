@@ -1,3 +1,4 @@
+from pyucis.lib.lib_history_node import LibHistoryNode
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -32,6 +33,12 @@ class LibUCIS(LibScope,UCIS):
     
     def __init__(self, file : str=None):
         db = get_lib().ucis_Open(file)
+        
+        if db is None:
+            if file is not None:
+                raise Exception("Error: failed to open UCIS file \"" + file + "\"")
+            else:
+                raise Exception("Error: failed to create UCIS DB")
         super().__init__(db, None)
         
         
@@ -53,7 +60,7 @@ class LibUCIS(LibScope,UCIS):
         return LibFileHandle(fh)
         
     
-    def createHistoryNode(self, parent, logicalname, physicalname, kind):
+    def createHistoryNode(self, parent, logicalname, physicalname, kind) -> 'HistoryNode':
         print("--> createHistoryNode")
         print("  db=" + str(self.db))
         print("  parent=" + str(parent))
@@ -69,6 +76,7 @@ class LibUCIS(LibScope,UCIS):
             kind)
         print("hn=" + str(hn))
         print("<-- createHistoryNode")
+        return LibHistoryNode(self.db, hn)
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
         print("file=" + file)

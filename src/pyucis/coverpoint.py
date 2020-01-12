@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,16 +14,35 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Jan 8, 2020
 
 @author: ballance
 '''
+
 from pyucis.cvg_scope import CvgScope
+from pyucis.source_info import SourceInfo
+
+from pyucis.cover_index import CoverIndex
+
 
 class Coverpoint(CvgScope):
     
     def __init__(self):
         super().__init__()
+        self.setComment("")
+
+    def getScopeGoal(self) -> int:
+        raise NotImplementedError("getScopeGoal in " + str(type(self)))
+    
+    def setScopeGoal(self, goal):
+        raise NotImplementedError("setScopeGoal in " + str(type(self)))
+                
+    def createBin(
+            self,
+            name : str,
+            srcinfo : SourceInfo,
+            at_least : int,
+            count : int) -> CoverIndex:
+        raise NotImplementedError("createBin in " + str(type(self)))
         

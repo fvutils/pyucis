@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,29 +14,60 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Dec 22, 2019
 
 @author: ballance
 '''
-from pyucis.scope import Scope
+
 from pyucis.cover_type import CoverType
-from pyucis.source_info import SourceInfo
-from pyucis.unimpl_error import UnimplError
 from pyucis.cvg_scope import CvgScope
+from pyucis.int_property import IntProperty
+from pyucis.scope import Scope
+from pyucis.source_info import SourceInfo
+
 
 class Covergroup(CvgScope):
     
     def __init__(self):
+        super().__init__()
+        # Call set-attr methods to establish defaults
+        print("--> Covergroup::__init__()")
+        self.setPerInstance(False)
+        self.setMergeInstances(True)
+        self.setGetInstCoverage(False)
+        # Comment doesn't seem valid on a CvgScope standalone
+        self.setComment("")
+        print("<-- Covergroup::__init__()")
         pass
+    
+
+    def getPerInstance(self)->bool:
+        raise NotImplementedError()
+    
+    def setPerInstance(self, perinst):
+        raise NotImplementedError()
+    
+    def getGetInstCoverage(self) -> bool:
+        raise NotImplementedError()
+    
+    def setGetInstCoverage(self, s : bool):
+        raise NotImplementedError()
+    
+    def getMergeInstances(self)->bool:
+        raise NotImplementedError()
+    
+    def setMergeInstances(self, m:bool):
+        raise NotImplementedError()
+    
+        
 
     def createCoverpoint(self,
                          name : str,
                          srcinfo : SourceInfo,
                          weight : int,
                          source) -> CoverType:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createCross(self, 
                     name, 
@@ -49,4 +79,29 @@ class Covergroup(CvgScope):
     
     def createCrossByName(self, name, fileinfo, weight, source, point_names_l):
         pass
+    
+    def getIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty)->int:
+        if property == IntProperty.CVG_PERINSTANCE:
+            return 1 if self.getPerInstance() else 0
+        elif property == IntProperty.CVG_MERGEINSTANCES:
+            return 1 if self.getMergeInstances() else 0
+        else:
+            return super().getIntProperty(coverindex, property)
+
+    def setIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty, 
+        value:int):
+        if property == IntProperty.CVG_PERINSTANCE:
+            self.setPerInstance(value==1)
+        elif property == IntProperty.CVG_MERGEINSTANCES:
+            self.setMergeInstances(value==1)
+        else:
+            super().setIntProperty(coverindex, property, value)
+
+        
     

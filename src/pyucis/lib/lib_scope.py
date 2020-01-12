@@ -14,15 +14,18 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from pyucis.lib.lib_cover_index import LibCoverIndex
 '''
 Created on Jan 11, 2020
 
 @author: ballance
 '''
 
-from _ctypes import byref
+from _ctypes import byref, pointer
 from pyucis.scope import Scope
 from pyucis.unimpl_error import UnimplError
+from pyucis import UCIS_COVERGROUP, UCIS_INT_SCOPE_GOAL, UCIS_INT_CVG_STROBE,\
+    UCIS_INT_CVG_MERGEINSTANCES, UCIS_STR_COMMENT, UCIS_INT_SCOPE_WEIGHT
 
 from pyucis.cover_data import CoverData
 from pyucis.flags_t import FlagsT
@@ -40,9 +43,22 @@ from pyucis.toggle_type_t import ToggleTypeT
 
 class LibScope(LibObj, Scope):
     
-    def __init__(self, db, scope):
-        super().__init__(db, scope)
+    def __init__(self, db, obj):
+        LibObj.__init__(self, db, obj)
+        Scope.__init__(self)
         print("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
+        
+    def getGoal(self)->int:
+        return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
+    
+    def setGoal(self,goal)->int:
+        self.setIntProperty(-1, UCIS_INT_SCOPE_GOAL, goal)
+        
+#     def getWeight(self):
+#         return self.getIntProperty(-1, UCIS_INT_SCOPE_WEIGHT)
+#     
+#     def setWeight(self, w):
+#         self.setIntProperty(-1, UCIS_INT_SCOPE_WEIGHT, w)
         
     def createScope(self, 
         name:str, 
@@ -62,6 +78,10 @@ class LibScope(LibObj, Scope):
             source,
             type,
             flags)
+        
+        if sh is None:
+            print("Error: createScope failed: parent=" + str(self.obj))
+            raise Exception("Failed to create scope")
         
         return LibScope(self.db, sh)
     
@@ -86,9 +106,30 @@ class LibScope(LibObj, Scope):
             flags)
         
         if sh is None:
+            print("Error: ucis_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
             raise Exception("ucis_CreateInstance failed")
         
         return LibScope(self.db, sh)
+    
+    def createCovergroup(self, 
+        name:str, 
+        srcinfo:SourceInfo, 
+        weight:int, 
+        source) -> 'Covergroup':
+        from pyucis.lib.lib_covergroup import LibCovergroup
+        
+        srcinfo_p = None if srcinfo is None else pointer(LibSourceInfo.ctor(srcinfo))
+        cg_obj = get_lib().ucis_CreateScope(
+            self.db,
+            self.obj,
+            str.encode(name),
+            srcinfo_p,
+            weight,
+            source,
+            UCIS_COVERGROUP,
+            0)
+        
+        return LibCovergroup(self.db, cg_obj)
     
     def createToggle(self,
                     name : str,
@@ -115,11 +156,14 @@ class LibScope(LibObj, Scope):
         sourceinfo_p = None if sourceinfo is None else byref(LibSourceInfo.ctor(sourceinfo))
         data_p = byref(LibCoverData.ctor(data))
         
-        return get_lib().ucis_CreateNextCover(
+        print("createNextCover: self.obj=" + str(self.obj))
+        
+        index =  get_lib().ucis_CreateNextCover(
             self.db,
             self.obj,
             str.encode(name),
             data_p,
             sourceinfo_p)
         
+        return LibCoverIndex(self.db, self.obj, index)
         

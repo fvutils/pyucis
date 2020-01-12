@@ -23,10 +23,12 @@ Created on Jan 5, 2020
 from datetime import datetime
 import getpass
 from pyucis.ucis import UCIS
+from pyucis.unimpl_error import UnimplError
 
 from pyucis.flags_t import FlagsT
 from pyucis.history_node import HistoryNode
 from pyucis.instance_coverage import InstanceCoverage
+from pyucis.mem.mem_du_scope import MemDUScope
 from pyucis.mem.mem_history_node import MemHistoryNode
 from pyucis.mem.mem_instance_coverage import MemInstanceCoverage
 from pyucis.mem.mem_instance_scope import MemInstanceScope
@@ -49,7 +51,9 @@ class MemUCIS(UCIS):
         self.m_history_node_l = []
         self.m_source_file_l = []
         self.m_instance_coverage_l = []
-        pass
+        
+        self.m_du_scope_l = []
+        self.m_inst_scope_l = []
     
     def getAPIVersion(self)->str:
         return "1.0"
@@ -79,8 +83,14 @@ class MemUCIS(UCIS):
                 type : ScopeTypeT,
                 flags):
         # Creates a type scope and associates source information with it
-        return MemScope(None, name, srcinfo, weight,
-                        source, type, flags)
+        if ScopeTypeT.DU_ANY(type):
+            ret = MemDUScope(None, name, srcinfo, weight,
+                              source, type, flags)
+            self.m_du_scope_l.append(ret)
+        else:
+            raise UnimplError()
+        
+        return ret
     
     def createInstance(self,
                     name : str,

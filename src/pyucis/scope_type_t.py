@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -96,5 +95,9 @@ class ScopeTypeT(IntFlag):
     #
     RESERVEDSCOPE = 0xFF00000000000000
     #/* error return code: */ \
-    SCOPE_ERROR = 0x0000000000000000    
+    SCOPE_ERROR = 0x0000000000000000   
+    
+    @staticmethod
+    def DU_ANY(t):
+        return (t & (ScopeTypeT.DU_MODULE|ScopeTypeT.DU_ARCH|ScopeTypeT.DU_PACKAGE|ScopeTypeT.DU_PROGRAM|ScopeTypeT.DU_INTERFACE)) != 0
     

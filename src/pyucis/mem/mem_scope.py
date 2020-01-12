@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from pyucis.scope import Scope
 '''
 Created on Jan 8, 2020
 
@@ -33,7 +34,7 @@ from pyucis.toggle_metric_t import ToggleMetricT
 from pyucis.toggle_type_t import ToggleTypeT
 
 
-class MemScope(MemObj):
+class MemScope(MemObj,Scope):
     
     def __init__(self,
                  parent : 'MemScope',
@@ -54,6 +55,16 @@ class MemScope(MemObj):
         self.m_goal = -1
         self.m_source_type = 0
         self.m_is_under_du = 0
+        self.m_children = []
+        
+    def addChild(self, c):
+        self.m_children.append(c)
+        
+    def getGoal(self)->int:
+        return self.m_goal
+    
+    def setGoal(self, goal):
+        self.m_goal = goal
         
     def getIntProperty(
             self, 
@@ -86,16 +97,6 @@ class MemScope(MemObj):
         else:
             super().setIntProperty(coverindex, property, value)    
             
-    def createScope(self,
-                name : str,
-                srcinfo : SourceInfo,
-                weight : int,
-                source,
-                type : ScopeTypeT,
-                flags):
-        # Creates a type scope and associates source information with it
-        return MemScope(self, name, srcinfo, weight,
-                        source, type, flags)
     
     def createInstance(self,
                     name : str,

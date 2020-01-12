@@ -1,8 +1,3 @@
-from pyucis.cover_data import CoverData
-from pyucis.toggle_metric_t import ToggleMetricT
-from pyucis.toggle_type_t import ToggleTypeT
-from pyucis.toggle_dir_t import ToggleDirT
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -25,19 +20,23 @@ Created on Dec 22, 2019
 
 @author: ballance
 '''
+
 from pyucis.source_info import SourceInfo
-from pyucis.unimpl_error import UnimplError
 from pyucis.obj import Obj
 from pyucis.int_property import IntProperty
 from pyucis.scope_type_t import ScopeTypeT
 from pyucis.flags_t import FlagsT
 from pyucis.source_t import SourceT
+from pyucis.cover_data import CoverData
+from pyucis.toggle_metric_t import ToggleMetricT
+from pyucis.toggle_type_t import ToggleTypeT
+from pyucis.toggle_dir_t import ToggleDirT
 
 class Scope(Obj):
     
     def __init__(self):
-        pass
-    
+        self.setGoal(100)
+
     def createScope(self,
                     name : str,
                     srcinfo : SourceInfo,
@@ -45,7 +44,7 @@ class Scope(Obj):
                     source,
                     type,
                     flags):
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createInstance(self,
                     name : str,
@@ -55,7 +54,7 @@ class Scope(Obj):
                     type : ScopeTypeT,
                     du_scope : 'Scope',
                     flags : FlagsT) ->'Scope':
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createToggle(self,
                     name : str,
@@ -64,21 +63,49 @@ class Scope(Obj):
                     toggle_metric : ToggleMetricT,
                     toggle_type : ToggleTypeT,
                     toggle_dir : ToggleDirT) -> 'Scope':
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createCovergroup(self,
                     name : str,
                     srcinfo : SourceInfo,
                     weight : int,
                     source) -> 'Covergroup':
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createNextCover(self,
                         name : str,
                         data : CoverData,
                         sourceinfo : SourceInfo) -> int:
-        raise UnimplError()
+        raise NotImplementedError()
 
-    def getWeight(self, coverindex):
-        return self.getIntProperty(coverindex, IntProperty.COVER_WEIGHT)
+    def getWeight(self):
+        raise NotImplementedError()
+    
+    def setWeight(self, w):
+        raise NotImplementedError()
+    
+    def getGoal(self)->int:
+        raise NotImplementedError()
+    
+    def setGoal(self,goal)->int:
+        raise NotImplementedError()
+    
+    def getIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty)-> int:
+        if property == IntProperty.SCOPE_GOAL:
+            return self.getGoal()
+        else:
+            return super().getIntProperty(coverindex, property)
+        
+    def setIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty, 
+        value:int):
+        if property == IntProperty.SCOPE_GOAL:
+            return self.setGoal(value)
+        else:
+            super().setIntProperty(coverindex, property, value)
     

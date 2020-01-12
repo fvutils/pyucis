@@ -39,7 +39,7 @@ class LibObj(Obj):
             coverindex : int,
             property : IntProperty
             )->int:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setIntProperty(
             self,
@@ -53,20 +53,20 @@ class LibObj(Obj):
             self,
             coverindex : int,
             property : RealProperty) -> float:
-        raise UnimplError()
+        raise NotImplementedError()
         
     def setRealProperty(
             self,
             coverindex : int,
             property : RealProperty,
             value : float):
-        raise UnimplError()
+        raise NotImplementedError()
 
     def getStringProperty(
             self,
             coverindex : int,
             property : StrProperty) -> str:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setStringProperty(
             self,
@@ -85,11 +85,11 @@ class LibObj(Obj):
             self,
             coverindex : int,
             property : HandleProperty) -> 'Scope':
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setHandleProperty(
             self,
             coverindex : int,
             property : HandleProperty,
             value : 'Scope'):
-        raise UnimplError()        
+        raise NotImplementedError()        
