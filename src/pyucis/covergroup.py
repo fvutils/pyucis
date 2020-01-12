@@ -1,3 +1,4 @@
+from pyucis.int_property import IntProperty
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -31,6 +32,19 @@ class Covergroup(CvgScope):
     
     def __init__(self):
         pass
+    
+    def getPerInstance(self)->bool:
+        raise UnimplError()
+    
+    def setPerInstance(self, perinst):
+        raise UnimplError()
+    
+    def getMergeInstances(self)->bool:
+        raise UnimplError()
+    
+    def setMergeInstances(self, m:bool):
+        raise UnimplError()
+        
 
     def createCoverpoint(self,
                          name : str,
@@ -49,4 +63,29 @@ class Covergroup(CvgScope):
     
     def createCrossByName(self, name, fileinfo, weight, source, point_names_l):
         pass
+    
+    def getIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty)->int:
+        if property == IntProperty.CVG_PERINSTANCE:
+            return 1 if self.getPerInstance() else 0
+        elif property == IntProperty.CVG_MERGEINSTANCES:
+            return 1 if self.getMergeInstances() else 0
+        else:
+            return super().getIntProperty(coverindex, property)
+
+    def setIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty, 
+        value:int):
+        if property == IntProperty.CVG_PERINSTANCE:
+            self.setPerInstance(value==1)
+        elif property == IntProperty.CVG_MERGEINSTANCES:
+            self.setMergeInstances(value==1)
+        else:
+            super().setIntProperty(coverindex, property, value)
+
+        
     

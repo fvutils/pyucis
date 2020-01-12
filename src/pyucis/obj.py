@@ -84,3 +84,7 @@ class Obj():
             property : HandleProperty,
             value : 'Scope'):
         raise UnimplError()
+    
+    def accept(self, v):
+        raise UnimplError()
+        

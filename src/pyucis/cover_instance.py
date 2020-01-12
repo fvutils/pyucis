@@ -1,3 +1,4 @@
+from pyucis.unimpl_error import UnimplError
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -28,3 +29,8 @@ class CoverInstance(CvgScope):
     def __init__(self):
         super().__init__()
         
+    def getStmtIndex(self):
+        raise UnimplError()
+    
+    def setStmtIndex(self, idx):
+        raise UnimplError()

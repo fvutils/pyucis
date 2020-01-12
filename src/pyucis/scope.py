@@ -80,5 +80,30 @@ class Scope(Obj):
         raise UnimplError()
 
     def getWeight(self, coverindex):
-        return self.getIntProperty(coverindex, IntProperty.COVER_WEIGHT)
+        raise UnimplError()
+    
+    def getGoal(self)->int:
+        raise UnimplError()
+    
+    def setGoal(self,goal)->int:
+        raise UnimplError()
+    
+    def getIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty)-> int:
+        if property == IntProperty.SCOPE_GOAL:
+            return self.getGoal()
+        else:
+            return super().getIntProperty(coverindex, property)
+        
+    def setIntProperty(
+        self, 
+        coverindex:int, 
+        property:IntProperty, 
+        value:int):
+        if property == IntProperty.SCOPE_GOAL:
+            return self.setGoal(value)
+        else:
+            super().setIntProperty(coverindex, property, value)
     
