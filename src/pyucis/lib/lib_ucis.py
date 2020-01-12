@@ -47,8 +47,8 @@ class LibUCIS(LibScope,UCIS):
     def createFileHandle(self, filename, workdir)->FileHandle:
         fh = get_lib().ucis_CreateFileHandle(
             self.db,
-            filename,
-            workdir)
+            str.encode(filename),
+            None if workdir is None else str.encode(workdir))
         
         return LibFileHandle(fh)
         
@@ -64,19 +64,22 @@ class LibUCIS(LibScope,UCIS):
         hn = get_lib().ucis_CreateHistoryNode(
             self.db,
             parent,
-            logicalname,
-            physicalname,
+            str.encode(logicalname),
+            str.encode(physicalname),
             kind)
         print("hn=" + str(hn))
         print("<-- createHistoryNode")
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
-        get_lib().ucis_Write(
+        print("file=" + file)
+        ret = get_lib().ucis_Write(
             self.db, 
-            file,
+            str.encode(file),
             scope,
             1 if recurse else 0,
             covertype)
+        print("ret=" + str(ret))
         
     def close(self):
-        get_lib().ucis_Close(self.db)
+        ret = get_lib().ucis_Close(self.db)
+        print("close ret=" + str(ret))

@@ -23,6 +23,7 @@ from pyucis.scope import Scope
 
 from pyucis.source_info import SourceInfo
 from pyucis.test_data import TestData
+from pyucis.cover_data import CoverData
 
 
 #* Create a design unit of the given name.
@@ -109,8 +110,7 @@ def create_statement(db,
     #/* UOR name generation */
     name = "#stmt#%d#%d#%d#" % (fileno, line, item)
 
-    coverdata = CoverData(UCIS_STMTBIN, UCIS_IS_32BIT)
-#        coverdata.data.int32 = count; /* must be set for 32 bit flag */
+    coverdata = CoverData(UCIS_STMTBIN, UCIS_IS_32BIT, count)
 
     srcinfo = SourceInfo(filehandle, line, 17)        
     
@@ -200,26 +200,32 @@ def create_coverpoint_bin(
         at_least,
         count,
         binrhs):
-    coverdata = CoverData(UCIS_CVGBIN, UCIS_IS_32BIT | UCIS_HAS_GOAL | UCIS_HAS_WEIGHT, at_least, 1)
-#        coverdata.data.int32 = count;
+    coverdata = CoverData(UCIS_CVGBIN, (UCIS_IS_32BIT|UCIS_HAS_GOAL|UCIS_HAS_WEIGHT), count)
+    coverdata.at_least = at_least
+    coverdata.weight = 1
+
     srcinfo = SourceInfo(filehandle, line, 0)
     coverindex = ucis_CreateNextCover(db,parent,name, coverdata, srcinfo)
                                   
     # This uses a user-defined attribute, named BINRHS
-    attrvalue = AttrValue(UCIS_ATTR_STRING)
+    # TODO:
+#    attrvalue = AttrValue(UCIS_ATTR_STRING)
 #        attrvalue.u.svalue = binrhs;
-    ucis_AttrAdd(db, parent, coverindex, "BINRHS", attrvalue);
+#    ucis_AttrAdd(db, parent, coverindex, "BINRHS", attrvalue);
 
 
 def create_ucis(db):
-    create_testdata(db,"file.ucis")
+    ucisdb = "file.ucis"
+    create_testdata(db,ucisdb)
     filehandle = create_filehandle(db,"test.sv")
     du = create_design_unit(db,"work.top",filehandle,0)
     instance = create_instance(db,"top",None,du)
+    print("instance=" + str(instance))
     create_statement(db,instance, filehandle,1,6,1,17)
     create_statement(db,instance, filehandle,1,8,1,0)
     create_statement(db,instance, filehandle,1,9,2, 365)
-    create_enum_toggle(db,instance)
+    # TODO:
+#    create_enum_toggle(db,instance)
     cvg = create_covergroup(db,instance,"cg",filehandle,3)
     cvp = create_coverpoint(db,cvg,"t",filehandle,4)
     create_coverpoint_bin(db,cvp,"auto[a]",filehandle,4,1,0,"a")

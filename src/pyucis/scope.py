@@ -1,3 +1,4 @@
+from pyucis.cover_data import CoverData
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -60,6 +61,12 @@ class Scope(Obj):
                     source) -> 'Covergroup':
         raise UnimplError()
     
+    def createNextCover(self,
+                        name : str,
+                        data : CoverData,
+                        sourceinfo : SourceInfo) -> int:
+        raise UnimplError()
+
     def getWeight(self, coverindex):
         return self.getIntProperty(coverindex, IntProperty.COVER_WEIGHT)
     

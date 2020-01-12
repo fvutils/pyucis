@@ -1,3 +1,5 @@
+from pyucis.cover_data import CoverData
+from pyucis.lib.lib_cover_data import LibCoverData
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -52,7 +54,7 @@ class LibScope(LibObj, Scope):
         sh = get_lib().ucis_CreateScope(
             self.db,
             self.obj,
-            name,
+            None if name is None else str.encode(name),
             srcinfo_p,
             weight,
             source,
@@ -73,7 +75,7 @@ class LibScope(LibObj, Scope):
         sh = get_lib().ucis_CreateInstance(
             self.db,
             self.obj,
-            name,
+            str.encode(name),
             fileinfo_p,
             weight,
             source,
@@ -83,3 +85,18 @@ class LibScope(LibObj, Scope):
         
         return LibScope(self.db, sh)
     
+    def createNextCover(self,
+                        name : str,
+                        data : CoverData,
+                        sourceinfo : SourceInfo) -> int:
+        sourceinfo_p = None if sourceinfo is None else byref(LibSourceInfo.ctor(sourceinfo))
+        data_p = byref(LibCoverData.ctor(data))
+        
+        return get_lib().ucis_CreateNextCover(
+            self.db,
+            self.obj,
+            str.encode(name),
+            data_p,
+            sourceinfo_p)
+        
+        

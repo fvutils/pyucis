@@ -44,35 +44,37 @@ class FuncMap():
     
 _funcs = FuncMap()
 
-#ucis_Open = None
-#ucis_CreateHistoryNode = None
-
-
 fspec = {
     "ucis_Open" : (
-        CFUNCTYPE(c_void_p, c_wchar_p),
-        ((1,"file"),)
-        ),
+        CFUNCTYPE(c_void_p, c_char_p),
+        ((1,"file"),)),
+    "ucis_Write" : (
+        CFUNCTYPE(c_int, c_void_p, c_char_p, c_void_p, c_int, c_uint),
+        ((1,"db"),(1,"file"),(1,"scope"),(1,"recurse"),(1,"covertype"))),
+    "ucis_Close" : (
+        CFUNCTYPE(c_int, c_void_p),
+        ((1,"db"),)),
     "ucis_CreateHistoryNode" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_wchar_p, c_int),
-        ((1,"db"),(1,"parent"),(1,"logicalname"),(1,"physicalname"),(1,"kind"))
-        ),
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_char_p, c_int),
+        ((1,"db"),(1,"parent"),(1,"logicalname"),(1,"physicalname"),(1,"kind"))),
     "ucis_CreateScope" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_void_p, c_int, c_int, c_int, c_int),
-        ((1,"db"),(1,"parent"),(1,"name"),(1,"sourceinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"flags"))
-        ),
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_int, c_int),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"sourceinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"flags"))),
     "ucis_CreateInstance" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_wchar_p, c_void_p, c_int, c_int, c_int, c_void_p, c_int),
-        ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"du_scope"),(1,"flags"))
-        ),
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_int, c_void_p, c_int),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"du_scope"),(1,"flags"))),
+    "ucis_CreateNextCover" : (
+        CFUNCTYPE(c_int, c_void_p, c_void_p, c_char_p, c_void_p, c_void_p),
+        ((1,"db"),(1,"parent"),(1,"name"),(1,"data"),(1,"sourceinfo"))),
+    "ucis_SetIntProperty" : (
+        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_int),
+        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
     "ucis_SetStringProperty" : (
-        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_wchar_p),
-        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))
-        ),
+        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_char_p),
+        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
     "ucis_CreateFileHandle" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_wchar_p, c_wchar_p),
-        ((1,"db"),(1,"filename"),(1,"workdir"))
-        )
+        CFUNCTYPE(c_void_p, c_void_p, c_char_p, c_char_p),
+        ((1,"db"),(1,"filename"),(1,"workdir")))
     }
 
 # Load the specified UCIS library
@@ -93,6 +95,5 @@ def get_ucis_library():
 
 def get_lib():
     global _funcs
-    print("_funcs=" + str(_funcs))
     return _funcs
     

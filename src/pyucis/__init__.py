@@ -33,6 +33,9 @@ from pyucis.test_status import TestStatus
 from pyucis.source_t import SourceT
 from pyucis.flags_t import FlagsT
 from pyucis.scope_type_t import ScopeTypeT
+from pyucis.cover_type_t import CoverTypeT
+from pyucis.cover_flags_t import CoverFlagsT
+from pyucis.cover_data import CoverData
 
 
 #********************************************************************
@@ -190,7 +193,17 @@ UCIS_SCOPE_CVG_TRANSITION = FlagsT.SCOPE_CVG_TRANSITION
 UCIS_SCOPE_IFF_EXISTS = FlagsT.SCOPE_IFF_EXISTS
 UCIS_ENABLED_BLOCK = FlagsT.ENABLED_BLOCK
 UCIS_SCOPE_BLOCK_ISBRANCH = FlagsT.SCOPE_BLOCK_ISBRANCH
-    
+
+UCIS_CVGBIN = CoverTypeT.CVGBIN
+UCIS_COVERBIN = CoverTypeT.COVERBIN
+UCIS_ASSERTBIN = CoverTypeT.ASSERTBIN
+UCIS_STMTBIN = CoverTypeT.STMTBIN
+
+UCIS_IS_32BIT = CoverFlagsT.IS_32BIT
+UCIS_IS_64BIT = CoverFlagsT.IS_64BIT
+UCIS_IS_VECTOR = CoverFlagsT.IS_VECTOR
+UCIS_HAS_GOAL = CoverFlagsT.HAS_GOAL
+UCIS_HAS_WEIGHT = CoverFlagsT.HAS_WEIGHT
     
 def ucis_GetIntProperty(
         db : ucis,
@@ -307,11 +320,20 @@ def ucis_CreateInstance(
         source : SourceT,
         type : ScopeTypeT,
         du_scope : Scope,
-        flags : FlagsT):
+        flags : FlagsT) ->Scope:
     if parent is not None:
-        parent.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
+        return parent.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
     else:
-        db.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
+        return db.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
+
+int
+def ucis_CreateNextCover(
+        db : ucis,
+        parent : Scope,
+        name : str,
+        data : CoverData,
+        sourceinfo : SourceInfo) ->int:
+    return parent.createNextCover(name, data, sourceinfo)
 
 def ucis_RemoveScope(
         db : ucis,
@@ -338,4 +360,27 @@ def ucis_SetTestData(
     testhistorynode : HistoryNode,
     testdata : TestData):
     testhistorynode.setTestData(testdata)
-
+    
+def ucis_Write(
+        db : ucis,
+        file : str,
+        scope : Scope,
+        recurse : int,
+        covertype : CoverTypeT) ->int:
+#    try:
+    db.write(
+        file, 
+        scope, 
+        recurse==1, 
+        covertype)
+    return 0
+#    except Exception as e:
+#        return -1
+    
+def ucis_Close(
+        db : ucis) ->int:
+#    try:
+    db.close()
+    return 0
+#    except:
+#        return -1

@@ -46,7 +46,8 @@ class LibObj(Obj):
             coverindex : int,
             property : IntProperty,
             value : int):
-        raise UnimplError()
+        obj = self.db if self.obj is None else self.obj
+        get_lib().ucis_SetIntProperty(self.db, obj, coverindex, property, value)
 
     def getRealProperty(
             self,
@@ -73,7 +74,12 @@ class LibObj(Obj):
             property : StrProperty,
             value : str):
         obj = self.db if self.obj is None else self.obj
-        get_lib().ucis_SetStringProperty(self.db, obj, coverindex, property, value)
+        get_lib().ucis_SetStringProperty(
+            self.db, 
+            obj, 
+            coverindex, 
+            property, 
+            str.encode(value))
         
     def getHandleProperty(
             self,
