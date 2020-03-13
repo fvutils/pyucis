@@ -1,3 +1,4 @@
+from pyucis.source_info import SourceInfo
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -27,4 +28,12 @@ class Coverpoint(CvgScope):
     
     def __init__(self):
         super().__init__()
+        
+    def createBin(
+            self,
+            name : str,
+            srcinfo : SourceInfo,
+            at_least : int,
+            count : int):
+        raise NotImplementedError("createBin in " + str(type(self)))
         

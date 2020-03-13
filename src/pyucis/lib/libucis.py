@@ -80,19 +80,29 @@ fspec = {
         ((1,"db"),(1,"filename"),(1,"workdir"))),
     "ucis_RegisterErrorHandler" : (
         CFUNCTYPE(None, c_void_p, c_void_p),
-        ((1,"cb"),(1,"userdata")))
+        ((1,"cb"),(1,"userdata"))),
+    "ucis_SetTestData" : (
+        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
+        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
+    "ucis_GetTestData" : (
+        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
+        ((1,"db"), (1,"testhistorynode"), (1,"testdata")))
     }
 
 class ucisErr_s(Structure):
     _fields_ = [
         ("msgno", c_int),
         ("severity", c_int),
-        ("mststr", c_char_p)]
+        ("msgstr", c_wchar_p)]
     
 UCIS_ERR_FUNC_T = CFUNCTYPE(None,c_void_p, POINTER(ucisErr_s))
 
-def ucis_err_func_py(userdata, errdata):
-    print("ucis_err_func: " + str(userdata) + " " + str(errdata))
+def ucis_err_func_py(userdata, errdata_p : ucisErr_s):
+    print("errdata_p=" + str(type(errdata_p)))
+    errdata = errdata_p
+    
+    print("ucis_err_func: " + str(userdata) + " msgno=" + 
+          str(errdata.contents.msgno))
     
 ucis_err_func = UCIS_ERR_FUNC_T(ucis_err_func_py)
 

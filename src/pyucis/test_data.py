@@ -22,7 +22,7 @@ Created on Jan 8, 2020
 @author: ballance
 '''
 
-class TestData():
+class TestData(object):
     
     def __init__(self,
                  teststatus,

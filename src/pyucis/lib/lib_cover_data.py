@@ -30,17 +30,28 @@ class LibCoverData(Structure):
     
     @staticmethod
     def ctor(covdata : CoverData):
+        print("CoverData.ctor")
         data = LibCoverDataValue()
-        if covdata.flags & CoverFlagsT.IS_32BIT:
+        if (covdata.flags & CoverFlagsT.IS_32BIT) != 0:
             data.int32 = covdata.data
-        elif covdata.flags & CoverFlagsT.IS_64BIT:
+            print("Count: " + str(data.int32))
+        elif (covdata.flags & CoverFlagsT.IS_64BIT) != 0:
             data.int64 = covdata.data
+            print("Count64: " + str(data.int64))
         elif covdata.flags & CoverFlagsT.IS_VECTOR:
             data.bytevector = covdata.data
         else:
             raise Exception("data format not specified")
-        
-        ret = LibCoverData(covdata.type, covdata.flags, data)
+
+        print("covdata.type=" + str(covdata.type) + " " + hex(covdata.type))        
+        ret = LibCoverData(
+            covdata.type, 
+            covdata.flags, 
+            data,
+            covdata.goal,
+            covdata.weight,
+            covdata.limit,
+            covdata.bitlen)
         
         return ret
             
