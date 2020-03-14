@@ -1,5 +1,3 @@
-from pyucis.int_property import IntProperty
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,34 +14,52 @@ from pyucis.int_property import IntProperty
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Dec 22, 2019
 
 @author: ballance
 '''
-from pyucis.scope import Scope
+
 from pyucis.cover_type import CoverType
-from pyucis.source_info import SourceInfo
-from pyucis.unimpl_error import UnimplError
 from pyucis.cvg_scope import CvgScope
+from pyucis.int_property import IntProperty
+from pyucis.scope import Scope
+from pyucis.source_info import SourceInfo
+
 
 class Covergroup(CvgScope):
     
     def __init__(self):
+        super().__init__()
+        # Call set-attr methods to establish defaults
+        print("--> Covergroup::__init__()")
+        self.setPerInstance(False)
+        self.setMergeInstances(True)
+        self.setGetInstCoverage(False)
+        # Comment doesn't seem valid on a CvgScope standalone
+        self.setComment("")
+        print("<-- Covergroup::__init__()")
         pass
     
+
     def getPerInstance(self)->bool:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setPerInstance(self, perinst):
-        raise UnimplError()
+        raise NotImplementedError()
+    
+    def getGetInstCoverage(self) -> bool:
+        raise NotImplementedError()
+    
+    def setGetInstCoverage(self, s : bool):
+        raise NotImplementedError()
     
     def getMergeInstances(self)->bool:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setMergeInstances(self, m:bool):
-        raise UnimplError()
+        raise NotImplementedError()
+    
         
 
     def createCoverpoint(self,
@@ -51,7 +67,7 @@ class Covergroup(CvgScope):
                          srcinfo : SourceInfo,
                          weight : int,
                          source) -> CoverType:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def createCross(self, 
                     name, 

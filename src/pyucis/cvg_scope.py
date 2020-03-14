@@ -14,53 +14,55 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from pyucis.str_property import StrProperty
 '''
 Created on Jan 8, 2020
 
 @author: ballance
 '''
 
-from pyucis.unimpl_error import UnimplError
-
 from pyucis.func_cov_scope import FuncCovScope
 from pyucis.int_property import IntProperty
+from pyucis.str_property import StrProperty
 
 
 class CvgScope(FuncCovScope):
     
     def __init__(self):
         super().__init__()
+        self.setAtLeast(1)
+        self.setAutoBinMax(64)
+        self.setDetectOverlap(False)
+        self.setStrobe(False)
 
     def getAtLeast(self)->int:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setAtLeast(self, atleast):
-        raise UnimplError()
+        raise NotImplementedError()
     
     def getAutoBinMax(self)->int:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setAutoBinMax(self, auto_max):
-        raise UnimplError()
+        raise NotImplementedError()    
     
     def getDetectOverlap(self)->bool:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setDetectOverlap(self, detect:bool):
-        raise UnimplError()
+        raise NotImplementedError()
     
-    def getStrobe(self)->int:
-        raise UnimplError()
+    def getStrobe(self)->bool:
+        raise NotImplementedError()
     
-    def setStrobe(self, s):
-        raise UnimplError()
+    def setStrobe(self, s : bool):
+        raise NotImplementedError()
     
     def getComment(self)->str:
-        raise UnimplError()
+        raise NotImplementedError()
     
     def setComment(self, c:str):
-        raise UnimplError()
+        raise NotImplementedError()
     
     
     def getIntProperty(

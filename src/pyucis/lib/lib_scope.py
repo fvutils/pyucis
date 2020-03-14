@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from pyucis.lib.lib_cover_index import LibCoverIndex
 '''
 Created on Jan 11, 2020
 
@@ -24,7 +25,7 @@ from _ctypes import byref, pointer
 from pyucis.scope import Scope
 from pyucis.unimpl_error import UnimplError
 from pyucis import UCIS_COVERGROUP, UCIS_INT_SCOPE_GOAL, UCIS_INT_CVG_STROBE,\
-    UCIS_INT_CVG_MERGEINSTANCES, UCIS_STR_COMMENT
+    UCIS_INT_CVG_MERGEINSTANCES, UCIS_STR_COMMENT, UCIS_INT_SCOPE_WEIGHT
 
 from pyucis.cover_data import CoverData
 from pyucis.flags_t import FlagsT
@@ -42,9 +43,22 @@ from pyucis.toggle_type_t import ToggleTypeT
 
 class LibScope(LibObj, Scope):
     
-    def __init__(self, db, scope):
-        super().__init__(db, scope)
+    def __init__(self, db, obj):
+        LibObj.__init__(self, db, obj)
+        Scope.__init__(self)
         print("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
+        
+    def getGoal(self)->int:
+        return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
+    
+    def setGoal(self,goal)->int:
+        self.setIntProperty(-1, UCIS_INT_SCOPE_GOAL, goal)
+        
+#     def getWeight(self):
+#         return self.getIntProperty(-1, UCIS_INT_SCOPE_WEIGHT)
+#     
+#     def setWeight(self, w):
+#         self.setIntProperty(-1, UCIS_INT_SCOPE_WEIGHT, w)
         
     def createScope(self, 
         name:str, 
@@ -101,7 +115,7 @@ class LibScope(LibObj, Scope):
         name:str, 
         srcinfo:SourceInfo, 
         weight:int, 
-        source)->'Covergroup':
+        source) -> 'Covergroup':
         from pyucis.lib.lib_covergroup import LibCovergroup
         
         srcinfo_p = pointer(LibSourceInfo.ctor(srcinfo))
@@ -115,16 +129,7 @@ class LibScope(LibObj, Scope):
             UCIS_COVERGROUP,
             0)
         
-        cg = LibCovergroup(self.db, cg_obj)
-
-        # These properties are important in establishing this
-        # scope as a covergroup scope        
-        cg.setIntProperty(-1, UCIS_INT_SCOPE_GOAL, 100)
-        cg.setIntProperty(-1, UCIS_INT_CVG_STROBE, 0)
-        cg.setIntProperty(-1, UCIS_INT_CVG_MERGEINSTANCES, 1)
-        cg.setStringProperty(-1, UCIS_STR_COMMENT, "")
-        
-        return cg
+        return LibCovergroup(self.db, cg_obj)
     
     def createToggle(self,
                     name : str,
@@ -153,11 +158,12 @@ class LibScope(LibObj, Scope):
         
         print("createNextCover: self.obj=" + str(self.obj))
         
-        return get_lib().ucis_CreateNextCover(
+        index =  get_lib().ucis_CreateNextCover(
             self.db,
             self.obj,
             str.encode(name),
             data_p,
             sourceinfo_p)
         
+        return LibCoverIndex(self.db, self.obj, index)
         

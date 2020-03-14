@@ -18,8 +18,22 @@ class MemCovergroup(MemCvgScope,Covergroup):
                  type,
                  flags):
         super().__init__(parent, name, srcinfo, weight, source, type, flags)
+        self.at_least = 0
+        self.auto_bin_max
         self.m_per_instance = True
         self.m_merge_instances = True
+        
+    def getAtLeast(self)->int:
+        return self.at_least
+    
+    def setAtLeast(self, atleast):
+        self.at_least = atleast
+        
+    def getAutoBinMax(self)->int:
+        return self.auto_bin_max
+    
+    def setAutoBinMax(self, auto_max):
+        self.auto_bin_max = auto_max
         
     def getPerInstance(self)->bool:
         return self.m_per_instance

@@ -26,6 +26,8 @@ from pyucis.scope import Scope
 class CovScope(Scope):
     
     def __init__(self):
+        
         pass
+    
     
     

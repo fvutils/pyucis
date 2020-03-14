@@ -34,4 +34,17 @@ class CoverType(Scope):
     
     def getCoverGoal(self)->int:
         raise UnimplError()
+    
+    def setCoverLimit(self, limit : int):
+        raise NotImplementedError()
+    
+    def getCoverLimit(self) -> int:
+        raise NotImplementedError()
+    
+    def setCoverWeight(self, weight : int):
+        raise NotImplementedError()
+    
+    def getCoverWeight(self) -> int:
+        raise NotImplementedError()
+    
         

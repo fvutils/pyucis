@@ -7,16 +7,17 @@ import os
 from pyucis import ucis_Write, ucis_Close, UCIS_HISTORYNODE_TEST, \
     UCIS_TESTSTATUS_OK, UCIS_VLOG, UCIS_DU_MODULE, UCIS_ENABLED_BRANCH, \
     UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
-    UCIS_SCOPE_UNDER_DU, UCIS_ENABLED_STMT, UCIS_ENABLED_COND, UCIS_INSTANCE
+    UCIS_SCOPE_UNDER_DU, UCIS_ENABLED_STMT, UCIS_ENABLED_COND, UCIS_INSTANCE, \
+    UCIS_OTHER
 from pyucis.lib.LibFactory import LibFactory
 from pyucis.source_info import SourceInfo
 from pyucis.test_data import TestData
+import unittest
 from unittest.case import TestCase
 
 from example_create_ucis import create_testdata, create_covergroup, \
     create_coverpoint_bin, create_coverpoint, create_filehandle, create_instance, \
     create_design_unit
-import unittest
 
 
 class TestSimpleCreate(TestCase):
@@ -47,7 +48,7 @@ class TestSimpleCreate(TestCase):
             "foo.bar",
             srcinfo,
             1, # weight
-            UCIS_VLOG,
+            UCIS_OTHER,
             UCIS_DU_MODULE,
             UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
             | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
@@ -59,7 +60,7 @@ class TestSimpleCreate(TestCase):
             "dummy",
             None, # sourceinfo
             1, # weight
-            UCIS_VLOG,
+            UCIS_OTHER,
             UCIS_INSTANCE,
             du,
             UCIS_INST_ONCE)
@@ -68,7 +69,7 @@ class TestSimpleCreate(TestCase):
             "cg",
             SourceInfo(file, 3, 0),
             1, # weight
-            UCIS_VLOG)
+            UCIS_OTHER)
         
         cp = cg.createCoverpoint(
             "t",
@@ -76,6 +77,7 @@ class TestSimpleCreate(TestCase):
             1, # weight
             UCIS_VLOG
             )
+        cp.setComment("Hello There")
         
         print("--> createBin")
         cp.createBin(
