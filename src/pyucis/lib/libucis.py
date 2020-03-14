@@ -46,7 +46,7 @@ _funcs = FuncMap()
 
 fspec = {
     "ucis_Open" : (
-        CFUNCTYPE(c_void_p, c_char_p),
+        CFUNCTYPE(c_void_p, c_wchar_p),
         ((1,"file"),)),
     "ucis_Write" : (
         CFUNCTYPE(c_int, c_void_p, c_char_p, c_void_p, c_int, c_uint),
@@ -103,6 +103,8 @@ def ucis_err_func_py(userdata, errdata_p : ucisErr_s):
     
     print("ucis_err_func: " + str(userdata) + " msgno=" + 
           str(errdata.contents.msgno))
+    
+    raise Exception("Hit UCIS Error: " + str(errdata.contents.msgno))
     
 ucis_err_func = UCIS_ERR_FUNC_T(ucis_err_func_py)
 

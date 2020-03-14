@@ -33,6 +33,12 @@ class LibUCIS(LibScope,UCIS):
     
     def __init__(self, file : str=None):
         db = get_lib().ucis_Open(file)
+        
+        if db is None:
+            if file is not None:
+                raise Exception("Error: failed to open UCIS file \"" + file + "\"")
+            else:
+                raise Exception("Error: failed to create UCIS DB")
         super().__init__(db, None)
         
         

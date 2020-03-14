@@ -90,7 +90,124 @@ class TestSimpleCreate(TestCase):
 
         db.write(ucisdb, None, True, -1)
         db.close()
+
+    def test_simplest_create_2inst(self):
         
+        ucisdb = "file_2inst.ucis"
+        LibFactory.load_ucis_library("libucis.so")
+        db = LibFactory.create()
+        
+        testnode = db.createHistoryNode(
+            None, 
+            "logicalName",
+            ucisdb,
+            UCIS_HISTORYNODE_TEST)
+        td = TestData(
+            teststatus=UCIS_TESTSTATUS_OK,
+            toolcategory="UCIS:simulator",
+            date="20200202020"
+            )
+        testnode.setTestData(td)
+        
+        file = db.createFileHandle("dummy", os.getcwd())
+
+        srcinfo = SourceInfo(file, 0, 0)
+        du1 = db.createScope(
+            "foo.bar1",
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            )
+        
+        du2 = db.createScope(
+            "foo.bar2",
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            )
+        
+        instance1 = db.createInstance(
+            "dummy",
+            None, # sourceinfo
+            1, # weight
+            UCIS_OTHER,
+            UCIS_INSTANCE,
+            du1,
+            UCIS_INST_ONCE)
+        
+        cg1 = instance1.createCovergroup(
+            "cg",
+            SourceInfo(file, 3, 0),
+            1, # weight
+            UCIS_OTHER)
+        
+        cp1 = cg1.createCoverpoint(
+            "t",
+            SourceInfo(file, 4, 0),
+            1, # weight
+            UCIS_VLOG
+            )
+        
+        cp1.createBin(
+            "auto[a]",
+            SourceInfo(file, 4, 0),
+            1,
+            4,
+            "a")
+
+        du2 = db.createScope(
+            "foo.bar2",
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            )
+        
+        instance2 = db.createInstance(
+            "dummy",
+            None, # sourceinfo
+            1, # weight
+            UCIS_OTHER,
+            UCIS_INSTANCE,
+            du2,
+            UCIS_INST_ONCE)
+        
+        cg2 = instance2.createCovergroup(
+            "cg",
+            SourceInfo(file, 3, 0),
+            1, # weight
+            UCIS_OTHER)
+        
+        cp2 = cg2.createCoverpoint(
+            "t",
+            SourceInfo(file, 4, 0),
+            1, # weight
+            UCIS_VLOG
+            )
+        
+        cp2.createBin(
+            "auto[a]",
+            SourceInfo(file, 4, 0),
+            1,
+            4,
+            "a")
+
+        db.write(ucisdb, None, True, -1)
+        db.close()        
 #         LibFactory.load_ucis_library("libucis.so")
 #         db = LibFactory.create()
 #         

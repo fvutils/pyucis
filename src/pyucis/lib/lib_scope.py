@@ -118,7 +118,7 @@ class LibScope(LibObj, Scope):
         source) -> 'Covergroup':
         from pyucis.lib.lib_covergroup import LibCovergroup
         
-        srcinfo_p = pointer(LibSourceInfo.ctor(srcinfo))
+        srcinfo_p = None if srcinfo is None else pointer(LibSourceInfo.ctor(srcinfo))
         cg_obj = get_lib().ucis_CreateScope(
             self.db,
             self.obj,
