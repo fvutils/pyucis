@@ -7,7 +7,7 @@ from _ctypes import pointer
 from pyucis import UCIS_VLOG, UCIS_COVERPOINT, UCIS_INT_SCOPE_GOAL, \
     UCIS_INT_CVG_ATLEAST, UCIS_STR_COMMENT, UCIS_INT_CVG_AUTOBINMAX, \
     UCIS_INT_CVG_PERINSTANCE, UCIS_INT_CVG_GETINSTCOV, \
-    UCIS_INT_CVG_MERGEINSTANCES
+    UCIS_INT_CVG_MERGEINSTANCES, UCIS_COVERINSTANCE
 from pyucis.cover_type import CoverType
 from pyucis.covergroup import Covergroup
 from pyucis.lib.lib_scope import LibScope
@@ -58,3 +58,24 @@ class LibCovergroup(LibCvgScope, Covergroup):
             0)
         
         return LibCoverpoint(self.db, cp_s.obj)
+    
+    def createCoverInstance(
+            self,
+            name:str,
+            srcinfo:SourceInfo,
+            weight:int,
+            source)->'Covergroup':
+        
+        srcinfo_p = None if srcinfo is None else pointer(LibSourceInfo.ctor(srcinfo))
+        ci_obj = get_lib().ucis_CreateScope(
+            self.db,
+            self.obj,
+            str.encode(name),
+            srcinfo_p,
+            weight,
+            source,
+            UCIS_COVERINSTANCE,
+            0)
+        
+        
+        return LibCovergroup(self.db, ci_obj)

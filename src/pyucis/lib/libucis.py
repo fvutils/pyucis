@@ -86,7 +86,16 @@ fspec = {
         ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
     "ucis_GetTestData" : (
         CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"testhistorynode"), (1,"testdata")))
+        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
+    "ucis_HistoryIterate" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_uint32),
+        ((1,"db"), (1,"historynode"), (1,"kind"))),
+    "ucis_HistoryScan" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p),
+        ((1,"db"), (1,"iterator"))),
+    "ucis_FreeIterator" : (
+        CFUNCTYPE(None, c_void_p, c_void_p),
+        ((1,"db"), (1,"iterator")))
     }
 
 class ucisErr_s(Structure):

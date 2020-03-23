@@ -23,4 +23,5 @@ Created on Jan 5, 2020
 '''
 
 class UcisValidator():
+    pass
     

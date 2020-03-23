@@ -1,5 +1,3 @@
-from pyucis.lib.lib_history_node import LibHistoryNode
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,18 +14,23 @@ from pyucis.lib.lib_history_node import LibHistoryNode
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+from typing import List
 '''
 Created on Jan 10, 2020
 
 @author: ballance
 '''
-from pyucis.ucis import UCIS
-from pyucis.lib.libucis import _lib, get_ucis_library, get_lib
-from pyucis.int_property import IntProperty
+
 from pyucis.file_handle import FileHandle
+from pyucis.history_node import HistoryNode
+from pyucis.history_node_kind import HistoryNodeKind
+from pyucis.int_property import IntProperty
 from pyucis.lib.lib_file_handle import LibFileHandle
+from pyucis.lib.lib_history_node import LibHistoryNode
 from pyucis.lib.lib_scope import LibScope
+from pyucis.lib.libucis import _lib, get_ucis_library, get_lib
+from pyucis.ucis import UCIS
+
 
 class LibUCIS(LibScope,UCIS):
     
@@ -77,6 +80,10 @@ class LibUCIS(LibScope,UCIS):
         print("hn=" + str(hn))
         print("<-- createHistoryNode")
         return LibHistoryNode(self.db, hn)
+    
+    def getHistoryNodes(self, kind:HistoryNodeKind)->List[HistoryNode]:
+        
+        UCIS.getHistoryNodes(self, kind)
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
         print("file=" + file)

@@ -27,4 +27,7 @@ class FileHandle():
     def __init__(self):
         pass
     
+    def getFileName(self)->str:
+        raise NotImplementedError()
+    
     

@@ -208,6 +208,91 @@ class TestSimpleCreate(TestCase):
 
         db.write(ucisdb, None, True, -1)
         db.close()        
+        
+    def test_create_type_inst_cg(self):
+        ucisdb = "file_type_inst.ucis"
+        LibFactory.load_ucis_library("libucis.so")
+        db = LibFactory.create()
+        
+        testnode = db.createHistoryNode(
+            None, 
+            "logicalName",
+            ucisdb,
+            UCIS_HISTORYNODE_TEST)
+        td = TestData(
+            teststatus=UCIS_TESTSTATUS_OK,
+            toolcategory="UCIS:simulator",
+            date="20200202020"
+            )
+        testnode.setTestData(td)
+        
+        file = db.createFileHandle("dummy", os.getcwd())
+
+        srcinfo = SourceInfo(file, 0, 0)
+        du = db.createScope(
+            "foo.bar",
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            )
+        
+        instance = db.createInstance(
+            "dummy",
+            None, # sourceinfo
+            1, # weight
+            UCIS_OTHER,
+            UCIS_INSTANCE,
+            du,
+            UCIS_INST_ONCE)
+        
+        cg_t = instance.createCovergroup(
+            "cg",
+            SourceInfo(file, 3, 0),
+            1, # weight
+            UCIS_OTHER)
+        
+        cp = cg_t.createCoverpoint(
+            "t",
+            SourceInfo(file, 4, 0),
+            1, # weight
+            UCIS_VLOG
+            )
+        
+        cp.createBin(
+            "auto[a]",
+            SourceInfo(file, 4, 0),
+            1,
+            4,
+            "a")
+        
+        cg_i1 = cg_t.createCoverInstance(
+            "cg_i1",
+            SourceInfo(file, 3, 0),
+            1, # weight
+            UCIS_OTHER)
+
+        cp = cg_i1.createCoverpoint(
+            "t",
+            SourceInfo(file, 4, 0),
+            1, # weight
+            UCIS_VLOG
+            )
+        
+        cp.createBin(
+            "auto[a]",
+            SourceInfo(file, 4, 0),
+            1,
+            0,
+            "a")
+        
+        db.write(ucisdb, None, True, -1)
+        db.close()
+        
 #         LibFactory.load_ucis_library("libucis.so")
 #         db = LibFactory.create()
 #         

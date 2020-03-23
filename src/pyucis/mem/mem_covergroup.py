@@ -3,9 +3,13 @@ Created on Jan 12, 2020
 
 @author: ballance
 '''
-from pyucis.mem.mem_scope import MemScope
+from pyucis import UCIS_COVERGROUP
+from pyucis.cover_type import CoverType
 from pyucis.covergroup import Covergroup
 from pyucis.mem.mem_cvg_scope import MemCvgScope
+
+from vsc.model.source_info import SourceInfo
+
 
 class MemCovergroup(MemCvgScope,Covergroup):
     
@@ -14,10 +18,10 @@ class MemCovergroup(MemCvgScope,Covergroup):
                  name,
                  srcinfo,
                  weight,
-                 source,
-                 type,
-                 flags):
-        super().__init__(parent, name, srcinfo, weight, source, type, flags)
+                 source):
+        MemCvgScope.__init__(self, parent, name, srcinfo, weight, source, 
+                         UCIS_COVERGROUP, 0)
+        Covergroup.__init__(self)
         self.at_least = 0
         self.auto_bin_max
         self.m_per_instance = True
@@ -46,3 +50,15 @@ class MemCovergroup(MemCvgScope,Covergroup):
     
     def setMergeInstances(self, m:bool):
         self.m_merge_instances = m
+        
+    def createCoverpoint(self, 
+        name:str, 
+        srcinfo:SourceInfo, 
+        weight:int, 
+        source)->CoverType:
+        from .mem_coverpoint import MemCoverpoint
+        ret = MemCoverpoint(self, name, srcinfo, weight, source)
+        self.m_children.append(ret)
+        return ret
+    
+    

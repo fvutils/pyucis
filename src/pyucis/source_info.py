@@ -1,3 +1,4 @@
+from pyucis.file_handle import FileHandle
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -24,8 +25,10 @@ Created on Jan 8, 2020
 
 class SourceInfo():
     
-    def __init__(self, file, line : int, token : int):
+    def __init__(self, file : FileHandle, line : int, token : int):
         self.file = file
         self.line = line
         self.token = token
+        
+    
         

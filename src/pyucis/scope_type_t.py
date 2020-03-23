@@ -97,6 +97,8 @@ class ScopeTypeT(IntFlag):
     #/* error return code: */ \
     SCOPE_ERROR = 0x0000000000000000   
     
+    ALL = 0x0000FFFFFFFFFFFF
+    
     @staticmethod
     def DU_ANY(t):
         return (t & (ScopeTypeT.DU_MODULE|ScopeTypeT.DU_ARCH|ScopeTypeT.DU_PACKAGE|ScopeTypeT.DU_PROGRAM|ScopeTypeT.DU_INTERFACE)) != 0

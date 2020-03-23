@@ -26,14 +26,16 @@ class MemInstanceScope(MemScope,InstanceScope):
             self,
             parent : 'MemInstanceScope',
             name : str,
-            fileinfo : SourceInfo,
+            srcinfo : SourceInfo,
             weight : int,
             source : SourceT,
             type : ScopeTypeT,
             du_scope : 'MemScope',
             flags : FlagsT
             ):
-        super().__init__(parent, name, fileinfo, weight, source, type, flags)
+        MemScope.__init__(self, parent, name, srcinfo, weight, source, type, flags)
+        InstanceScope.__init__(self)
+            
         self.m_du_scope = du_scope
         self.m_cover_item_l = []
         

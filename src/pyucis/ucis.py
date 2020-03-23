@@ -1,3 +1,6 @@
+from pyucis.history_node_kind import HistoryNodeKind
+from typing import List, Iterator
+from pyucis.scope_type_t import ScopeTypeT
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -98,8 +101,11 @@ class UCIS(Scope):
     def createCoverInstance(self, name, stmt_id : StatementId):
         raise UnimplError()
     
-    def getHistoryNodes(self) -> [HistoryNode]:
+    def historyNodes(self, kind : HistoryNodeKind) -> Iterator[HistoryNode]:
         raise UnimplError()
+    
+    def getHistoryNodes(self, kind : HistoryNodeKind) -> List[HistoryNode]:
+        return list(self.historyNodes(kind))
     
     def getSourceFiles(self) -> [SourceFile]:
         raise UnimplError()

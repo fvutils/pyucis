@@ -43,6 +43,7 @@ class Coverpoint(CvgScope):
             name : str,
             srcinfo : SourceInfo,
             at_least : int,
-            count : int) -> CoverIndex:
+            count : int,
+            rhs : str) -> CoverIndex:
         raise NotImplementedError("createBin in " + str(type(self)))
         

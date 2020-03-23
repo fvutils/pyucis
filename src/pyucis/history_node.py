@@ -1,4 +1,5 @@
 from pyucis.test_status_t import TestStatusT
+from pyucis.history_node_kind import HistoryNodeKind
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -65,10 +66,7 @@ class HistoryNode(Obj):
     def setPhysicalName(self, name : str):
         raise UnimplError()
     
-    def getKind(self) -> str:
-        raise UnimplError()
-    
-    def setKind(self, kind : str):
+    def getKind(self) -> HistoryNodeKind:
         raise UnimplError()
     
     def getTestStatus(self) -> TestStatusT:

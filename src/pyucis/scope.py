@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Iterator
 
 '''
 Created on Dec 22, 2019
@@ -88,6 +89,21 @@ class Scope(Obj):
         raise NotImplementedError()
     
     def setGoal(self,goal)->int:
+        raise NotImplementedError()
+    
+    def getFlags(self)->FlagsT:
+        raise NotImplementedError()
+    
+    def getScopeType(self)->ScopeTypeT:
+        raise NotImplementedError()
+    
+    def getScopeName(self)->str:
+        raise NotImplementedError()
+    
+    def getSourceInfo(self)->SourceInfo:
+        raise NotImplementedError()
+    
+    def scopes(self, mask : ScopeTypeT) -> Iterator['Scope']:
         raise NotImplementedError()
     
     def getIntProperty(

@@ -80,6 +80,13 @@ class Covergroup(CvgScope):
     def createCrossByName(self, name, fileinfo, weight, source, point_names_l):
         pass
     
+    def createCoverInstance(
+            self,
+            srcinfo:SourceInfo,
+            weight:int,
+            source)->'Covergroup':
+        raise NotImplementedError()
+    
     def getIntProperty(
         self, 
         coverindex:int, 

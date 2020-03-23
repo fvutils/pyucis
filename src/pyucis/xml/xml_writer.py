@@ -1,3 +1,8 @@
+from pyucis.history_node_kind import HistoryNodeKind
+from typing import Dict, Iterator
+from pyucis.scope import Scope
+from pyucis.scope_type_t import ScopeTypeT
+from pyucis.covergroup import Covergroup
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -35,16 +40,16 @@ class XmlWriter():
     def __init__(self):
         self.db = None
         self.root = None
-        self.file_id_m = {}
+        self.file_id_m : Dict[str,int] = {}
         pass
     
     def write(self, file, db : UCIS):
         self.db = db
 
         # Map each of the source files to a unique identifier
-        self.file_id_m = {}
-        for i,f in enumerate(self.db.getSourceFiles()):
-            self.file_id_m[f] = i
+        self.file_id_m = {
+            "__null__file__" : 1}
+        self.find_all_files(db.scopes(ScopeTypeT.ALL)) # TODO: need to handle mask
         
         self.root = et.Element(QName(XmlWriter.UCIS, "UCIS"), nsmap={
 #        self.root = et.Element("UCIS", nsmap={
@@ -54,7 +59,8 @@ class XmlWriter():
         self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
         
         self.setAttr(self.root, "ucisVersion", db.getAPIVersion())
-
+        
+        # TODO: collect source files
         self.write_source_files()
         self.write_history_nodes()
         self.write_instance_coverages()
@@ -64,17 +70,18 @@ class XmlWriter():
         file.write(tounicode(self.root, pretty_print=True))
         
     def write_source_files(self):
-        
-        for i,f in enumerate(self.db.getSourceFiles()):
+
+        for filename,id in self.file_id_m.items():
             fileN = self.mkElem(self.root, "sourceFiles")
-            self.setAttr(fileN, "fileName", f.getFilename())
-            self.setAttr(fileN, "id", str(i+1))
+            self.setAttr(fileN, "fileName", filename)
+            self.setAttr(fileN, "id", str(id))
         
     def write_history_nodes(self):
         
 #        histNodes = self.root.SubElement(self.root, "historyNodes")
-        
-        for i,h in enumerate(self.db.getHistoryNodes()):
+
+        for i,h in enumerate(self.db.getHistoryNodes(HistoryNodeKind.ALL)):
+            print("i=" + str(i))
             histN = self.mkElem(self.root, "historyNodes")
             histN.set("historyNodeId", str(i))
             
@@ -105,13 +112,69 @@ class XmlWriter():
             # TODO: userAttr
             
     def write_instance_coverages(self):
+        print("write_instance_coverages")
+        inst = self.mkElem(self.root, "instanceCoverages")
+        inst.set("name", "my_scope") # TODO:
+        inst.set("key", "AABBCCDD") # TODO:
+        self.addId(inst, None)
         
-        for i,c in enumerate(self.db.getCoverInstances()):
-            coverI = self.mkElem(self.root, "instanceCoverages")
-            self.setAttr(coverI, "name", c.getName())
-            self.setAttr(coverI, "key", c.getKey())
+        for s in self.db.scopes(ScopeTypeT.INSTANCE):
+            self.write_covergroups(inst, s)
+        
+#         for i,c in enumerate(self.db.getCoverInstances()):
+#             coverI = self.mkElem(self.root, "instanceCoverages")
+#             self.setAttr(coverI, "name", c.getName())
+#             self.setAttr(coverI, "key", c.getKey())
+#             
+#             self.write_statement_id(c.getId(), coverI)
             
-            self.write_statement_id(c.getId(), coverI)
+    def write_covergroups(self, inst, scope):
+        print("write_covergroups: " + str(scope))
+        
+        for cg in scope.scopes(ScopeTypeT.COVERGROUP):
+            cgElem = self.mkElem(inst, "covergroupCoverage")
+#            self.setAttr(cgElem, "weight", str(scope.getWeight()))
+                
+            print("cg=" + str(cg))
+            self.write_coverinstance(cgElem, cg.getScopeName(), cg)
+            
+            for ci in cg.scopes(ScopeTypeT.COVERINSTANCE):
+                self.write_coverinstance(cgElem, cg.getScopeName(), ci)
+    
+    def write_coverinstance(self, cgElem, cgName, cg : Covergroup):
+        cgInstElem = self.mkElem(cgElem, "cgInstance")
+        self.setAttr(cgInstElem, "name", cg.getScopeName())
+        self.setAttr(cgInstElem, "key", "1")
+        
+        self.write_options(cgInstElem, cg)
+        
+        cgIdElem = self.mkElem(cgInstElem, "cgId")
+        self.setAttr(cgIdElem, "cgName", cgName)
+        self.setAttr(cgIdElem, "moduleName", cgName)
+        
+        # Instance source information
+        cgSourceIdElem = self.mkElem(cgIdElem, "cginstSourceId")
+        self.setAttr(cgSourceIdElem, "file", "1")
+        self.setAttr(cgSourceIdElem, "line", "1")
+        self.setAttr(cgSourceIdElem, "inlineCount", "1")
+        
+        # Declaration source information
+        cgSourceIdElem = self.mkElem(cgIdElem, "cgSourceId")
+        self.setAttr(cgSourceIdElem, "file", "1")
+        self.setAttr(cgSourceIdElem, "line", "1")
+        self.setAttr(cgSourceIdElem, "inlineCount", "1")
+        
+        for cp in cg.scopes(ScopeTypeT.COVERPOINT):
+            print("cp=" + str(cp))
+            self.write_coverpoint(cgInstElem, cp)
+            
+    def write_coverpoint(self, cgInstElem, cp):
+        self.write_options(cgInstElem, cp)
+        
+    
+    def write_options(self, parent, opts_item):
+        self.mkElem(parent, "options")
+        
 
     def write_statement_id(self, stmt_id : StatementId, p, name="id"):
         stmtN = self.mkElem(p, name)
@@ -137,7 +200,8 @@ class XmlWriter():
             e.set(name, "false")
 
     def setAttrDateTime(self, e, name, val):
-        self.setAttr(e, name, datetime.fromtimestamp(val).isoformat())
+        val_i = int(val)
+        self.setAttr(e, name, datetime.fromtimestamp(val_i).isoformat())
             
     def setIfNonNull(self, n, attr, val):
         if val is not None:
@@ -146,5 +210,31 @@ class XmlWriter():
     def setIfNonNeg(self, n, attr, val):
         if val >= 0:
             self.setAttr(n, attr, str(val))
+            
+    def addId(self, ctxt, srcinfo):
+        idElem = self.mkElem(ctxt, "id")
+        if srcinfo is None or srcinfo.file is None:
+            fileid = 1
+        else:
+            fileid = self.file_id_m[srcinfo.file.getFileName()]
+        self.setAttr(idElem, "file", str(fileid))
+            
+        self.setAttr(idElem, "line",
+                     str(srcinfo.line) if srcinfo is not None else str(1))
         
+        self.setAttr(idElem, "inlineCount", 
+            str(srcinfo.token) if srcinfo is not None else str(1))
         
+
+    def find_all_files(self, scope_i : Iterator[Scope]):
+        for s in scope_i:
+            srcinfo = s.getSourceInfo()
+            
+            if srcinfo.file is not None:
+                filename = srcinfo.file.getFileName()
+                if filename not in self.file_id_m.keys():
+                    id = len(self.file_id_m)+1
+                    self.file_id_m[filename] = id
+                    
+            self.find_all_files(s.scopes(ScopeTypeT.ALL))
+            

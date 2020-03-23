@@ -156,8 +156,6 @@ class LibScope(LibObj, Scope):
         sourceinfo_p = None if sourceinfo is None else byref(LibSourceInfo.ctor(sourceinfo))
         data_p = byref(LibCoverData.ctor(data))
         
-        print("createNextCover: self.obj=" + str(self.obj))
-        
         index =  get_lib().ucis_CreateNextCover(
             self.db,
             self.obj,

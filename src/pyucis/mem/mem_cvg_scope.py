@@ -47,6 +47,9 @@ class MemCvgScope(MemScope,CvgScope):
     def setStrobe(self, s):
         self.m_strobe = s
         
+    def setGetInstCoverage(self, en:bool):
+        self.m_get_inst_coverage = en
+        
     def getComment(self)->str:
         return self.m_comment
     

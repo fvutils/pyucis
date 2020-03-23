@@ -14,6 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import Iterator
+from pyucis.mem.mem_history_node_iterator import MemHistoryNodeIterator
+from pyucis.mem.mem_file_handle import MemFileHandle
 '''
 Created on Jan 5, 2020
 
@@ -22,11 +25,9 @@ Created on Jan 5, 2020
 
 from datetime import datetime
 import getpass
-from pyucis.ucis import UCIS
-from pyucis.unimpl_error import UnimplError
-
 from pyucis.flags_t import FlagsT
 from pyucis.history_node import HistoryNode
+from pyucis.history_node_kind import HistoryNodeKind
 from pyucis.instance_coverage import InstanceCoverage
 from pyucis.mem.mem_du_scope import MemDUScope
 from pyucis.mem.mem_history_node import MemHistoryNode
@@ -39,17 +40,28 @@ from pyucis.source_file import SourceFile
 from pyucis.source_info import SourceInfo
 from pyucis.source_t import SourceT
 from pyucis.statement_id import StatementId
+from pyucis.ucis import UCIS
+from pyucis.unimpl_error import UnimplError
 
 
-class MemUCIS(UCIS):
+class MemUCIS(MemScope,UCIS):
     
     def __init__(self):
-        super().__init__()
+        MemScope.__init__(
+            self,
+            None,
+            "",
+            None,
+            1,
+            SourceT.NONE,
+            ScopeTypeT.RESERVEDSCOPE,
+            0)
+        UCIS.__init__(self)
         self.ucis_version = "1.0"
         self.writtenBy = getpass.getuser()
         self.writtenTime = int(datetime.timestamp(datetime.now()))
+        self.file_handle_m : Dict[str,MemFileHandle] = {}
         self.m_history_node_l = []
-        self.m_source_file_l = []
         self.m_instance_coverage_l = []
         
         self.m_du_scope_l = []
@@ -71,37 +83,11 @@ class MemUCIS(UCIS):
         self.writtenTime = time
     
     def createFileHandle(self, filename, workdir):
-        ret = MemSourceFile(len(self.m_source_file_l), filename)
-        self.m_source_file_l.append(ret)
-        return ret
+        if filename not in self.file_handle_m.keys():
+            self.file_handle_m[filename] = MemFileHandle(filename)
+        return self.file_handle_m[filename]
     
-    def createScope(self,
-                name : str,
-                srcinfo : SourceInfo,
-                weight : int,
-                source,
-                type : ScopeTypeT,
-                flags):
-        # Creates a type scope and associates source information with it
-        if ScopeTypeT.DU_ANY(type):
-            ret = MemDUScope(None, name, srcinfo, weight,
-                              source, type, flags)
-            self.m_du_scope_l.append(ret)
-        else:
-            raise UnimplError()
-        
-        return ret
-    
-    def createInstance(self,
-                    name : str,
-                    fileinfo : SourceInfo,
-                    weight : int,
-                    source : SourceT,
-                    type : ScopeTypeT,
-                    du_scope : 'Scope',
-                    flags : FlagsT) ->'Scope':
-        # Create an instance of a type scope
-        return MemInstanceScope(None, name, fileinfo, weight, source, type, du_scope, flags)
+
     
     def createHistoryNode(self, parent, logicalname, physicalname=None, kind=None):
         ret = MemHistoryNode(parent, logicalname, physicalname, kind)
@@ -113,11 +99,8 @@ class MemUCIS(UCIS):
         self.m_instance_coverage_l.append(ret)
         return ret
         
-    def getHistoryNodes(self) -> [HistoryNode]:
-        return self.m_history_node_l
-    
-    def getSourceFiles(self)->[SourceFile]:
-        return self.m_source_file_l
+    def historyNodes(self, kind:HistoryNodeKind)->Iterator[HistoryNode]:
+        return MemHistoryNodeIterator(self.m_history_node_l, kind)
     
     def getCoverInstances(self)->[InstanceCoverage]:
         return self.m_instance_coverage_l
