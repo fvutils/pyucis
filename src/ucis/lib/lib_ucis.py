@@ -14,7 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from typing import List
+from typing import List, Iterator
+from ucis.str_property import StrProperty
 '''
 Created on Jan 10, 2020
 
@@ -54,6 +55,13 @@ class LibUCIS(LibScope,UCIS):
     def getNumTests(self):
         return get_lib().ucis_GetIntProperty(self.db, -1, IntProperty.NUM_TESTS)
     
+    def getAPIVersion(self)->str:
+        # TODO
+        return "1.0"
+    
+    def getWrittenBy(self)->str:
+        return self.getStringProperty(-1, StrProperty.TEST_USERNAME)
+    
     def createFileHandle(self, filename, workdir)->FileHandle:
         fh = get_lib().ucis_CreateFileHandle(
             self.db,
@@ -84,6 +92,9 @@ class LibUCIS(LibScope,UCIS):
     def getHistoryNodes(self, kind:HistoryNodeKind)->List[HistoryNode]:
         
         UCIS.getHistoryNodes(self, kind)
+        
+    def historyNodes(self, kind:HistoryNodeKind)->Iterator[HistoryNode]:
+        UCIS.historyNodes(self, kind)
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
         print("file=" + file)

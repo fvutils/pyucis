@@ -3,10 +3,12 @@ Created on Jan 12, 2020
 
 @author: ballance
 '''
-from ucis import UCIS_COVERGROUP
+from typing import List
+from ucis import UCIS_COVERGROUP, UCIS_COVERINSTANCE
 from ucis.cover_type import CoverType
 from ucis.covergroup import Covergroup
 from ucis.mem.mem_cvg_scope import MemCvgScope
+from ucis.source_t import SourceT
 
 from vsc.model.source_info import SourceInfo
 
@@ -60,5 +62,33 @@ class MemCovergroup(MemCvgScope,Covergroup):
         ret = MemCoverpoint(self, name, srcinfo, weight, source)
         self.m_children.append(ret)
         return ret
+    
+    def createCross(self, 
+        name:str, 
+        srcinfo:SourceInfo, 
+        weight:int, 
+        source:SourceT, 
+        points_l:List['Coverpoint']):
+        from .mem_cross import MemCross
+        ret = MemCross(self, name, srcinfo, weight, source, points_l)
+        self.m_children.append(ret)
+        return ret
+    
+    def createCoverInstance(
+        self, 
+        name:str, 
+        srcinfo:SourceInfo, 
+        weight:int, 
+        source)->'Covergroup':
+        ci_obj = self.createScope(
+            name, 
+            srcinfo, 
+            weight, 
+            source, 
+            UCIS_COVERINSTANCE,
+            0)
+        self.m_children.append(ci_obj)
+        return ci_obj
+
     
     

@@ -104,6 +104,10 @@ class MemUCIS(MemScope,UCIS):
     
     def getCoverInstances(self)->[InstanceCoverage]:
         return self.m_instance_coverage_l
+    
+    def close(self):
+        # NOP
+        pass
 
     
     

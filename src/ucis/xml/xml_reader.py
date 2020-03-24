@@ -1,3 +1,4 @@
+from ucis.xml import validate_ucis_xml
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -55,6 +56,11 @@ class XmlReader():
             self.readInstanceCoverage(instN)
 
         return self.db
+    
+    @staticmethod
+    def validate(file_or_filename):
+        validate_ucis_xml(file_or_filename)
+        
     
     def readSourceFile(self, srcFileN):
         filename = srcFileN.get("fileName")

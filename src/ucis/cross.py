@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,24 +14,24 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Dec 22, 2019
 
 @author: ballance
 '''
-from ucis.scope import Scope
-from ucis.cvg_scope import CvgScope
 
-class Cross(CvgScope):
+from ucis.coverpoint import Coverpoint
+
+
+class Cross(Coverpoint):
     
     def __init__(self):
         pass
     
-    def createCoverInstance(self):
-        pass
+    def getNumCrossedCoverpoints(self)->int:
+        raise NotImplementedError()
     
-    def getIthCrossedCvp(self, index):
-        pass
+    def getIthCrossedCoverpoint(self, index)->'Coverpoint':
+        raise NotImplementedError()
     
     

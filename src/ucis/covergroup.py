@@ -14,6 +14,9 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from typing import List
+from ucis.coverpoint import Coverpoint
+from ucis.source_t import SourceT
 '''
 Created on Dec 22, 2019
 
@@ -32,13 +35,11 @@ class Covergroup(CvgScope):
     def __init__(self):
         super().__init__()
         # Call set-attr methods to establish defaults
-        print("--> Covergroup::__init__()")
         self.setPerInstance(False)
         self.setMergeInstances(True)
         self.setGetInstCoverage(False)
         # Comment doesn't seem valid on a CvgScope standalone
         self.setComment("")
-        print("<-- Covergroup::__init__()")
         pass
     
 
@@ -70,18 +71,16 @@ class Covergroup(CvgScope):
         raise NotImplementedError()
     
     def createCross(self, 
-                    name, 
+                    name : str, 
                     srcinfo : SourceInfo,
                     weight : int,
-                    source, 
-                    points_l):
-        pass
-    
-    def createCrossByName(self, name, fileinfo, weight, source, point_names_l):
-        pass
+                    source : SourceT, 
+                    points_l : List['Coverpoint']):
+        raise NotImplementedError()
     
     def createCoverInstance(
             self,
+            name:str,
             srcinfo:SourceInfo,
             weight:int,
             source)->'Covergroup':

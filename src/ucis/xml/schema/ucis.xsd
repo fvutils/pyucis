@@ -420,6 +420,9 @@ minOccurs="0" maxOccurs="unbounded"/>
 </xsd:sequence>
 <xsd:attribute name="type" type="xsd:string" default="default"/>
 <xsd:attribute name="alias" type="xsd:string"/>
+<!-- MSB: Added based on presence in spec -->
+<xsd:attribute name="name" type="xsd:string" use="required"/>
+<xsd:attribute name="key" type="xsd:string" use="required"/>
 </xsd:complexType>
 <!-- Definition of CROSS_OPTIONS -->
 <xsd:complexType name="CROSS_OPTIONS">

@@ -98,9 +98,6 @@ class UCIS(Scope):
     def createHistoryNode(self, parent, logicalname, physicalname, kind):
         raise UnimplError()
     
-    def createCoverInstance(self, name, stmt_id : StatementId):
-        raise UnimplError()
-    
     def historyNodes(self, kind : HistoryNodeKind) -> Iterator[HistoryNode]:
         raise UnimplError()
     

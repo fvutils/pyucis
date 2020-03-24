@@ -21,7 +21,7 @@ Created on Jan 8, 2020
 '''
 
 from typing import Iterator, List
-from ucis import IntProperty
+from ucis import IntProperty, UCIS_COVERGROUP, UCIS_COVERINSTANCE
 from ucis.cover_data import CoverData
 from ucis.cover_index import CoverIndex
 from ucis.cover_type_t import CoverTypeT
@@ -139,7 +139,6 @@ class MemScope(MemObj,Scope):
         name:str, 
         data:CoverData, 
         sourceinfo:SourceInfo)->CoverIndex:
-        print("createNextCover")
         ret = MemCoverIndex(name, data, sourceinfo)
         self.m_cover_items.append(ret)
         return ret
@@ -155,6 +154,13 @@ class MemScope(MemObj,Scope):
         if ScopeTypeT.DU_ANY(type):
             ret = MemScope(self, name, srcinfo, weight,
                               source, type, flags)
+        elif type == UCIS_COVERGROUP:
+            from .mem_covergroup import MemCovergroup
+            ret = MemCovergroup(self, name, srcinfo, weight,source)
+        elif type == UCIS_COVERINSTANCE:
+            from .mem_covergroup import MemCovergroup
+            ret = MemCovergroup(self, name, srcinfo, weight,source)
+            ret.m_type = UCIS_COVERINSTANCE
         else:
             raise UnimplError()
         

@@ -35,6 +35,8 @@ from ucis.ucis import UCIS
 from lxml import etree as et
 from lxml.etree import QName, tounicode, SubElement
 
+import getpass
+
 
 class XmlWriter():
     
@@ -58,8 +60,12 @@ class XmlWriter():
 #        self.root = et.Element("UCIS", nsmap={
             "ucis" : XmlWriter.UCIS
             })
-        self.setAttr(self.root, "writtenBy", db.getWrittenBy())
-        self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
+        # TODO: these aren't really UCIS properties
+        self.setAttr(self.root, "writtenBy", getpass.getuser())
+        self.setAttrDateTime(self.root, "writtenTime", "123456789")
+        
+#        self.setAttr(self.root, "writtenBy", db.getWrittenBy())
+#        self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
         
         self.setAttr(self.root, "ucisVersion", db.getAPIVersion())
         
@@ -84,7 +90,6 @@ class XmlWriter():
 #        histNodes = self.root.SubElement(self.root, "historyNodes")
 
         for i,h in enumerate(self.db.getHistoryNodes(HistoryNodeKind.ALL)):
-            print("i=" + str(i))
             histN = self.mkElem(self.root, "historyNodes")
             histN.set("historyNodeId", str(i))
             
@@ -115,7 +120,6 @@ class XmlWriter():
             # TODO: userAttr
             
     def write_instance_coverages(self):
-        print("write_instance_coverages")
         inst = self.mkElem(self.root, "instanceCoverages")
         inst.set("name", "my_scope") # TODO:
         inst.set("key", "0") # TODO:
@@ -168,8 +172,10 @@ class XmlWriter():
         self.setAttr(cgSourceIdElem, "inlineCount", "1")
         
         for cp in cg.scopes(ScopeTypeT.COVERPOINT):
-            print("cp=" + str(cp))
             self.write_coverpoint(cgInstElem, cp)
+            
+        for cr in cg.scopes(ScopeTypeT.CROSS):
+            self.write_cross(cgInstElem, cr)
             
     def write_coverpoint(self, cgInstElem, cp : Coverpoint):
         cpElem = self.mkElem(cgInstElem, "coverpoint")
@@ -184,7 +190,6 @@ class XmlWriter():
         # TODO: should probably organize bins into a structure that fits more nicely into the interchage format
         
         for cp_bin in coveritems:
-            print("cp_bin: " + cp_bin.getName())
             cov_data = cp_bin.getCoverData()
             cpBinElem = self.mkElem(cpElem, "coverpointBin")
             self.setAttr(cpBinElem, "name", cp_bin.getName())
@@ -196,9 +201,37 @@ class XmlWriter():
             contents = self.mkElem(seq, "contents")
             self.setAttr(contents, "coverageCount", str(cov_data.data))
             seqValue = self.mkElem(seq, "seqValue")
-            seqValue.text = "1" # TODO
+            seqValue.text = "-1" # Note: this is a meaningless value
             
+    def write_cross(self, cgInstElem, cr):
+        crossElem = self.mkElem(cgInstElem, "cross")
+        self.setAttr(crossElem, "name", cr.getScopeName())
+        self.setAttr(crossElem, "key", "0")
+        self.write_options(crossElem, cr)
         
+        expr = ",".join([cr.getIthCrossedCoverpoint(i).getScopeName() 
+                         for i in range(cr.getNumCrossedCoverpoints())])
+        crossExpr = self.mkElem(crossElem, "crossExpr")
+        crossExpr.text = expr
+        
+        
+        self.write_cross_bins(crossElem, cr.coverItems(CoverTypeT.CVGBIN))
+        
+    def write_cross_bins(self, crossElem, coveritems : Iterator[CoverIndex]):
+        
+        for cr_bin in coveritems:
+            cov_data = cr_bin.getCoverData()
+            crBinElem = self.mkElem(crossElem, "crossBin")
+            self.setAttr(crBinElem, "name", cr_bin.getName())
+            self.setAttr(crBinElem, "key", "0")
+            self.setAttr(crBinElem, "type", "default") # TOOD: illegal, ignore
+            
+            index = self.mkElem(crBinElem, "index")
+            index.text = "-1" # Note: this is a meaningless value
+            
+            contents = self.mkElem(crBinElem, "contents")
+            self.setAttr(contents, "coverageCount", str(cov_data.data))
+            
     
     def write_options(self, parent, opts_item):
         self.mkElem(parent, "options")
