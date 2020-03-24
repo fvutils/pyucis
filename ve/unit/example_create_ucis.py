@@ -18,12 +18,12 @@
 
 
 import os
-from pyucis import *
-from pyucis.scope import Scope
+from ucis import *
+from ucis.scope import Scope
 
-from pyucis.source_info import SourceInfo
-from pyucis.test_data import TestData
-from pyucis.cover_data import CoverData
+from ucis.source_info import SourceInfo
+from ucis.test_data import TestData
+from ucis.cover_data import CoverData
 
 
 #* Create a design unit of the given name.

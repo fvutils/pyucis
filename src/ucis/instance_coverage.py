@@ -16,24 +16,34 @@
 # specific language governing permissions and limitations
 # under the License.
 
+'''
+Created on Jan 5, 2020
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
-from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
+@author: ballance
+'''
+from ucis.name_value import NameValue
+from ucis.unimpl_error import UnimplError
+from ucis.statement_id import StatementId
 
-class TestUcisExamples(TestCase):
-
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+class InstanceCoverage():
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()
+    def __init__(self):
+        pass
+    
+    
+    def getDesignParameters(self) -> [NameValue]:
+        raise UnimplError()
+    
+    def addDesignParameter(self, p : NameValue):
+        raise UnimplError()
+    
+    def getId(self) -> StatementId:
+        raise UnimplError()
+    
+    def getName(self) -> str:
+        raise UnimplError()
+    
+    def getKey(self) -> str:
+        raise UnimplError()
+    
+    

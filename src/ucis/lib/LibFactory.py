@@ -16,24 +16,28 @@
 # specific language governing permissions and limitations
 # under the License.
 
+'''
+Created on Jan 10, 2020
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
-from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
+@author: ballance
+'''
+from ctypes import *
+from ucis.lib import libucis
+from ucis.lib.libucis import _lib, get_ucis_library
+from ucis.lib.lib_ucis import LibUCIS
 
-class TestUcisExamples(TestCase):
+class LibFactory():
 
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+    @staticmethod
+    def create(file=None):
+        if get_ucis_library() is None:
+            raise Exception("libucis not loaded")
+        
+        return LibUCIS(file)
+        
+
+    # Load the specified UCIS library
+    @staticmethod
+    def load_ucis_library(lib):
+        libucis.load_ucis_library(lib)
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()

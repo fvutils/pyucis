@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,25 +14,22 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+'''
+Created on Jan 11, 2020
+
+@author: ballance
+'''
+
+from ucis.file_handle import FileHandle
+from ucis.lib.libucis import get_lib
 
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
-from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
-
-class TestUcisExamples(TestCase):
-
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+class LibFileHandle(FileHandle):
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()
+    def __init__(self, db, fh):
+        super().__init__()
+        self.db = db
+        self.fh = fh
+        
+    def getFileName(self)->str:
+        return get_lib().ucis_GetFileName(self.db, self.fh)

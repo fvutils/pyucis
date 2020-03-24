@@ -17,13 +17,13 @@
 # under the License.
 
 from unittest.case import TestCase
-from pyucis.mem.mem_factory import MemFactory
-from pyucis.xml.xml_writer import XmlWriter
+from ucis.mem.mem_factory import MemFactory
+from ucis.xml.xml_writer import XmlWriter
 import io
-from pyucis.xml.xml_factory import XmlFactory
-from pyucis.statement_id import StatementId
-from pyucis.xml import validate_ucis_xml, xml_reader
-from pyucis.xml.xml_reader import XmlReader
+from ucis.xml.xml_factory import XmlFactory
+from ucis.statement_id import StatementId
+from ucis.xml import validate_ucis_xml, xml_reader
+from ucis.xml.xml_reader import XmlReader
 
 class TestSmoke(TestCase):
     

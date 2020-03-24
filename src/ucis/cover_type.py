@@ -16,24 +16,35 @@
 # specific language governing permissions and limitations
 # under the License.
 
+'''
+Created on Jan 8, 2020
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
+@author: ballance
+'''
 from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
+from ucis.unimpl_error import UnimplError
 
-class TestUcisExamples(TestCase):
-
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+class CoverType(Scope):
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()
+    def __init__(self):
+        super().__init__()
+        
+    def setCoverGoal(self, goal : int):
+        raise UnimplError()
+    
+    def getCoverGoal(self)->int:
+        raise UnimplError()
+    
+    def setCoverLimit(self, limit : int):
+        raise NotImplementedError()
+    
+    def getCoverLimit(self) -> int:
+        raise NotImplementedError()
+    
+    def setCoverWeight(self, weight : int):
+        raise NotImplementedError()
+    
+    def getCoverWeight(self) -> int:
+        raise NotImplementedError()
+    
+        

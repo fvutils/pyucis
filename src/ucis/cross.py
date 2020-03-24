@@ -16,24 +16,23 @@
 # specific language governing permissions and limitations
 # under the License.
 
+'''
+Created on Dec 22, 2019
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
+@author: ballance
+'''
 from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
+from ucis.cvg_scope import CvgScope
 
-class TestUcisExamples(TestCase):
-
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+class Cross(CvgScope):
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()
+    def __init__(self):
+        pass
+    
+    def createCoverInstance(self):
+        pass
+    
+    def getIthCrossedCvp(self, index):
+        pass
+    
+    

@@ -4,14 +4,14 @@ Created on Mar 11, 2020
 @author: ballance
 '''
 import os
-from pyucis import ucis_Write, ucis_Close, UCIS_HISTORYNODE_TEST, \
+from ucis import ucis_Write, ucis_Close, UCIS_HISTORYNODE_TEST, \
     UCIS_TESTSTATUS_OK, UCIS_VLOG, UCIS_DU_MODULE, UCIS_ENABLED_BRANCH, \
     UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
     UCIS_SCOPE_UNDER_DU, UCIS_ENABLED_STMT, UCIS_ENABLED_COND, UCIS_INSTANCE, \
     UCIS_OTHER
-from pyucis.lib.LibFactory import LibFactory
-from pyucis.source_info import SourceInfo
-from pyucis.test_data import TestData
+from ucis.lib.LibFactory import LibFactory
+from ucis.source_info import SourceInfo
+from ucis.test_data import TestData
 import unittest
 from unittest.case import TestCase
 

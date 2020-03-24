@@ -1,7 +1,7 @@
 from unittest.case import TestCase
-from pyucis.mem.mem_factory import MemFactory
+from ucis.mem.mem_factory import MemFactory
 import example_create_ucis
-from pyucis.xml.xml_factory import XmlFactory
+from ucis.xml.xml_factory import XmlFactory
 from _io import StringIO
 
 

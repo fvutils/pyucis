@@ -16,24 +16,31 @@
 # specific language governing permissions and limitations
 # under the License.
 
+'''
+Created on Jan 5, 2020
 
-import os
-from unittest.case import TestCase
-from ucis.mem.mem_factory import MemFactory
-from ucis.source_info import SourceInfo
-from ucis.scope import Scope
-from ucis.test_data import TestData
-from ucis import *
-from ucis.lib.LibFactory import LibFactory
-import example_create_ucis
+@author: ballance
+'''
+from ucis import UCIS
+from ucis.mem.mem_ucis import MemUCIS
 
-class TestUcisExamples(TestCase):
-
-    def setUp(self):
-        LibFactory.load_ucis_library("libucis.so")
+class MemFactory():
     
-    def test_create_ucis(self):
-        db = LibFactory.create()
-        example_create_ucis.create_ucis(db)
-        db.write("file.ucis", None, True, -1)
-        db.close()
+    
+    @staticmethod
+    def create() -> UCIS:
+        """
+        Creates a new in-memory database. 
+        """
+        return MemUCIS()
+    
+    
+    @staticmethod
+    def clone(db : UCIS):
+        """Clones an existing database and creates a new in-memory database"""
+        pass
+
+        
+    
+        
+        
