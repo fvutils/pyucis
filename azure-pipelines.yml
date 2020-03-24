@@ -1,6 +1,6 @@
   
 jobs:
-- job: PyVSC_Linux
+- job: PyUCIS_Linux
   pool:
    vmImage: 'ubuntu-18.04'
 
