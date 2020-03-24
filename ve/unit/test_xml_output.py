@@ -225,7 +225,7 @@ class TestXmlOutput(TestCase):
         input = StringIO(out.getvalue())
         validate_ucis_xml(input)
                 
-    def test_lib_dump(self):
+    def disabled_test_lib_dump(self):
         LibFactory.load_ucis_library("libucis.so")
         db = LibFactory.create("file.ucis")
         

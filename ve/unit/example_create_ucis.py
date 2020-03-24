@@ -62,19 +62,19 @@ def create_filehandle(db, filename):
 #* Create test data. For the most part, this is hardcoded.
 def create_testdata(db, ucisdb):
     testdata = TestData(
-    UCIS_TESTSTATUS_OK,  #/* teststatus */
-    0.0,                 #/* simtime */
-    "ns",                #/* timeunit */
-    "./",                #/* runcwd */
-    0.0,                 #/* cputime */
-    "0",                 #/* seed */
-    "toolname",          #/* cmd */
-    "command arguments", #/* args */
-    0,                   #/* compulsory */
-    "20110824143300",    #/* date */
-    "ucis_user",         #/* username */
-    0.0,                 #/* cost */
-    "UCIS:Simulator"     #/* toolcategory */
+        teststatus=UCIS_TESTSTATUS_OK,  #/* teststatus */
+        toolcategory="UCIS:Simulator",  #/* toolcategory */
+        simtime=0.0,                    #/* simtime */
+        timeunit="ns",                  #/* timeunit */
+        runcwd="./",                    #/* runcwd */
+        cputime=0.0,                    #/* cputime */
+        seed="0",                       #/* seed */
+        cmd="toolname",                 #/* cmd */
+        args="command arguments",       #/* args */
+        compulsory=0,                   #/* compulsory */
+        date="20110824143300",          #/* date */
+        user="ucis_user",               #/* username */
+        cost=0.0                        #/* cost */
     )
 
     testnode =  ucis_CreateHistoryNode(

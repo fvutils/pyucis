@@ -18,6 +18,10 @@ from unittest.case import TestCase
 from example_create_ucis import create_testdata, create_covergroup, \
     create_coverpoint_bin, create_coverpoint, create_filehandle, create_instance, \
     create_design_unit
+from ucis.mem.mem_factory import MemFactory
+from ucis.xml.xml_reader import XmlReader
+from ucis.xml.xml_writer import XmlWriter
+from _io import StringIO
 
 
 class TestSimpleCreate(TestCase):
@@ -26,8 +30,7 @@ class TestSimpleCreate(TestCase):
         print("-- test_simplest_create")
         
         ucisdb = "file.ucis"
-        LibFactory.load_ucis_library("libucis.so")
-        db = LibFactory.create()
+        db = MemFactory.create()
         
         testnode = db.createHistoryNode(
             None, 
@@ -88,14 +91,19 @@ class TestSimpleCreate(TestCase):
             "a")
         print("<-- createBin")
 
-        db.write(ucisdb, None, True, -1)
+#        db.write(ucisdb, None, True, -1)
         db.close()
+
+        xmlout = StringIO()        
+        writer = XmlWriter()
+        writer.write(xmlout, db)
+        xmlin = StringIO(xmlout.getvalue())
+        XmlReader.validate(xmlin)
 
     def test_simplest_create_2inst(self):
         
         ucisdb = "file_2inst.ucis"
-        LibFactory.load_ucis_library("libucis.so")
-        db = LibFactory.create()
+        db = MemFactory.create()
         
         testnode = db.createHistoryNode(
             None, 
@@ -206,13 +214,17 @@ class TestSimpleCreate(TestCase):
             4,
             "a")
 
-        db.write(ucisdb, None, True, -1)
         db.close()        
+        
+        xmlout = StringIO()        
+        writer = XmlWriter()
+        writer.write(xmlout, db)
+        xmlin = StringIO(xmlout.getvalue())
+        XmlReader.validate(xmlin)        
         
     def test_create_type_inst_cg(self):
         ucisdb = "file_type_inst.ucis"
-        LibFactory.load_ucis_library("libucis.so")
-        db = LibFactory.create()
+        db = MemFactory.create()
         
         testnode = db.createHistoryNode(
             None, 
@@ -290,8 +302,13 @@ class TestSimpleCreate(TestCase):
             0,
             "a")
         
-        db.write(ucisdb, None, True, -1)
         db.close()
+        
+        xmlout = StringIO()        
+        writer = XmlWriter()
+        writer.write(xmlout, db)
+        xmlin = StringIO(xmlout.getvalue())
+        XmlReader.validate(xmlin)
         
 #         LibFactory.load_ucis_library("libucis.so")
 #         db = LibFactory.create()

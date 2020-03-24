@@ -27,7 +27,7 @@ from ucis.xml.xml_reader import XmlReader
 
 class TestSmoke(TestCase):
     
-    def test_smoke(self):
+    def disabled_test_smoke(self):
         db = MemFactory.create()
 
         srcF = db.createFileHandle("/home/foobar", None)        
@@ -49,22 +49,22 @@ class TestSmoke(TestCase):
         print("output2:\n" + out2.getvalue())
         
 
-    def test_validate(self):
+    def disabled_test_validate(self):
         document = """
 <ucis:UCIS xmlns:ucis="UCIS" ucisVersion="1.0"  writtenBy="$USER"
  writtenTime="2008-09-29T03:49:45">
 <ucis:sourceFiles  fileName="string" id="201" />
 </ucis:UCIS>        
         """
-        document = """
-<ucis:UCIS xmlns:ucis="UCIS" ucisVersion="1.0" writtenBy="foo" writtenTime="20200101">
-  <ucis:sourceFiles fileName="/home/foobar" id="0"/>
-  <ucis:historyNodes historyNodeId="0" logicalName="abc" testStatus="False"/>
-  <ucis:instanceCoverages name="my_cg" key="0">
-    <ucis:id file="0" line="1" inlineCount="1"/>
-  </ucis:instanceCoverages>
-</ucis:UCIS>
-        """
+#        document = """
+#<ucis:UCIS xmlns:ucis="UCIS" ucisVersion="1.0" writtenBy="foo" writtenTime="20200101">
+#  <ucis:sourceFiles fileName="/home/foobar" id="0"/>
+#  <ucis:historyNodes historyNodeId="0" logicalName="abc" testStatus="False"/>
+#  <ucis:instanceCoverages name="my_cg" key="0">
+#    <ucis:id file="0" line="1" inlineCount="1"/>
+#  </ucis:instanceCoverages>
+#</ucis:UCIS>
+#        """
         
         
         file_i = io.StringIO(document)

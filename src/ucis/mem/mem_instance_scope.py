@@ -47,7 +47,7 @@ class MemInstanceScope(MemScope,InstanceScope):
         type : ScopeTypeT, 
         flags : FlagsT) -> 'Scope':
         if (type & ScopeTypeT.COVERGROUP) != 0:
-            ret = MemCovergroup(self, name, srcinfo, weight, source, type, flags)
+            ret = MemCovergroup(self, name, srcinfo, weight, source)
         else:
             raise UnimplError()
 

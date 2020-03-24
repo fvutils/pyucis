@@ -9,9 +9,7 @@ from ucis.cover_type import CoverType
 from ucis.covergroup import Covergroup
 from ucis.mem.mem_cvg_scope import MemCvgScope
 from ucis.source_t import SourceT
-
-from vsc.model.source_info import SourceInfo
-
+from ucis.source_info import SourceInfo
 
 class MemCovergroup(MemCvgScope,Covergroup):
     

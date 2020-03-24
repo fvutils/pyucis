@@ -29,7 +29,7 @@ from ucis.xml.xml_reader import XmlReader
 class XmlFactory():
     
     @staticmethod
-    def read(file_or_filename) -> ucis:
+    def read(file_or_filename) -> UCIS:
         """Reads the specified XML file and returns a UCIS representation"""
         
         # First, validate the incoming XML
@@ -58,7 +58,7 @@ class XmlFactory():
         return ret
         
     @staticmethod
-    def write(db : ucis, file_or_filename):
+    def write(db : UCIS, file_or_filename):
         """Writes the specified database in XML format"""
         writer = XmlWriter()
         

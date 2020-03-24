@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,17 +14,33 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
 '''
 Created on Jan 8, 2020
 
 @author: ballance
 '''
+
 from ucis.obj import Obj
+from ucis.str_property import StrProperty
+
 
 class MemObj(Obj):
     
     def __init__(self):
-        super().__init__()
+        Obj.__init__(self)
+        
+    def getStringProperty(
+            self,
+            coverindex : int,
+            property : StrProperty) -> str:
+        # Ignore for now
+        pass
+    
+    def setStringProperty(
+            self,
+            coverindex : int,
+            property : StrProperty,
+            value : str):
+        return ""
         
     

@@ -21,7 +21,8 @@ Created on Jan 8, 2020
 '''
 
 from typing import Iterator, List
-from ucis import IntProperty, UCIS_COVERGROUP, UCIS_COVERINSTANCE
+from ucis import IntProperty, UCIS_COVERGROUP, UCIS_COVERINSTANCE,\
+    UCIS_COVERPOINT, UCIS_CROSS
 from ucis.cover_data import CoverData
 from ucis.cover_index import CoverIndex
 from ucis.cover_type_t import CoverTypeT
@@ -161,8 +162,14 @@ class MemScope(MemObj,Scope):
             from .mem_covergroup import MemCovergroup
             ret = MemCovergroup(self, name, srcinfo, weight,source)
             ret.m_type = UCIS_COVERINSTANCE
+        elif type == UCIS_COVERPOINT:
+            from .mem_coverpoint import MemCoverpoint
+            ret = MemCoverpoint(self, name, srcinfo, weight, source)
+        elif type == UCIS_CROSS:
+            from .mem_cross import MemCross
+            ret = MemCross(self, name, srcinfo, weight, source)
         else:
-            raise UnimplError()
+            raise NotImplementedError("Scope type " + str(type) + " not supported")
         
         self.m_children.append(ret)
         

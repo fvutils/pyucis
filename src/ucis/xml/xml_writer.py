@@ -20,6 +20,8 @@ Created on Jan 5, 2020
 @author: ballance
 '''
 
+import time
+import datetime
 from datetime import datetime
 from typing import Dict, Iterator
 from ucis.cover_index import CoverIndex
@@ -261,7 +263,7 @@ class XmlWriter():
             e.set(name, "false")
 
     def setAttrDateTime(self, e, name, val):
-        val_i = int(val)
+        val_i = time.mktime(datetime.strptime(val, "%Y%m%d%H%M%S").timetuple())
         self.setAttr(e, name, datetime.fromtimestamp(val_i).isoformat())
             
     def setIfNonNull(self, n, attr, val):
