@@ -40,18 +40,18 @@ jobs:
       python3 setup.py bdist_wheel --universal
     displayName: 'Build Wheel'
 
-#  - task: TwineAuthenticate@1
-#    condition: eq(variables['Build.SourceBranchName'], 'master')
-#    inputs:
-#      pythonUploadServiceConnection: pypi-pyvsc
-#  - script: |
-#      # Only deploy from master
-#      if test "$(Build.SourceBranchName)" = "master"; then
-#          python -m twine --version
-#          echo "Calling twine"
-#          python -m twine upload -r py-vsc --config-file $(PYPIRC_PATH) dist/*.whl
-#          echo "Calling twine complete"
-#      fi
-#    displayName: 'Upload to PyPi'
+  - task: TwineAuthenticate@1
+    condition: eq(variables['Build.SourceBranchName'], 'master')
+    inputs:
+      pythonUploadServiceConnection: pypi-pyucis
+  - script: |
+      # Only deploy from master
+      if test "$(Build.SourceBranchName)" = "master"; then
+          python3 -m twine --version
+          echo "Calling twine"
+          python3 -m twine upload -r pyucis --config-file $(PYPIRC_PATH) dist/*.whl
+          echo "Calling twine complete"
+      fi
+    displayName: 'Upload to PyPi'
 
 
