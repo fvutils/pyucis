@@ -74,7 +74,8 @@ class XmlWriter():
         # TODO: collect source files
         self.write_source_files()
         self.write_history_nodes()
-        self.write_instance_coverages()
+        for s in self.db.scopes(ScopeTypeT.INSTANCE):
+            self.write_instance_coverages(s)
 
 #        file.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 #        file.write("<?xml version=\"1.0\"?>\n")
@@ -121,22 +122,16 @@ class XmlWriter():
             
             # TODO: userAttr
             
-    def write_instance_coverages(self):
+    def write_instance_coverages(self, s):
+        # TODO: determine the du_scope associated with this instance
         inst = self.mkElem(self.root, "instanceCoverages")
-        inst.set("name", "my_scope") # TODO:
+        inst.set("name", s.getScopeName())
         inst.set("key", "0") # TODO:
         self.addId(inst, None)
         
-        for s in self.db.scopes(ScopeTypeT.INSTANCE):
-            self.write_covergroups(inst, s)
+        self.write_covergroups(inst, s)
         
-#         for i,c in enumerate(self.db.getCoverInstances()):
-#             coverI = self.mkElem(self.root, "instanceCoverages")
-#             self.setAttr(coverI, "name", c.getName())
-#             self.setAttr(coverI, "key", c.getKey())
-#             
-#             self.write_statement_id(c.getId(), coverI)
-            
+        
     def write_covergroups(self, inst, scope):
         print("write_covergroups: " + str(scope))
         

@@ -1,5 +1,3 @@
-from ucis.xml import validate_ucis_xml
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -16,20 +14,34 @@ from ucis.xml import validate_ucis_xml
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-
+from logging import _srcfile
 '''
 Created on Jan 6, 2020
 
 @author: ballance
 '''
-from ucis.ucis import UCIS
-from lxml import etree
+
+from datetime import datetime
+from typing import Dict
+from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
+    UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
+    UCIS_SCOPE_UNDER_DU, UCIS_DU_MODULE, UCIS_OTHER, du_scope, UCIS_INSTANCE
+from ucis.mem.mem_file_handle import MemFileHandle
+from ucis.mem.mem_scope import MemScope
 from ucis.mem.mem_ucis import MemUCIS
 from ucis.statement_id import StatementId
+from ucis.ucis import UCIS
+from ucis.xml import validate_ucis_xml
+
+from lxml import etree
+
 
 class XmlReader():
     
     def __init__(self):
+        self.file_m : Dict[int,MemFileHandle] = {}
+        self.module_scope_m : Dict[str, MemScope] = {}
+        self.inst_scope_m : Dict[str, MemScope] = {}
         pass
     
     def read(self, file) -> UCIS:
@@ -43,8 +55,8 @@ class XmlReader():
             if i >= 0:
                 elem.tag = elem.tag[i+1:]
        
-        self.db.setWrittenBy(root.get("writtenBy"))
-        self.db.setWrittenTime(self.getAttrDateTime(root, "writtenTime"))
+#        self.db.setWrittenBy(root.get("writtenBy"))
+#        self.db.setWrittenTime(self.getAttrDateTime(root, "writtenTime"))
         
         for srcFileN in tree.iter("sourceFiles"):
             self.readSourceFile(srcFileN)
@@ -64,7 +76,11 @@ class XmlReader():
     
     def readSourceFile(self, srcFileN):
         filename = srcFileN.get("fileName")
-        return self.db.createFileHandle(filename, None)
+        id = int(srcFileN.get("id"))
+        file_h = self.db.createFileHandle(filename, None)
+        self.file_m[id] = file_h
+        
+        return file_h
     
     def readHistoryNode(self, histN):
         parent = None
@@ -84,7 +100,7 @@ class XmlReader():
         self.setIfEx(histN, ret.setCompulsory, "compulsory")
         ret.setDate(self.getAttrDateTime(histN, "date"))
         self.setIfEx(histN, ret.setUserName, "userName")
-        self.setIntIfEx(histN, ret.setCost, "cost")
+        self.setFloatIfEx(histN, ret.setCost, "cost")
         ret.setToolCategory(histN.attrib["toolCategory"])
         ret.setVendorId(histN.attrib["vendorId"])
         ret.setVendorTool(histN.attrib["vendorTool"])
@@ -99,26 +115,172 @@ class XmlReader():
         stmt_id = None
         for stmt_idN in instN.iter("id"):
             stmt_id = self.readStatementId(stmt_idN)
-
-        print("stmt_id")
-        ret = self.db.createCoverInstance(name, stmt_id)
-##        ret.setKey
+            
+        srcinfo = None
+            
+        # TODO: Creating a coverage instance depends on
+        # having a du_type
+        module_scope_name = self.getAttr(instN, "moduleName", "default")
+        
+        type_scope = self.getScope(
+            module_scope_name, 
+            None, 
+            UCIS_OTHER) # TODO: how do we determine source type?
+        
+        inst_scope = self.getInstScope(
+            name,
+            srcinfo,
+            UCIS_OTHER,
+            type_scope)
+        
+        for cg in instN.iter("covergroupCoverage"):
+            self.readCovergroup(cg, inst_scope)
 
 #        self.setIntIfEx(instN, ret.setAli, name)
+
+    def readCovergroup(self, cg, inst_scope):
+        # This entry is for a given covergroup type
         
-        return ret
+        covergroup_scope = None
+        
+        for cgN in cg.iter("cgInstance"):
+            srcinfo = None
+            if covergroup_scope is None:
+                covergroup_scope = inst_scope.createCovergroup(
+                    self.getAttr(cgN, "name", "default"),
+                    srcinfo,
+                    1,
+                    UCIS_OTHER)
+            else:
+                covergroup_scope = covergroup_scope.createCoverInstance(
+                    )
+                
+            cp_m = {}
+                
+            for cpN in cgN.iter("coverpoint"):
+                cp = self.readCoverpoint(cpN, covergroup_scope)
+                cp_m[self.getAttr(cpN, "name", "default")] = cp
+                
+            for crN in cgN.iter("cross"):
+                self.readCross(crN, cp_m, covergroup_scope)
+                
+    def readCoverpoint(self, cpN, covergroup_scope):
+        srcinfo = None
+        
+        cp = covergroup_scope.createCoverpoint(
+            self.getAttr(cpN, "name", "default"),
+            srcinfo,
+            1, # weight
+            UCIS_OTHER)
+        
+        for cpBin in cpN.iter("coverpointBin"):
+            self.readCoverpointBin(cpBin, cp)
+            
+        return cp
+            
+    def readCoverpointBin(self, cpBin, cp):
+        srcinfo = None
+        
+        cp.createBin(
+            self.getAttr(cpBin, "name", "default"),
+            srcinfo,
+            1,
+            4,
+            self.getAttr(cpBin, "name", "default"))
+        
+    def readCross(self, crN, cp_m, covergroup_scope):
+        crossExpr = next(crN.iter("crossExpr"))
+        name = self.getAttr(crN, "name", "default")
+        
+        cp_l = []
+        for cp_n in crossExpr.text.split(','):
+            print("cp_n=\"" + cp_n + "\"")
+            if cp_n in cp_m.keys():
+                cp_l.append(cp_m[cp_n])
+            else:
+                raise Exception("Cross " + name + " references missing coverpoint " + cp_n)
+
+        srcinfo = None
+        
+        cr = covergroup_scope.createCross(
+            name,
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            cp_l)
+        
+        for crB in crN.iter("crossBin"):
+            self.readCrossBin(crB, cr)
+        
+        return cr
+    
+    def readCrossBin(self, crB, cr):
+        name = self.getAttr(crB, "name", "default")
+        srcinfo = None
+        contentsN = next(crB.iter("contents"))
+        
+        cr.createBin(
+            name,
+            srcinfo,
+            1, # weight
+            self.getAttrInt(contentsN, "coverageCount"),
+            "") # TODO:
+        
 
     def readStatementId(self, stmt_idN):
         file_id = int(stmt_idN.attrib["file"])
         line = int(stmt_idN.attrib["line"])
         item = int(stmt_idN.attrib["inlineCount"])
-        file = self.db.getSourceFiles()[file_id-1]
+        file = self.file_m[file_id]
         return StatementId(file, line, item)
+
+    def getScope(self,
+                 name,
+                 srcinfo,
+                 source):
         
+        if name not in self.module_scope_m.keys():
+            scope = self.db.createScope(
+                name, 
+                srcinfo, 
+                1, 
+                source, 
+                UCIS_DU_MODULE,
+                UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+                | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+                | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+                | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU)
+            self.module_scope_m[name] = scope
+        else:
+            scope = self.module_scope_m[name]
+            
+        return scope
+    
+    def getInstScope(self,
+                     name,
+                     srcinfo,
+                     source,
+                     du_scope):
+        if name not in self.inst_scope_m.keys():
+            scope = self.db.createInstance(
+                name,
+                srcinfo,
+                1,
+                source,
+                UCIS_INSTANCE,
+                du_scope,
+                UCIS_INST_ONCE)
+            self.inst_scope_m[name] = scope
+        else:
+            scope = self.inst_scope_m[name]
+            
+        return scope
     
     def getAttrDateTime(self, e, name):
+        """Converts ISO time used by XML to the YYYYMMDDHHMMSS format used by the library"""
         val = e.get(name)
-        return 0;
+        dateVal = datetime.strptime(val,"%Y-%m-%dT%H:%M:%S")
+        return dateVal.strftime("%Y%m%d%H%M%S")
     
     def getAttr(self, node, name, default):
         if name in node.attrib:
@@ -131,6 +293,9 @@ class XmlReader():
             return True
         else:
             return False
+        
+    def getAttrInt(self, e, name):
+        return int(e.attrib[name])
         
     def setIfEx(self, n, f, name):
         if name in n.attrib:
