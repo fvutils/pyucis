@@ -4,7 +4,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
   name = "pyucis",
-  packages=find_namespace_packages(),
+  packages=find_namespace_packages(where='src'),
   package_dir = {'' : 'src'},
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
