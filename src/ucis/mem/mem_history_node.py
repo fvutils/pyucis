@@ -100,7 +100,6 @@ class MemHistoryNode(HistoryNode):
         return self.m_sim_time
     
     def setSimTime(self, time:float):
-        print("setSimTime: " + str(time))
         self.m_sim_time = time
         
     def getTimeUnit(self) -> str:

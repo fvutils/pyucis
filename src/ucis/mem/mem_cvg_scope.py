@@ -16,7 +16,8 @@ class MemCvgScope(MemScope,CvgScope):
                  source,
                  type,
                  flags):
-        super().__init__(parent, name, srcinfo, weight, source, type, flags)
+        MemScope.__init__(self, parent, name, srcinfo, weight, source, type, flags)
+        CvgScope.__init__(self)
         self.m_at_least = 1
         self.m_auto_bin_max = 64
         self.m_detect_overlap = True

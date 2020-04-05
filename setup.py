@@ -1,10 +1,10 @@
 
 import os
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 
 setup(
   name = "pyucis",
-  packages=['ucis'],
+  packages=find_namespace_packages(),
   package_dir = {'' : 'src'},
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
