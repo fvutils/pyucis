@@ -18,7 +18,7 @@ class MemScopeIterator(object):
     
     def __next__(self):
         next = None
-        
+
         while next is None and self.idx < len(self.nodes):
             n = self.nodes[self.idx]
             # TODO: qualify mask
@@ -26,6 +26,9 @@ class MemScopeIterator(object):
                 next = n
 
             self.idx += 1
+            
+            if next is not None:
+                break
 
         if next is None:        
             raise StopIteration

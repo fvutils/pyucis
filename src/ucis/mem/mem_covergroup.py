@@ -58,7 +58,7 @@ class MemCovergroup(MemCvgScope,Covergroup):
         source)->CoverType:
         from .mem_coverpoint import MemCoverpoint
         ret = MemCoverpoint(self, name, srcinfo, weight, source)
-        self.m_children.append(ret)
+        self.addChild(ret)
         return ret
     
     def createCross(self, 
@@ -69,7 +69,7 @@ class MemCovergroup(MemCvgScope,Covergroup):
         points_l:List['Coverpoint']):
         from .mem_cross import MemCross
         ret = MemCross(self, name, srcinfo, weight, source, points_l)
-        self.m_children.append(ret)
+        self.addChild(ret)
         return ret
     
     def createCoverInstance(
@@ -85,7 +85,6 @@ class MemCovergroup(MemCvgScope,Covergroup):
             source, 
             UCIS_COVERINSTANCE,
             0)
-        self.m_children.append(ci_obj)
         return ci_obj
 
     

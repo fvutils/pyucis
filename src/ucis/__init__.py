@@ -40,6 +40,7 @@ from ucis.toggle_metric_t import ToggleMetricT
 from ucis.toggle_type_t import ToggleTypeT
 from ucis.toggle_dir_t import ToggleDirT
 from lxml.etree import canonicalize
+from _datetime import datetime
 
 
 #********************************************************************
@@ -253,7 +254,7 @@ UCIS_TOGGLE_DIR_INOUT    = ToggleDirT.INOUT
 
     
 def ucis_GetIntProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : IntProperty
@@ -264,7 +265,7 @@ def ucis_GetIntProperty(
         return db.getIntProperty(coverindex, property)
     
 def ucis_SetIntProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : IntProperty,
@@ -276,7 +277,7 @@ def ucis_SetIntProperty(
         db.setIntProperty(coverindex, property, value)
         
 def ucis_GetRealProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : RealProperty
@@ -287,7 +288,7 @@ def ucis_GetRealProperty(
         return db.getRealProperty(coverindex, property)
     
 def ucis_SetRealProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : RealProperty,
@@ -299,7 +300,7 @@ def ucis_SetRealProperty(
         db.setRealProperty(coverindex, property, value)
 
 def ucis_GetStringProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : StrProperty
@@ -310,7 +311,7 @@ def ucis_GetStringProperty(
         return db.getStringProperty(coverindex, property)
     
 def ucis_SetStringProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : StrProperty,
@@ -322,7 +323,7 @@ def ucis_SetStringProperty(
         db.setStringProperty(coverindex, property, value)
         
 def ucis_GetHandleProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : HandleProperty
@@ -333,7 +334,7 @@ def ucis_GetHandleProperty(
         return db.getHandleProperty(coverindex, property)
     
 def ucis_SetHandleProperty(
-        db : ucis,
+        db : UCIS,
         obj : Obj,
         coverindex : int,
         property : HandleProperty,
@@ -345,7 +346,7 @@ def ucis_SetHandleProperty(
         db.setHandleProperty(coverindex, property, value)        
         
 def ucis_CreateScope(
-        db : ucis,
+        db : UCIS,
         parent : Scope,
         name : str,
         sourceinfo : SourceInfo,
@@ -359,7 +360,7 @@ def ucis_CreateScope(
         return db.createScope(name, sourceinfo, weight, source, type, flags)
     
 def ucis_CreateInstance(
-        db : ucis,
+        db : UCIS,
         parent : Scope,
         name : str,
         fileinfo : SourceInfo,
@@ -375,7 +376,7 @@ def ucis_CreateInstance(
         return db.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
    
 def ucis_CreateToggle(
-        db : ucis,
+        db : UCIS,
         parent : Scope,
         name : str,
         canonical_name : str,
@@ -391,7 +392,7 @@ def ucis_CreateToggle(
                                    toggle_metric, toggle_type, toggle_dir)
 
 def ucis_CreateNextCover(
-        db : ucis,
+        db : UCIS,
         parent : Scope,
         name : str,
         data : CoverData,
@@ -399,12 +400,12 @@ def ucis_CreateNextCover(
     return parent.createNextCover(name, data, sourceinfo)
 
 def ucis_RemoveScope(
-        db : ucis,
+        db : UCIS,
         scope : Scope) -> int:
     return db.removeScope(scope)
 
 def ucis_CreateHistoryNode(
-    db : ucis,
+    db : UCIS,
     parent : HistoryNode,
     logicalname,   #/* primary key, never NULL */
     physicalname,
@@ -413,19 +414,19 @@ def ucis_CreateHistoryNode(
     return db.createHistoryNode(parent, logicalname, physicalname, kind)
 
 def ucis_CreateFileHandle (
-    db : ucis,
+    db : UCIS,
     filename : str,
     fileworkdir : str):
     return db.createFileHandle(filename, fileworkdir)
 
 def ucis_SetTestData(
-    db : ucis,
+    db : UCIS,
     testhistorynode : HistoryNode,
     testdata : TestData):
     testhistorynode.setTestData(testdata)
     
 def ucis_Write(
-        db : ucis,
+        db : UCIS,
         file : str,
         scope : Scope,
         recurse : int,
@@ -441,9 +442,13 @@ def ucis_Write(
 #        return -1
     
 def ucis_Close(
-        db : ucis) ->int:
+        db : UCIS) ->int:
 #    try:
     db.close()
     return 0
 #    except:
 #        return -1
+
+def ucis_Time():
+    """Current time in UCIS Y/M/D/H/M/S format"""
+    return datetime.now().strftime("%Y%m%d%H%M%S")

@@ -75,7 +75,7 @@ class Covergroup(CvgScope):
                     srcinfo : SourceInfo,
                     weight : int,
                     source : SourceT, 
-                    points_l : List['Coverpoint']):
+                    points_l : List['Coverpoint']) -> CoverType:
         raise NotImplementedError()
     
     def createCoverInstance(

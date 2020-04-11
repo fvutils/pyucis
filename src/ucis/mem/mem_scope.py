@@ -133,7 +133,7 @@ class MemScope(MemObj,Scope):
             srcinfo,
             weight,
             source)
-        self.m_children.append(ret)
+        self.addChild(ret)
         return ret
     
     def createNextCover(self, 
@@ -165,13 +165,13 @@ class MemScope(MemObj,Scope):
         elif type == UCIS_COVERPOINT:
             from .mem_coverpoint import MemCoverpoint
             ret = MemCoverpoint(self, name, srcinfo, weight, source)
-        elif type == UCIS_CROSS:
-            from .mem_cross import MemCross
-            ret = MemCross(self, name, srcinfo, weight, source)
+#         elif type == UCIS_CROSS:
+#             from .mem_cross import MemCross
+#             ret = MemCross(self, name, srcinfo, weight, source)
         else:
             raise NotImplementedError("Scope type " + str(type) + " not supported")
         
-        self.m_children.append(ret)
+        self.addChild(ret)
         
         return ret            
     
@@ -186,7 +186,7 @@ class MemScope(MemObj,Scope):
         # Create an instance of a type scope
         from ucis.mem.mem_instance_scope import MemInstanceScope
         ret = MemInstanceScope(self, name, fileinfo, weight, source, type, du_scope, flags)
-        self.m_children.append(ret)
+        self.addChild(ret)
         return ret
     
     def createToggle(self,

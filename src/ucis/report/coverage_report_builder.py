@@ -55,7 +55,7 @@ class CoverageReportBuilder(object):
             
         for cr_in in cg_n.scopes(ScopeTypeT.CROSS):
             cg_r.crosses.append(self.build_cross(cp_in))
-        
+
         for cg_in in cg_n.scopes(ScopeTypeT.COVERINSTANCE):
             cg_r.covergroups.append(self.build_covergroup(cg_in))
             
@@ -115,7 +115,7 @@ class CoverageReportBuilder(object):
             if cvg_data.data >= cvg_data.goal:
                 num_hit += 1
                 
-            cr_r.bins.append(CoverageReport.CoverBin(self, 
+            cr_r.bins.append(CoverageReport.CoverBin(
                     ci_n.getName(),
                     cvg_data.goal,
                     cvg_data.data))
