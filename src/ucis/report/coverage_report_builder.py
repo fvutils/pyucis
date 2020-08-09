@@ -8,6 +8,7 @@ from ucis.report.coverage_report import CoverageReport
 from ucis.coverpoint import Coverpoint
 from ucis.cover_type_t import CoverTypeT
 from math import ceil
+from ucis.cross import Cross
 
 
 class CoverageReportBuilder(object):
@@ -54,7 +55,7 @@ class CoverageReportBuilder(object):
             cg_r.coverpoints.append(self.build_coverpoint(cp_in))
             
         for cr_in in cg_n.scopes(ScopeTypeT.CROSS):
-            cg_r.crosses.append(self.build_cross(cp_in))
+            cg_r.crosses.append(self.build_cross(cr_in))
 
         for cg_in in cg_n.scopes(ScopeTypeT.COVERINSTANCE):
             cg_r.covergroups.append(self.build_covergroup(cg_in))
@@ -103,7 +104,7 @@ class CoverageReportBuilder(object):
         return cp_r
         
 
-    def build_cross(self, cr_n : Coverpoint):
+    def build_cross(self, cr_n : Cross):
         cr_r = CoverageReport.Cross(cr_n.getScopeName())
         
         # Read in bins
@@ -111,7 +112,7 @@ class CoverageReportBuilder(object):
         total = 0
         for ci_n in cr_n.coverItems(CoverTypeT.CVGBIN):
             cvg_data = ci_n.getCoverData()
-            
+
             if cvg_data.data >= cvg_data.goal:
                 num_hit += 1
                 

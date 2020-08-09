@@ -31,6 +31,8 @@ class TextCoverageReportFormatter(object):
         with self.indent():
             for cp in cg.coverpoints:
                 self.report_coverpoint(cp)
+            for cr in cg.crosses:
+                self.report_cross(cr)
         
             for cg_i in cg.covergroups:
                 self.report_covergroup(cg_i, True)
@@ -46,6 +48,11 @@ class TextCoverageReportFormatter(object):
 
     def report_cross(self, cr : CoverageReport.Cross):
         self.writeln("CROSS %s : %f%%", cr.name, cr.coverage)
+        
+        if self.details:
+            self.writeln("Bins:")
+            with self.indent():
+                self.report_bins(cr.bins)
         
     def report_bins(self, bins : List[CoverageReport.CoverBin]):
         if self.order_bins_by_hit:
