@@ -133,13 +133,10 @@ class XmlWriter():
         
         
     def write_covergroups(self, inst, scope):
-        print("write_covergroups: " + str(scope))
-        
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):
             cgElem = self.mkElem(inst, "covergroupCoverage")
 #            self.setAttr(cgElem, "weight", str(scope.getWeight()))
                 
-            print("cg=" + str(cg))
             self.write_coverinstance(cgElem, cg.getScopeName(), cg)
             
             for ci in cg.scopes(ScopeTypeT.COVERINSTANCE):

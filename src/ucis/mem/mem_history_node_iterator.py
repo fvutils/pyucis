@@ -23,7 +23,6 @@ class MemHistoryNodeIterator(object):
         
         while self.idx < len(self.history_nodes):
             hn = self.history_nodes[self.idx]
-            print("Check kind=" + str(self.kind) + " against " + str(hn.getKind()))
             if self.kind == HistoryNodeKind.ALL or hn.getKind() == self.kind:
                 next = hn
             self.idx += 1
