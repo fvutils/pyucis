@@ -153,7 +153,10 @@ class XmlReader():
                     UCIS_OTHER)
             else:
                 covergroup_scope = covergroup_scope.createCoverInstance(
-                    )
+                    self.getAttr(cgN, "name", "default"),
+                    srcinfo,
+                    1,
+                    UCIS_OTHER)
                 
             cp_m = {}
                 
