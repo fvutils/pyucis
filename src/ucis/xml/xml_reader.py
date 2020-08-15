@@ -149,18 +149,20 @@ class XmlReader():
     def readCovergroup(self, cg, inst_scope):
         # This entry is for a given covergroup type
         
+        cg_typescope = None
         covergroup_scope = None
         
         for cgN in cg.iter("cgInstance"):
             srcinfo = None
-            if covergroup_scope is None:
-                covergroup_scope = inst_scope.createCovergroup(
+            if cg_typescope is None:
+                cg_typescope = inst_scope.createCovergroup(
                     self.getAttr(cgN, "name", "default"),
                     srcinfo,
                     1,
                     UCIS_OTHER)
+                covergroup_scope = cg_typescope
             else:
-                covergroup_scope = covergroup_scope.createCoverInstance(
+                covergroup_scope = cg_typescope.createCoverInstance(
                     self.getAttr(cgN, "name", "default"),
                     srcinfo,
                     1,
