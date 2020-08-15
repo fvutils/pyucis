@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from logging import _srcfile
 '''
 Created on Jan 6, 2020
 
@@ -22,7 +21,11 @@ Created on Jan 6, 2020
 '''
 
 from datetime import datetime
+from logging import _srcfile
+import sys
 from typing import Dict
+
+from lxml import etree
 from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
     UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
     UCIS_SCOPE_UNDER_DU, UCIS_DU_MODULE, UCIS_OTHER, du_scope, UCIS_INSTANCE
@@ -32,8 +35,6 @@ from ucis.mem.mem_ucis import MemUCIS
 from ucis.statement_id import StatementId
 from ucis.ucis import UCIS
 from ucis.xml import validate_ucis_xml
-
-from lxml import etree
 
 
 class XmlReader():
@@ -66,6 +67,13 @@ class XmlReader():
 
         for instN in tree.iter("instanceCoverages"):
             self.readInstanceCoverage(instN)
+            
+        from ..report.text_coverage_report_formatter import TextCoverageReportFormatter
+        from ..report.coverage_report_builder import CoverageReportBuilder
+        report = CoverageReportBuilder.build(self.db)
+        formatter = TextCoverageReportFormatter(report, sys.stdout)
+        formatter.details = True
+        formatter.report()
 
         return self.db
     
@@ -183,12 +191,14 @@ class XmlReader():
             
     def readCoverpointBin(self, cpBin, cp):
         srcinfo = None
+        seq = next(cpBin.iter("sequence"))
+        contents = next(seq.iter("contents"))
         
         cp.createBin(
             self.getAttr(cpBin, "name", "default"),
             srcinfo,
             1,
-            4,
+            self.getAttrInt(contents, "coverageCount"),
             self.getAttr(cpBin, "name", "default"))
         
     def readCross(self, crN, cp_m, covergroup_scope):
