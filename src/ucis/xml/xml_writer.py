@@ -23,6 +23,7 @@ Created on Jan 5, 2020
 import time
 import datetime
 from datetime import datetime
+from datetime import date
 from typing import Dict, Iterator
 from ucis.cover_index import CoverIndex
 from ucis.cover_type_t import CoverTypeT
@@ -64,7 +65,7 @@ class XmlWriter():
             })
         # TODO: these aren't really UCIS properties
         self.setAttr(self.root, "writtenBy", getpass.getuser())
-        self.setAttrDateTime(self.root, "writtenTime", "123456789")
+        self.setAttrDateTime(self.root, "writtenTime", date.today().strftime("%Y%m%d%H%M%S"))
         
 #        self.setAttr(self.root, "writtenBy", db.getWrittenBy())
 #        self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
