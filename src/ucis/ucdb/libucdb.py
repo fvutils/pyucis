@@ -45,96 +45,98 @@ class FuncMap():
 _funcs = FuncMap()
 
 fspec = {
-    "ucis_Open" : (
-        CFUNCTYPE(c_void_p, c_char_p),
-        ((1,"file"),)),
-    "ucis_Write" : (
+    "ucdb_OpenV" : (
+        CFUNCTYPE(c_void_p, c_char_p, c_int),
+        ((1,"file"),(1,"version"))),
+    "ucdb_Write" : (
         CFUNCTYPE(c_int, c_void_p, c_char_p, c_void_p, c_int, c_uint),
         ((1,"db"),(1,"file"),(1,"scope"),(1,"recurse"),(1,"covertype"))),
-    "ucis_Close" : (
+    "ucdb_Close" : (
         CFUNCTYPE(c_int, c_void_p),
         ((1,"db"),)),
-    "ucis_CreateHistoryNode" : (
+    "ucdb_CreateHistoryNode" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_char_p, c_int),
         ((1,"db"),(1,"parent"),(1,"logicalname"),(1,"physicalname"),(1,"kind"))),
-    "ucis_CreateScope" : (
+    "ucdb_CreateScope" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_ulonglong, c_int),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"sourceinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"flags"))),
-    "ucis_CreateInstance" : (
+    "ucdb_CreateInstance" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_ulonglong, c_void_p, c_int),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"type"),(1,"du_scope"),(1,"flags"))),
-    "ucis_CreateCross" : (
+    "ucdb_CreateCross" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_void_p, c_int, c_int, c_int, c_void_p),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"fileinfo"),(1,"weight"),(1,"source"),(1,"num_points"),(1,"points"))),
-    "ucis_CreateNextCover" : (
+    "ucdb_CreateNextCover" : (
         CFUNCTYPE(c_int, c_void_p, c_void_p, c_char_p, c_void_p, c_void_p),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"data"),(1,"sourceinfo"))),
-    "ucis_CreateToggle" : (
+    "ucdb_CreateToggle" : (
         CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_char_p, c_char_p, c_uint, c_int, c_int, c_int),
         ((1,"db"),(1,"parent"),(1,"name"),(1,"canonical_name"),(1,"flags"),(1,"toggle_metric"),(1,"toggle_type"),(1,"toggle_dir"))),
-    "ucis_SetIntProperty" : (
-        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_int),
-        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
-    "ucis_SetStringProperty" : (
-        CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_char_p),
-        ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
-    "ucis_CreateFileHandle" : (
+    # Note: AddAttr vs properties
+#     "ucdb_SetIntProperty" : (
+#         CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_int),
+#         ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
+#     "ucdb_SetStringProperty" : (
+#         CFUNCTYPE(None, c_void_p, c_void_p, c_int, c_int, c_char_p),
+#         ((1,"db"),(1,"obj"),(1,"coverindex"),(1,"property"),(1,"value"))),
+    # Note: output param vs return
+    "ucdb_CreateSrcFileHandleByName" : (
         CFUNCTYPE(c_void_p, c_void_p, c_char_p, c_char_p),
         ((1,"db"),(1,"filename"),(1,"workdir"))),
-    "ucis_RegisterErrorHandler" : (
+    "ucdb_RegisterErrorHandler" : (
         CFUNCTYPE(None, c_void_p, c_void_p),
         ((1,"cb"),(1,"userdata"))),
-    "ucis_SetTestData" : (
-        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
-    "ucis_GetTestData" : (
-        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
-    "ucis_HistoryIterate" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_uint32),
-        ((1,"db"), (1,"historynode"), (1,"kind"))),
-    "ucis_HistoryScan" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"iterator"))),
-    "ucis_ScopeIterate" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_uint32),
-        ((1,"db"), (1,"scope"), (1,"scopemask"))),
-    "ucis_ScopeScan" : (
-        CFUNCTYPE(c_void_p, c_void_p, c_void_p),
-        ((1,"db"),(1,"iterator"))),
-    "ucis_FreeIterator" : (
-        CFUNCTYPE(None, c_void_p, c_void_p),
-        ((1,"db"), (1,"iterator"))),
-    "ucis_GetScopeSourceInfo" : (
-        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"scope"), (1,"sourceinfo"))),
-    "ucis_GetFileName" : (
-        CFUNCTYPE(c_char_p, c_void_p, c_void_p),
-        ((1,"db"), (1,"filehandle")))
+#    "ucis_SetTestData" : (
+#        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
+#        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
+#    "ucis_GetTestData" : (
+#        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
+#        ((1,"db"), (1,"testhistorynode"), (1,"testdata"))),
+#    "ucis_HistoryIterate" : (
+#        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_uint32),
+#        ((1,"db"), (1,"historynode"), (1,"kind"))),
+    "ucdb_NextHistoryNode" : (
+        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_int),
+        ((1,"db"), (1,"iterator"),(1,"kind"))),
+#    "ucis_ScopeIterate" : (
+#        CFUNCTYPE(c_void_p, c_void_p, c_void_p, c_uint32),
+#        ((1,"db"), (1,"scope"), (1,"scopemask"))),
+#    "ucis_ScopeScan" : (
+#        CFUNCTYPE(c_void_p, c_void_p, c_void_p),
+#        ((1,"db"),(1,"iterator"))),
+#    "ucis_FreeIterator" : (
+#        CFUNCTYPE(None, c_void_p, c_void_p),
+#        ((1,"db"), (1,"iterator"))),
+#    "ucis_GetScopeSourceInfo" : (
+#        CFUNCTYPE(c_int, c_void_p, c_void_p, c_void_p),
+#        ((1,"db"), (1,"scope"), (1,"sourceinfo"))),
+#    "ucis_GetFileName" : (
+#       CFUNCTYPE(c_char_p, c_void_p, c_void_p),
+#        ((1,"db"), (1,"filehandle")))
     }
 
-class ucisErr_s(Structure):
+class ucdbErr_s(Structure):
     _fields_ = [
         ("msgno", c_int),
         ("severity", c_int),
         ("msgstr", c_wchar_p)]
     
-UCIS_ERR_FUNC_T = CFUNCTYPE(None,c_void_p, POINTER(ucisErr_s))
+UCDB_ERR_FUNC_T = CFUNCTYPE(None,c_void_p, POINTER(ucdbErr_s))
 
-def ucis_err_func_py(userdata, errdata_p : ucisErr_s):
+def ucdb_err_func_py(userdata, errdata_p : ucdbErr_s):
     print("errdata_p=" + str(type(errdata_p)))
     errdata = errdata_p
     
-    print("ucis_err_func: " + str(userdata) + " msgno=" + 
+    print("ucdb_err_func: " + str(userdata) + " msgno=" + 
           str(errdata.contents.msgno))
     sys.stdout.flush()
     
-    raise Exception("Hit UCIS Error: " + str(errdata.contents.msgno))
+    raise Exception("Hit UCDB Error: " + str(errdata.contents.msgno))
     
-ucis_err_func = UCIS_ERR_FUNC_T(ucis_err_func_py)
+ucdb_err_func = UCDB_ERR_FUNC_T(ucdb_err_func_py)
 
 # Load the specified UCIS library
-def load_ucis_library(lib):
+def load_ucdb_library(lib):
     global _lib, _funcs
     
     _lib = CDLL(lib)
@@ -143,12 +145,11 @@ def load_ucis_library(lib):
         proto = fsig[0]
         attr = fsig[1]
         func = proto((f, _lib), attr)
-        print("add: f=" + str(f) + " func=" + str(func))
         _funcs.add(f, func)
         
-    _funcs.ucis_RegisterErrorHandler(ucis_err_func, None)
+    _funcs.ucdb_RegisterErrorHandler(ucdb_err_func, None)
     
-def get_ucis_library():
+def get_ucdb_library():
     return _lib
 
 def get_lib():

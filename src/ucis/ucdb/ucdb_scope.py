@@ -14,8 +14,8 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from ucis.lib.lib_cover_index import LibCoverIndex
-from ucis.lib.lib_scope_iterator import LibScopeIterator
+from ucis.ucdb.ucdb_cover_index import UcdbCoverIndex
+#from ucis.ucdb.ucdb_scope_iterator import UcdbScopeIterator
 from typing import Iterator
 '''
 Created on Jan 11, 2020
@@ -31,10 +31,10 @@ from ucis import UCIS_COVERGROUP, UCIS_INT_SCOPE_GOAL, UCIS_INT_CVG_STROBE,\
 
 from ucis.cover_data import CoverData
 from ucis.flags_t import FlagsT
-from ucis.lib.lib_cover_data import LibCoverData
-from ucis.lib.lib_obj import LibObj
-from ucis.lib.lib_source_info import _LibSourceInfo, LibSourceInfo
-from ucis.lib.libucis import get_lib
+from ucis.ucdb.ucdb_cover_data import UcdbCoverData
+from ucis.ucdb.ucdb_obj import UcdbObj
+from ucis.ucdb.ucdb_source_info import _UcdbSourceInfo, UcdbSourceInfo
+from ucis.ucdb.libucdb import get_lib
 from ucis.scope_type_t import ScopeTypeT
 from ucis.source_info import SourceInfo
 from ucis.source_t import SourceT
@@ -43,12 +43,12 @@ from ucis.toggle_metric_t import ToggleMetricT
 from ucis.toggle_type_t import ToggleTypeT
 
 
-class LibScope(LibObj, Scope):
+class UcdbScope(UcdbObj, Scope):
     
     def __init__(self, db, obj):
-        LibObj.__init__(self, db, obj)
+        UcdbObj.__init__(self, db, obj)
         Scope.__init__(self)
-        print("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
+        print("UcdbScope::init - db=" + str(self.db) + " " + str(self.obj))
         
     def getGoal(self)->int:
         return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
@@ -69,11 +69,11 @@ class LibScope(LibObj, Scope):
         source, 
         type, 
         flags):
-        srcinfo_p = None if srcinfo is None else byref(_LibSourceInfo.ctor(srcinfo))
+        srcinfo_p = None if srcinfo is None else byref(_UcdbSourceInfo.ctor(srcinfo))
         print("createScope: db=" + str(self.db) + " obj=" + str(self.obj) + 
               " name=" + str(name) + " srcinfo_p=" + str(srcinfo_p) +
               " weight=" + str(weight) + "source=" + hex(source) + " type=" + hex(type) + " flags=" + hex(flags));
-        sh = get_lib().ucis_CreateScope(
+        sh = get_lib().ucdb_CreateScope(
             self.db,
             self.obj,
             None if name is None else str.encode(name),
@@ -87,7 +87,7 @@ class LibScope(LibObj, Scope):
             print("Error: createScope failed: parent=" + str(self.obj))
             raise Exception("Failed to create scope")
         
-        return LibScope(self.db, sh)
+        return UcdbScope(self.db, sh)
     
     def createInstance(self,
                     name : str,
@@ -97,8 +97,8 @@ class LibScope(LibObj, Scope):
                     type : ScopeTypeT,
                     du_scope : Scope,
                     flags : FlagsT):
-        fileinfo_p = None if fileinfo is None else byref(_LibSourceInfo.ctor(fileinfo))
-        sh = get_lib().ucis_CreateInstance(
+        fileinfo_p = None if fileinfo is None else byref(_UcdbSourceInfo.ctor(fileinfo))
+        sh = get_lib().ucdb_CreateInstance(
             self.db,
             self.obj,
             str.encode(name),
@@ -110,20 +110,20 @@ class LibScope(LibObj, Scope):
             flags)
         
         if sh is None:
-            print("Error: ucis_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
-            raise Exception("ucis_CreateInstance failed")
+            print("Error: ucdb_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
+            raise Exception("ucdb_CreateInstance failed")
         
-        return LibScope(self.db, sh)
+        return UcdbScope(self.db, sh)
     
     def createCovergroup(self, 
         name:str, 
         srcinfo:SourceInfo, 
         weight:int, 
         source) -> 'Covergroup':
-        from ucis.lib.lib_covergroup import LibCovergroup
+        from ucis.ucdb.ucdb_covergroup import UcdbCovergroup
         
-        srcinfo_p = None if srcinfo is None else pointer(_LibSourceInfo.ctor(srcinfo))
-        cg_obj = get_lib().ucis_CreateScope(
+        srcinfo_p = None if srcinfo is None else pointer(_UcdbSourceInfo.ctor(srcinfo))
+        cg_obj = get_lib().ucdb_CreateScope(
             self.db,
             self.obj,
             str.encode(name),
@@ -133,7 +133,7 @@ class LibScope(LibObj, Scope):
             UCIS_COVERGROUP,
             0)
         
-        return LibCovergroup(self.db, cg_obj)
+        return UcdbCovergroup(self.db, cg_obj)
     
     def createToggle(self,
                     name : str,
@@ -142,7 +142,7 @@ class LibScope(LibObj, Scope):
                     toggle_metric : ToggleMetricT,
                     toggle_type : ToggleTypeT,
                     toggle_dir : ToggleDirT) -> 'Scope':
-        th = get_lib().ucis_CreateToggle(
+        th = get_lib().ucdb_CreateToggle(
             self.db,
             self.obj,
             str.encode(name),
@@ -151,32 +151,32 @@ class LibScope(LibObj, Scope):
             toggle_metric,
             toggle_type,
             toggle_dir)
-        return LibScope(self.db, th)
+        return UcdbScope(self.db, th)
     
     def createNextCover(self,
                         name : str,
                         data : CoverData,
                         sourceinfo : SourceInfo) -> int:
-        sourceinfo_p = None if sourceinfo is None else byref(_LibSourceInfo.ctor(sourceinfo))
-        data_p = byref(LibCoverData.ctor(data))
+        sourceinfo_p = None if sourceinfo is None else byref(_UcdbSourceInfo.ctor(sourceinfo))
+        data_p = byref(UcdbCoverData.ctor(data))
         
-        index =  get_lib().ucis_CreateNextCover(
+        index =  get_lib().ucdb_CreateNextCover(
             self.db,
             self.obj,
             str.encode(name),
             data_p,
             sourceinfo_p)
         
-        return LibCoverIndex(self.db, self.obj, index)
+        return UcdbCoverIndex(self.db, self.obj, index)
     
     def getSourceInfo(self)->SourceInfo:
-        libsrcinfo = _LibSourceInfo()
+        libsrcinfo = _UcdbSourceInfo()
         sourceinfo_p = byref(libsrcinfo)
         
-        get_lib().ucis_GetScopeSourceInfo(self.db, self.obj, sourceinfo_p)
+        get_lib().ucdb_GetScopeSourceInfo(self.db, self.obj, sourceinfo_p)
         
-        return LibSourceInfo.ctor(self.db, libsrcinfo)
+        return UcdbSourceInfo.ctor(self.db, libsrcinfo)
     
     def scopes(self, mask:ScopeTypeT)->Iterator['Scope']:
-        return LibScopeIterator(self.db, self.obj, mask)
+        return UcdbScopeIterator(self.db, self.obj, mask)
         

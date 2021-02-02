@@ -12,20 +12,20 @@ from ucis import UCIS_VLOG, UCIS_COVERPOINT, UCIS_INT_SCOPE_GOAL, \
     UCIS_INT_CVG_MERGEINSTANCES, UCIS_COVERINSTANCE
 from ucis.cover_type import CoverType
 from ucis.covergroup import Covergroup
-from ucis.lib.lib_cvg_scope import LibCvgScope
-from ucis.lib.lib_scope import LibScope
-from ucis.lib.lib_source_info import _LibSourceInfo
-from ucis.lib.libucis import get_lib
+from ucis.ucdb.ucdb_cvg_scope import UcdbCvgScope
+from ucis.ucdb.ucdb_scope import UcdbScope
+from ucis.ucdb.ucdb_source_info import _UcdbSourceInfo
+from ucis.ucdb.libucis import get_lib
 from ucis.source_info import SourceInfo
 from ucis.source_t import SourceT
-from ucis.lib.lib_cross import LibCross
+from ucis.ucdb.ucdb_cross import UcdbCross
 from ctypes import c_void_p
 
 
-class LibCovergroup(LibCvgScope, Covergroup):
+class UcdbCovergroup(UcdbCvgScope, Covergroup):
     
     def __init__(self, db, obj):
-        LibCvgScope.__init__(self, db, obj)
+        UcdbCvgScope.__init__(self, db, obj)
         Covergroup.__init__(self)
 
     def getPerInstance(self)->bool:
@@ -51,7 +51,7 @@ class LibCovergroup(LibCvgScope, Covergroup):
         srcinfo:SourceInfo, 
         weight:int, 
         source)->CoverType:
-        from ucis.lib.lib_coverpoint import LibCoverpoint
+        from ucis.ucdb.ucdb_coverpoint import UcdbCoverpoint
 
         cp_s = self.createScope(
             name, 
@@ -61,7 +61,7 @@ class LibCovergroup(LibCvgScope, Covergroup):
             UCIS_COVERPOINT, 
             0)
         
-        return LibCoverpoint(self.db, cp_s.obj)
+        return UcdbCoverpoint(self.db, cp_s.obj)
     
     def createCross(self, 
                     name : str, 
@@ -69,13 +69,13 @@ class LibCovergroup(LibCvgScope, Covergroup):
                     weight : int,
                     source : SourceT, 
                     points_l : List['Coverpoint']) -> CoverType:
-        srcinfo_p = None if srcinfo is None else byref(_LibSourceInfo.ctor(srcinfo))
+        srcinfo_p = None if srcinfo is None else byref(_UcdbSourceInfo.ctor(srcinfo))
 
         points = (c_void_p * len(points_l))()
         for i,cp in enumerate(points_l):
             points[i] = cp.obj
             
-        cr_o = get_lib().ucis_CreateCross(
+        cr_o = get_lib().ucdb_CreateCross(
             self.db,
             self.obj,
             str.encode(name),
@@ -85,7 +85,7 @@ class LibCovergroup(LibCvgScope, Covergroup):
             len(points_l),
             byref(points))
         
-        return LibCross(self.db, cr_o)
+        return UcdbCross(self.db, cr_o)
         raise NotImplementedError()
     
     def createCoverInstance(
@@ -95,8 +95,8 @@ class LibCovergroup(LibCvgScope, Covergroup):
             weight:int,
             source)->'Covergroup':
         
-        srcinfo_p = None if srcinfo is None else pointer(_LibSourceInfo.ctor(srcinfo))
-        ci_obj = get_lib().ucis_CreateScope(
+        srcinfo_p = None if srcinfo is None else pointer(_UcdbSourceInfo.ctor(srcinfo))
+        ci_obj = get_lib().ucdb_CreateScope(
             self.db,
             self.obj,
             str.encode(name),
@@ -107,4 +107,4 @@ class LibCovergroup(LibCvgScope, Covergroup):
             0)
         
         
-        return LibCovergroup(self.db, ci_obj)
+        return UcdbCovergroup(self.db, ci_obj)

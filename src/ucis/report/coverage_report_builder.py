@@ -42,6 +42,7 @@ class CoverageReportBuilder(object):
                 coverage += cg.coverage * cg.weight
             div += cg.weight
             self.report.covergroups.append(cg)
+            self.report.covergroup_m[cg.instname] = cg
         self.report.coverage = round(coverage/div, 2)
             
     def build_covergroup(self, cg_n)->CoverageReport.Covergroup:

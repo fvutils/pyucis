@@ -26,19 +26,20 @@ from ucis.file_handle import FileHandle
 from ucis.history_node import HistoryNode
 from ucis.history_node_kind import HistoryNodeKind
 from ucis.int_property import IntProperty
-from ucis.lib.lib_file_handle import LibFileHandle
-from ucis.lib.lib_history_node import LibHistoryNode
-from ucis.lib.lib_scope import LibScope
-from ucis.lib.libucis import _lib, get_ucis_library, get_lib
+from ucis.ucdb.ucdb_file_handle import UcdbFileHandle
+from ucis.ucdb.ucdb_history_node import UcdbHistoryNode
+from ucis.ucdb.ucdb_scope import UcdbScope
+from ucis.ucdb.libucdb import _lib, get_ucdb_library, get_lib
 from ucis.ucis import UCIS
 
 
-class LibUCIS(LibScope,UCIS):
+class UcdbUCIS(UcdbScope,UCIS):
     
     def __init__(self, file : str=None, db=None):
         if db is None:
-            db = get_lib().ucis_Open(
-                str.encode(file) if file is not None else None)
+            db = get_lib().ucis_OpenV(
+                str.encode(file) if file is not None else None,
+                (20*10000*100)+(19*10000)+49)
         
             if db is None:
                 if file is not None:
@@ -69,26 +70,17 @@ class LibUCIS(LibScope,UCIS):
             str.encode(filename),
             None if workdir is None else str.encode(workdir))
         
-        return LibFileHandle(self.db, fh)
+        return UcdbFileHandle(self.db, fh)
         
     
     def createHistoryNode(self, parent, logicalname, physicalname, kind) -> 'HistoryNode':
-        print("--> createHistoryNode")
-        print("  db=" + str(self.db))
-        print("  parent=" + str(parent))
-        print("  logicalname=" + str(logicalname))
-        print("  physicalname=" + str(physicalname))
-        print("  kind=" + str(kind))
-        
         hn = get_lib().ucis_CreateHistoryNode(
             self.db,
             parent,
             str.encode(logicalname),
             str.encode(physicalname),
             kind)
-        print("hn=" + str(hn))
-        print("<-- createHistoryNode")
-        return LibHistoryNode(self.db, hn)
+        return UcdbHistoryNode(self.db, hn)
     
     def getHistoryNodes(self, kind:HistoryNodeKind)->List[HistoryNode]:
         

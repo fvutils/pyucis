@@ -10,6 +10,7 @@ class CoverageReport(object):
     
     def __init__(self):
         self.covergroups = []
+        self.covergroup_m = {}
         self.coverage = 0.0
         pass
     
@@ -31,11 +32,15 @@ class CoverageReport(object):
             self.instname = instname
            
             self.coverpoints = []
+            self.coverpoint_m = {}
             self.crosses = []
+            self.cross_m = {}
             self.covergroups = []
+            self.covergroup_m = {}
             
         def add_coverpoint(self, cp)->'Coverpoint':
             self.coverpoints.append(cp)
+            self.coverpoint_m[cp.instname] = cp
             return cp
             
 
