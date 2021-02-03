@@ -57,3 +57,7 @@ class IntProperty(IntEnum):
     CVG_PERINSTANCE = auto() # Covergroup per_instance option 
     CVG_GETINSTCOV = auto() # Covergroup get_inst_coverage option 
     CVG_MERGEINSTANCES = auto() # Covergroup merge_instances option     
+    
+    
+    
+    

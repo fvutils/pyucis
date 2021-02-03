@@ -1,3 +1,7 @@
+from enum import IntEnum, auto
+from _ctypes import Structure, Union
+from ctypes import c_int, c_longlong, c_double, c_float, c_char_p, c_void_p
+from ucis.ucdb.ucis2ucdb_property_map import Ucis2UcdbPropertyMap
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -28,6 +32,49 @@ from ucis.str_property import StrProperty
 from ucis.handle_property import HandleProperty
 from ucis.ucdb.libucdb import get_lib
 
+class UcdbAttrType(IntEnum):
+    INT = 0
+    FLOAT = auto()
+    DOUBLE = auto()
+    STRING = auto()
+    MEMBLK = auto()
+    INT64 = auto()
+    HANDLE = auto()
+    ARRAY = auto()
+    
+class UcdbAttrValueMS(Structure):
+    _fields_ = [
+        ("size", c_int),
+        ("data", c_char_p)
+        ]
+
+class UcdbAttrValueU(Union):
+    _fields_ = [
+        ("i64value", c_longlong),
+        ("ivalue", c_int),
+        ("fvalue", c_float),
+        ("dvalue", c_double),
+        ("svalue", c_char_p),
+        ("mvalue", UcdbAttrValueMS)
+    ]
+    
+class UcdbAttrValue(Structure):
+    _fields_ = [
+        ("type", c_int),
+        ("u", UcdbAttrValueU),
+        ("attrhandle", c_void_p)
+        ]
+
+    @staticmethod    
+    def ctor_int(v : int):
+        u = UcdbAttrValueU()
+        u.ivalue = v
+        ret = UcdbAttrValue(
+            UcdbAttrType.INT,
+            u)
+        ret.u.ivalue = v
+        return ret
+
 class UcdbObj(Obj):
     
     def __init__(self, db, obj):
@@ -47,7 +94,13 @@ class UcdbObj(Obj):
             property : IntProperty,
             value : int):
         obj = self.db if self.obj is None else self.obj
-        get_lib().ucis_SetIntProperty(self.db, obj, coverindex, property, value)
+        attr = Ucis2UcdbPropertyMap.int2attr(property)
+        if attr is not None:
+            print("Warning: Skipping attribute " + str(property) + " (" + attr + ")")
+#            raise Exception("failed to set property " + str(property))
+        else:
+            print("Warning: Skipping attribute " + str(property))
+#        get_lib().ucdb_AttrAdd(self.db, obj, coverindex, property, value)
 
     def getRealProperty(
             self,

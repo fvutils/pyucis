@@ -6,14 +6,14 @@ Created on Mar 14, 2020
 from ucis import UCIS_INT_CVG_ATLEAST, UCIS_INT_CVG_AUTOBINMAX,\
     UCIS_INT_CVG_DETECTOVERLAP, UCIS_INT_CVG_STROBE, UCIS_STR_COMMENT
 from ucis.cvg_scope import CvgScope
-from ucis.lib.lib_obj import LibObj
-from ucis.lib.lib_scope import LibScope
+from ucis.ucdb.ucdb_obj import UcdbObj
+from ucis.ucdb.ucdb_scope import UcdbScope
 
 
-class LibCvgScope(LibScope, CvgScope):
+class UcdbCvgScope(UcdbScope, CvgScope):
     
     def __init__(self, db, obj):
-        LibScope.__init__(self, db, obj)
+        UcdbScope.__init__(self, db, obj)
         CvgScope.__init__(self)
         
     def getAtLeast(self)->int:
