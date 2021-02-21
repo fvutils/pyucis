@@ -124,7 +124,7 @@ class CoverageReportBuilder(object):
 
             total += 1
 
-        cr_r.coverage = (100*num_hit)/total
+        cr_r.coverage = round((100*num_hit)/total, 2)
         
         return cr_r        
         
