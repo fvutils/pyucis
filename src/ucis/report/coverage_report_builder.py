@@ -90,12 +90,12 @@ class CoverageReportBuilder(object):
         for ci_n in cp_n.coverItems(CoverTypeT.CVGBIN):
             cvg_data = ci_n.getCoverData()
             
-            if cvg_data.data >= cvg_data.goal:
+            if cvg_data.data >= cvg_data.at_least:
                 num_hit += 1
                 
             cp_r.bins.append(CoverageReport.CoverBin(
                     ci_n.getName(),
-                    cvg_data.goal,
+                    cvg_data.at_least,
                     cvg_data.data))
 
             total += 1
@@ -114,7 +114,7 @@ class CoverageReportBuilder(object):
         for ci_n in cr_n.coverItems(CoverTypeT.CVGBIN):
             cvg_data = ci_n.getCoverData()
 
-            if cvg_data.data >= cvg_data.goal:
+            if cvg_data.data >= cvg_data.at_least:
                 num_hit += 1
                 
             cr_r.bins.append(CoverageReport.CoverBin(
