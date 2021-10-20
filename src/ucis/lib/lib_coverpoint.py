@@ -25,9 +25,10 @@ class LibCoverpoint(LibCvgScope, Coverpoint):
         srcinfo:SourceInfo, 
         at_least:int, 
         count:int,
-        binrhs) -> CoverIndex:
+        binrhs,
+        kind=UCIS_CVGBIN) -> CoverIndex:
         coverdata = CoverData(
-            UCIS_CVGBIN,
+            kind,
             (UCIS_IS_32BIT|UCIS_HAS_GOAL|UCIS_HAS_WEIGHT))
         coverdata.data = count
         coverdata.at_least = at_least

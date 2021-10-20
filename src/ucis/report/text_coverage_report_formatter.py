@@ -44,7 +44,14 @@ class TextCoverageReportFormatter(object):
             self.writeln("Bins:")
             with self.indent():
                 self.report_bins(cp.bins)
-            
+            if len(cp.ignore_bins) > 0:
+                self.writeln("IgnoreBins:")
+                with self.indent():
+                    self.report_bins(cp.ignore_bins)
+            if len(cp.illegal_bins) > 0:
+                self.writeln("IllegalBins:")
+                with self.indent():
+                    self.report_bins(cp.illegal_bins)
 
     def report_cross(self, cr : CoverageReport.Cross):
         self.writeln("CROSS %s : %f%%", cr.name, cr.coverage)

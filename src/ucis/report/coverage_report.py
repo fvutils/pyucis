@@ -49,6 +49,8 @@ class CoverageReport(object):
         def __init__(self, name):
             super().__init__(name)
             self.bins = []
+            self.ignore_bins = []
+            self.illegal_bins = []
             
     class Cross(CoverItem):
         def __init__(self, name):

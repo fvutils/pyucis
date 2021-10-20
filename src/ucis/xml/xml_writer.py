@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+from ucis import UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN
 '''
 Created on Jan 5, 2020
 
@@ -188,7 +189,15 @@ class XmlWriter():
             cov_data = cp_bin.getCoverData()
             cpBinElem = self.mkElem(cpElem, "coverpointBin")
             self.setAttr(cpBinElem, "name", cp_bin.getName())
-            self.setAttr(cpBinElem, "type", "default") # TODO:
+            
+            if cp_bin.data.type == UCIS_CVGBIN:
+                self.setAttr(cpBinElem, "type", "default")
+            elif cp_bin.data.type == UCIS_IGNOREBIN:
+                self.setAttr(cpBinElem, "type", "ignore")
+            elif cp_bin.data.type == UCIS_ILLEGALBIN:
+                self.setAttr(cpBinElem, "type", "illegal")
+            else:
+                raise Exception("Unknown bin type %s" % str(cp_bin.type))
             self.setAttr(cpBinElem, "key", "0")
             
             # Now, add the coverage data

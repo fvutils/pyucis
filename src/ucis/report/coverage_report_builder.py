@@ -99,6 +99,22 @@ class CoverageReportBuilder(object):
                     cvg_data.data))
 
             total += 1
+            
+        for ci_n in cp_n.coverItems(CoverTypeT.IGNOREBIN):
+            cvg_data = ci_n.getCoverData()
+            
+            cp_r.ignore_bins.append(CoverageReport.CoverBin(
+                    ci_n.getName(),
+                    cvg_data.at_least,
+                    cvg_data.data))
+            
+        for ci_n in cp_n.coverItems(CoverTypeT.ILLEGALBIN):
+            cvg_data = ci_n.getCoverData()
+            
+            cp_r.illegal_bins.append(CoverageReport.CoverBin(
+                    ci_n.getName(),
+                    cvg_data.at_least,
+                    cvg_data.data))
 
         cp_r.coverage = round((100*num_hit)/total, 2)
         

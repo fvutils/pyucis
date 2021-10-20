@@ -403,6 +403,9 @@ minOccurs="1" maxOccurs="unbounded"/>
 	</xsd:sequence>
 
 	<xsd:attribute name="alias" type="xsd:string"/>
+	<!-- 
+	type is "default", "ignore", "illegal"
+	 -->
 	<xsd:attribute name="type" type="xsd:string" use="required"/>
 	<!-- MSB: Added based on presence in spec -->
 	<xsd:attribute name="name" type="xsd:string" use="required"/>

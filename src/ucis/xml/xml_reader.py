@@ -28,7 +28,8 @@ from typing import Dict
 from lxml import etree
 from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
     UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
-    UCIS_SCOPE_UNDER_DU, UCIS_DU_MODULE, UCIS_OTHER, du_scope, UCIS_INSTANCE
+    UCIS_SCOPE_UNDER_DU, UCIS_DU_MODULE, UCIS_OTHER, du_scope, UCIS_INSTANCE,\
+    UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN
 from ucis.mem.mem_file_handle import MemFileHandle
 from ucis.mem.mem_scope import MemScope
 from ucis.mem.mem_ucis import MemUCIS
@@ -196,12 +197,25 @@ class XmlReader():
         seq = next(cpBin.iter("sequence"))
         contents = next(seq.iter("contents"))
         
+        kind_a = self.getAttr(cpBin, "type", "default")
+        kind = UCIS_CVGBIN
+        
+        if kind_a == "default":
+            kind = UCIS_CVGBIN
+        elif kind_a == "ignore":
+            kind = UCIS_IGNOREBIN
+        elif kind_a == "illegal":
+            kind = UCIS_ILLEGALBIN
+        else:
+            raise Exception("Unknown bin type %s" % str(kind_a))
+        
         cp.createBin(
             self.getAttr(cpBin, "name", "default"),
             srcinfo,
             1,
             self.getAttrInt(contents, "coverageCount"),
-            self.getAttr(cpBin, "name", "default"))
+            self.getAttr(cpBin, "name", "default"),
+            kind)
         
     def readCross(self, crN, cp_m, covergroup_scope):
         crossExpr = next(crN.iter("crossExpr"))
