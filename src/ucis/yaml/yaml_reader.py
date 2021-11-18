@@ -73,8 +73,10 @@ class YamlReader(object):
                 self.process_coverpoint(cp)
                 
         if "covergroups" in cg_s.keys():
+            print("--> covergroups")
             for cg in cg_s["covergroups"]:
                 self.process_covergroup(cg, depth+1)
+            print("<-- covergroups")
 
         self.active_scope_s.pop()
         

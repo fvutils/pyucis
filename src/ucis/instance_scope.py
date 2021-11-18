@@ -19,6 +19,9 @@ class InstanceScope(Scope):
     def getIthCoverItem(self, i)->CoverItem:
         raise UnimplError()
     
+    def getInstanceDu(self) -> Scope:
+        raise UnimplError()
+    
     def setIntProperty(
         self, 
         coverindex:int, 
@@ -39,3 +42,4 @@ class InstanceScope(Scope):
             return ci.getStmtIndex()
         else:
             return super().getIntProperty(coverindex, property)
+        
