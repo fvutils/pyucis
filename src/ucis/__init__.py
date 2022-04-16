@@ -39,7 +39,6 @@ from ucis.cover_data import CoverData
 from ucis.toggle_metric_t import ToggleMetricT
 from ucis.toggle_type_t import ToggleTypeT
 from ucis.toggle_dir_t import ToggleDirT
-from lxml.etree import canonicalize
 from _datetime import datetime
 
 
