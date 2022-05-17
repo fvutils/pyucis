@@ -64,9 +64,10 @@ def validate_ucis_xml(file_or_filename):
         # TODO: fix this hack
         # ret is None.
         # set to True
-        print('ret is ', ret)
         ret = ucis_schema.assertValid(doc)
+        print('ret is ', ret)
         ret = True
+        print('ret is now ', ret)
 
     except:
         print('An exception occured')
