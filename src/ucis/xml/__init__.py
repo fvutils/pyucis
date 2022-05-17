@@ -61,8 +61,16 @@ def validate_ucis_xml(file_or_filename):
             if i >= 0:
                 elem.tag = elem.tag[i+1:]
 
-        ret = ucis_schema.assertValid(doc)
+        # TODO: fix this hack
+        # ret is None.
+        # set to True
         print('ret is ', ret)
+        ret = ucis_schema.assertValid(doc)
+        ret = True
+
+    except:
+        print('An exception occured')
+        ret = False
 
     finally:
         if type(file_or_filename) == str:
