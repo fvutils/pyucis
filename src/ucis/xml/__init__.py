@@ -59,9 +59,11 @@ def validate_ucis_xml(file_or_filename):
             if not hasattr(elem.tag, 'find'): continue  # (1)
             i = elem.tag.find('}')
             if i >= 0:
-                elem.tag = elem.tag[i+1:]        
-                
+                elem.tag = elem.tag[i+1:]
+
         ret = ucis_schema.assertValid(doc)
+        ret = True
+
     finally:
         if type(file_or_filename) == str:
             fp.close()
