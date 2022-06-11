@@ -19,6 +19,9 @@ setup(
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
   description = ("PyUCIS provides a Python API for manipulating UCIS coverage data."),
+  long_description = """
+  Python library for interacting with verification coverage data
+  """,
   license = "Apache 2.0",
   keywords = ["SystemVerilog", "Verilog", "RTL", "Coverage"],
   url = "https://github.com/fvutils/pyucis",
