@@ -1,4 +1,10 @@
 
+## 0.0.6
+- Adjust two aspects of the output XML-file format for
+  better compatibility with external tools. 
+  - Emit a 'range' element for each coverpoint bin
+  - Emit one crossExpr element for each cross component
+
 ## 0.0.5
 - Add support for ignore and illegal coverpoint bins
 

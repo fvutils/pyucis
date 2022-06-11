@@ -24,6 +24,7 @@ from datetime import datetime
 from logging import _srcfile
 import sys
 from typing import Dict
+from xml.dom.minidom import Element
 
 from lxml import etree
 from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
@@ -192,11 +193,19 @@ class XmlReader():
             
         return cp
             
-    def readCoverpointBin(self, cpBin, cp):
+    def readCoverpointBin(self, cpBin : Element, cp):
         srcinfo = None
-        seq = next(cpBin.iter("sequence"))
-        contents = next(seq.iter("contents"))
-        
+
+        seq = next(cpBin.iter("sequence"),None)
+        rng = next(cpBin.iter("range"),None)
+
+        if seq is not None:
+            contents = next(seq.iter("contents"))
+        elif rng is not None:
+            contents = next(rng.iter("contents"))
+        else:
+            raise Exception("Format error: neither 'sequence' nor 'range' present")
+
         kind_a = self.getAttr(cpBin, "type", "default")
         kind = UCIS_CVGBIN
         

@@ -1,0 +1,29 @@
+name: CI
+on:
+  - push
+  - pull_request
+  - workflow_dispatch
+
+jobs:
+  ci-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: Configure Python
+      run: |
+        python3 -m venv python
+        ./python/bin/python3 -m pip install wheel twine 
+        ./python/bin/python3 -m pip install pip setuptools --upgrade
+        ./python/bin/python3 -m pip install -r requirements_dev.txt
+        export BUILD_NUM=$GITHUB_RUN_ID
+        ./python/bin/python3 setup.py bdist_wheel --universal
+    - name: Publish to PyPi
+      if: startsWith(github.ref, 'refs/heads/master')
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+
