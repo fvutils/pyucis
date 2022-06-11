@@ -79,6 +79,12 @@ class XmlWriter():
         for s in self.db.scopes(ScopeTypeT.INSTANCE):
             self.write_instance_coverages(s)
 
+        for elem in self.root.getiterator():
+            if not hasattr(elem.tag, 'find'): continue  # (1)
+            i = elem.tag.find('}')
+            if i >= 0:
+                elem.tag = elem.tag[i+1:]
+
 #        file.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
 #        file.write("<?xml version=\"1.0\"?>\n")
         file.write(tounicode(self.root, pretty_print=True))
@@ -201,23 +207,29 @@ class XmlWriter():
             self.setAttr(cpBinElem, "key", "0")
             
             # Now, add the coverage data
-            seq = self.mkElem(cpBinElem, "sequence")
-            contents = self.mkElem(seq, "contents")
+            rng = self.mkElem(cpBinElem, "range")
+
+            # The from..to attributes do not contain useful information
+            self.setAttr(rng, "from", "-1")
+            self.setAttr(rng, "to", "-1")
+
+#            seq = self.mkElem(cpBinElem, "sequence")
+            contents = self.mkElem(rng, "contents")
             self.setAttr(contents, "coverageCount", str(cov_data.data))
-            seqValue = self.mkElem(seq, "seqValue")
-            seqValue.text = "-1" # Note: this is a meaningless value
+#            seqValue = self.mkElem(seq, "seqValue")
+#            seqValue.text = "-1" # Note: this is a meaningless value
             
     def write_cross(self, cgInstElem, cr):
         crossElem = self.mkElem(cgInstElem, "cross")
         self.setAttr(crossElem, "name", cr.getScopeName())
         self.setAttr(crossElem, "key", "0")
         self.write_options(crossElem, cr)
-        
-        expr = ",".join([cr.getIthCrossedCoverpoint(i).getScopeName() 
-                         for i in range(cr.getNumCrossedCoverpoints())])
-        crossExpr = self.mkElem(crossElem, "crossExpr")
-        crossExpr.text = expr
-        
+
+        # Each cross expression lists one element of the cross        
+
+        for i in range(cr.getNumCrossedCoverpoints()):
+            crossExpr = self.mkElem(crossElem, "crossExpr")
+            crossExpr.text = cr.getIthCrossedCoverpoint(i).getScopeName() 
         
         self.write_cross_bins(crossElem, cr.coverItems(CoverTypeT.CVGBIN))
         

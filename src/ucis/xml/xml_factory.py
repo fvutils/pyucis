@@ -40,10 +40,10 @@ class XmlFactory():
 
         try:            
             validate_ucis_xml(fp)
-        except:
+        except Exception as e:
             if type(file_or_filename) == str:
                 fp.close()
-            
+            raise e
 
         fp.seek(0)
         
