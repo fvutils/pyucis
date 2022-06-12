@@ -89,6 +89,5 @@ must be obtained from the appropriate back-end factory:
 Contributors
 ============
 
-.. spelling::
    Ballance
 
