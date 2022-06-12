@@ -7,6 +7,11 @@ API Reference
 UCIS Object-Oriented API
 ========================
 
+.. autoclass:: ucis.Obj
+  :members:
+  :member-order: bysource
+  :undoc-members:
+
 UCIS C-Style API
 ================
 
