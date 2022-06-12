@@ -1,0 +1,93 @@
+############
+Introduction
+############
+
+What is PyUCIS?
+===============
+The Accellera Unified Coverage Interoperability Standard (UCIS) specifies
+a data model, C API, and XML interchange format for coverage metrics
+data. The PyUCIS library provides two APIs for creating and accessing 
+coverage data via the UCIS data model:
+
+- An object-oriented Python API
+- A C-style Python API that is identical to the API defined in the Accellera standard
+
+The PyUCIS library currently supports three back-ends for storing 
+coverage data:
+
+- In-Memory: An in-memory transient data model
+- XML: Ability to write and read a UCIS data model to the Accellera-defined interchange format
+- Library: Ability to call a tool-provided implementation of the UCIS C API
+
+Here is a short example of using the object-oriented Python API to create
+a covergroup with a single coverpoint. Note that the database handle (`db`)
+must be obtained from the appropriate back-end factory:
+
+.. code-block:: python3
+
+        testnode = db.createHistoryNode(
+            None, 
+            "logicalName",
+            ucisdb,
+            UCIS_HISTORYNODE_TEST)
+        td = TestData(
+            teststatus=UCIS_TESTSTATUS_OK,
+            toolcategory="UCIS:simulator",
+            date="20200202020"
+            )
+        testnode.setTestData(td)
+        
+        file = db.createFileHandle("dummy", os.getcwd())
+
+        srcinfo = SourceInfo(file, 0, 0)
+        du = db.createScope(
+            "foo.bar",
+            srcinfo,
+            1, # weight
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
+            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
+            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
+            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            )
+        
+        instance = db.createInstance(
+            "dummy",
+            None, # sourceinfo
+            1, # weight
+            UCIS_OTHER,
+            UCIS_INSTANCE,
+            du,
+            UCIS_INST_ONCE)
+        
+        cg = instance.createCovergroup(
+            "cg",
+            SourceInfo(file, 3, 0),
+            1, # weight
+            UCIS_OTHER)
+        
+        cp = cg.createCoverpoint(
+            "t",
+            SourceInfo(file, 4, 0),
+            1, # weight
+            UCIS_VLOG
+            )
+        cp.setComment("Hello There")
+        
+        cp.createBin(
+            "auto[a]",
+            SourceInfo(file, 4, 0),
+            1,
+            4,
+            "a")
+
+        db.write(ucisdb, None, True, -1)
+        db.close()
+
+
+Contributors
+============
+
+   Ballance
+

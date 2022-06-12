@@ -1,8 +1,0 @@
-
-ivpm
-pylint
-flake8
-pytest
-pytest-cov
-lxml
-
