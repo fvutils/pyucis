@@ -98,9 +98,11 @@ format does not provide such a hierarchy.</p>
 <p>According to the spec, a <cite>covergroupCoverage</cite> scope with a single
 <cite>cgInstance</cite> entry represents coverage for the covergroup as a whole.
 For example, a covergroup with <cite>per_instance</cite> set to false.</p>
-<p>PyUCIS interprets the first <cite>cgInstance</cite> entry in a <cite>covergroupCoverage</cite>
-as containing type-coverage information. Subsequent <cite>cgInstance</cite> entries
-contain per-instance coverage.</p>
+<p>If a <cite>covergroupCoverage</cite> contains a single <cite>cgInstance</cite> entry, PyUCIS
+interprets that entry as containing type coverage. If a
+<cite>covergroupCoverage</cite> contains more than one <cite>cgInstance</cite> entry, PyUCIS
+interprets that content as being instance coverage. Type coverage is
+created as the merge of the instance coverage.</p>
 </section>
 </section>
 

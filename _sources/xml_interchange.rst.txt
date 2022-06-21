@@ -30,9 +30,11 @@ According to the spec, a `covergroupCoverage` scope with a single
 `cgInstance` entry represents coverage for the covergroup as a whole. 
 For example, a covergroup with `per_instance` set to false.
 
-PyUCIS interprets the first `cgInstance` entry in a `covergroupCoverage`
-as containing type-coverage information. Subsequent `cgInstance` entries
-contain per-instance coverage.
+If a `covergroupCoverage` contains a single `cgInstance` entry, PyUCIS
+interprets that entry as containing type coverage. If a 
+`covergroupCoverage` contains more than one `cgInstance` entry, PyUCIS
+interprets that content as being instance coverage. Type coverage is
+created as the merge of the instance coverage.
 
 
 
