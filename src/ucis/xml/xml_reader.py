@@ -144,24 +144,30 @@ class XmlReader():
             type_scope)
         
         for cg in instN.iter("covergroupCoverage"):
-            self.readCovergroup(cg, inst_scope)
+            self.readCovergroup(cg, inst_scope, module_scope_name)
 
 #        self.setIntIfEx(instN, ret.setAli, name)
 
-    def readCovergroup(self, cg, inst_scope):
+    def readCovergroup(self, cg, inst_scope, module_scope_name):
         # This entry is for a given covergroup type
         
         cg_typescope = None
         covergroup_scope = None
         
-        for cgN in cg.iter("cgInstance"):
+        instances = [i for i in cg.iter("cgInstance")]
+        if len(instances) == 1:
+            cg_typescope = inst_scope.createCovergroup(
+                self.getAttr(instances[0], "name", "default"),
+                None,
+                1,
+                UCIS_OTHER)
+        else:
+            cg_typescope = inst_scope.createCovergroup(
+                module_scope_name, None, 1, UCIS_OTHER)
+            
+        for cgN in instances:
             srcinfo = None
-            if cg_typescope is None:
-                cg_typescope = inst_scope.createCovergroup(
-                    self.getAttr(cgN, "name", "default"),
-                    srcinfo,
-                    1,
-                    UCIS_OTHER)
+            if len(instances) == 1:
                 covergroup_scope = cg_typescope
             else:
                 covergroup_scope = cg_typescope.createCoverInstance(

@@ -1,4 +1,10 @@
 
+## 0.0.7
+- Adjust the format of the XML slightly. Now, a single
+  cgInstance specifies type coverage, while multiple
+  cgInstances specify instance coverage from which 
+  type coverage is derived by the reader.
+
 ## 0.0.6
 - Adjust two aspects of the output XML-file format for
   better compatibility with external tools. 

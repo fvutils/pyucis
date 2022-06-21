@@ -122,7 +122,7 @@ class TestReport(TestCase):
         self.assertEqual(2, len(report.covergroups[0].coverpoints))
         self.assertEqual(50.0, report.covergroups[0].coverpoints[0].coverage)
         self.assertEqual(25.0, report.covergroups[0].coverpoints[1].coverage)
-        self.assertEqual(round((100*4/12), 2), report.covergroups[0].coverage)
+        self.assertEqual(round((100*4/12), 2), round(report.covergroups[0].coverage, 2))
 
     def test_type_covergroup_two_coverpoints_weights_options(self):
         db_creator = DbCreator()
