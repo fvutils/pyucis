@@ -144,11 +144,19 @@ class XmlWriter():
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):
             cgElem = self.mkElem(inst, "covergroupCoverage")
 #            self.setAttr(cgElem, "weight", str(scope.getWeight()))
-                
-            self.write_coverinstance(cgElem, cg.getScopeName(), cg)
+
+            inst_it = cg.scopes(ScopeTypeT.COVERINSTANCE)
             
-            for ci in cg.scopes(ScopeTypeT.COVERINSTANCE):
-                self.write_coverinstance(cgElem, cg.getScopeName(), ci)
+            cg_inst = next(inst_it, None)
+            
+            # If there is only type coverage (no instances), write only that
+            if cg_inst is None:
+                self.write_coverinstance(cgElem, cg.getScopeName(), cg)
+            else:
+                # If there is instance coverage, write only that
+                while cg_inst is not None:
+                    self.write_coverinstance(cgElem, cg.getScopeName(), cg_inst)
+                    cg_inst = next(inst_it, None)
     
     def write_coverinstance(self, cgElem, cgName, cg : Covergroup):
         cgInstElem = self.mkElem(cgElem, "cgInstance")

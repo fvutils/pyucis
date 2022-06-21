@@ -164,6 +164,7 @@ class XmlReader():
         else:
             cg_typescope = inst_scope.createCovergroup(
                 module_scope_name, None, 1, UCIS_OTHER)
+            
         for cgN in instances:
             srcinfo = None
             if len(instances) == 1:
