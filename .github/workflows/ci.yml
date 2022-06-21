@@ -30,7 +30,7 @@ jobs:
         tests="$tests ve/unit/test_xml_examples.py"
         tests="$tests ve/unit/test_xml_output.py"
         tests="$tests ve/unit/test_xml_reader.py"
-        ./python/bin/python3 -m pytest --no-cov -v $tests
+        ./packages/python/bin/python3 -m pytest --no-cov -v $tests
     - name: Build Docs
       run: |
         make html
