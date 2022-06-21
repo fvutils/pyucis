@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python Module Index &mdash; pyucis 0.0.1 documentation</title>
+  <title>XML Interchange Format &mdash; pyucis 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -19,9 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
- 
-
-
+    <link rel="next" title="API Reference" href="reference.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,9 +42,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">XML Interchange Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#functional-coverage">Functional Coverage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">API Reference</a></li>
 </ul>
 
@@ -62,8 +65,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Python Module Index</li>
+      <li>XML Interchange Format</li>
       <li class="wy-breadcrumbs-aside">
+            <a href="_sources/xml_interchange.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -71,34 +75,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-
-   <h1>Python Module Index</h1>
-
-   <div class="modindex-jumpbox">
-   <a href="#cap-u"><strong>u</strong></a>
-   </div>
-
-   <table class="indextable modindextable">
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-u"><td></td><td>
-       <strong>u</strong></td><td></td></tr>
-     <tr>
-       <td><img src="_static/minus.png" class="toggler"
-              id="toggle-1" style="display: none" alt="-" /></td>
-       <td>
-       <code class="xref">ucis</code></td><td>
-       <em></em></td></tr>
-     <tr class="cg-1">
-       <td></td>
-       <td>&#160;&#160;&#160;
-       <a href="reference.html#module-ucis.__init__"><code class="xref">ucis.__init__</code></a></td><td>
-       <em></em></td></tr>
-   </table>
+  <section id="xml-interchange-format">
+<h1>XML Interchange Format<a class="headerlink" href="#xml-interchange-format" title="Permalink to this heading"></a></h1>
+<p>The Accelera UCIS Standard document specifies an XML interchange format. While the
+XML document structure has some similarities with the data model accessed via the
+UCIS C API, there are also significant differences.</p>
+<p>The UCIS standards document also has relatively few examples of the XML interchange
+format, leaving some things a bit ambiguous. None of the ambiguities are with respect
+to the document schema. Rather, they are with respect to how a schema-compliant
+XML document is interpreted.</p>
+<p>This section of the PyUCIS documentation describes how PyUCIS interprets a
+schema-compliant XML description, and the data it produces.</p>
+<section id="functional-coverage">
+<h2>Functional Coverage<a class="headerlink" href="#functional-coverage" title="Permalink to this heading"></a></h2>
+<p>Functional coverage data is stored in <cite>cgInstance</cite> sections within a
+<cite>covergroupCoverage</cite> scope. PyUCIS assumes that all <cite>cgInstance</cite> children
+of a <cite>covergroupCoverage</cite> scope record data for the same covergroup type.</p>
+<p>The UCIS data model represents covergroup type coverage (the merge of all
+covergroup instances of a given type) as a scope that contains a series
+of sub-scopes that hold per-instance coverage data. The XML interchange
+format does not provide such a hierarchy.</p>
+<p>According to the spec, a <cite>covergroupCoverage</cite> scope with a single
+<cite>cgInstance</cite> entry represents coverage for the covergroup as a whole.
+For example, a covergroup with <cite>per_instance</cite> set to false.</p>
+<p>PyUCIS interprets the first <cite>cgInstance</cite> entry in a <cite>covergroupCoverage</cite>
+as containing type-coverage information. Subsequent <cite>cgInstance</cite> entries
+contain per-instance coverage.</p>
+</section>
+</section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
