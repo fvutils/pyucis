@@ -19,6 +19,7 @@ jobs:
         ./packages/python/bin/python3 -m pip install wheel twine 
         ./packages/python/bin/python3 -m pip install pip setuptools --upgrade
         export BUILD_NUM=$GITHUB_RUN_ID
+        echo "BUILD_NUM=${BUILD_NUM}"
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
     - name: Build Docs
       run: |
@@ -26,6 +27,7 @@ jobs:
         touch doc/build/html/.nojekyll
         cp -r doc/build/html .
     - name: Publish Docs
+      if: startsWith(github.ref, 'refs/heads/master')
       uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
         branch: gh-pages
