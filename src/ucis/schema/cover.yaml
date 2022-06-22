@@ -1,0 +1,20 @@
+
+coverage:
+  covergroups:
+    - type-name: a
+      inst-name: a.b.c # not supplied
+    
+      coverpoints:
+        - name: cp
+          bins:
+            - name: b1
+              goal: 1
+              count: 1
+          ignore-bins:
+             - 
+            
+      covergroups:
+        - type-name: a # redundant
+          inst-name: a.b.c
+      
+            
