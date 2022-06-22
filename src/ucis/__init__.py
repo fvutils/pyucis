@@ -17,6 +17,7 @@
 # under the License.
 
 from enum import IntEnum, auto
+from .report import *
 from .ucis import UCIS
 from .scope import Scope
 

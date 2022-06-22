@@ -20,7 +20,9 @@ Created on Jan 8, 2020
 @author: ballance
 '''
 
-from ucis import UCIS_CVGBIN, UCIS_IS_32BIT, UCIS_HAS_GOAL, UCIS_HAS_WEIGHT
+#from ucis import UCIS_CVGBIN, UCIS_IS_32BIT, UCIS_HAS_GOAL, UCIS_HAS_WEIGHT
+from ucis.cover_type_t import CoverTypeT
+from ucis.cover_flags_t import CoverFlagsT
 from ucis.cover_data import CoverData
 from ucis.cover_index import CoverIndex
 from ucis.cvg_scope import CvgScope
@@ -46,10 +48,10 @@ class Coverpoint(CvgScope):
             at_least : int,
             count : int,
             rhs : str,
-            kind = UCIS_CVGBIN) -> CoverIndex:
+            kind = CoverTypeT.CVGBIN) -> CoverIndex:
         coverdata = CoverData(
             kind,
-            (UCIS_IS_32BIT|UCIS_HAS_GOAL|UCIS_HAS_WEIGHT))
+            (CoverFlagsT.IS_32BIT|CoverFlagsT.HAS_GOAL|CoverFlagsT.HAS_WEIGHT))
         coverdata.data = count
         coverdata.at_least = at_least
         coverdata.goal = 1

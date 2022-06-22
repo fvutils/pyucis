@@ -6,7 +6,11 @@ package:
           src: pypi
         - name: pyyaml
           src: pypi
+        - name: jsonschema
+          src: pypi
     dev-deps:
+        - name: jsonschema
+          src: pypi
         - name: pylint
           type: python
           src: pypi
@@ -24,6 +28,8 @@ package:
         - name: pyyaml
           src: pypi
         - name: Sphinx
+          src: pypi
+        - name: sphinx-jsonschema
           src: pypi
         - name: sphinx-rtd-theme
           src: pypi
