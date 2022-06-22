@@ -18,16 +18,16 @@ class TestMerge(TestCase):
     def test_null_type_cg_1_cp(self):
         text = """
         coverage:
-            covergroups:
-                - type-name: cvg
-                
-                  coverpoints:
-                    - name: cp1
-                      bins:
-                        - name: b0
-                          count: 1
-                        - name: b1
-                          count: 0
+          covergroups:
+          - type-name: cvg
+               
+            coverpoints:
+            - name: cp1
+              bins:
+              - name: b0
+                count: 1
+              - name: b1
+                count: 0
         """
         
         src_db = YamlReader().loads(StringIO(text))
@@ -55,38 +55,38 @@ class TestMerge(TestCase):
     def test_null_inst_cg_1_cp(self):
         text = """
         coverage:
+          covergroups:
+          - type-name: cvg
+               
+            coverpoints:
+            - name: cp1
+              bins:
+              - name: b0
+                count: 1
+              - name: b1
+                count: 1
             covergroups:
-                - type-name: cvg
-                
-                  coverpoints:
-                    - name: cp1
-                      bins:
-                        - name: b0
-                          count: 1
-                        - name: b1
-                          count: 1
-                  covergroups:
-                    - type-name: cvg
-                      inst-name: inst1
-                    
-                      coverpoints:
-                        - name: cp1
-                          bins:
-                            - name: b0
-                              count: 0
-                            - name: b1
-                              count: 1
-                              
-                    - type-name: cvg
-                      inst-name: inst2
-                    
-                      coverpoints:
-                        - name: cp1
-                          bins:
-                            - name: b0
-                              count: 1
-                            - name: b1
-                              count: 0
+            - type-name: cvg
+              inst-name: inst1
+                  
+              coverpoints:
+              - name: cp1
+                bins:
+                - name: b0
+                  count: 0
+                - name: b1
+                  count: 1
+                             
+            - type-name: cvg
+              inst-name: inst2
+                   
+              coverpoints:
+              - name: cp1
+                bins:
+                - name: b0
+                  count: 1
+                - name: b1
+                  count: 0
         """
         
         src_db = YamlReader().loads(StringIO(text))

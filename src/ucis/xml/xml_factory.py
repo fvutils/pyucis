@@ -1,4 +1,3 @@
-
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -72,4 +71,3 @@ class XmlFactory():
         if type(file_or_filename) == str:
             fp.close()
             
-        pass

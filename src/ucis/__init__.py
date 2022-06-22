@@ -440,13 +440,9 @@ def ucis_Write(
 #    except Exception as e:
 #        return -1
     
-def ucis_Close(
-        db : UCIS) ->int:
-#    try:
+def ucis_Close(db : UCIS) ->int:
     db.close()
     return 0
-#    except:
-#        return -1
 
 def ucis_Time():
     """Current time in UCIS Y/M/D/H/M/S format"""
