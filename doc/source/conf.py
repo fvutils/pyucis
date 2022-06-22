@@ -18,10 +18,6 @@ import sys
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../..'))
 
-# Add in-tree extensions to path
-sys.path.insert(0, os.path.abspath('../sphinxext'))
-
-#import cocotb
 from distutils.version import LooseVersion
 
 os.environ["SPHINX_BUILD"] = "1"
@@ -41,18 +37,10 @@ sys.path.insert(0, os.path.abspath('../../src'))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.imgmath',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
     'sphinxcontrib.makedomain',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.inheritance_diagram',
-#    'cairosvgconverter',
-    'breathe',
     'sphinx_issues',
     'sphinxarg.ext',
     ]
@@ -143,15 +131,7 @@ pygments_style = 'sphinx'
 # or
 # - apt-get install python-sphinx-rtd-theme
 
-try:
-    import sphinx_rtd_theme
-    html_theme = 'sphinx_rtd_theme'
-except ImportError:
-    sys.stderr.write('Warning: The Sphinx \'sphinx_rtd_theme\' HTML theme was '+
-        'not found. Make sure you have the theme installed to produce pretty '+
-        'HTML output. Falling back to the default theme.\n')
-
-    html_theme = 'default'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

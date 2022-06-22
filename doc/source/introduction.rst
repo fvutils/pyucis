@@ -10,10 +10,10 @@ data. The PyUCIS library provides two APIs for creating and accessing
 coverage data via the UCIS data model:
 
 - An object-oriented Python API
-- A C-style Python API that is identical to the API defined in the Accellera standard
+- A functional C-style Python API that is identical to the API defined in the Accellera standard
 
-The PyUCIS library currently supports three back-ends for storing 
-coverage data:
+The PyUCIS library currently supports three back-ends for storing
+and accessing coverage data:
 
 - In-Memory: An in-memory transient data model
 - XML: Ability to write and read a UCIS data model to the Accellera-defined interchange format
@@ -89,6 +89,5 @@ must be obtained from the appropriate back-end factory:
 Contributors
 ============
 
-.. spelling::
    Ballance
 

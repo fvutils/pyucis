@@ -43,7 +43,7 @@ class CoverageReportBuilder(object):
             div += cg.weight
             self.report.covergroups.append(cg)
             self.report.covergroup_m[cg.instname] = cg
-        self.report.coverage = round(coverage/div, 2)
+        self.report.coverage = coverage/div
             
     def build_covergroup(self, cg_n)->CoverageReport.Covergroup:
         cg_r = CoverageReport.Covergroup(
@@ -74,9 +74,13 @@ class CoverageReportBuilder(object):
             coverage += cr.coverage * cr.weight
             div += cr.weight
             
-        coverage /= div
+        for cg in cg_r.covergroups:
+            coverage += cg.coverage * cg.weight
+            div += cg.weight
             
-        cg_r.coverage = round(coverage, 2)
+        if div > 0: coverage /= div
+
+        cg_r.coverage = coverage
         
         return cg_r
 
@@ -116,7 +120,7 @@ class CoverageReportBuilder(object):
                     cvg_data.at_least,
                     cvg_data.data))
 
-        cp_r.coverage = round((100*num_hit)/total, 2)
+        cp_r.coverage = (100*num_hit)/total
         
         return cp_r
         
@@ -140,7 +144,7 @@ class CoverageReportBuilder(object):
 
             total += 1
 
-        cr_r.coverage = round((100*num_hit)/total, 2)
+        if total > 0: cr_r.coverage = (100*num_hit)/total
         
         return cr_r        
         

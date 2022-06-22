@@ -11,3 +11,21 @@ package:
           src: pypi
         - name: pyyaml
           src: pypi
+        - name: Sphinx
+          src: pypi
+        - name: sphinx-rtd-theme
+          src: pypi
+        - name: cairosvg
+          src: pypi
+        - name: sphinxcontrib-makedomain
+          src: pypi
+        - name: sphinxcontrib-spelling
+          src: pypi
+        - name: pyenchant
+          src: pypi
+        - name: sphinx-issues
+          src: pypi
+        - name: sphinx-argparse
+          src: pypi
+
+

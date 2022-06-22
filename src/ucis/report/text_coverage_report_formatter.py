@@ -26,7 +26,7 @@ class TextCoverageReportFormatter(object):
                           is_inst):
         self.writeln("%s %s : %f%%", 
                 "INST" if is_inst else "TYPE",
-                cg.name, cg.coverage)
+                cg.name, round(cg.coverage, 2))
         
         with self.indent():
             for cp in cg.coverpoints:
@@ -38,7 +38,7 @@ class TextCoverageReportFormatter(object):
                 self.report_covergroup(cg_i, True)
             
     def report_coverpoint(self, cp : CoverageReport.Coverpoint):
-        self.writeln("CVP %s : %f%%", cp.name, cp.coverage)
+        self.writeln("CVP %s : %f%%", cp.name, round(cp.coverage))
         
         if self.details:
             self.writeln("Bins:")
@@ -54,7 +54,7 @@ class TextCoverageReportFormatter(object):
                     self.report_bins(cp.illegal_bins)
 
     def report_cross(self, cr : CoverageReport.Cross):
-        self.writeln("CROSS %s : %f%%", cr.name, cr.coverage)
+        self.writeln("CROSS %s : %f%%", cr.name, round(cr.coverage))
         
         if self.details:
             self.writeln("Bins:")
