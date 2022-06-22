@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import logging
 from typing import List, Iterator
 from ucis.str_property import StrProperty
 '''
@@ -73,12 +74,12 @@ class LibUCIS(LibScope,UCIS):
         
     
     def createHistoryNode(self, parent, logicalname, physicalname, kind) -> 'HistoryNode':
-        print("--> createHistoryNode")
-        print("  db=" + str(self.db))
-        print("  parent=" + str(parent))
-        print("  logicalname=" + str(logicalname))
-        print("  physicalname=" + str(physicalname))
-        print("  kind=" + str(kind))
+        logging.debug("--> createHistoryNode")
+        logging.debug("  db=" + str(self.db))
+        logging.debug("  parent=" + str(parent))
+        logging.debug("  logicalname=" + str(logicalname))
+        logging.debug("  physicalname=" + str(physicalname))
+        logging.debug("  kind=" + str(kind))
         
         hn = get_lib().ucis_CreateHistoryNode(
             self.db,
@@ -86,8 +87,8 @@ class LibUCIS(LibScope,UCIS):
             str.encode(logicalname),
             str.encode(physicalname),
             kind)
-        print("hn=" + str(hn))
-        print("<-- createHistoryNode")
+        logging.debug("hn=" + str(hn))
+        logging.debug("<-- createHistoryNode")
         return LibHistoryNode(self.db, hn)
     
     def getHistoryNodes(self, kind:HistoryNodeKind)->List[HistoryNode]:
@@ -98,15 +99,15 @@ class LibUCIS(LibScope,UCIS):
         UCIS.historyNodes(self, kind)
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
-        print("file=" + file)
+        logging.debug("file=" + file)
         ret = get_lib().ucis_Write(
             self.db, 
             str.encode(file),
             scope,
             1 if recurse else 0,
             covertype)
-        print("ret=" + str(ret))
+        logging.debug("ret=" + str(ret))
         
     def close(self):
         ret = get_lib().ucis_Close(self.db)
-        print("close ret=" + str(ret))
+        logging.debug("close ret=" + str(ret))

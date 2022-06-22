@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import logging
 from typing import List, Iterator
 from ucis.str_property import StrProperty
 '''
@@ -90,15 +91,15 @@ class UcdbUCIS(UcdbScope,UCIS):
         UCIS.historyNodes(self, kind)
         
     def write(self, file, scope=None, recurse=True, covertype=-1):
-        print("file=" + file)
+        logging.debug("file=" + file)
         ret = get_lib().ucis_Write(
             self.db, 
             str.encode(file),
             scope,
             1 if recurse else 0,
             covertype)
-        print("ret=" + str(ret))
+        logging.debug("ret=" + str(ret))
         
     def close(self):
         ret = get_lib().ucis_Close(self.db)
-        print("close ret=" + str(ret))
+        logging.debug("close ret=" + str(ret))

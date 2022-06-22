@@ -70,13 +70,6 @@ class XmlReader():
         for instN in tree.iter("instanceCoverages"):
             self.readInstanceCoverage(instN)
             
-        from ..report.text_coverage_report_formatter import TextCoverageReportFormatter
-        from ..report.coverage_report_builder import CoverageReportBuilder
-        report = CoverageReportBuilder.build(self.db)
-        formatter = TextCoverageReportFormatter(report, sys.stdout)
-        formatter.details = True
-        formatter.report()
-
         return self.db
     
     @staticmethod
@@ -237,7 +230,7 @@ class XmlReader():
         
         cp_l = []
         for cp_n in crossExpr.text.split(','):
-            #print("cp_n=\"" + cp_n + "\"")
+            logging.debug("cp_n=\"" + cp_n + "\"")
             if cp_n in cp_m.keys():
                 cp_l.append(cp_m[cp_n])
             else:

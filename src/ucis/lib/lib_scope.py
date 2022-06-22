@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import logging
 from ucis.lib.lib_cover_index import LibCoverIndex
 from ucis.lib.lib_scope_iterator import LibScopeIterator
 from typing import Iterator
@@ -48,7 +49,7 @@ class LibScope(LibObj, Scope):
     def __init__(self, db, obj):
         LibObj.__init__(self, db, obj)
         Scope.__init__(self)
-        print("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
+        logging.debug("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
         
     def getGoal(self)->int:
         return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
@@ -70,7 +71,7 @@ class LibScope(LibObj, Scope):
         type, 
         flags):
         srcinfo_p = None if srcinfo is None else byref(_LibSourceInfo.ctor(srcinfo))
-        print("createScope: db=" + str(self.db) + " obj=" + str(self.obj) + 
+        logging.debug("createScope: db=" + str(self.db) + " obj=" + str(self.obj) + 
               " name=" + str(name) + " srcinfo_p=" + str(srcinfo_p) +
               " weight=" + str(weight) + "source=" + hex(source) + " type=" + hex(type) + " flags=" + hex(flags));
         sh = get_lib().ucis_CreateScope(
@@ -84,7 +85,7 @@ class LibScope(LibObj, Scope):
             flags)
         
         if sh is None:
-            print("Error: createScope failed: parent=" + str(self.obj))
+            logging.error("createScope failed: parent=" + str(self.obj))
             raise Exception("Failed to create scope")
         
         return LibScope(self.db, sh)
@@ -110,7 +111,7 @@ class LibScope(LibObj, Scope):
             flags)
         
         if sh is None:
-            print("Error: ucis_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
+            logging.error("ucis_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
             raise Exception("ucis_CreateInstance failed")
         
         return LibScope(self.db, sh)

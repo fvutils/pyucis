@@ -3,18 +3,18 @@ Created on Mar 24, 2020
 
 @author: ballance
 '''
+import logging
 import argparse
 from ucis.ucis import UCIS
 import os
-
 
 def read_db(filename) -> UCIS:
     ext = os.path.splitext(filename)[1]
     
     if ext == "xml":
-        print("XML")
+        logging.info("XML")
     elif ext == "scdb":
-        print("SCDB")
+        logging.info("SCDB")
     else:
         raise Exception("Unknown file extension")
     
@@ -23,13 +23,12 @@ def read_db(filename) -> UCIS:
 def report_cmd(args):
     db = read_db(args.db)
     
-    
-    
     pass
 
 def get_parser():
     parser = argparse.ArgumentParser()
-    
+    parser.add_argument("--verbose", "-v",
+        help="Enable verbose output")
     subparser = parser.add_subparsers()
     subparser.required = True
     

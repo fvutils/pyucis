@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
 import os
 from lxml import etree
 from lxml.etree import tounicode
@@ -30,14 +31,14 @@ def validate_ucis_xml(file_or_filename):
     with open(ucis_xsd, "r") as xsd_fp:
         ucis_xsd_doc = etree.parse(xsd_fp)
         
-#    print("schema_doc: " + tounicode(ucis_xsd_doc, pretty_print=True))
+#    logging.debug("schema_doc: " + tounicode(ucis_xsd_doc, pretty_print=True))
     
     ucis_schema = etree.XMLSchema(ucis_xsd_doc)
     
-#    print("schema: " + str(ucis_schema))
+#    logging.debug("schema: " + str(ucis_schema))
     
     if type(file_or_filename) == str:
-        print("open file")
+        logging.debug("open file")
         fp = open(file_or_filename, "r")
     else:
         fp = file_or_filename

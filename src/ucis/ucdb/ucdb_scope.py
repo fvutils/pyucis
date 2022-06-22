@@ -14,6 +14,7 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+import logging
 from ucis.ucdb.ucdb_cover_index import UcdbCoverIndex
 #from ucis.ucdb.ucdb_scope_iterator import UcdbScopeIterator
 from typing import Iterator
@@ -48,7 +49,7 @@ class UcdbScope(UcdbObj, Scope):
     def __init__(self, db, obj):
         UcdbObj.__init__(self, db, obj)
         Scope.__init__(self)
-        print("UcdbScope::init - db=" + str(self.db) + " " + str(self.obj))
+        logging.debug("UcdbScope::init - db=" + str(self.db) + " " + str(self.obj))
         
     def getGoal(self)->int:
         return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
@@ -70,7 +71,7 @@ class UcdbScope(UcdbObj, Scope):
         type, 
         flags):
         srcinfo_p = None if srcinfo is None else byref(_UcdbSourceInfo.ctor(srcinfo))
-        print("createScope: db=" + str(self.db) + " obj=" + str(self.obj) + 
+        logging.debug("createScope: db=" + str(self.db) + " obj=" + str(self.obj) + 
               " name=" + str(name) + " srcinfo_p=" + str(srcinfo_p) +
               " weight=" + str(weight) + "source=" + hex(source) + " type=" + hex(type) + " flags=" + hex(flags));
         sh = get_lib().ucdb_CreateScope(
@@ -84,7 +85,7 @@ class UcdbScope(UcdbObj, Scope):
             flags)
         
         if sh is None:
-            print("Error: createScope failed: parent=" + str(self.obj))
+            logging.error("createScope failed: parent=" + str(self.obj))
             raise Exception("Failed to create scope")
         
         return UcdbScope(self.db, sh)
@@ -110,7 +111,7 @@ class UcdbScope(UcdbObj, Scope):
             flags)
         
         if sh is None:
-            print("Error: ucdb_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
+            logging.error("ucdb_CreateInstance failed: du=" + str(du_scope) + " du.obj=" + str(du_scope.obj))
             raise Exception("ucdb_CreateInstance failed")
         
         return UcdbScope(self.db, sh)

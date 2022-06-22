@@ -1,3 +1,4 @@
+import logging
 from enum import IntEnum, auto
 from _ctypes import Structure, Union
 from ctypes import c_int, c_longlong, c_double, c_float, c_char_p, c_void_p
@@ -96,10 +97,10 @@ class UcdbObj(Obj):
         obj = self.db if self.obj is None else self.obj
         attr = Ucis2UcdbPropertyMap.int2attr(property)
         if attr is not None:
-            print("Warning: Skipping attribute " + str(property) + " (" + attr + ")")
+            logging.warn("Skipping attribute " + str(property) + " (" + attr + ")")
 #            raise Exception("failed to set property " + str(property))
         else:
-            print("Warning: Skipping attribute " + str(property))
+            logging.warn("Skipping attribute " + str(property))
 #        get_lib().ucdb_AttrAdd(self.db, obj, coverindex, property, value)
 
     def getRealProperty(

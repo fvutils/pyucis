@@ -3,6 +3,7 @@ Created on Mar 24, 2020
 
 @author: ballance
 '''
+import logging
 from ucis.ucis import UCIS
 import os
 import sqlite3
@@ -31,7 +32,7 @@ class ScdbWriter(object):
     def _write(self):
         
         for scope in self.db.scopes():
-            print("scope=" + str(scope))
+            logging.debug("scope=" + str(scope))
         
         # First write scopes
         
