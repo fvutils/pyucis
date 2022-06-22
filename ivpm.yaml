@@ -7,6 +7,18 @@ package:
         - name: pyyaml
           src: pypi
     dev-deps:
+        - name: pylint
+          type: python
+          src: pypi
+        - name: flake8
+          type: python
+          src: pypi
+        - name: pytest
+          type: python
+          src: pypi
+        - name: pytest-cov
+          type: python
+          src: pypi
         - name: lxml
           src: pypi
         - name: pyyaml
