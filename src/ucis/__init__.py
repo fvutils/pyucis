@@ -18,6 +18,7 @@
 
 from enum import IntEnum, auto
 from .report import *
+from .rgy import *
 from .ucis import UCIS
 from .scope import Scope
 

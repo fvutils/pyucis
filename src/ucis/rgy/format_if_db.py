@@ -6,15 +6,41 @@ Created on Jun 11, 2022
 from ucis.ucis import UCIS
 from enum import IntFlag, auto
 
-class DbFormatFlags(IntFlag):
+class FormatDbFlags(IntFlag):
     Create = auto()
     Read = auto()
     Write = auto()
-
-class DbFormatIf(object):
     
-    def flags(self) -> DbFormatFlags:
-        raise NotImplementedError("DbFormatIf.flags not implemented by %s" % str(type(self)))
+class FormatDescDb(object):
+    
+    def __init__(self, 
+                 fmt_if : 'FormatIfDb',
+                 name : str,
+                 flags : FormatDbFlags,
+                 description : str):
+        self._fmt_if = fmt_if
+        self._name = name
+        self._flags = flags
+        self._description = description
+        
+    @property
+    def fmt_if(self):
+        return self._fmt_if
+    
+    @property
+    def name(self):
+        return self._name
+    
+    @property
+    def flags(self):
+        return self._flags
+    
+    @property
+    def description(self):
+        return self._description
+
+
+class FormatIfDb(object):
     
     def init(self, options):
         raise NotImplementedError("DbFormatIf.init not implemented by %s" % str(type(self)))

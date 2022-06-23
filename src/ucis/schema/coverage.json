@@ -1,0 +1,15 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://fvutils.github.io/pyucis/coverage.json",
+	"title": "PyUCIS JSON Coverage Data",
+	"description": "Validation schema for PyUCIS JSON/YAML coverage data",
+	"type": "object",
+	"properties": {
+		"coverage": { "$ref": "#/defs/coverageDataType" }
+	},
+	"defs": {
+		"coverageDataType": {
+			"$$target": "#/defs/coverageDataType"
+		}
+	}
+}
