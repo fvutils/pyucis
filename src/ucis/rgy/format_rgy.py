@@ -10,6 +10,7 @@ from ucis.report.format_rpt_text import FormatRptText
 from ucis.report.format_rpt_json import FormatRptJson
 from ucis.xml.db_format_if_xml import DbFormatIfXml
 from ucis.lib.db_format_if_lib import DbFormatIfLib
+from ucis.yaml.db_format_if_yaml import DbFormatIfYaml
 
 class FormatRgy(object):
     """
@@ -66,6 +67,7 @@ class FormatRgy(object):
 #            fmt_if, name, flags, description))
         DbFormatIfXml.register(self)
         DbFormatIfLib.register(self)
+        DbFormatIfYaml.register(self)
         
         self.addReportFormat(FormatDescRpt(
             FormatRptJson,
