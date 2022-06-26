@@ -1,39 +1,6 @@
-#############
-API Reference
-#############
-
-
-UCIS Object-Oriented API
-========================
-
-.. autoclass:: ucis.Obj
-  :members:
-  :member-order: bysource
-  :undoc-members:
-
-UCIS C-Style API
-================
-
-.. automodule:: ucis.__init__
-    :members:
-    :member-order: bysource
-    :undoc-members:
-
-
-Back-End APIs
-=============
-
-In-Memory
----------
-
-UCIS C API
-----------
-
-XML
----
-
+######################
 Coverage Report Object
-======================
+######################
 
 Many of the tools that format and visualize coverage data make use of the coverage report
 object implemented by PyUCIS. The `CoverageReport` object contains information about
@@ -52,7 +19,6 @@ The `build` method on this class accepts a UCIS database object and returns a
 .. autoclass:: ucis.report.CoverageReportBuilder
    :members: build
   
-Doc help here...
 
 CoverageReport Object
 ---------------------
@@ -61,7 +27,7 @@ The `CoverageReport` object is a tree of covergroups and coverpoints.
 
 .. autoclass:: ucis.report.CoverageReport
    :members: covergroups, coverage
-
+   
 .. autoclass:: ucis.report.CoverageReport.Covergroup
    :members:
 
@@ -77,21 +43,3 @@ The `CoverageReport` object is a tree of covergroups and coverpoints.
    :show-inheritance:
    :inherited-members:
    :members:
-
-JSON Coverage Report
-====================
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/coverageReportType
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/typeCovergroupType
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/instCovergroupType
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/coverpointType
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/crossType
-
-.. jsonschema:: ../../src/ucis/schema/coverage_report.json#/defs/coverBinType
-

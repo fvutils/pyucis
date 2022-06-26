@@ -13,6 +13,13 @@ from ucis.mem.mem_ucis import MemUCIS
 from ucis.scope import Scope
 from ucis.ucis import UCIS
 
+import os
+import json
+import python_jsonschema_objects as pjs
+import yaml
+from yaml.loader import Loader
+import jsonschema
+
 
 class YamlReader(object):
     
@@ -22,24 +29,61 @@ class YamlReader(object):
         self.cg_default_inst_name = "cg_inst"
         pass
     
-    def loads(self, s) -> UCIS:
-        self.db = MemUCIS()
-        doc_i = yaml.load(s, Loader=yaml.Loader)
+    _coverage_ns = None
+    _coverage_schema = None
+    
+    @classmethod
+    def getCoverageNS(cls):
+        if cls._coverage_ns is None:
+            schema = cls.getCoverageSchema()
+            builder = pjs.ObjectBuilder(schema)
+            cls._coverage_ns = builder.build_classes()
+        return cls._coverage_ns
+    
+    @classmethod
+    def getCoverageSchema(cls):
+        if cls._coverage_schema is None:
+            yaml_dir = os.path.dirname(os.path.abspath(__file__))
+            schema_dir = os.path.join(os.path.dirname(yaml_dir), "schema")
 
-        if doc_i is None or "coverage" not in doc_i.keys():
-            raise Exception("Invalid input")
-        
-        coverage = doc_i["coverage"]
-        
-        if "covergroups" in coverage.keys():
+            with open(os.path.join(schema_dir, "coverage.json"), "r") as fp:
+                cls._coverage_schema = json.load(fp)
+        return cls._coverage_schema
             
-            for cg in coverage["covergroups"]:
+    
+    def loads(self, s) -> UCIS:
+
+        ns = YamlReader.getCoverageNS()
+        schema = YamlReader.getCoverageSchema()
+
+        for c in dir(ns):
+            print("C: %s" % str(c))
+
+        cov_yml = yaml.load(s, Loader=yaml.FullLoader)
+        
+        jsonschema.validate(instance=cov_yml, schema=schema)
+            
+        coverage = ns.CoverageData()
+        print("cov: %s" % str(coverage))
+        coverage = coverage.from_json(json.dumps(cov_yml))
+        print("cov: %s" % str(coverage))
+        
+        self.db = MemUCIS()
+#        doc_i = yaml.load(s, Loader=yaml.Loader)
+#        if doc_i is None or "coverage" not in doc_i.keys():
+#            raise Exception("Invalid input")
+
+        coverage = coverage.coverage
+        
+        if coverage.covergroups is not None:
+            for cg in coverage.covergroups:
                 self.process_covergroup(cg, 0)
                 
         return self.db
                 
                 
     def process_covergroup(self, cg_s, depth):
+        print("process_covergroup")
         parent = self.get_cg_inst()
 
         type_name = None
@@ -51,8 +95,8 @@ class YamlReader(object):
             inst_name = cg_s["inst-name"]
             
         weight = 1
-        if "weight" in cg_s.keys():
-            weight = int(cg_s["weight"])
+        if cg_s.weight is not None:
+            weight = int(cg_s.weight)
 
         cg_location = None
         if depth == 0:
@@ -67,16 +111,17 @@ class YamlReader(object):
                 cg_location,
                 weight,
                 UCIS_OTHER))
-            
-        if "coverpoints" in cg_s.keys():
-            for cp in cg_s["coverpoints"]:
+
+        if cg_s.coverpoints is not None:            
+            for cp in cg_s.coverpoints:
                 self.process_coverpoint(cp)
-                
-        if "covergroups" in cg_s.keys():
-            print("--> covergroups")
-            for cg in cg_s["covergroups"]:
-                self.process_covergroup(cg, depth+1)
-            print("<-- covergroups")
+
+        if depth == 0:
+            if cg_s.instances is not None:
+                print("--> covergroups")
+                for cg in cg_s.instances:
+                    self.process_covergroup(cg, depth+1)
+                print("<-- covergroups")
 
         self.active_scope_s.pop()
         

@@ -7,8 +7,7 @@ Contents:
    :maxdepth: 2
    
    introduction
-   xml_interchange
-   reference
+   reference/reference
    
    
 Indices and tables

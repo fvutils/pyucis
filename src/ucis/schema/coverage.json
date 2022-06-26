@@ -1,15 +1,146 @@
 {
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"$id": "https://fvutils.github.io/pyucis/coverage.json",
-	"title": "PyUCIS JSON Coverage Data",
-	"description": "Validation schema for PyUCIS JSON/YAML coverage data",
+	"title": "Coverage Data",
+	"description": "PyUCIS JSON Coverage Data",
 	"type": "object",
 	"properties": {
-		"coverage": { "$ref": "#/defs/coverageDataType" }
+		"coverage": { 
+			"type": "object",
+			"properties": {
+				"covergroups": {
+					"type": "array",
+					"items": {"$ref": "#/defs/covergroupType" },
+					"description": "List of covergroup types"
+				}
+			}
+		}
 	},
 	"defs": {
 		"coverageDataType": {
-			"$$target": "#/defs/coverageDataType"
+			"$$target": "#/defs/coverageDataType",
+			"title": "Coverage Data Type",
+			"description": "Root coverage description",
+			"type": "object",
+			"properties": {
+				"covergroups": { 
+					"type": "array",
+					"items": {"$ref": "#/defs/covergroupType" },
+					"description": "List of covergroup types"
+				}
+			}
+		},
+		"covergroupType": {
+			"$$target": "#/defs/covergroupType",
+			"title": "Type Covergroup",
+			"type": "object",
+			"description": "Holds data about a single covergroup type",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Type name of the covergroup"
+				},
+				"weight": {
+					"type": "integer",
+					"description": "Weight this covergroup is given against the others"
+				},
+				"instances": { 
+					"type": "array",
+					"items": {"$ref": "#/defs/covergroupInstType"},
+					"description": "List of covergroup instances of this type"
+				}
+			},
+			"required": ["name"]
+		},
+		"covergroupInstType": {
+			"$$target": "#/defs/covergroupInstType",
+			"title": "Inst Covergroup",
+			"type": "object",
+			"description": "Holds data about a single covergroup instance",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Instance name of this covergroup"
+				},
+				"coverpoints": { 
+					"type": "array",
+					"items": { "$ref": "#/defs/coverpointType" },
+					"description": "List of coverpoints"
+				},
+				"crosses": { 
+					"type": "array",
+					"items": { "$ref": "#/defs/crossType" },
+					"description": "List of crosses"
+				}
+			},
+			"required": ["name"]
+		},
+		"coverpointType": {
+			"$$target": "#/defs/coverpointType",
+			"title": "Coverpoint",
+			"type": "object",
+			"description": "Holds data about a single instance coverpoint",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Name of the coverpoint"
+				},
+				"atleast": {
+					"type": "integer",
+					"description": "Number of bin hits required for coverage (default=1)"
+				},
+				"bins": { 
+					"type": "array",
+					"items": { "$ref": "#/defs/coverBinType" },
+					"description": "List of coverage bins"
+				}
+			},
+			"required": ["name", "bins"]
+		},
+		"crossType": {
+			"$$target": "#/defs/crossType",
+			"title": "Cross",
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "Cross name"
+				},
+				"atleast": {
+					"type": "integer",
+					"description": "Number of bin hits required for coverage (default=1)"
+				},
+				"coverpoints": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					},
+					"description": "List of coverpoint members of this cross"
+				},
+				"bins": {
+					"type": "array",
+					"items": { "$ref": "#/defs/coverBinType" },
+					"description": "List of cross bins"
+				}
+			},
+			"required": ["name","coverpoints"]
+		},
+		"coverBinType": {
+			"$$target": "#/defs/coverBinType",
+			"title": "Coverage Bin",
+			"type": "object",
+			"properties": {
+				"name": { 
+					"type": "string",
+					"description": "Bin name"
+				},
+				"hits": { 
+					"type": "integer",
+					"description": "Hits in this bin"
+				}
+			},
+			"required": ["name", "hits"]
 		}
 	}
 }
+

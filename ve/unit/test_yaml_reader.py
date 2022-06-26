@@ -3,12 +3,48 @@ Created on Nov 10, 2021
 
 @author: mballance
 '''
-from unittest.case import TestCase
-from ucis.yaml.yaml_reader import YamlReader
 from _io import StringIO
+import sys
+from unittest.case import TestCase
+
 from ucis.report.coverage_report_builder import CoverageReportBuilder
+from ucis.report.text_coverage_report_formatter import TextCoverageReportFormatter
+from ucis.yaml.yaml_reader import YamlReader
+
 
 class TestYamlReader(TestCase):
+    
+    def test_smoke(self):
+        text = """
+        coverage:
+            covergroups:
+            - name: ABC
+              weight: 1 
+              instances:
+              - name: I1
+                coverpoints:
+                - name: CP1
+                  atleast: 1
+                  bins:
+                  - name: a
+                    hits: 1
+                  - name: b
+                    hits: 0
+              - name: l2
+                coverpoints:
+                - name: CP1
+                  atleast: 1
+                  bins:
+                  - name: a
+                    hits: 0
+                  - name: b
+                    hits: 1
+                    
+        """
+        db = YamlReader().loads(StringIO(text))
+        rpt = CoverageReportBuilder.build(db)
+        
+        TextCoverageReportFormatter(rpt, sys.stdout)
     
     def test_type_cvg_cvp(self):
         text = """

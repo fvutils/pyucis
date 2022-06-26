@@ -8,8 +8,12 @@ package:
           src: pypi
         - name: jsonschema
           src: pypi
+        - name: python-jsonschema-objects
+          src: pypi
     dev-deps:
         - name: jsonschema
+          src: pypi
+        - name: python-jsonschema-objects
           src: pypi
         - name: pylint
           type: python
