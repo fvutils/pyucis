@@ -1,4 +1,8 @@
 
+## 0.0.8
+- Progress on new command format and plug-in architecture
+- Labeling this with a new version number just for tracking purposes
+
 ## 0.0.7
 - Adjust the format of the XML slightly. Now, a single
   cgInstance specifies type coverage, while multiple
