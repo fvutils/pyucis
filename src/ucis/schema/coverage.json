@@ -17,19 +17,6 @@
 		}
 	},
 	"defs": {
-		"coverageDataType": {
-			"$$target": "#/defs/coverageDataType",
-			"title": "Coverage Data Type",
-			"description": "Root coverage description",
-			"type": "object",
-			"properties": {
-				"covergroups": { 
-					"type": "array",
-					"items": {"$ref": "#/defs/covergroupType" },
-					"description": "List of covergroup types"
-				}
-			}
-		},
 		"covergroupType": {
 			"$$target": "#/defs/covergroupType",
 			"title": "Type Covergroup",

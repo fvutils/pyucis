@@ -1,32 +1,28 @@
 {
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
-	"$id": "https://fvutils.github.io/pyucis/coverage_report.json",
+	"$id": "https://fvutils.github.io/pyucis/covreport.json",
 	"title": "PyUCIS JSON Coverage Report",
 	"description": "Validation schema for the PyUCIS machine-readable coverage report",
 	"type": "object",
 	"properties": {
-		"coverage-report": { "$ref": "#/defs/coverageReportType" }
+		"covreport": { 
+			"title": "Coverage Report",
+			"description": "Root of the coverage report",
+			"covergroups": {
+				"description": "List of (type) covergroups",
+				"type": "array",
+				"items": { "$ref": "#/defs/typeCovergroupType" }
+			},
+			"coverage": {
+				"description": "Coverage percentage achieved by all covergroups",
+				"type": "number"
+			}
 	},
 	"additionalProperties": false,
 	"defs": {
-		"coverageReportType": {
-			"title": "Root Coverage Report",
-			"$$target": "#/defs/coverageReportType",
-			"type": "object",
-			"properties": { 
-				"covergroups": { 
-					"description": "List of (type) covergroups",
-					"type": "array",
-					"items": { "$ref": "#/defs/typeCovergroupType" }
-				},
-				"coverage": {
-					"description": "Coverage percentage achieved by all covergroups",
-					"type": "number"
-				}
-			}
-		},
 		"typeCovergroupType": {
 			"description": "Contains information about a type covergroup",
+			"title": "Covergroup Type",
 			"$$target": "#/defs/typeCovergroupType",
 			"properties": {
 				"name": {
@@ -51,6 +47,7 @@
 		},
 		"instCovergroupType": {
 			"description": "Contains information about an instance covergroup",
+			"title": "Covergroup Inst",
 			"$$target": "#/defs/instCovergroupType",
 			"type": "object",
 			"properties": {
@@ -81,6 +78,7 @@
 		},
 		"coverpointType": {
 			"description": "Coverage information about a coverpoint",
+			"title": "Coverpoint",
 			"$$target": "#/defs/coverpointType",
 			"type": "object",
 			"properties": {
@@ -111,6 +109,7 @@
 		},
 		"crossType": {
 			"description": "Coverage information about a cross coverpoint",
+			"title": "Cross",
 			"$$target": "#/defs/crossType",
 			"type": "object",
 			"properties": {
@@ -130,6 +129,7 @@
 			}
 		},
 		"coverBinType": {
+			"title": "Cover Bin",
 			"description": "Coverpoint or cross bin",
 			"$$target": "#/defs/coverBinType",
 			"type": "object",

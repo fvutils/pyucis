@@ -3,11 +3,16 @@ Created on Apr 8, 2020
 
 @author: ballance
 '''
-from ucis.report.coverage_report import CoverageReport
+import json
+import os
 from typing import List
+import python_jsonschema_objects as pjs
+
+from ucis.report.coverage_report import CoverageReport
+from ucis.report.coverage_report_builder import CoverageReportBuilder
 from ucis.rgy.format_if_rpt import FormatIfRpt
 from ucis.ucis import UCIS
-from ucis.report.coverage_report_builder import CoverageReportBuilder
+
 
 class FormatRptJson(FormatIfRpt):
     
@@ -23,73 +28,103 @@ class FormatRptJson(FormatIfRpt):
                db : UCIS,
                out,
                args):
-        self._report = CoverageReportBuilder.build(db)
+        report = CoverageReportBuilder.build(db)
         self._fp = out
+        self._ns = FormatRptJson.getCoverageNS()
+        
+        covreport = self._ns.CoverageReport()
+
+        covreport.coverage = report.coverage
         
         for cg in self._report.covergroups:
-            self.report_covergroup(cg, False)
+            if covreport.covergroups is None:
+                covreport.covergroups = []
+            covreport.covergroups.append(self.report_covergroup(cg))
             
-    def report_covergroup(self, 
-                          cg : CoverageReport.Covergroup,
-                          is_inst):
-        self.writeln("%s %s : %f%%", 
-                "INST" if is_inst else "TYPE",
-                cg.name, round(cg.coverage, 2))
+        json.dump(covreport.as_dict(), out)
+            
+    @classmethod
+    def getCoverageNS(cls):
+        if cls._coverage_ns is None:
+            schema = cls.getCovReportSchema()
+            builder = pjs.ObjectBuilder(schema)
+            cls._coverage_ns = builder.build_classes()
+        return cls._coverage_ns
+    
+    @classmethod
+    def getCovReportSchema(cls):
+        if cls._coverage_schema is None:
+            yaml_dir = os.path.dirname(os.path.abspath(__file__))
+            schema_dir = os.path.join(os.path.dirname(yaml_dir), "schema")
+
+            with open(os.path.join(schema_dir, "covreport.json"), "r") as fp:
+                cls._coverage_schema = json.load(fp)
+        return cls._coverage_schema            
+            
+    def report_covergroup(self, cg : CoverageReport.Covergroup):
+            
+        cg_j = self._ns.CovergroupType()
+        cg_j.coverage = cg.coverage
         
-        with self.indent():
-            for cp in cg.coverpoints:
-                self.report_coverpoint(cp)
-            for cr in cg.crosses:
-                self.report_cross(cr)
+        for cp in cg.coverpoints:
+            if cg_j.coverpoints is None:
+                cg_j.coverpoints = []
+            cg_j.coverpoints.append(self.report_coverpoint(cp))
+                
+        for cr in cg.crosses:
+            if cg_j.crosses is None:
+                cg_j.crosses = []
+            cg_j.crosses.append(self.report_cross(cr))
         
-            for cg_i in cg.covergroups:
-                self.report_covergroup(cg_i, True)
+        for cg_i in cg.covergroups:
+            if cg_j.covergroups is None:
+                cg_j.covergroups = []
+            cg_j.covergroups.append(self.report_covergroup(cg_i))
+                
+        return cg_j
             
     def report_coverpoint(self, cp : CoverageReport.Coverpoint):
-        self.writeln("CVP %s : %f%%", cp.name, round(cp.coverage))
+        
+        cp_j = self._ns.Coverpoint()
+        cp_j.coverage = cp.coverage
         
         if self.details:
-            self.writeln("Bins:")
-            with self.indent():
-                self.report_bins(cp.bins)
-            if len(cp.ignore_bins) > 0:
-                self.writeln("IgnoreBins:")
-                with self.indent():
-                    self.report_bins(cp.ignore_bins)
-            if len(cp.illegal_bins) > 0:
-                self.writeln("IllegalBins:")
-                with self.indent():
-                    self.report_bins(cp.illegal_bins)
+            if cp.bins is not None:
+                cp_j.bins = []
+                for b in cp.bins:
+                    b_j = self._ns.CoverBin()
+                    b_j.name = b.name
+                    b_j.count = b.count
+                    cp_j.bins.append(b_j)
+            # self.writeln("Bins:")
+            # with self.indent():
+            #     self.report_bins(cp.bins)
+            # if len(cp.ignore_bins) > 0:
+            #     self.writeln("IgnoreBins:")
+            #     with self.indent():
+            #         self.report_bins(cp.ignore_bins)
+            # if len(cp.illegal_bins) > 0:
+            #     self.writeln("IllegalBins:")
+            #     with self.indent():
+            #         self.report_bins(cp.illegal_bins)
+                    
+        return cp_j
 
     def report_cross(self, cr : CoverageReport.Cross):
+        
+        cr_j = self._ns.Cross()
+        cr_j.name = cr.name
+        cr_j.weight = cr.weight
+        
         self.writeln("CROSS %s : %f%%", cr.name, round(cr.coverage))
         
         if self.details:
-            self.writeln("Bins:")
-            with self.indent():
-                self.report_bins(cr.bins)
-        
-    def report_bins(self, bins : List[CoverageReport.CoverBin]):
-        if self.order_bins_by_hit:
-            for b in bins:
-                if b.hit:
-                    self.writeln("%s : %d", b.name, b.count)
-            for b in bins:
-                if not b.hit:
-                    self.writeln("%s : %d", b.name, b.count)
-        else:
-            for b in bins:
-                self.writeln("%s : %d", b.name, b.count)
-    
-    def writeln(self, msg, *args):
-        self._fp.write(self._ind + msg % args + "\n")
+            if cr.bins is not None:
+                cr_j.bins = []
+                for b in cr.bins:
+                    b_j = self._ns.CoverBin()
+                    b_j.name = b.name
+                    b_j.count = b.count
+                    cr_j.bins.append(b_j)
 
-    def indent(self):
-        return self
-    
-    def __enter__(self):
-        self._ind += "    "
-        
-    def __exit__(self, t, v, tb):
-        self._ind = self._ind[:-4]
-        
+        return cr_j

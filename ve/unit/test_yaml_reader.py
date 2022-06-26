@@ -30,7 +30,7 @@ class TestYamlReader(TestCase):
                     count: 1
                   - name: b
                     count: 0
-              - name: l2
+              - name: I2
                 coverpoints:
                 - name: CP1
                   atleast: 1
