@@ -27,25 +27,84 @@ class TestYamlReader(TestCase):
                   atleast: 1
                   bins:
                   - name: a
-                    hits: 1
+                    count: 1
                   - name: b
-                    hits: 0
+                    count: 0
               - name: l2
                 coverpoints:
                 - name: CP1
                   atleast: 1
                   bins:
                   - name: a
-                    hits: 0
+                    count: 0
                   - name: b
-                    hits: 1
+                    count: 1
+                
                     
         """
         db = YamlReader().loads(StringIO(text))
         rpt = CoverageReportBuilder.build(db)
         
-        TextCoverageReportFormatter(rpt, sys.stdout)
-    
+        print("rpt=%s" % str(rpt))
+        
+        renderer = TextCoverageReportFormatter(rpt, sys.stdout)
+        renderer.details = True
+        renderer.report()
+        
+        self.assertEqual(round(rpt.covergroups[0].coverage, 2), 66.67)
+        self.assertEqual(round(rpt.covergroups[0].covergroups[0].coverage, 2), 50.0)
+        self.assertEqual(round(rpt.covergroups[0].covergroups[1].coverage, 2), 50.0)
+
+    def test_cross_smoke(self):
+        text = """
+        coverage:
+            covergroups:
+            - name: ABC
+              weight: 1 
+              instances:
+              - name: I1
+                coverpoints:
+                - name: CP1
+                  atleast: 1
+                  bins:
+                  - name: a
+                    count: 1
+                  - name: b
+                    count: 0
+                - name: CP2
+                  atleast: 1
+                  bins:
+                  - name: a
+                    count: 0
+                  - name: b
+                    count: 1
+                crosses:
+                - name: CP1xCP2
+                  coverpoints: [CP1, CP2]
+                  bins:
+                  - name: <a,a>
+                    count: 0
+                  - name: <a,b>
+                    count: 1
+                  - name: <b,a>
+                    count: 0
+                  - name: <b,b>
+                    count: 0
+        """
+        db = YamlReader().loads(StringIO(text))
+        rpt = CoverageReportBuilder.build(db)
+        
+        print("rpt=%s" % str(rpt))
+        
+        renderer = TextCoverageReportFormatter(rpt, sys.stdout)
+        renderer.details = True
+        renderer.report()
+        
+        self.assertEqual(round(rpt.covergroups[0].coverage, 2), 41.67)
+        self.assertEqual(round(rpt.covergroups[0].covergroups[0].coverage, 2), 41.67)
+        self.assertEqual(len(rpt.covergroups[0].coverpoints), 2)
+        self.assertEqual(len(rpt.covergroups[0].crosses), 1)
+        
     def test_type_cvg_cvp(self):
         text = """
         coverage:

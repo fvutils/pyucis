@@ -70,13 +70,6 @@ class XmlReader():
         for instN in tree.iter("instanceCoverages"):
             self.readInstanceCoverage(instN)
             
-        from ..report.text_coverage_report_formatter import TextCoverageReportFormatter
-        from ..report.coverage_report_builder import CoverageReportBuilder
-        report = CoverageReportBuilder.build(self.db)
-        formatter = TextCoverageReportFormatter(report, sys.stdout)
-        formatter.details = True
-        formatter.report()
-
         return self.db
     
     @staticmethod

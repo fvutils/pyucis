@@ -93,6 +93,16 @@
 					"type": "array",
 					"items": { "$ref": "#/defs/coverBinType" },
 					"description": "List of coverage bins"
+				},
+				"ignorebins": {
+					"type": "array",
+					"items": { "$ref": "#/defs/coverBinType" },
+					"description": "List of ignore bins"
+				},
+				"illegalbins": {
+					"type": "array",
+					"items": { "$ref": "#/defs/coverBinType" },
+					"description": "List of illegal bins"
 				}
 			},
 			"required": ["name", "bins"]
@@ -134,12 +144,12 @@
 					"type": "string",
 					"description": "Bin name"
 				},
-				"hits": { 
+				"count": { 
 					"type": "integer",
 					"description": "Hits in this bin"
 				}
 			},
-			"required": ["name", "hits"]
+			"required": ["name", "count"]
 		}
 	}
 }
