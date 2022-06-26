@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Coverage Data Format &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="UCIS Object-Oriented API" href="ucis_oo_api.html" />
+    <link rel="prev" title="XML Interchange Format" href="xml_interchange.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> pyucis
+          </a>
+              <div class="version">
+                0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">YAML Coverage Data Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#format-reference">Format Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-data">Coverage Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#type-covergroup">Type Covergroup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#inst-covergroup">Inst Covergroup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverpoint">Coverpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cross">Cross</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-bin">Coverage Bin</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#back-end-apis">Back-End APIs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="reference.html">PyUCIS Reference</a> &raquo;</li>
+      <li>YAML Coverage Data Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/yaml_coverage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="yaml-coverage-data-format">
+<h1>YAML Coverage Data Format<a class="headerlink" href="#yaml-coverage-data-format" title="Permalink to this heading"></a></h1>
+<p>The YAML coverage-data format is used to represent functional coverage
+data in a manner that is accurate and relatively easy for humans and
+tools to create and process.</p>
+<section id="format-reference">
+<h2>Format Reference<a class="headerlink" href="#format-reference" title="Permalink to this heading"></a></h2>
+<section id="coverage-data">
+<h3>Coverage Data<a class="headerlink" href="#coverage-data" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="4"><p><a class="reference external" href="https://fvutils.github.io/pyucis/coverage.json">https://fvutils.github.io/pyucis/coverage.json</a></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>PyUCIS JSON Coverage Data</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="5"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>covergroups</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of covergroup types</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#type-covergroup"><span class="std std-ref">Type Covergroup</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>Every coverage-data document has a <cite>coverage</cite> element as its root. Currently,
+the only sub-elements is a list of covergroup types.</p>
+<section id="type-covergroup">
+<span id="type-covergroup"></span><h3>Type Covergroup<a class="headerlink" href="#type-covergroup" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Holds data about a single covergroup type</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p><strong>name</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>Type name of the covergroup</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>weight</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Weight this covergroup is given against the others</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>instances</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of covergroup instances of this type</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#inst-covergroup"><span class="std std-ref">Inst Covergroup</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>A type covergroup provides data about a covergroup type. All instances
+of a covergroup type have the same coverpoints and crosses. All
+coverpoints in instances of a covergroup type have the same bins.
+Merged type coverage (the union of coverage achieved by all instances)
+is derived by PyUCIS from the instance coverage, and is not specified
+in the coverage file.</p>
+<section id="inst-covergroup">
+<span id="inst-covergroup"></span><h3>Inst Covergroup<a class="headerlink" href="#inst-covergroup" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Holds data about a single covergroup instance</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p><strong>name</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>Instance name of this covergroup</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>coverpoints</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverpoints</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#coverpoint"><span class="std std-ref">Coverpoint</span></a></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>crosses</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of crosses</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#cross"><span class="std std-ref">Cross</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>An instance covergroup provides data about a covergroup instance.</p>
+<section id="coverpoint">
+<span id="coverpoint"></span><h3>Coverpoint<a class="headerlink" href="#coverpoint" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Holds data about a single instance coverpoint</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p><strong>name</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>Name of the coverpoint</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>atleast</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Number of bin hits required for coverage (default=1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p><strong>bins</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverage bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>ignorebins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of ignore bins</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>illegalbins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of illegal bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>A coverpoint lists a set of bins that it is monitoring. Each
+coverpoint can specify an <cite>atleast</cite> count to specify that a
+bin must contain <cite>atleast</cite> hits in order to count as being covered.
+By default, <cite>atleast</cite> is 1.</p>
+<section id="cross">
+<span id="cross"></span><h3>Cross<a class="headerlink" href="#cross" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p><strong>name</strong></p></li>
+</ul>
+</td>
+<td colspan="3"><p>Cross name</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p>atleast</p></li>
+</ul>
+</td>
+<td colspan="3"><p>Number of bin hits required for coverage (default=1)</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>integer</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p><strong>coverpoints</strong></p></li>
+</ul>
+</td>
+<td colspan="3"><p>List of coverpoint members of this cross</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>bins</p></li>
+</ul>
+</td>
+<td colspan="3"><p>List of cross bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="2"><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td colspan="2"><p><a class="reference internal" href="#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>A cross lists the set of coverpoints from which it is composed,
+and lists its cross bins.  Each cross can specify an <cite>atleast</cite>
+count to specify that a bin must contain <cite>atleast</cite> hits in
+order to count as being covered. By default, <cite>atleast</cite> is 1.</p>
+<section id="coverage-bin">
+<span id="coverage-bin"></span><h3>Coverage Bin<a class="headerlink" href="#coverage-bin" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p><strong>name</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>Bin name</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p><strong>count</strong></p></li>
+</ul>
+</td>
+<td colspan="2"><p>Hits in this bin</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>integer</em></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<p>A coverbin associates a bin name with the number of hits
+in that bin.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xml_interchange.html" class="btn btn-neutral float-left" title="XML Interchange Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ucis_oo_api.html" class="btn btn-neutral float-right" title="UCIS Object-Oriented API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
