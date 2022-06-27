@@ -93,6 +93,9 @@ class TestXmlOutput(TestCase):
         print("XML Output:\n" + out.getvalue())
         input = StringIO(out.getvalue())
         validate_ucis_xml(input)
+        input = StringIO(out.getvalue())
+        reader = XmlReader()
+        db_r = reader.read(input)
 
     def test_cross(self):
         print("-- test_simplest_create")

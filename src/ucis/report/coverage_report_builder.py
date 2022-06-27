@@ -12,13 +12,20 @@ from ucis.cross import Cross
 
 
 class CoverageReportBuilder(object):
+    """
+    Builds a coverage-report object from a UCIS database
+    """
     
     def __init__(self, db):
         self.db = db
         self.report = CoverageReport()
     
     @staticmethod
-    def build(db) ->'CoverageReport':
+    def build(db : 'UCIS') ->'CoverageReport':
+        """
+        Builds a CoverageReport object from a UCIS database
+        """
+        
         builder = CoverageReportBuilder(db)
         return builder._build()
         

@@ -21,6 +21,16 @@ jobs:
         export BUILD_NUM=$GITHUB_RUN_ID
         echo "BUILD_NUM=${BUILD_NUM}"
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
+    - name: Run Tests
+      run: |
+        export PYTHONPATH=`pwd`/src
+        tests="$tests ve/unit/test_coverage_report.py"
+        tests="$tests ve/unit/test_report.py"
+        tests="$tests ve/unit/test_simple_create.py"
+        tests="$tests ve/unit/test_xml_examples.py"
+        tests="$tests ve/unit/test_xml_output.py"
+        tests="$tests ve/unit/test_xml_reader.py"
+        ./packages/python/bin/python3 -m pytest --no-cov -v $tests
     - name: Build Docs
       run: |
         make html

@@ -3,11 +3,17 @@ package:
     version: None
     deps:
         - name: lxml
-          type: python
+          src: pypi
+        - name: pyyaml
+          src: pypi
+        - name: jsonschema
+          src: pypi
+        - name: python-jsonschema-objects
           src: pypi
     dev-deps:
-        - name: ivpm
-          type: python
+        - name: jsonschema
+          src: pypi
+        - name: python-jsonschema-objects
           src: pypi
         - name: pylint
           type: python
@@ -22,9 +28,12 @@ package:
           type: python
           src: pypi
         - name: lxml
-          type: python
+          src: pypi
+        - name: pyyaml
           src: pypi
         - name: Sphinx
+          src: pypi
+        - name: sphinx-jsonschema
           src: pypi
         - name: sphinx-rtd-theme
           src: pypi

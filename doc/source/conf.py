@@ -27,8 +27,10 @@ os.environ["SPHINX_BUILD"] = "1"
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
 
-sys.path.insert(0, os.path.abspath('../src'))
-sys.path.insert(0, os.path.abspath('../../src'))
+doc_srcdir = os.path.dirname(os.path.abspath(__file__))
+rootdir = os.path.dirname(os.path.dirname(doc_srcdir))
+#sys.path.insert(0, os.path.join(os.path.abspath('../src'))
+sys.path.insert(0, os.path.join(rootdir, 'src'))
 #sys.path.insert(0, os.path.abspath('../../..'))
 #sys.path.insert(0, os.path.abspath('../..'))
 
@@ -41,6 +43,7 @@ extensions = [
     'sphinxcontrib.makedomain',
     'sphinx.ext.autosectionlabel',
     'sphinx.ext.inheritance_diagram',
+    'sphinx-jsonschema',
     'sphinx_issues',
     'sphinxarg.ext',
     ]

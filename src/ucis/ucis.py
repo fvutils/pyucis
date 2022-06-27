@@ -1,6 +1,3 @@
-from ucis.history_node_kind import HistoryNodeKind
-from typing import List, Iterator
-from ucis.scope_type_t import ScopeTypeT
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -24,6 +21,10 @@ Created on Dec 22, 2019
 
 @author: ballance
 '''
+
+from ucis.history_node_kind import HistoryNodeKind
+from typing import List, Iterator
+from ucis.scope_type_t import ScopeTypeT
 from ucis.unimpl_error import UnimplError
 from ucis.scope import Scope
 from ucis.history_node import HistoryNode

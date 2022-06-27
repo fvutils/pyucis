@@ -129,4 +129,5 @@ class Scope(Obj):
             return self.setGoal(value)
         else:
             super().setIntProperty(coverindex, property, value)
+            
     

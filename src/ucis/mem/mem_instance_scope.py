@@ -39,6 +39,9 @@ class MemInstanceScope(MemScope,InstanceScope):
         self.m_du_scope = du_scope
         self.m_cover_item_l = []
         
+    def getInstanceDu(self) -> 'Scope':
+        return self.m_du_scope
+        
     def createScope(self, 
         name:str, 
         srcinfo:SourceInfo, 

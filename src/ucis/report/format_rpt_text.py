@@ -5,30 +5,35 @@ Created on Apr 8, 2020
 '''
 from ucis.report.coverage_report import CoverageReport
 from typing import List
+from ucis.rgy.format_if_rpt import FormatIfRpt
+from ucis.ucis import UCIS
+from ucis.report.coverage_report_builder import CoverageReportBuilder
 
-class TextCoverageReportFormatter(object):
+class FormatRptText(FormatIfRpt):
     
-    def __init__(self, 
-                report : CoverageReport, 
-                fp):
-        self._report = report
-        self._fp = fp
+    def __init__(self):
+        self._report = None
+        self._fp = None
         self._ind = ""
         self.details = False
-        self.round = 2
         self.order_bins_by_hit = False
         
-    def report(self):
+    def report(self, 
+               db : UCIS,
+               out,
+               args):
+        self._report = CoverageReportBuilder.build(db)
+        self._fp = out
+        
         for cg in self._report.covergroups:
             self.report_covergroup(cg, False)
             
     def report_covergroup(self, 
                           cg : CoverageReport.Covergroup,
                           is_inst):
-        fmt = "%s %s : %." + str(self.round) + "f%%"
-        self.writeln(fmt,
+        self.writeln("%s %s : %f%%", 
                 "INST" if is_inst else "TYPE",
-                cg.name, round(cg.coverage, self.round))
+                cg.name, round(cg.coverage, 2))
         
         with self.indent():
             for cp in cg.coverpoints:
@@ -40,8 +45,7 @@ class TextCoverageReportFormatter(object):
                 self.report_covergroup(cg_i, True)
             
     def report_coverpoint(self, cp : CoverageReport.Coverpoint):
-        fmt = "CVP %s : %." + str(self.round) + "f%%"
-        self.writeln(fmt, cp.name, round(cp.coverage, self.round))
+        self.writeln("CVP %s : %f%%", cp.name, round(cp.coverage))
         
         if self.details:
             self.writeln("Bins:")
@@ -57,8 +61,7 @@ class TextCoverageReportFormatter(object):
                     self.report_bins(cp.illegal_bins)
 
     def report_cross(self, cr : CoverageReport.Cross):
-        fmt = "CROSS %s : %." + str(self.round) + "f%%"
-        self.writeln(fmt, cr.name, round(cr.coverage, self.round))
+        self.writeln("CROSS %s : %f%%", cr.name, round(cr.coverage))
         
         if self.details:
             self.writeln("Bins:")
