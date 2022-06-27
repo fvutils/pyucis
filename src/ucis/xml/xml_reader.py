@@ -21,6 +21,7 @@ Created on Jan 6, 2020
 '''
 
 from datetime import datetime
+import logging
 from logging import _srcfile
 import sys
 from typing import Dict
