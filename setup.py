@@ -33,6 +33,9 @@ setup(
   ],
   install_requires=[
     'lxml',
+    'python-jsonschema-objects',
+    'jsonschema',
+    'pyyaml'
   ],
 )
 
