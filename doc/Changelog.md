@@ -1,4 +1,7 @@
 
+## 0.1.0
+- Correct an issue with type-coverage calculation
+
 ## 0.0.9
 - Adjust dependencies 
 
