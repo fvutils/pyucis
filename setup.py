@@ -2,7 +2,7 @@
 import os
 from setuptools import setup, find_namespace_packages
 
-version="0.0.8"
+version="0.1.0"
 
 if "BUILD_NUM" in os.environ.keys():
     version = version + "." + os.environ["BUILD_NUM"]
@@ -33,6 +33,9 @@ setup(
   ],
   install_requires=[
     'lxml',
+    'python-jsonschema-objects',
+    'jsonschema',
+    'pyyaml'
   ],
 )
 

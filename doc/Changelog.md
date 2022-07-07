@@ -1,4 +1,10 @@
 
+## 0.1.0
+- Correct an issue with type-coverage calculation
+
+## 0.0.9
+- Adjust dependencies 
+
 ## 0.0.8
 - Progress on new command format and plug-in architecture
 - Labeling this with a new version number just for tracking purposes
