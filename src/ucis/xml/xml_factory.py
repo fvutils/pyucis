@@ -24,16 +24,38 @@ from ucis import UCIS
 from ucis.xml.xml_writer import XmlWriter
 from ucis.xml import validate_ucis_xml
 from ucis.xml.xml_reader import XmlReader
-
+import logging
 class XmlFactory():
     
+    @staticmethod
+    def _open_file(file_path):   
+        with open(file_path, 'rb') as test_f:
+            magic0 = test_f.read(2)
+            magic1 = test_f.read(2)
+        if magic0 == b'\x1f\x8b':
+            try:
+                import gzip
+            except ImportError:
+                logging.fatal("Cannot read gzip compressed files since module gzip is not available")
+            else:
+                return gzip.open(file_path, 'rt')
+        elif magic0 == b'\x04\x22' and magic1 == b'\x4d\x18':
+            try:
+                import lz4.frame
+            except ImportError:
+                logging.fatal("Cannot read LZ4 compressed files since module lz4.frame is not available")
+            else:
+                return lz4.frame.open(file_path, 'rt')
+        else:
+            return open(file_path, "r")
+
     @staticmethod
     def read(file_or_filename) -> UCIS:
         """Reads the specified XML file and returns a UCIS representation"""
         
         # First, validate the incoming XML
         if type(file_or_filename) == str:
-            fp = open(file_or_filename)
+            fp = XmlFactory._open_file(file_or_filename)
         else:
             fp = file_or_filename
 
