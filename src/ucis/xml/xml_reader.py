@@ -21,6 +21,7 @@ Created on Jan 6, 2020
 '''
 
 from datetime import datetime
+import logging
 from logging import _srcfile
 import sys
 from typing import Dict
@@ -231,7 +232,7 @@ class XmlReader():
         
         cp_l = []
         for cp_n in crossExpr.text.split(','):
-            print("cp_n=\"" + cp_n + "\"")
+            logging.debug("cp_n=\"" + cp_n + "\"")
             if cp_n in cp_m.keys():
                 cp_l.append(cp_m[cp_n])
             else:

@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
+import logging
 from enum import IntEnum, auto
 from .report import *
 from .rgy import *
@@ -370,7 +371,7 @@ def ucis_CreateInstance(
         type : ScopeTypeT,
         du_scope : Scope,
         flags : FlagsT) ->Scope:
-    print("ucis_CreateInstance: parent=" + str(parent))
+    logging.debug("ucis_CreateInstance: parent=" + str(parent))
     if parent is not None:
         return parent.createInstance(name, fileinfo, weight, source, type, du_scope, flags)
     else:

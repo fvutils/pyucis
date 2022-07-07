@@ -21,6 +21,7 @@ Created on Jan 10, 2020
 
 @author: ballance
 '''
+import logging
 from ctypes import *
 import sys
 
@@ -143,7 +144,7 @@ def load_ucis_library(lib):
         proto = fsig[0]
         attr = fsig[1]
         func = proto((f, _lib), attr)
-        print("add: f=" + str(f) + " func=" + str(func))
+        logging.debug("add: f=" + str(f) + " func=" + str(func))
         _funcs.add(f, func)
         
     _funcs.ucis_RegisterErrorHandler(ucis_err_func, None)
