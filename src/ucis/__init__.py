@@ -23,11 +23,11 @@ from .rgy import *
 from .ucis import UCIS
 from .scope import Scope
 
-from ucis.handle_property import HandleProperty
-from ucis.history_node import HistoryNode
-from ucis.history_node_kind import HistoryNodeKind
-from ucis.int_property import IntProperty
-from ucis.obj import Obj
+from .handle_property import HandleProperty
+from .history_node import HistoryNode
+from .history_node_kind import HistoryNodeKind
+from .int_property import IntProperty
+from .obj import Obj
 from ucis.real_property import RealProperty
 from ucis.source_info import SourceInfo
 from ucis.str_property import StrProperty

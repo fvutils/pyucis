@@ -127,7 +127,10 @@ class CoverageReportBuilder(object):
                     cvg_data.at_least,
                     cvg_data.data))
 
-        cp_r.coverage = (100*num_hit)/total
+        if total > 0:
+            cp_r.coverage = (100*num_hit)/total
+        else:
+            cp_r.coverage = 0
         
         return cp_r
         

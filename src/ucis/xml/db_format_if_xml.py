@@ -4,6 +4,7 @@ Created on Jun 11, 2022
 @author: mballance
 '''
 from ucis.rgy.format_if_db import FormatIfDb, FormatDescDb, FormatDbFlags
+from .xml_ucis import XmlUCIS
 
 class DbFormatIfXml(FormatIfDb):
     
@@ -11,7 +12,7 @@ class DbFormatIfXml(FormatIfDb):
         raise Exception("Options %s not accepted by the XML format" % str(options))
     
     def create(self):
-        raise Exception("The XML format can only be read and written, not created")
+        return XmlUCIS()
     
     def read(self, file_or_filename) -> 'UCIS':
         from ucis.xml.xml_factory import XmlFactory

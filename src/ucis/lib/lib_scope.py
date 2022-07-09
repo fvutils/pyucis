@@ -15,6 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
+from ucis.int_property import IntProperty
 from ucis.lib.lib_cover_index import LibCoverIndex
 from ucis.lib.lib_scope_iterator import LibScopeIterator
 from typing import Iterator
@@ -27,9 +28,6 @@ Created on Jan 11, 2020
 from _ctypes import byref, pointer
 from ucis.scope import Scope
 from ucis.unimpl_error import UnimplError
-from ucis import UCIS_COVERGROUP, UCIS_INT_SCOPE_GOAL, UCIS_INT_CVG_STROBE,\
-    UCIS_INT_CVG_MERGEINSTANCES, UCIS_STR_COMMENT, UCIS_INT_SCOPE_WEIGHT
-
 from ucis.cover_data import CoverData
 from ucis.flags_t import FlagsT
 from ucis.lib.lib_cover_data import LibCoverData
@@ -52,16 +50,16 @@ class LibScope(LibObj, Scope):
         logging.debug("LibScope::init - db=" + str(self.db) + " " + str(self.obj))
         
     def getGoal(self)->int:
-        return self.getIntProperty(-1, UCIS_INT_SCOPE_GOAL)
+        return self.getIntProperty(-1, IntProperty.SCOPE_GOAL)
     
     def setGoal(self,goal)->int:
-        self.setIntProperty(-1, UCIS_INT_SCOPE_GOAL, goal)
+        self.setIntProperty(-1, IntProperty.SCOPE_GOAL, goal)
         
 #     def getWeight(self):
-#         return self.getIntProperty(-1, UCIS_INT_SCOPE_WEIGHT)
+#         return self.getIntProperty(-1, IntProperty.SCOPE_WEIGHT)
 #     
 #     def setWeight(self, w):
-#         self.setIntProperty(-1, UCIS_INT_SCOPE_WEIGHT, w)
+#         self.setIntProperty(-1, IntProperty.SCOPE_WEIGHT, w)
         
     def createScope(self, 
         name:str, 
@@ -131,7 +129,7 @@ class LibScope(LibObj, Scope):
             srcinfo_p,
             weight,
             source,
-            UCIS_COVERGROUP,
+            ScopeTypeT.COVERGROUP,
             0)
         
         return LibCovergroup(self.db, cg_obj)

@@ -4,10 +4,10 @@ Created on Jan 12, 2020
 @author: ballance
 '''
 from typing import List
-from ucis import UCIS_COVERGROUP, UCIS_COVERINSTANCE
 from ucis.cover_type import CoverType
 from ucis.covergroup import Covergroup
 from ucis.mem.mem_cvg_scope import MemCvgScope
+from ucis.scope_type_t import ScopeTypeT
 from ucis.source_t import SourceT
 from ucis.source_info import SourceInfo
 
@@ -20,7 +20,7 @@ class MemCovergroup(MemCvgScope,Covergroup):
                  weight,
                  source):
         MemCvgScope.__init__(self, parent, name, srcinfo, weight, source, 
-                         UCIS_COVERGROUP, 0)
+                         ScopeTypeT.COVERGROUP, 0)
         Covergroup.__init__(self)
         self.at_least = 0
         self.auto_bin_max
@@ -83,7 +83,7 @@ class MemCovergroup(MemCvgScope,Covergroup):
             srcinfo, 
             weight, 
             source, 
-            UCIS_COVERINSTANCE,
+            ScopeTypeT.COVERINSTANCE,
             0)
         return ci_obj
 

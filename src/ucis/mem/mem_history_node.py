@@ -25,7 +25,7 @@ Created on Jan 5, 2020
 from ucis.history_node import HistoryNode
 from datetime import datetime
 from ucis.test_data import TestData
-from ucis import IntProperty
+from ucis.int_property import IntProperty
 
 class MemHistoryNode(HistoryNode):
     

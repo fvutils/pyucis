@@ -6,27 +6,39 @@ Created on Jun 11, 2022
 import argparse
 from ucis.cmd import cmd_list_db_formats
 from ucis.cmd import cmd_list_report_formats
-from .cmd import cmd_report
+from ucis.cmd import cmd_report, cmd_merge, cmd_convert
 import sys
+import traceback
 
 def get_parser():
     parser = argparse.ArgumentParser()
     
     subparser = parser.add_subparsers()
     subparser.required = True
+
+    convert = subparser.add_parser("convert")
+    convert.add_argument("--out", "-o",
+        help="Specifies the output of the conversion",
+        required=True)
+    convert.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    convert.add_argument("--output-format", "-of",
+        help="Specifies the format of the output database. Defaults to 'xml'")
+    convert.add_argument("input", help="Source database to convert")
+    convert.set_defaults(func=cmd_convert.convert)
    
-    # merge = subparser.add_parser("merge")
-    # merge.add_argument("--out", "-o", 
-    #     help="Specifies the output of the merge",
-    #     required=True)
-    # merge.add_argument("--input-format", "-if",
-    #     help="Specifies the format of the input databases. Defaults to 'xml'")
-    # merge.add_argument("--output-format", "-of",
-    #     help="Specifies the format of the input databases. Defaults to 'xml'")
-    # merge.add_argument("--libucis", "-l",
-    #     help="Specifies the name/path of the UCIS shared library")
-    # merge.add_argument("db", action="append")
-    # merge.set_defaults(func=cmd.cmd_merge.merge)
+    merge = subparser.add_parser("merge")
+    merge.add_argument("--out", "-o", 
+        help="Specifies the output of the merge",
+        required=True)
+    merge.add_argument("--input-format", "-if",
+        help="Specifies the format of the input databases. Defaults to 'xml'")
+    merge.add_argument("--output-format", "-of",
+        help="Specifies the format of the input databases. Defaults to 'xml'")
+    merge.add_argument("--libucis", "-l",
+        help="Specifies the name/path of the UCIS shared library")
+    merge.add_argument("db", action="append")
+    merge.set_defaults(func=cmd_merge.merge)
     
     list_db_formats = subparser.add_parser("list-db-formats",
         help="Shows available database formats")
@@ -67,6 +79,7 @@ def main():
     try:
         args.func(args)
     except Exception as e:
+        traceback.print_exc()
         print("Error: %s" % "{0}".format(e))
 
 if __name__ == "__main__":
