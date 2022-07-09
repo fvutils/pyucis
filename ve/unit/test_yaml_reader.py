@@ -42,7 +42,7 @@ class TestYamlReader(TestCase):
                 
                     
         """
-        db = YamlReader().loads(StringIO(text))
+        db = YamlReader().loads(text)
         rpt = CoverageReportBuilder.build(db)
         
         print("rpt=%s" % str(rpt))
@@ -51,7 +51,7 @@ class TestYamlReader(TestCase):
         renderer.details = True
         renderer.report()
         
-        self.assertEqual(round(rpt.covergroups[0].coverage, 2), 66.67)
+        self.assertEqual(round(rpt.covergroups[0].coverage, 2), 100.0)
         self.assertEqual(round(rpt.covergroups[0].covergroups[0].coverage, 2), 50.0)
         self.assertEqual(round(rpt.covergroups[0].covergroups[1].coverage, 2), 50.0)
 
@@ -91,7 +91,7 @@ class TestYamlReader(TestCase):
                   - name: <b,b>
                     count: 0
         """
-        db = YamlReader().loads(StringIO(text))
+        db = YamlReader().loads(text)
         rpt = CoverageReportBuilder.build(db)
         
         print("rpt=%s" % str(rpt))
@@ -108,19 +108,20 @@ class TestYamlReader(TestCase):
     def test_type_cvg_cvp(self):
         text = """
         coverage:
-            covergroups:
-                - type-name: cvg
-                
-                  coverpoints:
-                    - name: cp1
-                      bins:
-                        - name: b0
-                          count: 1
-                        - name: b1
-                          count: 0
+          covergroups:
+          - name: cvg
+            instances:
+            - name: i1
+              coverpoints:
+              - name: cp1
+                bins:
+                - name: b0
+                  count: 1
+                - name: b1
+                  count: 0
         """
         
-        db = YamlReader().loads(StringIO(text))
+        db = YamlReader().loads(text)
         rpt = CoverageReportBuilder.build(db)
         
         self.assertEqual(len(rpt.covergroups), 1)
@@ -132,25 +133,26 @@ class TestYamlReader(TestCase):
     def test_type_cvg_2_cvp(self):
         text = """
         coverage:
-            covergroups:
-                - type-name: cvg
-                
-                  coverpoints:
-                    - name: cp1
-                      bins:
-                        - name: b0
-                          count: 1
-                        - name: b1
-                          count: 0
-                    - name: cp2
-                      bins:
-                        - name: b0
-                          count: 1
-                        - name: b1
-                          count: 1
+          covergroups:
+          - name: cvg
+            instances:
+            - name: i1
+              coverpoints:
+              - name: cp1
+                bins:
+                - name: b0
+                  count: 1
+                - name: b1
+                  count: 0
+              - name: cp2
+                bins:
+                - name: b0
+                  count: 1
+                - name: b1
+                  count: 1
         """
         
-        db = YamlReader().loads(StringIO(text))
+        db = YamlReader().loads(text)
         rpt = CoverageReportBuilder.build(db)
         
         self.assertEqual(len(rpt.covergroups), 1)

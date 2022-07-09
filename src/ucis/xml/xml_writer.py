@@ -14,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from ucis import UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN
 '''
 Created on Jan 5, 2020
 
@@ -34,7 +33,6 @@ from ucis.history_node_kind import HistoryNodeKind
 from ucis.scope import Scope
 from ucis.scope_type_t import ScopeTypeT
 from ucis.statement_id import StatementId
-from ucis.ucis import UCIS
 
 from lxml import etree as et
 from lxml.etree import QName, tounicode, SubElement
@@ -204,11 +202,11 @@ class XmlWriter():
             cpBinElem = self.mkElem(cpElem, "coverpointBin")
             self.setAttr(cpBinElem, "name", cp_bin.getName())
             
-            if cp_bin.data.type == UCIS_CVGBIN:
+            if cp_bin.data.type == CoverTypeT.CVGBIN:
                 self.setAttr(cpBinElem, "type", "default")
-            elif cp_bin.data.type == UCIS_IGNOREBIN:
+            elif cp_bin.data.type == CoverTypeT.IGNOREBIN:
                 self.setAttr(cpBinElem, "type", "ignore")
-            elif cp_bin.data.type == UCIS_ILLEGALBIN:
+            elif cp_bin.data.type == CoverTypeT.ILLEGALBIN:
                 self.setAttr(cpBinElem, "type", "illegal")
             else:
                 raise Exception("Unknown bin type %s" % str(cp_bin.type))

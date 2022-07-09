@@ -5,12 +5,13 @@ Created on Nov 9, 2021
 '''
 import yaml
 
-from ucis import UCIS_HISTORYNODE_TEST, UCIS_OTHER, UCIS_CVGBIN, UCIS_IGNOREBIN, \
-    UCIS_ILLEGALBIN, UCIS_DU_MODULE, UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, \
-    UCIS_ENABLED_COND, UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, \
-    UCIS_INST_ONCE, UCIS_SCOPE_UNDER_DU, UCIS_INSTANCE
+from io import StringIO
+from ucis.cover_type_t import CoverTypeT
+from ucis.flags_t import FlagsT
 from ucis.mem.mem_ucis import MemUCIS
 from ucis.scope import Scope
+from ucis.scope_type_t import ScopeTypeT
+from ucis.source_t import SourceT
 from ucis.ucis import UCIS
 
 import os
@@ -54,11 +55,16 @@ class YamlReader(object):
             
     
     def loads(self, s) -> UCIS:
+        fp = StringIO(s)
+
+        return self.load(fp)
+
+    def load(self, fp) -> UCIS:
         
         self.cvg_ns = YamlReader.getCoverageNS()
         schema = YamlReader.getCoverageSchema()
 
-        cov_yml = yaml.load(s, Loader=yaml.FullLoader)
+        cov_yml = yaml.load(fp, Loader=yaml.FullLoader)
         
         jsonschema.validate(instance=cov_yml, schema=schema)
             
@@ -74,21 +80,21 @@ class YamlReader(object):
             self.cg_default_du_name,
             du_src_info,
             1, # weight
-            UCIS_OTHER, # source language
-            UCIS_DU_MODULE,
-            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
-            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
-            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
-            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU)
+            SourceT.OTHER, # source language
+            ScopeTypeT.DU_MODULE,
+            FlagsT.ENABLED_STMT | FlagsT.ENABLED_BRANCH
+            | FlagsT.ENABLED_COND | FlagsT.ENABLED_EXPR
+            | FlagsT.ENABLED_FSM | FlagsT.ENABLED_TOGGLE
+            | FlagsT.INST_ONCE | FlagsT.SCOPE_UNDER_DU)
             
         self.cg_default_inst = self.db.createInstance(
             self.cg_default_inst_name,
             None, # sourceinfo
             1, # weight
-            UCIS_OTHER, # source language
-            UCIS_INSTANCE,
+            SourceT.OTHER, # source language
+            ScopeTypeT.INSTANCE,
             self.cg_default_du,
-            UCIS_INST_ONCE)
+            FlagsT.INST_ONCE)
 
         coverage = coverage.coverage
         
@@ -117,13 +123,13 @@ class YamlReader(object):
             for cg_i in cg_t.instances:
                 if cg_i.coverpoints is not None:
                     for cp in cg_i.coverpoints:
-                        if cp.name not in cp_t_m.keys():
+                        if str(cp.name) not in cp_t_m.keys():
                             cp_t = self.cvg_ns.Coverpoint()
-                            cp_t.name = cp.name
-                            cp_t_m[cp.name] = cp_t
+                            cp_t.name = str(cp.name)
+                            cp_t_m[cp_t.name] = cp_t
                             cp_t_l.append(cp_t)
                         else:
-                            cp_t = cp_t_m[cp.name]
+                            cp_t = cp_t_m[str(cp.name)]
                             
                         # Now, do bins...
                         if cp.bins is not None:
@@ -138,7 +144,7 @@ class YamlReader(object):
                                         break
                                 if t_b is None:
                                     t_b = self.cvg_ns.CoverageBin()
-                                    t_b.name = b.name
+                                    t_b.name = str(b.name)
                                     t_b.count = 0
                                     cp_t.bins.append(t_b)
                                 t_b.count += b.count
@@ -155,7 +161,7 @@ class YamlReader(object):
                                         break
                                 if t_b is None:
                                     t_b = self.cvg_ns.CoverageBin()
-                                    t_b.name = b.name
+                                    t_b.name = str(b.name)
                                     t_b.count = 0
                                     cp_t.bins.append(t_b)
                                 t_b.count += b.count
@@ -172,7 +178,7 @@ class YamlReader(object):
                                         break
                                 if t_b is None:
                                     t_b = self.cvg_ns.CoverageBin()
-                                    t_b.name = b.name
+                                    t_b.name = str(b.name)
                                     t_b.count = 0
                                     cp_t.bins.append(t_b)
                                 t_b.count += b.count
@@ -181,50 +187,50 @@ class YamlReader(object):
                     for cr in cg_i.crosses:
                         if cr.coverpoints is None:
                             raise Exception("Cross %s in covergroup instance %s doesn't specify coverpoints" % (
-                                cr.name, cg_i.name))
-                        if cr.name not in cr_t_m.keys():
+                                str(cr.name), str(cg_i.name)))
+                        if str(cr.name) not in cr_t_m.keys():
                             cr_t = self.cvg_ns.Cross()
-                            cr_t.name = cr.name
+                            cr_t.name = str(cr.name)
                             cr_t.coverpoints = []
                             for cr_cp in cr.coverpoints:
                                 cr_t.coverpoints.append(cr_cp)
                             cr_t_bins_m = {}
-                            cr_t_m[cr.name] = (cr_t, cr_t_bins_m)
+                            cr_t_m[str(cr.name)] = (cr_t, cr_t_bins_m)
                             cr_t_l.append(cr_t)
                             
                             if cr.bins is not None:
                                 cr_t.bins = []
                         else:
-                            cr_t = cr_t_m[cr.name][0]
-                            cr_t_bins_m = cr_t_m[cr.name][1]
+                            cr_t = cr_t_m[str(cr.name)][0]
+                            cr_t_bins_m = cr_t_m[str(cr.name)][1]
                             
                         # Now, proceed to aggregate bins
                         if cr.bins is not None:
                             for b in cr.bins:
                                 if b.name in cr_t_bins_m.keys():
-                                    cr_t_bins_m[b.name].count += b.count
+                                    cr_t_bins_m[str(b.name)].count += b.count
                                 else:
                                     b_t = self.cvg_ns.CoverageBin()
-                                    b_t.name = b.name
+                                    b_t.name = str(b.name)
                                     b_t.count = b.count
                                     cr_t.bins.append(b_t)
-                                    cr_t_bins_m[b.name] = b_t
+                                    cr_t_bins_m[str(b.name)] = b_t
                 
         else:
-            print("Warning: Covergroup type %s has no instances" % cg_t.name)
+            print("Warning: Covergroup type %s has no instances" % str(cg_t.name))
 
         # Now, convert to UCIS
         cg_t_scope = self.cg_default_inst.createCovergroup(
-            cg_t.name,
+            str(cg_t.name),
             cg_location,
             weight,
-            UCIS_OTHER)
+            SourceT.OTHER)
         
         cp_n_scope_m = {}
         
         # Create type coverpoints and crosses
         for cp in cp_t_l:
-            cp_n_scope_m[cp.name] = self.record_coverpoint(cg_t_scope, cp)
+            cp_n_scope_m[str(cp.name)] = self.record_coverpoint(cg_t_scope, cp)
             
         for cr in cr_t_l:
             cp_l = []
@@ -234,7 +240,7 @@ class YamlReader(object):
                     cp_l.append(cp_n_scope_m[cp])
                 else:
                     raise Exception("Coverpoint %s referenced in cross %s is not defined" % (
-                        cp, cr.name))
+                        cp, str(cr.name)))
             
             self.record_cross(cg_t_scope, cp_l, cr)
 
@@ -242,14 +248,14 @@ class YamlReader(object):
         cp_n_scope_m = {}
         for i in cg_t.instances:
             cg_i_scope = cg_t_scope.createCoverInstance(
-                i.name,
+                str(i.name),
                 cg_location,
                 weight,
-                UCIS_OTHER)
+                SourceT.OTHER)
 
             if i.coverpoints is not None:            
                 for cp in i.coverpoints:
-                    cp_n_scope_m[cp.name] = self.record_coverpoint(cg_i_scope, cp)
+                    cp_n_scope_m[str(cp.name)] = self.record_coverpoint(cg_i_scope, cp)
                     
             if i.crosses is not None:
                 for cr in i.crosses:
@@ -260,7 +266,7 @@ class YamlReader(object):
                             cp_l.append(cp_n_scope_m[cp])
                         else:
                             raise Exception("Coverpoint %s referenced in cross %s is not defined" % (
-                                cp, cr.name))
+                                cp, str(cr.name)))
                             
                     self.record_cross(cg_i_scope, cp_l, cr)
 
@@ -277,40 +283,40 @@ class YamlReader(object):
             at_least = cp.atleast
             
         cp_scope = cp_parent_s.createCoverpoint(
-            cp.name,
+            str(cp.name),
             cp_location,
             weight,
-            UCIS_OTHER)
+            SourceT.OTHER)
 
         if cp.bins is not None:        
             for b in cp.bins:
                 cp_scope.createBin(
-                    b.name,
+                    str(b.name),
                     cp_location,
                     at_least,
                     b.count,
-                    b.name,
-                    UCIS_CVGBIN)
+                    str(b.name),
+                    CoverTypeT.CVGBIN)
                 
         if cp.ignorebins is not None:
             for b in cp.ignorebins:
                 cp_scope.createBin(
-                    b.name,
+                    str(b.name),
                     cp_location,
                     at_least,
                     b.count,
-                    b.name,
-                    UCIS_IGNOREBIN)
+                    str(b.name),
+                    CoverTypeT.IGNOREBIN)
                 
         if cp.illegalbins is not None:
             for b in cp.illegalbins:
                 cp_scope.createBin(
-                    b.name,
+                    str(b.name),
                     cp_location,
                     at_least,
                     b.count,
-                    b.name,
-                    UCIS_ILLEGALBIN)
+                    str(b.name),
+                    CoverTypeT.ILLEGALBIN)
                 
         return cp_scope
                 
@@ -326,19 +332,19 @@ class YamlReader(object):
             at_least = cr.atleast
             
         cr_scope = cp_parent_s.createCross(
-            cr.name,
+            str(cr.name),
             cr_location,
             weight,
-            UCIS_OTHER,
+            SourceT.OTHER,
             cp_l)
 
         if cr.bins is not None:        
             for b in cr.bins:
                 cr_scope.createBin(
-                    b.name,
+                    str(b.name),
                     cr_location,
                     at_least,
                     b.count,
-                    b.name)
+                    str(b.name))
                     
         return cr_scope
