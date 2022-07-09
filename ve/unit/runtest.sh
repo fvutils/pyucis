@@ -6,4 +6,5 @@ PYTHON=${ROOTDIR}/packages/python/bin/python3
 
 export PYTHONPATH=${ROOTDIR}/src
 
-${PYTHON} -m unittest 
+${PYTHON} -m unittest -v 
+
