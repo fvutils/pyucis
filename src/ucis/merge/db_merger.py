@@ -105,6 +105,8 @@ class DbMerger(object):
     def _merge_covergroup(self, dst_cg, src_cg_l):
         
         dst_cp_m = self._merge_coverpoints(dst_cg, src_cg_l)
+
+        self._merge_crosses(dst_cg, dst_cp_m, src_cg_l)
         
         self._merge_coverinsts(dst_cg, src_cg_l)
         
@@ -133,7 +135,9 @@ class DbMerger(object):
                         None, # location
                         1, # weight
                         UCIS_OTHER)
-            self._merge_coverpoints(dst_cg_i, src_cg_i_l)
+            dst_cp_m = self._merge_coverpoints(dst_cg_i, src_cg_i_l)
+
+            self._merge_crosses(dst_cg_i, dst_cp_m, src_cg_i_l)
 
     def _merge_coverpoints(self, dst_cg, src_cg_l) -> Dict[str,object]:
         dst_cp_m : Dict[str, object] = {}
@@ -187,6 +191,65 @@ class DbMerger(object):
                     bin_name_m[name][0],
                     name,
                     bin_t)
+
+    def _merge_crosses(self, dst_cg, dst_cp_m, src_cg_l):
+
+        cross_m = {}
+        cross_name_l = []
+
+        for i,src_cg in enumerate(src_cg_l):
+            for cr in src_cg.scopes(ScopeTypeT.CROSS):
+                name = cr.getScopeName()
+                if name not in cross_m.keys():
+                    cross_m[name] = []
+                    cross_name_l.append(name)
+                cross_m[name].append(cr)
+
+        for name in cross_name_l:
+            src_cr_l = cross_m[name]
+
+            # Create the destination cross
+            coverpoint_l = []
+            for i in range(src_cr_l[0].getNumCrossedCoverpoints()):
+                src_cp = src_cr_l[0].getIthCrossedCoverpoint(i)
+                if src_cp.getScopeName() in dst_cp_m.keys():
+                    coverpoint_l.append(dst_cp_m[src_cp.getScopeName()])
+                else:
+                    raise Exception("Cannot find coverpoint %s when creating cross %s" % (
+                        src_cp.getName(), name))
+
+            dst_cr = dst_cg.createCross(
+                name,
+                None,
+                1, # weight
+                UCIS_OTHER,
+                coverpoint_l)
+
+            self._merge_cross(dst_cr, src_cr_l)
+
+    def _merge_cross(self, dst_cr, src_cr_l):
+
+        for cvg_t in (CoverTypeT.CVGBIN,CoverTypeT.IGNOREBIN,CoverTypeT.ILLEGALBIN):
+            bin_name_m = {}
+            bin_name_l = []
+
+            for src_cr in src_cr_l:
+                for ci in src_cr.coverItems(cvg_t):
+                    bin_n = ci.getName()
+                    cvg_data = ci.getCoverData()
+                    if bin_n not in bin_name_m.keys():
+                        bin_name_m[bin_n] = [0, cvg_data.at_least]
+                        bin_name_l.append(bin_n)
+                    bin_name_m[bin_n][0] += cvg_data.data
+
+            for bin_n in bin_name_l:
+                dst_cr.createBin(
+                    bin_n,
+                    None, # Location
+                    bin_name_m[bin_n][1], # at_least
+                    bin_name_m[bin_n][0], # count
+                    bin_n,
+                    cvg_t)
     
     def _clone_cross(self, dst_cg, cp):
         coverpoint_l = []
