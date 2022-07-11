@@ -16,7 +16,10 @@ def get_parser():
     subparser = parser.add_subparsers()
     subparser.required = True
 
-    convert = subparser.add_parser("convert")
+    convert = subparser.add_parser("convert",
+        help="""
+        Converts coverage data from one format to another
+        """)
     convert.add_argument("--out", "-o",
         help="Specifies the output of the conversion",
         required=True)
@@ -27,7 +30,10 @@ def get_parser():
     convert.add_argument("input", help="Source database to convert")
     convert.set_defaults(func=cmd_convert.convert)
    
-    merge = subparser.add_parser("merge")
+    merge = subparser.add_parser("merge",
+        help="""
+        Merges coverage data from two or more databases into a single merged database
+        """)
     merge.add_argument("--out", "-o", 
         help="Specifies the output of the merge",
         required=True)
