@@ -72,18 +72,22 @@ class CoverageReportBuilder(object):
         coverage = 0.0
 
         div = 0
+        non_union_merge = True
         for cp in cg_r.coverpoints:
+            non_union_merge = False
             if cp.weight > 0:
                 coverage += cp.coverage * cp.weight
             div += cp.weight
             
         for cr in cg_r.crosses:
+            non_union_merge = False
             coverage += cr.coverage * cr.weight
             div += cr.weight
             
-#        for cg in cg_r.covergroups:
-#            coverage += cg.coverage * cg.weight
-#            div += cg.weight
+        if non_union_merge:
+            for cg in cg_r.covergroups:
+                coverage += cg.coverage * cg.weight
+                div += cg.weight
 
         if div > 0: coverage /= div
 
