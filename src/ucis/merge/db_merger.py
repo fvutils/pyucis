@@ -56,8 +56,8 @@ class DbMerger(object):
             src_du = src_iscope.getInstanceDu()
             dst_du = self.dst_db.createScope(
                 src_du.getScopeName(),
-                None,
-                1,
+                src_du.getSourceInfo(),
+                src_du.getWeight(), # weight
                 UCIS_OTHER, # TODO: must query SourceType
                 UCIS_DU_MODULE, # TODO: must query GetScopeType
                 UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
@@ -67,7 +67,7 @@ class DbMerger(object):
                     
             dst_iscope = self.dst_db.createInstance(
                 src_iscope.getScopeName(),
-                None,
+                src_iscope.getSourceInfo(),
                 1, # weight
                 UCIS_OTHER, # query SourceType
                 UCIS_INSTANCE,
@@ -97,8 +97,8 @@ class DbMerger(object):
             # Create the destination using the first covergroup
             dst_cg = dst_scope.createCovergroup(
                 src_cg_l[0].getScopeName(),
-                None, # location
-                1, # weight
+                src_cg_l[0].getSourceInfo(), # location
+                src_cg_l[0].getWeight(), # weight
                 UCIS_OTHER)
             self._merge_covergroup(dst_cg, src_cg_l)
         
@@ -132,8 +132,8 @@ class DbMerger(object):
             
             dst_cg_i = dst_cg.createCoverInstance(
                         name,
-                        None, # location
-                        1, # weight
+                        src_cg_i_l[0].getSourceInfo(), # location
+                        src_cg_i_l[0].getWeight(), # weight
                         UCIS_OTHER)
             dst_cp_m = self._merge_coverpoints(dst_cg_i, src_cg_i_l)
 
@@ -159,8 +159,8 @@ class DbMerger(object):
             
             dst_cp = dst_cg.createCoverpoint(
                 src_cp_l[0].getScopeName(),
-                None, # location
-                1, # weight
+                src_cp_l[0].getSourceInfo(), # location
+                src_cp_l[0].getWeight(), # weight
                 UCIS_OTHER) # SourceType
             dst_cp_m[name] = dst_cp
             
@@ -220,8 +220,8 @@ class DbMerger(object):
 
             dst_cr = dst_cg.createCross(
                 name,
-                None,
-                1, # weight
+                src_cr_l[0].getSourceInfo(),
+                src_cr_l[0].getWeight(), # weight
                 UCIS_OTHER,
                 coverpoint_l)
 
@@ -251,44 +251,4 @@ class DbMerger(object):
                     bin_n,
                     cvg_t)
     
-    def _clone_cross(self, dst_cg, cp):
-        coverpoint_l = []
-        for i in range(cp.getNumCrossedCoverpoints()):
-            src_cp = cp.getIthCrossedCoverpoint(i)
-
-            dst_cp = None            
-            for dst_cp_t in dst_cg.scopes(ScopeTypeT.COVERPOINT):
-                if dst_cp_t.getName() == src_cp.getName():
-                    dst_cp = dst_cp_t
-                    break
-            coverpoint_l.append(dst_cp)
-            
-        cp_c = dst_cg.createCross(
-            cp.getName(),
-            None,
-            1, # weight
-            UCIS_OTHER, # TODO: query
-            coverpoint_l)
-        
-        for ci_n in cp.coverItems(CoverTypeT.CVGBIN):
-            cvg_data = ci_n.getCoverData()
-            cvg_data_c = cp.createBin(
-                ci_n.getName(),
-                None, # Location
-                cvg_data.at_least,
-                cvg_data.data,
-                ci_n.getName(),
-                UCIS_CVGBIN)
-            
-    
-    def _clone_coverinsts(self, dst_cg, src_cg):
-        for src_cg_i in src_cg.scopes(ScopeTypeT.COVERINSTANCE):
-            dst_cg_i = dst_cg.createCoverInstance(
-                        src_cg_i.getScopeName(),
-                        None, # location
-                        1, # weight
-                        UCIS_OTHER)
-            self._clone_coverpoints(dst_cg_i, src_cg_i)
-            self._clone_coverinsts(dst_cg_i, src_cg_i)
-
 

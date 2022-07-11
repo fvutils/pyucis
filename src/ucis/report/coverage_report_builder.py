@@ -81,10 +81,6 @@ class CoverageReportBuilder(object):
             coverage += cr.coverage * cr.weight
             div += cr.weight
             
-#        for cg in cg_r.covergroups:
-#            coverage += cg.coverage * cg.weight
-#            div += cg.weight
-
         if div > 0: coverage /= div
 
         cg_r.coverage = coverage
