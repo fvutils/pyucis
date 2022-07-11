@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commands &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyUCIS Reference" href="reference/reference.html" />
+    <link rel="prev" title="Introduction" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pyucis
+          </a>
+              <div class="version">
+                0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Commands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Sub-commands:">Sub-commands:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#convert">convert</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#merge">merge</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments_repeat1">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments_repeat1">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#list-db-formats">list-db-formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-rpt-formats">list-rpt-formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#report">report</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments_repeat2">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Named Arguments_repeat2">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Commands</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/commands.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="commands">
+<h1>Commands<a class="headerlink" href="#commands" title="Permalink to this heading"></a></h1>
+<p>The <cite>ucis</cite> root command accepts one of several sub-commands that operate on
+coverage data.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="Sub-commands:">
+<h2>Sub-commands:<a class="headerlink" href="#Sub-commands:" title="Permalink to this heading"></a></h2>
+<section id="convert">
+<h3>convert<a class="headerlink" href="#convert" title="Permalink to this heading"></a></h3>
+<blockquote>
+<div><p>Converts coverage data from one format to another</p>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">convert</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">out</span> <span class="n">OUT</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span>
+             <span class="nb">input</span>
+</pre></div>
+</div>
+<section id="Positional Arguments">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>input</kbd></dt>
+<dd><p>Source database to convert</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output of the conversion</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Specifies the format of the output database. Defaults to ‘xml’</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="merge">
+<h3>merge<a class="headerlink" href="#merge" title="Permalink to this heading"></a></h3>
+<blockquote>
+<div><p>Merges coverage data from two or more databases into a single merged database</p>
+</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">merge</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">out</span> <span class="n">OUT</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+           <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">libucis</span> <span class="n">LIBUCIS</span><span class="p">]</span>
+           <span class="n">db</span>
+</pre></div>
+</div>
+<section id="Positional Arguments_repeat1">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments_repeat1" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd></dd>
+</dl>
+</section>
+<section id="Named Arguments_repeat1">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments_repeat1" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output of the merge</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input databases. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Specifies the format of the input databases. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--libucis, -l</kbd></dt>
+<dd><p>Specifies the name/path of the UCIS shared library</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="list-db-formats">
+<h3>list-db-formats<a class="headerlink" href="#list-db-formats" title="Permalink to this heading"></a></h3>
+<p>Shows available database formats</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="list-rpt-formats">
+<h3>list-rpt-formats<a class="headerlink" href="#list-rpt-formats" title="Permalink to this heading"></a></h3>
+<p>Shows available report filters</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="report">
+<h3>report<a class="headerlink" href="#report" title="Permalink to this heading"></a></h3>
+<p>Generate a report (typically textual) from coverage data</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">report</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+            <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span>
+            <span class="n">db</span>
+</pre></div>
+</div>
+<section id="Positional Arguments_repeat2">
+<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments_repeat2" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="Named Arguments_repeat2">
+<h4>Named Arguments<a class="headerlink" href="#Named Arguments_repeat2" title="Permalink to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Specifies the output format of the report. Defaults to ‘txt’</p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference/reference.html" class="btn btn-neutral float-right" title="PyUCIS Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
