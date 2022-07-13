@@ -68,8 +68,8 @@ class XmlReader():
         for histN in tree.iter("historyNodes"):
             self.readHistoryNode(histN)
 
-        for instN in tree.iter("instanceCoverages"):
-            self.readInstanceCoverage(instN)
+        for instX in tree.iter("instanceCoverages"):
+            self.readInstanceCoverage(instX)
             
         return self.db
     
@@ -114,17 +114,14 @@ class XmlReader():
         
         return ret
     
-    def readInstanceCoverage(self, instN):
-        name = instN.attrib["name"]
-        stmt_id = None
-        for stmt_idN in instN.iter("id"):
-            stmt_id = self.readStatementId(stmt_idN)
-            
+    def readInstanceCoverage(self, instX):
+        name = instX.attrib["name"]
+        stmt_id = self.readStatementId(instX.find('id'))            
         srcinfo = None
             
         # TODO: Creating a coverage instance depends on
         # having a du_type
-        module_scope_name = self.getAttr(instN, "moduleName", "default")
+        module_scope_name = self.getAttr(instX, "moduleName", "default")
         
         type_scope = self.getScope(
             module_scope_name, 
@@ -137,58 +134,46 @@ class XmlReader():
             UCIS_OTHER,
             type_scope)
         
-        for cg in instN.iter("covergroupCoverage"):
-            self.readCovergroup(cg, inst_scope, module_scope_name)
+        for cgX in instX.iter("covergroupCoverage"):
+            self.readCovergroup(cgX, inst_scope, module_scope_name)
 
 #        self.setIntIfEx(instN, ret.setAli, name)
 
-    def readCovergroup(self, cg, inst_scope, module_scope_name):
-        # This entry is for a given covergroup type
-        
-        cg_typescope = None
-        covergroup_scope = None
-        
-        instances = [i for i in cg.iter("cgInstance")]
-        if len(instances) == 1:
-            cg_typescope = inst_scope.createCovergroup(
-                self.getAttr(instances[0], "name", "default"),
-                None,
+    def readCovergroup(self, cgX, inst_scope, module_scope_name):
+
+        cg = inst_scope.createCovergroup(
+            module_scope_name, None, 1, UCIS_OTHER)
+            
+        for ciX in cgX.iter("cgInstance"):
+            srcinfo = None
+            ci = cg.createCoverInstance(
+                self.getAttr(ciX, "name", "default"),
+                srcinfo,
                 1,
                 UCIS_OTHER)
-        else:
-            cg_typescope = inst_scope.createCovergroup(
-                module_scope_name, None, 1, UCIS_OTHER)
-            
-        for cgN in instances:
-            srcinfo = None
-            if len(instances) == 1:
-                covergroup_scope = cg_typescope
-            else:
-                covergroup_scope = cg_typescope.createCoverInstance(
-                    self.getAttr(cgN, "name", "default"),
-                    srcinfo,
-                    1,
-                    UCIS_OTHER)
-                
+            ciX_options = ciX.find("options")
+            ci.m_per_instance = self.getAttrBool(ciX_options, 'per_instance')
+            ci.m_merge_instances = self.getAttrBool(ciX_options, 'merge_instances')
+
             cp_m = {}
                 
-            for cpN in cgN.iter("coverpoint"):
-                cp = self.readCoverpoint(cpN, covergroup_scope)
-                cp_m[self.getAttr(cpN, "name", "default")] = cp
+            for cpX in ciX.iter("coverpoint"):
+                cp = self.readCoverpoint(cpX, ci)
+                cp_m[self.getAttr(cpX, "name", "default")] = cp
                 
-            for crN in cgN.iter("cross"):
-                self.readCross(crN, cp_m, covergroup_scope)
+            for crX in ciX.iter("cross"):
+                self.readCross(crX, cp_m, ci)
                 
-    def readCoverpoint(self, cpN, covergroup_scope):
+    def readCoverpoint(self, cpX, ci):
         srcinfo = None
         
-        cp = covergroup_scope.createCoverpoint(
-            self.getAttr(cpN, "name", "default"),
+        cp = ci.createCoverpoint(
+            self.getAttr(cpX, "name", "default"),
             srcinfo,
             1, # weight
             UCIS_OTHER)
         
-        for cpBin in cpN.iter("coverpointBin"):
+        for cpBin in cpX.iter("coverpointBin"):
             self.readCoverpointBin(cpBin, cp)
             
         return cp
@@ -226,9 +211,9 @@ class XmlReader():
             self.getAttr(cpBin, "name", "default"),
             kind)
         
-    def readCross(self, crN, cp_m, covergroup_scope):
-        crossExpr = next(crN.iter("crossExpr"))
-        name = self.getAttr(crN, "name", "default")
+    def readCross(self, crX, cp_m, ci):
+        crossExpr = next(crX.iter("crossExpr"))
+        name = self.getAttr(crX, "name", "default")
         
         cp_l = []
         for cp_n in crossExpr.text.split(','):
@@ -240,22 +225,22 @@ class XmlReader():
 
         srcinfo = None
         
-        cr = covergroup_scope.createCross(
+        cr = ci.createCross(
             name,
             srcinfo,
             1, # weight
             UCIS_OTHER,
             cp_l)
         
-        for crB in crN.iter("crossBin"):
-            self.readCrossBin(crB, cr)
+        for crbX in crX.iter("crossBin"):
+            self.readCrossBin(crbX, cr)
         
         return cr
     
-    def readCrossBin(self, crB, cr):
-        name = self.getAttr(crB, "name", "default")
+    def readCrossBin(self, crbX, cr):
+        name = self.getAttr(crbX, "name", "default")
         srcinfo = None
-        contentsN = next(crB.iter("contents"))
+        contentsN = next(crbX.iter("contents"))
         
         cr.createBin(
             name,
@@ -265,10 +250,10 @@ class XmlReader():
             "") # TODO:
         
 
-    def readStatementId(self, stmt_idN):
-        file_id = int(stmt_idN.attrib["file"])
-        line = int(stmt_idN.attrib["line"])
-        item = int(stmt_idN.attrib["inlineCount"])
+    def readStatementId(self, stmt_idX):
+        file_id = int(stmt_idX.attrib["file"])
+        line = int(stmt_idX.attrib["line"])
+        item = int(stmt_idX.attrib["inlineCount"])
         file = self.file_m[file_id]
         return StatementId(file, line, item)
 
