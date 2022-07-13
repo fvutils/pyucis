@@ -6,9 +6,12 @@ Created on Mar 27, 2020
 from ucis.scope_type_t import ScopeTypeT
 from ucis.report.coverage_report import CoverageReport
 from ucis.coverpoint import Coverpoint
+from ucis.cover_data import CoverData
 from ucis.cover_type_t import CoverTypeT
 from math import ceil
 from ucis.cross import Cross
+from ucis.mem.mem_cover_index import MemCoverIndex
+from collections import defaultdict
 
 
 class CoverageReportBuilder(object):
@@ -32,11 +35,57 @@ class CoverageReportBuilder(object):
 
     def _build(self)->'CoverageReport':
         
+        self.update_coverage()
         for iscope in self.db.scopes(ScopeTypeT.INSTANCE):
             self.build_covergroups(iscope)
             
         return self.report
             
+    def update_coverage(self):
+        import copy
+        for inst in self.db.scopes(ScopeTypeT.INSTANCE):
+            for cg in inst.scopes(ScopeTypeT.COVERGROUP):
+                cps = dict()
+                crs = dict()
+                merged_cps = defaultdict(lambda: defaultdict(lambda: CoverData(CoverTypeT.CVGBIN, 0)))
+                merged_crs = defaultdict(lambda: defaultdict(lambda: CoverData(CoverTypeT.CVGBIN, 0)))
+                not_initialized = True
+                for ci in cg.scopes(ScopeTypeT.COVERINSTANCE):
+                    if ci.getMergeInstances():
+                        if not_initialized:
+                            for cp in ci.scopes(ScopeTypeT.COVERPOINT):
+                                cp_m = cg.createCoverpoint(
+                                    cp.m_name, cp.m_srcinfo, cp.m_weight, cp.m_source)
+                                cps[cp.m_name] = cp_m
+                                for ci_n in cp.coverItems(CoverTypeT.CVGBIN):
+                                    cp_m.createNextCover(ci_n.name, copy.copy(ci_n.data), ci_n.srcinfo)
+                                    merged_cps[cp.m_name][ci_n.name] = copy.copy(ci_n.getCoverData())
+                                    merged_cps[cp.m_name][ci_n.name].data = 0
+                            for cr in ci.scopes(ScopeTypeT.CROSS):
+                                cr_m = cg.createCross(
+                                    cr.m_name, cr.m_srcinfo, cr.m_weight, cr.m_source,
+                                        copy.copy(cr.coverItems))
+                                crs[cr.m_name] = cr_m
+                                for ci_n in cr.coverItems(CoverTypeT.CVGBIN):
+                                    cr_m.createNextCover(ci_n.name, copy.copy(ci_n.data), ci_n.srcinfo)
+                                    merged_cps[cr.m_name][ci_n.name] = copy.copy(ci_n.getCoverData())
+                                    merged_cps[cr.m_name][ci_n.name].data = 0
+                            not_initialized = False
+                        for cp in ci.scopes(ScopeTypeT.COVERPOINT):
+                            for ci_n in cp.coverItems(CoverTypeT.CVGBIN):
+                                merged_cps[cp.m_name][ci_n.name].data+= ci_n.getCoverData().data
+                        for cr in ci.scopes(ScopeTypeT.CROSS):
+                            for ci_n in cr.coverItems(CoverTypeT.CVGBIN):
+                                merged_crs[cr.m_name][ci_n.name].data+= ci_n.getCoverData().data
+                for cp in cps.values():
+                    for ci_n in cp.coverItems(CoverTypeT.CVGBIN):
+                        ci_n.data.data = merged_cps[cp.m_name][ci_n.name].data
+                    cp.m_name += " (merged)"
+                for cr in crs.values():
+                    for ci_n in cr.coverItems(CoverTypeT.CVGBIN):
+                        ci_n.data.data = merged_crs[cr.m_name][ci_n.name].data
+                    cr.m_name += " (merged)"
+
 
     def build_covergroups(self, iscope):
         
@@ -65,30 +114,63 @@ class CoverageReportBuilder(object):
         for cr_in in cg_n.scopes(ScopeTypeT.CROSS):
             cg_r.crosses.append(self.build_cross(cr_in))
 
+        unmerged_ci = list()
         for cg_in in cg_n.scopes(ScopeTypeT.COVERINSTANCE):
-            cg_r.covergroups.append(self.build_covergroup(cg_in))
-            
+            ci = self.build_coverinstance(cg_in)
+            if cg_in.getPerInstance():
+                cg_r.covergroups.append(ci)
+            if not cg_in.getMergeInstances():
+                unmerged_ci.append(ci)
         # Determine the covergroup coverage
         coverage = 0.0
-
         div = 0
-        non_union_merge = True
+            
         for cp in cg_r.coverpoints:
-            non_union_merge = False
             if cp.weight > 0:
                 coverage += cp.coverage * cp.weight
             div += cp.weight
             
         for cr in cg_r.crosses:
-            non_union_merge = False
+            if cr.weight > 0:
+                coverage += cr.coverage * cr.weight
+            div += cr.weight
+            
+        for cg in unmerged_ci:
+            if cg.weight > 0:
+                coverage += cg.coverage * cg.weight
+            div += cg.weight
+
+        if div > 0: coverage /= div
+
+        cg_r.coverage = coverage
+        
+        return cg_r
+
+    def build_coverinstance(self, cg_i)->CoverageReport.Covergroup:
+        cg_r = CoverageReport.Covergroup(
+            cg_i.getScopeName(),
+            cg_i.getScopeName())
+        
+        cg_r.weight = cg_i.getWeight()
+        
+        for cp_in in cg_i.scopes(ScopeTypeT.COVERPOINT):
+            cg_r.coverpoints.append(self.build_coverpoint(cp_in))
+            
+        for cr_in in cg_i.scopes(ScopeTypeT.CROSS):
+            cg_r.crosses.append(self.build_cross(cr_in))
+
+        coverage = 0.0
+
+        div = 0
+        for cp in cg_r.coverpoints:
+            if cp.weight > 0:
+                coverage += cp.coverage * cp.weight
+            div += cp.weight
+            
+        for cr in cg_r.crosses:
             coverage += cr.coverage * cr.weight
             div += cr.weight
             
-        if non_union_merge:
-            for cg in cg_r.covergroups:
-                coverage += cg.coverage * cg.weight
-                div += cg.weight
-
         if div > 0: coverage /= div
 
         cg_r.coverage = coverage
