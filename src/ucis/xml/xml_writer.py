@@ -203,7 +203,7 @@ class XmlWriter():
             self.setAttr(cpBinElem, "name", cp_bin.getName())
             
             if cp_bin.data.type == CoverTypeT.CVGBIN:
-                self.setAttr(cpBinElem, "type", "default")
+                self.setAttr(cpBinElem, "type", "bins")
             elif cp_bin.data.type == CoverTypeT.IGNOREBIN:
                 self.setAttr(cpBinElem, "type", "ignore")
             elif cp_bin.data.type == CoverTypeT.ILLEGALBIN:

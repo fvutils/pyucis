@@ -9,39 +9,46 @@
 	-->
 	<!--  Definition of NAME_VALUE -->
 	<xsd:complexType name="NAME_VALUE">
-	<xsd:sequence>
-	<xsd:element name="name" type="xsd:string"/>
-	<xsd:element name="value" type="xsd:string"/>
-	</xsd:sequence></xsd:complexType>
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="value" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<!--  Definition of USER_ATTR -->
 	<xsd:complexType name="USER_ATTR" mixed="true">
-	<xsd:attribute name="key" type="xsd:string" use="required"/>
-	<!-- type restrictions for the asttribute: -->
-	<xsd:attribute name="type" use="required">
-	<xsd:simpleType><xsd:restriction base="xsd:string">
-	<xsd:enumeration value="int"/>
-	<xsd:enumeration value="float"/>
-	<xsd:enumeration value="double"/>
-	<!-- string value: -->
-	<xsd:enumeration value="str"/>
-	<!-- binary value: -->
-	<xsd:enumeration value="bits"/>
-	<xsd:enumeration value="int64"/>
-	</xsd:restriction>
-	</xsd:simpleType>
-	</xsd:attribute>
-	<!-- length of binary attribute (type=="bits"): -->
-	<xsd:attribute name="len" type="xsd:integer"/>
+		<xsd:attribute name="key" type="xsd:string" use="required"/>
+		<!-- type restrictions for the asttribute: -->
+		<xsd:attribute name="type" use="required">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="int"/>
+				<xsd:enumeration value="float"/>
+				<xsd:enumeration value="double"/>
+				<!-- string value: -->
+				<xsd:enumeration value="str"/>
+				<!-- binary value: -->
+				<xsd:enumeration value="bits"/>
+				<xsd:enumeration value="int64"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+		</xsd:attribute>
+
+		<!-- length of binary attribute (type=="bits"): -->
+		<xsd:attribute name="len" type="xsd:integer"/>
 	</xsd:complexType>
+
 	<!--  Definition of BIN_CONTENTS -->
 	<xsd:complexType name="BIN_CONTENTS">
-	<xsd:sequence>
-	<xsd:element name="historyNodeId" type="xsd:nonNegativeInteger" minOccurs="0" maxOccurs="unbounded"/>
-	</xsd:sequence>
-	<xsd:attribute name="nameComponent" type="xsd:string"/>
-	<xsd:attribute name="typeComponent" type="xsd:string"/>
-	<xsd:attribute name="coverageCount" type="xsd:nonNegativeInteger" use="required"/>
+		<xsd:sequence>
+			<xsd:element name="historyNodeId" type="xsd:nonNegativeInteger" 
+				minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="nameComponent" type="xsd:string"/>
+		<xsd:attribute name="typeComponent" type="xsd:string"/>
+		<xsd:attribute name="coverageCount" type="xsd:nonNegativeInteger" use="required"/>
 	</xsd:complexType>
+
 	<!--  Definition of BIN_ATTRIBUTES-->
 	<xsd:attributeGroup name="binAttributes">
 	<xsd:attribute name="alias" type="xsd:string"/>
@@ -404,9 +411,19 @@ minOccurs="1" maxOccurs="unbounded"/>
 
 	<xsd:attribute name="alias" type="xsd:string"/>
 	<!-- 
-	type is "default", "ignore", "illegal"
+	type is "bins", "default", "ignore", "illegal"
 	 -->
-	<xsd:attribute name="type" type="xsd:string" use="required"/>
+	<xsd:attribute name="type" use="required">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="bins"/>
+				<xsd:enumeration value="default"/>
+				<xsd:enumeration value="ignore"/>
+				<xsd:enumeration value="illegal"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>
+
 	<!-- MSB: Added based on presence in spec -->
 	<xsd:attribute name="name" type="xsd:string" use="required"/>
 	<xsd:attribute name="key" type="xsd:string" use="required"/>
@@ -414,19 +431,19 @@ minOccurs="1" maxOccurs="unbounded"/>
 
 <!-- Definition of CROSS_BIN -->
 <xsd:complexType name="CROSS_BIN">
-<xsd:sequence>
-<xsd:element name="index" type="xsd:integer"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="contents" type="BIN_CONTENTS"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="type" type="xsd:string" default="default"/>
-<xsd:attribute name="alias" type="xsd:string"/>
-<!-- MSB: Added based on presence in spec -->
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:sequence>
+		<xsd:element name="index" type="xsd:integer"
+			minOccurs="1" maxOccurs="unbounded"/>
+		<xsd:element name="contents" type="BIN_CONTENTS"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="type" type="xsd:string" default="default"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
 </xsd:complexType>
+
 <!-- Definition of CROSS_OPTIONS -->
 <xsd:complexType name="CROSS_OPTIONS">
 <xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>

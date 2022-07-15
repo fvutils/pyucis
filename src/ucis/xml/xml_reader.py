@@ -209,7 +209,7 @@ class XmlReader():
         kind_a = self.getAttr(cpBin, "type", "default")
         kind = UCIS_CVGBIN
         
-        if kind_a == "default":
+        if kind_a == "bins" or kind_a == "default":
             kind = UCIS_CVGBIN
         elif kind_a == "ignore":
             kind = UCIS_IGNOREBIN
