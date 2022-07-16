@@ -47,7 +47,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">JSON Coverage Report</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">JSON Coverage Report</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pyucis-json-coverage-report">PyUCIS JSON Coverage Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#covergroup-type">Covergroup Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#covergroup-inst">Covergroup Inst</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverpoint">Coverpoint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cross">Cross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cover-bin">Cover Bin</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="yaml_coverage.html">YAML Coverage Data Format</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
@@ -90,6 +98,364 @@ read and processed by Python as well as JSON libraries for other
 languages.</p>
 <p>The JSON coverage-report format is a direct transcription of the
 Coverage Report Object API.</p>
+<section id="pyucis-json-coverage-report">
+<h2>PyUCIS JSON Coverage Report<a class="headerlink" href="#pyucis-json-coverage-report" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="4"><p><a class="reference external" href="https://fvutils.github.io/pyucis/covreport.json">https://fvutils.github.io/pyucis/covreport.json</a></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>Validation schema for the PyUCIS machine-readable coverage report</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="3"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="4"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="9"><ul class="simple">
+<li><p>covreport</p></li>
+</ul>
+</td>
+<td colspan="3"><p><em>Coverage Report</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>Root of the coverage report</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>covergroups</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of (type) covergroups</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#covergroup-type"><span class="std std-ref">Covergroup Type</span></a></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Coverage percentage achieved by all covergroups</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-even"><td><p>additionalProperties</p></td>
+<td colspan="3"><p>False</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="covergroup-type">
+<span id="covergroup-type"></span><h2>Covergroup Type<a class="headerlink" href="#covergroup-type" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Contains information about a type covergroup</p></td>
+</tr>
+<tr class="row-even"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p>name</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Type name of the covergroup</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="2"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Coverage percentage achieved by this covergroup type</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>coverpoints</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverpoints</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverpoint"><span class="std std-ref">Coverpoint</span></a></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>covergroups</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of instance covergroups</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#covergroup-inst"><span class="std std-ref">Covergroup Inst</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="covergroup-inst">
+<span id="covergroup-inst"></span><h2>Covergroup Inst<a class="headerlink" href="#covergroup-inst" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Contains information about an instance covergroup</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>name</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Instance name of this covergroup</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Coverage percentage achieved by this covergroup type</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>coverpoints</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverpoints</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverpoint"><span class="std std-ref">Coverpoint</span></a></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>crosses</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of cross coverpoints</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#cross"><span class="std std-ref">Cross</span></a></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>covergroups</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of instance covergroups</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="#covergroup-inst"><span class="std std-ref">Covergroup Inst</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="coverpoint">
+<span id="coverpoint"></span><h2>Coverpoint<a class="headerlink" href="#coverpoint" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Coverage information about a coverpoint</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>name</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Leaf name of the coverpoint</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Coverage achieved by this cross</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>bins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverage bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+<tr class="row-odd"><td rowspan="3"><ul class="simple">
+<li><p>ignorebins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of ignored coverage bins</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-odd"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>illegalbins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of illegal coverage bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cross">
+<span id="cross"></span><h2>Cross<a class="headerlink" href="#cross" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Coverage information about a cross coverpoint</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>name</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Leaf name of the cross</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>coverage</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Coverage achieved by this cross</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>number</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="3"><ul class="simple">
+<li><p>bins</p></li>
+</ul>
+</td>
+<td colspan="2"><p>List of coverage bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>array</em></p></td>
+</tr>
+<tr class="row-even"><td><p>items</p></td>
+<td><p><a class="reference internal" href="yaml_coverage.html#coverage-bin"><span class="std std-ref">Coverage Bin</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cover-bin">
+<span id="cover-bin"></span><h2>Cover Bin<a class="headerlink" href="#cover-bin" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td colspan="3"><p>Coverpoint or cross bin</p></td>
+</tr>
+<tr class="row-even"><td><p>type</p></td>
+<td colspan="2"><p><em>object</em></p></td>
+</tr>
+<tr class="row-odd"><td colspan="3"><p>properties</p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>name</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Name of the bin</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>string</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>goal</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Number of bin hits required to claim coverage</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>integer</em></p></td>
+</tr>
+<tr class="row-even"><td rowspan="2"><ul class="simple">
+<li><p>count</p></li>
+</ul>
+</td>
+<td colspan="2"><p>Number of hits the bin has</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p><em>integer</em></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 
 
