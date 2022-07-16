@@ -10,12 +10,12 @@ tools to create and process.
 Format Reference
 ================
 
-.. jsonschema:: ../../schema/coverage.json
+.. jsonschema:: ../../../src/ucis/schema/coverage.json
 
 Every coverage-data document has a `coverage` element as its root. Currently,
 the only sub-elements is a list of covergroup types.
 
-.. jsonschema:: ../../schema/coverage.json#/defs/covergroupType
+.. jsonschema:: ../../../src/ucis/schema/coverage.json#/defs/covergroupType
 
 A type covergroup provides data about a covergroup type. All instances
 of a covergroup type have the same coverpoints and crosses. All 
@@ -24,26 +24,26 @@ Merged type coverage (the union of coverage achieved by all instances)
 is derived by PyUCIS from the instance coverage, and is not specified
 in the coverage file.
 
-.. jsonschema:: ../../schema/coverage.json#/defs/covergroupInstType
+.. jsonschema:: ../../../src/ucis/schema/coverage.json#/defs/covergroupInstType
 
 An instance covergroup provides data about a covergroup instance. 
 
 
-.. jsonschema:: ../../schema/coverage.json#/defs/coverpointType
+.. jsonschema:: ../../../src/ucis/schema/coverage.json#/defs/coverpointType
 
 A coverpoint lists a set of bins that it is monitoring. Each
 coverpoint can specify an `atleast` count to specify that a
 bin must contain `atleast` hits in order to count as being covered.
 By default, `atleast` is 1.
 
-.. jsonschema:: ../../schema/coverage.json#/defs/crossType
+.. jsonschema:: ../../../src/ucis/schema/coverage.json#/defs/crossType
 
 A cross lists the set of coverpoints from which it is composed,
 and lists its cross bins.  Each cross can specify an `atleast` 
 count to specify that a bin must contain `atleast` hits in 
 order to count as being covered. By default, `atleast` is 1.
 
-.. jsonschema:: ../../schema/coverage.json#/defs/coverBinType
+.. jsonschema:: ../../../src/ucis/schema/coverage.json#/defs/coverBinType
 
 A coverbin associates a bin name with the number of hits 
 in that bin.
