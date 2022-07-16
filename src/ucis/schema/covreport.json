@@ -1,5 +1,5 @@
 {
-	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$schema": "http://json-schema.org/draft-04/schema#",
 	"$id": "https://fvutils.github.io/pyucis/covreport.json",
 	"title": "PyUCIS JSON Coverage Report",
 	"description": "Validation schema for the PyUCIS machine-readable coverage report",
@@ -8,15 +8,19 @@
 		"covreport": { 
 			"title": "Coverage Report",
 			"description": "Root of the coverage report",
-			"covergroups": {
-				"description": "List of (type) covergroups",
-				"type": "array",
-				"items": { "$ref": "#/defs/typeCovergroupType" }
-			},
-			"coverage": {
-				"description": "Coverage percentage achieved by all covergroups",
-				"type": "number"
+			"type": "object",
+			"properties": {
+				"covergroups": {
+					"description": "List of (type) covergroups",
+					"type": "array",
+					"items": { "$ref": "#/defs/typeCovergroupType" }
+				},
+				"coverage": {
+					"description": "Coverage percentage achieved by all covergroups",
+					"type": "number"
+				}
 			}
+		}
 	},
 	"additionalProperties": false,
 	"defs": {
@@ -88,19 +92,19 @@
 				},
 				"coverage": {
 					"description": "Coverage achieved by this cross",
-					"type": "numeric"
+					"type": "number"
 				},
 				"bins": {
 					"description": "List of coverage bins",
 					"type": "array",
 					"items": { "$ref": "#/defs/coverBinType" }
 				},
-				"ignore-bins": {
+				"ignorebins": {
 					"description": "List of ignored coverage bins",
 					"type": "array",
 					"items": { "$ref": "#/defs/coverBinType" }
 				},
-				"illegal-bins": {
+				"illegalbins": {
 					"description": "List of illegal coverage bins",
 					"type": "array",
 					"items": { "$ref": "#/defs/coverBinType" }
@@ -119,7 +123,7 @@
 				},
 				"coverage": {
 					"description": "Coverage achieved by this cross",
-					"type": "numeric"
+					"type": "number"
 				},
 				"bins": {
 					"description": "List of coverage bins",
@@ -150,4 +154,3 @@
 		}
 	}
 }
-				

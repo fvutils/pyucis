@@ -11,7 +11,8 @@ import sys
 import traceback
 
 def get_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Manipulate UCIS coverage data")
+    parser.prog = "ucis"
     
     subparser = parser.add_subparsers()
     subparser.required = True
