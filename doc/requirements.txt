@@ -7,5 +7,6 @@ sphinx-rtd-theme
 cairosvg
 sphinxcontrib-makedomain
 sphinxcontrib-spelling
+sphinx-issues
 sphinx-argparse
 
