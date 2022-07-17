@@ -1,4 +1,7 @@
 
+## 0.1.2
+- Tweaks to merge command and merged-xml output
+
 ## 0.1.1
 - Tweaks to text reporting
 
