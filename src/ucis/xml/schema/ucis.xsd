@@ -414,68 +414,70 @@ minOccurs="1" maxOccurs="unbounded"/>
 
 <!-- Definition of CROSS_BIN -->
 <xsd:complexType name="CROSS_BIN">
-<xsd:sequence>
-<xsd:element name="index" type="xsd:integer"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="contents" type="BIN_CONTENTS"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="type" type="xsd:string" default="default"/>
-<xsd:attribute name="alias" type="xsd:string"/>
-<!-- MSB: Added based on presence in spec -->
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:sequence>
+		<xsd:element name="index" type="xsd:integer"
+			minOccurs="1" maxOccurs="unbounded"/>
+		<xsd:element name="contents" type="BIN_CONTENTS"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="type" type="xsd:string" default="default"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<!-- MSB: Added based on presence in spec -->
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
 </xsd:complexType>
+
 <!-- Definition of CROSS_OPTIONS -->
 <xsd:complexType name="CROSS_OPTIONS">
-<xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>
-<xsd:attribute name="goal" type="xsd:nonNegativeInteger" default="100"/>
-<xsd:attribute name="comment" type="xsd:string" default=""/>
-<xsd:attribute name="at_least" type="xsd:nonNegativeInteger" default="1"/>
-<xsd:attribute name="cross_num_print_missing" type="xsd:nonNegativeInteger"
-default="0"/>
+	<xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>
+	<xsd:attribute name="goal" type="xsd:nonNegativeInteger" default="100"/>
+	<xsd:attribute name="comment" type="xsd:string" default=""/>
+	<xsd:attribute name="at_least" type="xsd:nonNegativeInteger" default="1"/>
+	<xsd:attribute name="cross_num_print_missing" type="xsd:nonNegativeInteger" default="0"/>
 </xsd:complexType>
+
 <!-- Definition of CROSS -->
 <xsd:complexType name="CROSS">
-
-<!-- 252 -->
-<xsd:sequence>
-<xsd:element name="options" type="CROSS_OPTIONS"/>
-<xsd:element name="crossExpr" type="xsd:string"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="crossBin" type="CROSS_BIN"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
-<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:sequence>
+		<xsd:element name="options" type="CROSS_OPTIONS"/>
+		<xsd:element name="crossExpr" type="xsd:string"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="crossBin" type="CROSS_BIN"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
 </xsd:complexType>
+
 <!-- Definition of COVERPOINT_OPTIONS -->
 <xsd:complexType name="COVERPOINT_OPTIONS">
-<xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>
-<xsd:attribute name="goal" type="xsd:nonNegativeInteger" default="100"/>
-<xsd:attribute name="comment" type="xsd:string" default=""/>
-<xsd:attribute name="at_least" type="xsd:nonNegativeInteger" default="1"/>
-<xsd:attribute name="detect_overlap" type="xsd:boolean" default="false"/>
-<xsd:attribute name="auto_bin_max" type="xsd:nonNegativeInteger" default="64"/>
+	<xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>
+	<xsd:attribute name="goal" type="xsd:nonNegativeInteger" default="100"/>
+	<xsd:attribute name="comment" type="xsd:string" default=""/>
+	<xsd:attribute name="at_least" type="xsd:nonNegativeInteger" default="1"/>
+	<xsd:attribute name="detect_overlap" type="xsd:boolean" default="false"/>
+	<xsd:attribute name="auto_bin_max" type="xsd:nonNegativeInteger" default="64"/>
 </xsd:complexType>
+
 <!-- Definition of COVERPOINT -->
 <xsd:complexType name="COVERPOINT">
-<xsd:sequence>
-<xsd:element name="options" type="COVERPOINT_OPTIONS"/>
-<xsd:element name="coverpointBin" type="COVERPOINT_BIN"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
-<xsd:attribute name="alias" type="xsd:string"/>
-<xsd:attribute name="exprString" type="xsd:string"/>
+	<xsd:sequence>
+		<xsd:element name="options" type="COVERPOINT_OPTIONS"/>
+		<xsd:element name="coverpointBin" type="COVERPOINT_BIN"
+			minOccurs="1" maxOccurs="unbounded"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:attribute name="exprString" type="xsd:string"/>
 </xsd:complexType>
+
 <!-- Definition of CG_ID -->
 <xsd:complexType name="CG_ID">
 <xsd:sequence>
@@ -485,6 +487,7 @@ minOccurs="0" maxOccurs="unbounded"/>
 <xsd:attribute name="cgName" type="xsd:string" use="required"/>
 <xsd:attribute name="moduleName" type="xsd:string" use="required"/>
 </xsd:complexType>
+
 <!-- Definition of CGINST_OPTIONS -->
 <xsd:complexType name="CGINST_OPTIONS">
 <xsd:attribute name="weight" type="xsd:nonNegativeInteger" default="1"/>
@@ -498,84 +501,86 @@ default="0"/>
 <xsd:attribute name="per_instance" type="xsd:boolean" default="false"/>
 <xsd:attribute name="merge_instances" type="xsd:boolean" default="false"/>
 </xsd:complexType>
+
 <!-- Definition of CGINSTANCE -->
 <xsd:complexType name="CGINSTANCE">
-<xsd:sequence>
-<xsd:element name="options" type="CGINST_OPTIONS"/>
-<xsd:element name="cgId" type="CG_ID"/>
-<xsd:element name="cgParms" type="NAME_VALUE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="coverpoint" type="COVERPOINT"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="cross" type="CROSS"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:sequence>
+		<xsd:element name="options" type="CGINST_OPTIONS"/>
+		<xsd:element name="cgId" type="CG_ID"/>
+		<xsd:element name="cgParms" type="NAME_VALUE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="coverpoint" type="COVERPOINT"
+			minOccurs="1" maxOccurs="unbounded"/>
+		<xsd:element name="cross" type="CROSS"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
 
-<!-- 253 -->
-<xsd:attribute name="alias" type="xsd:string"/>
-<xsd:attribute name="excluded" type="xsd:boolean" default="false"/>
-<xsd:attribute name="excludedReason" type="xsd:string"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:attribute name="excluded" type="xsd:boolean" default="false"/>
+	<xsd:attribute name="excludedReason" type="xsd:string"/>
 </xsd:complexType>
+
 <!-- Definition of COVERGROUP_COVERAGE -->
 <xsd:complexType name="COVERGROUP_COVERAGE">
-<xsd:sequence>
-<xsd:element name="cgInstance" type="CGINSTANCE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attributeGroup ref="metricAttributes"/>
+	<xsd:sequence>
+		<xsd:element name="cgInstance" type="CGINSTANCE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attributeGroup ref="metricAttributes"/>
 </xsd:complexType>
+
 <!-- Definition of INSTANCE_COVERAGE -->
 <xsd:complexType name="INSTANCE_COVERAGE">
-<xsd:sequence>
-<xsd:element name="designParameter" type="NAME_VALUE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="id" type="STATEMENT_ID"/>
-<xsd:element name="toggleCoverage" type="TOGGLE_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="blockCoverage" type="BLOCK_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="conditionCoverage" type="CONDITION_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="branchCoverage" type="BRANCH_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="fsmCoverage" type="FSM_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="assertionCoverage" type="ASSERTION_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="covergroupCoverage" type="COVERGROUP_COVERAGE"
-minOccurs="0" maxOccurs="unbounded"/>
-<xsd:element name="userAttr" type="USER_ATTR"
-minOccurs="0" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="name" type="xsd:string" use="required"/>
-<xsd:attribute name="key" type="xsd:string" use="required"/>
-<xsd:attribute name="instanceId" type="xsd:integer"/>
-<xsd:attribute name="alias" type="xsd:string"/>
-<xsd:attribute name="moduleName" type="xsd:string"/>
-<xsd:attribute name="parentInstanceId" type="xsd:integer"/>
+	<xsd:sequence>
+		<xsd:element name="designParameter" type="NAME_VALUE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="id" type="STATEMENT_ID"/>
+		<xsd:element name="toggleCoverage" type="TOGGLE_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="blockCoverage" type="BLOCK_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="conditionCoverage" type="CONDITION_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="branchCoverage" type="BRANCH_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="fsmCoverage" type="FSM_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="assertionCoverage" type="ASSERTION_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="covergroupCoverage" type="COVERGROUP_COVERAGE"
+			minOccurs="0" maxOccurs="unbounded"/>
+		<xsd:element name="userAttr" type="USER_ATTR"
+			minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="required"/>
+	<xsd:attribute name="key" type="xsd:string" use="required"/>
+	<xsd:attribute name="instanceId" type="xsd:integer"/>
+	<xsd:attribute name="alias" type="xsd:string"/>
+	<xsd:attribute name="moduleName" type="xsd:string"/>
+	<xsd:attribute name="parentInstanceId" type="xsd:integer"/>
 </xsd:complexType>
 
 <!-- Definition of UCIS -->
 <xsd:element name="UCIS">
-<xsd:complexType>
-<xsd:sequence>
-<xsd:element name="sourceFiles" type="SOURCE_FILE"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="historyNodes" type="HISTORY_NODE"
-minOccurs="1" maxOccurs="unbounded"/>
-<xsd:element name="instanceCoverages" type="INSTANCE_COVERAGE"
-minOccurs="1" maxOccurs="unbounded"/>
-</xsd:sequence>
-<xsd:attribute name="ucisVersion" type="xsd:string" use="required"/>
-<xsd:attribute name="writtenBy" type="xsd:string" use="required"/>
-<xsd:attribute name="writtenTime" type="xsd:dateTime" use="required"/>
-</xsd:complexType>
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:element name="sourceFiles" type="SOURCE_FILE"
+				minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="historyNodes" type="HISTORY_NODE"
+				minOccurs="1" maxOccurs="unbounded"/>
+			<xsd:element name="instanceCoverages" type="INSTANCE_COVERAGE"
+				minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="ucisVersion" type="xsd:string" use="required"/>
+		<xsd:attribute name="writtenBy" type="xsd:string" use="required"/>
+		<xsd:attribute name="writtenTime" type="xsd:dateTime" use="required"/>
+	</xsd:complexType>
 </xsd:element>
 </xsd:schema>
 
