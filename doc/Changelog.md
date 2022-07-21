@@ -1,4 +1,10 @@
 
+## 0.1.2
+- Tweaks to merge command and merged-xml output
+
+## 0.1.1
+- Tweaks to text reporting
+
 ## 0.1.0
 - Correct an issue with type-coverage calculation
 

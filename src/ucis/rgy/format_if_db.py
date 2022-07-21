@@ -45,12 +45,19 @@ class FormatIfDb(object):
     def init(self, options):
         raise NotImplementedError("DbFormatIf.init not implemented by %s" % str(type(self)))
     
-    def create(self) -> UCIS:
+    def create(self, filename=None) -> UCIS:
+        """
+        Creates a new UCIS database.
+        If filename is None, the database will be created in memory. Some database
+        backends can take advantage of the filename to write directly to disk instead
+        of later copying to disk. Databases that can write directly to disk will
+        overwrite any existing file on creation.
+        """
         raise NotImplementedError("DbFormatIf.create not implemented by %s" % str(type(self)))
     
     def read(self, file_or_filename) -> UCIS:
+        """
+        Read a UCIS database from a file
+        """
         raise NotImplementedError("DbFormatIf.read not implemented by %s" % str(type(self)))
-    
-    def write(self, db : UCIS, file_or_filename):
-        raise NotImplementedError("DbFormatIf.write not implemented by %s" % str(type(self)))
     

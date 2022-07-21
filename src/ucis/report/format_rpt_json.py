@@ -10,7 +10,7 @@ import python_jsonschema_objects as pjs
 
 from ucis.report.coverage_report import CoverageReport
 from ucis.report.coverage_report_builder import CoverageReportBuilder
-from ucis.rgy.format_if_rpt import FormatIfRpt
+from ucis.rgy.format_if_rpt import FormatDescRpt, FormatIfRpt, FormatRptOutFlags
 from ucis.ucis import UCIS
 
 
@@ -21,8 +21,20 @@ class FormatRptJson(FormatIfRpt):
         self._fp = None
         self._data = {}
         self._ind = ""
-        self.details = False
+        self.details = True
         self.order_bins_by_hit = False
+
+    _coverage_ns = None
+    _coverage_schema = None
+
+    @classmethod
+    def register(cls, rgy):
+        desc = FormatDescRpt(
+            cls,
+            name="json",
+            out_flags=FormatRptOutFlags.Stream,
+            description="Produces a machine-readable JSON coverage report")
+        rgy.addReportFormat(desc)
         
     def report(self, 
                db : UCIS,
@@ -36,12 +48,13 @@ class FormatRptJson(FormatIfRpt):
 
         covreport.coverage = report.coverage
         
-        for cg in self._report.covergroups:
+        for cg in report.covergroups:
             if covreport.covergroups is None:
                 covreport.covergroups = []
             covreport.covergroups.append(self.report_covergroup(cg))
             
-        json.dump(covreport.as_dict(), out)
+        json.dump(covreport.as_dict(), out, indent=4)
+        out.write("\n")
             
     @classmethod
     def getCoverageNS(cls):
@@ -64,6 +77,7 @@ class FormatRptJson(FormatIfRpt):
     def report_covergroup(self, cg : CoverageReport.Covergroup):
             
         cg_j = self._ns.CovergroupType()
+        cg_j.name = cg.name
         cg_j.coverage = cg.coverage
         
         for cp in cg.coverpoints:
@@ -89,25 +103,28 @@ class FormatRptJson(FormatIfRpt):
         cp_j.coverage = cp.coverage
         
         if self.details:
-            if cp.bins is not None:
+            if cp.bins is not None and len(cp.bins) > 0:
                 cp_j.bins = []
                 for b in cp.bins:
                     b_j = self._ns.CoverBin()
                     b_j.name = b.name
                     b_j.count = b.count
                     cp_j.bins.append(b_j)
-            # self.writeln("Bins:")
-            # with self.indent():
-            #     self.report_bins(cp.bins)
-            # if len(cp.ignore_bins) > 0:
-            #     self.writeln("IgnoreBins:")
-            #     with self.indent():
-            #         self.report_bins(cp.ignore_bins)
-            # if len(cp.illegal_bins) > 0:
-            #     self.writeln("IllegalBins:")
-            #     with self.indent():
-            #         self.report_bins(cp.illegal_bins)
-                    
+            if cp.ignore_bins is not None and len(cp.ignore_bins) > 0:
+                cp_j.ignorebins = []
+                for b in cp.ignore_bins:
+                    b_j = self._ns.CoverBin()
+                    b_j.name = b.name
+                    b_j.count = b.count
+                    cp_j.ignorebins.append(b_j)
+            if cp.illegal_bins is not None and len(cp.illegal_bins) > 0:
+                cp_j.illegalbins = []
+                for b in cp.illegal_bins:
+                    b_j = self._ns.CoverBin()
+                    b_j.name = b.name
+                    b_j.count = b.count
+                    cp_j.illegalbins.append(b_j)
+
         return cp_j
 
     def report_cross(self, cr : CoverageReport.Cross):

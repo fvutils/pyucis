@@ -69,15 +69,8 @@ class FormatRgy(object):
         DbFormatIfLib.register(self)
         DbFormatIfYaml.register(self)
         
-        self.addReportFormat(FormatDescRpt(
-            FormatRptJson,
-            name="json",
-            description="Produces a machine-readable JSON coverage report"))
-        self.addReportFormat(FormatDescRpt(
-            FormatRptText,
-            name="txt",
-            description="Produces a human readable textual coverage report"))
-        pass
+        FormatRptJson.register(self)
+        FormatRptText.register(self)
     
     @classmethod
     def inst(cls):

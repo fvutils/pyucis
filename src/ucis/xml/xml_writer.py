@@ -98,9 +98,11 @@ class XmlWriter():
         
 #        histNodes = self.root.SubElement(self.root, "historyNodes")
 
+        have_hist_nodes = False
         for i,h in enumerate(self.db.getHistoryNodes(HistoryNodeKind.ALL)):
             histN = self.mkElem(self.root, "historyNodes")
             histN.set("historyNodeId", str(i))
+            have_hist_nodes = True
             
             # TODO: parent
             histN.set("logicalName", h.getLogicalName())
@@ -125,6 +127,35 @@ class XmlWriter():
             self.setAttr(histN, "vendorToolVersion", h.getVendorToolVersion())
             self.setIfNonNeg(histN, "sameTests", h.getSameTests())
             self.setIfNonNull(histN, "comment", h.getComment())
+
+        if not have_hist_nodes:
+            # XML requires history nodes, so add a dummy history node
+            histN = self.mkElem(self.root, "historyNodes")
+            histN.set("historyNodeId", str(0))
+
+            histN.set("logicalName", "dummy")
+            self.setIfNonNull(histN, "physicalName", "dummy")
+            self.setIfNonNull(histN, "kind", "dummy")
+            self.setAttrBool(histN, "testStatus", True)
+            self.setIfNonNeg(histN, "simtime", 0)
+            self.setIfNonNull(histN, "timeunit", 0)
+            self.setIfNonNull(histN, "runCwd", "")
+            self.setIfNonNeg(histN, "cpuTime", 0)
+            self.setIfNonNull(histN, "seed", 0)
+            self.setIfNonNull(histN, "cmd", "")
+            self.setIfNonNull(histN, "args", "")
+#            self.setIfNonNull(histN, "compulsory", h.getCompulsory())
+            self.setAttrDateTime(histN, "date", datetime.now().strftime("%Y%m%d%H%M%S"))
+            self.setIfNonNull(histN, "userName", "dummy")
+#            self.setIfNonNeg(histN, "cost", h.getCost())
+            self.setAttr(histN, "toolCategory", "unknown")
+            self.setAttr(histN, "ucisVersion", "1.0")
+            self.setAttr(histN, "vendorId", "unknown")
+            self.setAttr(histN, "vendorTool", "PyUCIS")
+            self.setAttr(histN, "vendorToolVersion", "unknown")
+#            self.setIfNonNeg(histN, "sameTests", h.getSameTests())
+#            self.setIfNonNull(histN, "comment", h.getComment())
+
             
             # TODO: userAttr
             
@@ -203,7 +234,7 @@ class XmlWriter():
             self.setAttr(cpBinElem, "name", cp_bin.getName())
             
             if cp_bin.data.type == CoverTypeT.CVGBIN:
-                self.setAttr(cpBinElem, "type", "default")
+                self.setAttr(cpBinElem, "type", "bins")
             elif cp_bin.data.type == CoverTypeT.IGNOREBIN:
                 self.setAttr(cpBinElem, "type", "ignore")
             elif cp_bin.data.type == CoverTypeT.ILLEGALBIN:

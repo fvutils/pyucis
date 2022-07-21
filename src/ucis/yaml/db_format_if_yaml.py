@@ -9,12 +9,10 @@ from .yaml_reader import YamlReader
 
 class DbFormatIfYaml(FormatIfDb):
     
-
-    
     def init(self, options):
         raise NotImplementedError("DbFormatIf.init not implemented by %s" % str(type(self)))
     
-    def create(self) -> 'UCIS':
+    def create(self, filename=None) -> 'UCIS':
         return YamlUCIS()
     
     def read(self, filename) -> 'UCIS':
@@ -24,9 +22,6 @@ class DbFormatIfYaml(FormatIfDb):
             db = reader.load(fp)
 
         return db
-    
-    def write(self, db : 'UCIS', file_or_filename):
-        raise NotImplementedError("DbFormatIf.write not implemented by %s" % str(type(self)))
     
     @staticmethod
     def register(rgy):

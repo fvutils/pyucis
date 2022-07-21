@@ -5,7 +5,7 @@ Created on Apr 8, 2020
 '''
 from ucis.report.coverage_report import CoverageReport
 from typing import List
-from ucis.rgy.format_if_rpt import FormatIfRpt
+from ucis.rgy.format_if_rpt import FormatIfRpt, FormatDescRpt, FormatRptOutFlags
 from ucis.ucis import UCIS
 from ucis.report.coverage_report_builder import CoverageReportBuilder
 
@@ -17,7 +17,16 @@ class FormatRptText(FormatIfRpt):
         self._ind = ""
         self.details = False
         self.order_bins_by_hit = False
-        
+
+    @classmethod
+    def register(cls, rgy):
+        desc = FormatDescRpt(
+            cls,
+            name="txt",
+            out_flags=FormatRptOutFlags.Stream,
+            description="Produces a human-readable textual coverage report")
+        rgy.addReportFormat(desc)
+
     def report(self, 
                db : UCIS,
                out,

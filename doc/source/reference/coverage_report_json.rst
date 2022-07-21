@@ -11,16 +11,17 @@ The JSON coverage-report format is a direct transcription of the
 Coverage Report Object API.
 
 
-.. jsonschema:: ../../schema/covreport.json
+.. jsonschema:: ../../../src/ucis/schema/covreport.json
 
-.. jsonschema:: ../../schema/covreport.json#/defs/coverageReportType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/coverageReportType
 
-.. jsonschema:: ../../schema/covreport.json#/defs/typeCovergroupType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/typeCovergroupType
 
-.. jsonschema:: ../../schema/covreport.json#/defs/instCovergroupType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/instCovergroupType
 
-.. jsonschema:: ../../schema/covreport.json#/defs/coverpointType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/coverpointType
 
-.. jsonschema:: ../../schema/covreport.json#/defs/crossType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/crossType
 
-.. jsonschema:: ../../schema/covreport.json#/defs/coverBinType
+.. jsonschema:: ../../../src/ucis/schema/covreport.json#/defs/coverBinType
+

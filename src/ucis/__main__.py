@@ -11,7 +11,8 @@ import sys
 import traceback
 
 def get_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Manipulate UCIS coverage data")
+    parser.prog = "ucis"
     
     subparser = parser.add_subparsers()
     subparser.required = True
@@ -43,7 +44,7 @@ def get_parser():
         help="Specifies the format of the input databases. Defaults to 'xml'")
     merge.add_argument("--libucis", "-l",
         help="Specifies the name/path of the UCIS shared library")
-    merge.add_argument("db", action="append")
+    merge.add_argument("db", nargs="+")
     merge.set_defaults(func=cmd_merge.merge)
     
     list_db_formats = subparser.add_parser("list-db-formats",
