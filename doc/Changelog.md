@@ -1,4 +1,8 @@
 
+## 0.1.3
+- Adjust XML reader to reconstruct type coverage based on
+  instance coverage saved in the UCIS XML file
+
 ## 0.1.2
 - Tweaks to merge command and merged-xml output
 

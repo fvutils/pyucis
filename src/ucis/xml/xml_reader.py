@@ -138,62 +138,151 @@ class XmlReader():
             type_scope)
         
         for cg in instN.iter("covergroupCoverage"):
-            self.readCovergroup(cg, inst_scope, module_scope_name)
+            self.readCovergroups(cg, inst_scope, module_scope_name)
 
 #        self.setIntIfEx(instN, ret.setAli, name)
 
-    def readCovergroup(self, cg, inst_scope, module_scope_name):
+    def readCovergroups(self, cg, inst_scope, module_scope_name):
         # This entry is for a given covergroup type
         
         cg_typescope = None
         covergroup_scope = None
-        
+
+        # The name attribute associated with each cgInstance is the
+        # covergroup instance name. The type name is stored in the 
+        # cgId entity / cgName attribute
+
+        cg_type_m = {}
+
         instances = [i for i in cg.iter("cgInstance")]
-        if len(instances) == 1:
+
+        for i in cg.iter("cgInstance"):
+            try:
+                cgId_l = next(i.iter("cgId"))
+                typename = self.getAttr(cgId_l, "cgName", "xxx")
+            except:
+                typename = "default"
+
+            if typename in cg_type_m.keys():
+                cg_type_m[typename].append(i)
+            else:
+                cg_type_m[typename] = [i]
+
+        # UCIS XML coverage data only has instance information.
+        # The reader is responsible for reconstructing the 
+        # type coverage information
+        for cg_typename in cg_type_m.keys():
             cg_typescope = inst_scope.createCovergroup(
-                self.getAttr(instances[0], "name", "default"),
+                cg_typename,
                 None,
                 1,
                 UCIS_OTHER)
-        else:
-            cg_typescope = inst_scope.createCovergroup(
-                module_scope_name, None, 1, UCIS_OTHER)
-            
-        for cgN in instances:
+
+            # Process all instances of a given covergroup type
+            self.readCovergroup(cg_typescope, cg_type_m[cg_typename])
+
+    def readCovergroup(self, cg_t, cg_l):
+
+        cr_m = {}
+        cp_m = {}
+
+        # Create a merged understanding of all covergroup instances
+        cg_inst_l = []
+        for cg_e in cg_l:
             srcinfo = None
-            if len(instances) == 1:
-                covergroup_scope = cg_typescope
-            else:
-                covergroup_scope = cg_typescope.createCoverInstance(
-                    self.getAttr(cgN, "name", "default"),
-                    srcinfo,
-                    1,
-                    UCIS_OTHER)
+
+            cg_i_name = self.getAttr(cg_e, "name", "<unknown>")
+            cg_i = cg_t.createCoverInstance(
+                cg_i_name, 
+                srcinfo,
+                1,
+                UCIS_OTHER)
+
+            # Build up a map of coverpoint name/inst-handle refs
+            cg_inst_cp_m = {}
+
+            for cp_e in cg_e.iter("coverpoint"):
+                cp_name = self.getAttr(cp_e, "name", "<unknown>")
+
+                if cp_name not in cp_m.keys():
+                    # New coverpoint. Create type and instance
+                    # representations
+                    cp_t = cg_t.createCoverpoint(
+                        cp_name,
+                        srcinfo,
+                        1,
+                        UCIS_OTHER)
+
+                    # Tuple of coverpoint type and map between
+                    # bin name and count
+                    cp_i = (cp_t, {})
+                    cp_m[cp_name] = cp_i
+                else:
+                    # Already-known coverpoint. Only create
+                    # new instance representation
+                    cp_i = cp_m[cp_name]
+
+                cp_inst = self.readCoverpointInst(cg_i, cp_e, cp_i)
+                cg_inst_cp_m[cp_name] = cp_inst
+
+            for cr_e in cg_e.iter("cross"):
+                cp_name = self.getAttr(cr_e, "name", "<unknown>")
+
+                if cp_name not in cr_m.keys():
+                    cp_l = []
+                    crossExpr = next(cr_e.iter("crossExpr"))
+                    for cp_n in crossExpr.text.split(','):
+                        logging.debug("cp_n=\"" + cp_n + "\"")
+                        if cp_n in cp_m.keys():
+                            cp_l.append(cp_m[cp_n][0])
+                        else:
+                            raise Exception("Cross %s references missing coverpoint %s" % (
+                                cp_name, cp_n))
+
+                    # New crosspoint
+                    cr_t = cg_t.createCross(
+                        cp_name,
+                        srcinfo,
+                        1,
+                        UCIS_OTHER,
+                        cp_l)
+
+                    cr_i = (cr_t, {})
+                    cr_m[cp_name] = cr_i
+                else:
+                    # Already-known crosspoint. Only create
+                    # new instance representation
+                    cr_i = cr_m[cp_name]
                 
-            cp_m = {}
+                self.readCrossInst(cg_i, cr_e, cr_i, cg_inst_cp_m)
+
+        # Now, create the type info
+        for cp_name in cp_m.keys():
+            self.populateCoverpointType(cp_m[cp_name][0], cp_m[cp_name][1])
+
+        # Now, create the cross type info
+        for cr_name in cr_m.keys():
+            self.populateCrossType(
+                cr_m[cr_name][0],
+                cr_m[cr_name][1])
+
+        pass
                 
-            for cpN in cgN.iter("coverpoint"):
-                cp = self.readCoverpoint(cpN, covergroup_scope)
-                cp_m[self.getAttr(cpN, "name", "default")] = cp
-                
-            for crN in cgN.iter("cross"):
-                self.readCross(crN, cp_m, covergroup_scope)
-                
-    def readCoverpoint(self, cpN, covergroup_scope):
+    def readCoverpointInst(self, cg_i, cp_e, cp_type_i):
         srcinfo = None
         
-        cp = covergroup_scope.createCoverpoint(
-            self.getAttr(cpN, "name", "default"),
+        cp = cg_i.createCoverpoint(
+            self.getAttr(cp_e, "name", "<unknown>"),
             srcinfo,
             1, # weight
             UCIS_OTHER)
         
-        for cpBin in cpN.iter("coverpointBin"):
-            self.readCoverpointBin(cpBin, cp)
+        for cpBin in cp_e.iter("coverpointBin"):
+            self.readCoverpointBin(cpBin, cp, cp_type_i)
             
         return cp
             
-    def readCoverpointBin(self, cpBin : Element, cp):
+    def readCoverpointBin(self, cpBin : Element, cp, cp_type_i):
         srcinfo = None
 
         seq = next(cpBin.iter("sequence"),None)
@@ -218,17 +307,38 @@ class XmlReader():
         else:
             raise Exception("Unknown bin type %s" % str(kind_a))
         
+        cp_bin_name = self.getAttr(cpBin, "name", "<unknown>")
+        cp_bin_count = self.getAttrInt(contents, "coverageCount")
+
+        if cp_bin_name not in cp_type_i[1].keys():
+            cp_type_i[1][cp_bin_name] = (kind, cp_bin_count)
+        else:
+            entry = cp_type_i[1][cp_bin_name]
+            cp_type_i[1][cp_bin_name] = (entry[0], entry[1] + cp_bin_count)
+        
         cp.createBin(
-            self.getAttr(cpBin, "name", "default"),
+            cp_bin_name,
             srcinfo,
             1,
-            self.getAttrInt(contents, "coverageCount"),
+            cp_bin_count,
             self.getAttr(cpBin, "name", "default"),
             kind)
         
-    def readCross(self, crN, cp_m, covergroup_scope):
-        crossExpr = next(crN.iter("crossExpr"))
-        name = self.getAttr(crN, "name", "default")
+    def populateCoverpointType(self, cp_t, cp_bin_m):
+        srcinfo = None
+
+        for bin_name,(kind,count) in cp_bin_m.items():
+            cp_t.createBin(
+                bin_name,
+                srcinfo,
+                1,
+                count,
+                bin_name,
+                kind)
+
+    def readCrossInst(self, cg_i, cr_e, cr_type_i, cp_m):
+        crossExpr = next(cr_e.iter("crossExpr"))
+        name = self.getAttr(cr_e, "name", "<unknown>")
         
         cp_l = []
         for cp_n in crossExpr.text.split(','):
@@ -240,29 +350,50 @@ class XmlReader():
 
         srcinfo = None
         
-        cr = covergroup_scope.createCross(
+        cr = cg_i.createCross(
             name,
             srcinfo,
             1, # weight
             UCIS_OTHER,
             cp_l)
         
-        for crB in crN.iter("crossBin"):
-            self.readCrossBin(crB, cr)
+        for crb_e in cr_e.iter("crossBin"):
+            self.readCrossBin(crb_e, cr, cr_type_i)
         
         return cr
-    
-    def readCrossBin(self, crB, cr):
-        name = self.getAttr(crB, "name", "default")
+
+    def populateCrossType(self, cr_t, cr_bin_m):
         srcinfo = None
-        contentsN = next(crB.iter("contents"))
-        
+
+        for bin_name,count in cr_bin_m.items():
+            cr_t.createBin
+            cr_t.createBin(
+                bin_name,
+                srcinfo,
+                1, # weight
+                count,
+                "") # TODO:
+        pass
+    
+    def readCrossBin(self, crb_e, cr, cr_type_i):
+        name = self.getAttr(crb_e, "name", "default")
+        srcinfo = None
+        contentsN = next(crb_e.iter("contents"))
+
+        count = self.getAttrInt(contentsN, "coverageCount")
+
+        if name in cr_type_i[1].keys():
+            cr_type_i[1][name] += count
+        else:
+            cr_type_i[1][name] = count
+
         cr.createBin(
             name,
             srcinfo,
             1, # weight
-            self.getAttrInt(contentsN, "coverageCount"),
+            count,
             "") # TODO:
+
         
 
     def readStatementId(self, stmt_idN):
