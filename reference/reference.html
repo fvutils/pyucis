@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PyUCIS Reference &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> pyucis
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
           </a>
               <div class="version">
                 0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -76,8 +82,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>PyUCIS Reference</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">PyUCIS Reference</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/reference.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,7 +94,7 @@
            <div itemprop="articleBody">
              
   <section id="pyucis-reference">
-<h1>PyUCIS Reference<a class="headerlink" href="#pyucis-reference" title="Permalink to this heading"></a></h1>
+<h1>PyUCIS Reference<a class="headerlink" href="#pyucis-reference" title="Link to this heading"></a></h1>
 <p>This section provides information on APIs and file formats
 used by PyUCIS.</p>
 <div class="toctree-wrapper compound">
@@ -119,20 +125,44 @@ used by PyUCIS.</p>
 <li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html#naming-cross-bins">Naming Cross Bins</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html#ucis.Obj"><code class="docutils literal notranslate"><span class="pre">Obj</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_GetIntProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetIntProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_SetIntProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetIntProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_GetRealProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetRealProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_SetRealProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetRealProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_GetStringProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetStringProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_SetStringProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetStringProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_GetHandleProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetHandleProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_SetHandleProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetHandleProperty()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateScope"><code class="docutils literal notranslate"><span class="pre">ucis_CreateScope()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateInstance"><code class="docutils literal notranslate"><span class="pre">ucis_CreateInstance()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateToggle"><code class="docutils literal notranslate"><span class="pre">ucis_CreateToggle()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateNextCover"><code class="docutils literal notranslate"><span class="pre">ucis_CreateNextCover()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_RemoveScope"><code class="docutils literal notranslate"><span class="pre">ucis_RemoveScope()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateHistoryNode"><code class="docutils literal notranslate"><span class="pre">ucis_CreateHistoryNode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_CreateFileHandle"><code class="docutils literal notranslate"><span class="pre">ucis_CreateFileHandle()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_SetTestData"><code class="docutils literal notranslate"><span class="pre">ucis_SetTestData()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_Write"><code class="docutils literal notranslate"><span class="pre">ucis_Write()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_Close"><code class="docutils literal notranslate"><span class="pre">ucis_Close()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_Time"><code class="docutils literal notranslate"><span class="pre">ucis_Time()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 <section id="back-end-apis">
-<h2>Back-End APIs<a class="headerlink" href="#back-end-apis" title="Permalink to this heading"></a></h2>
+<h2>Back-End APIs<a class="headerlink" href="#back-end-apis" title="Link to this heading"></a></h2>
 <section id="in-memory">
-<h3>In-Memory<a class="headerlink" href="#in-memory" title="Permalink to this heading"></a></h3>
+<h3>In-Memory<a class="headerlink" href="#in-memory" title="Link to this heading"></a></h3>
 </section>
 <section id="ucis-c-api">
-<h3>UCIS C API<a class="headerlink" href="#ucis-c-api" title="Permalink to this heading"></a></h3>
+<h3>UCIS C API<a class="headerlink" href="#ucis-c-api" title="Link to this heading"></a></h3>
 </section>
 <section id="xml">
-<h3>XML<a class="headerlink" href="#xml" title="Permalink to this heading"></a></h3>
+<h3>XML<a class="headerlink" href="#xml" title="Link to this heading"></a></h3>
 </section>
 </section>
 </section>
@@ -148,7 +178,7 @@ used by PyUCIS.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2023, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

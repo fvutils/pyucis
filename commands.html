@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Commands &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> pyucis
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
           </a>
               <div class="version">
                 0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -45,22 +51,22 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Commands</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Sub-commands:">Sub-commands:</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Sub-commands">Sub-commands</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#convert">convert</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments">Positional Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Named Arguments">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#merge">merge</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments_repeat1">Positional Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Named Arguments_repeat1">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments_repeat1">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat1">Named Arguments</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#list-db-formats">list-db-formats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-rpt-formats">list-rpt-formats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#report">report</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Positional Arguments_repeat2">Positional Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Named Arguments_repeat2">Named Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments_repeat2">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat2">Named Arguments</a></li>
 </ul>
 </li>
 </ul>
@@ -83,8 +89,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Commands</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Commands</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/commands.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,7 +101,7 @@
            <div itemprop="articleBody">
              
   <section id="commands">
-<h1>Commands<a class="headerlink" href="#commands" title="Permalink to this heading"></a></h1>
+<h1>Commands<a class="headerlink" href="#commands" title="Link to this heading"></a></h1>
 <p>The <cite>ucis</cite> root command accepts one of several sub-commands that operate on
 coverage data.</p>
 <p><p>Manipulate UCIS coverage data</p>
@@ -103,10 +109,10 @@ coverage data.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">}</span> <span class="o">...</span>
 </pre></div>
 </div>
-<section id="Sub-commands:">
-<h2>Sub-commands:<a class="headerlink" href="#Sub-commands:" title="Permalink to this heading"></a></h2>
+<section id="Sub-commands">
+<h2>Sub-commands<a class="headerlink" href="#Sub-commands" title="Link to this heading"></a></h2>
 <section id="convert">
-<h3>convert<a class="headerlink" href="#convert" title="Permalink to this heading"></a></h3>
+<h3>convert<a class="headerlink" href="#convert" title="Link to this heading"></a></h3>
 <blockquote>
 <div><p>Converts coverage data from one format to another</p>
 </div></blockquote>
@@ -115,16 +121,16 @@ coverage data.</p>
              <span class="nb">input</span>
 </pre></div>
 </div>
-<section id="Positional Arguments">
-<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments" title="Permalink to this heading"></a></h4>
+<section id="positional-arguments">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>input</kbd></dt>
 <dd><p>Source database to convert</p>
 </dd>
 </dl>
 </section>
-<section id="Named Arguments">
-<h4>Named Arguments<a class="headerlink" href="#Named Arguments" title="Permalink to this heading"></a></h4>
+<section id="named-arguments">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>--out, -o</kbd></dt>
 <dd><p>Specifies the output of the conversion</p>
@@ -139,7 +145,7 @@ coverage data.</p>
 </section>
 </section>
 <section id="merge">
-<h3>merge<a class="headerlink" href="#merge" title="Permalink to this heading"></a></h3>
+<h3>merge<a class="headerlink" href="#merge" title="Link to this heading"></a></h3>
 <blockquote>
 <div><p>Merges coverage data from two or more databases into a single merged database</p>
 </div></blockquote>
@@ -148,15 +154,15 @@ coverage data.</p>
            <span class="n">db</span> <span class="p">[</span><span class="n">db</span> <span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
-<section id="Positional Arguments_repeat1">
-<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments_repeat1" title="Permalink to this heading"></a></h4>
+<section id="positional-arguments_repeat1">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat1" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>db</kbd></dt>
 <dd></dd>
 </dl>
 </section>
-<section id="Named Arguments_repeat1">
-<h4>Named Arguments<a class="headerlink" href="#Named Arguments_repeat1" title="Permalink to this heading"></a></h4>
+<section id="named-arguments_repeat1">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat1" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>--out, -o</kbd></dt>
 <dd><p>Specifies the output of the merge</p>
@@ -174,37 +180,37 @@ coverage data.</p>
 </section>
 </section>
 <section id="list-db-formats">
-<h3>list-db-formats<a class="headerlink" href="#list-db-formats" title="Permalink to this heading"></a></h3>
+<h3>list-db-formats<a class="headerlink" href="#list-db-formats" title="Link to this heading"></a></h3>
 <p>Shows available database formats</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
 <section id="list-rpt-formats">
-<h3>list-rpt-formats<a class="headerlink" href="#list-rpt-formats" title="Permalink to this heading"></a></h3>
+<h3>list-rpt-formats<a class="headerlink" href="#list-rpt-formats" title="Link to this heading"></a></h3>
 <p>Shows available report filters</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
 <section id="report">
-<h3>report<a class="headerlink" href="#report" title="Permalink to this heading"></a></h3>
+<h3>report<a class="headerlink" href="#report" title="Link to this heading"></a></h3>
 <p>Generate a report (typically textual) from coverage data</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">report</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
             <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span>
             <span class="n">db</span>
 </pre></div>
 </div>
-<section id="Positional Arguments_repeat2">
-<h4>Positional Arguments<a class="headerlink" href="#Positional Arguments_repeat2" title="Permalink to this heading"></a></h4>
+<section id="positional-arguments_repeat2">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat2" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>db</kbd></dt>
 <dd><p>Path to the coverage database</p>
 </dd>
 </dl>
 </section>
-<section id="Named Arguments_repeat2">
-<h4>Named Arguments<a class="headerlink" href="#Named Arguments_repeat2" title="Permalink to this heading"></a></h4>
+<section id="named-arguments_repeat2">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat2" title="Link to this heading"></a></h4>
 <dl class="option-list">
 <dt><kbd>--out, -o</kbd></dt>
 <dd><p>Specifies the output location for the report</p>
@@ -232,7 +238,7 @@ coverage data.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2023, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

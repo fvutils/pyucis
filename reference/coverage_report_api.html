@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coverage Report Object &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> pyucis
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
           </a>
               <div class="version">
                 0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -47,8 +53,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Coverage Report Object</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#building-a-coveragereport">Building a CoverageReport</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#coveragereport-object">CoverageReport Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-a-coveragereport">Building a CoverageReport</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReportBuilder"><code class="docutils literal notranslate"><span class="pre">CoverageReportBuilder</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#coveragereport-object">CoverageReport Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReport"><code class="docutils literal notranslate"><span class="pre">CoverageReport</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReport.Covergroup"><code class="docutils literal notranslate"><span class="pre">Covergroup</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReport.CoverItem"><code class="docutils literal notranslate"><span class="pre">CoverItem</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReport.Coverpoint"><code class="docutils literal notranslate"><span class="pre">Coverpoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.report.CoverageReport.Cross"><code class="docutils literal notranslate"><span class="pre">Cross</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
@@ -75,9 +91,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="reference.html">PyUCIS Reference</a> &raquo;</li>
-      <li>Coverage Report Object</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
+      <li class="breadcrumb-item active">Coverage Report Object</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/coverage_report_api.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,24 +104,24 @@
            <div itemprop="articleBody">
              
   <section id="coverage-report-object">
-<h1>Coverage Report Object<a class="headerlink" href="#coverage-report-object" title="Permalink to this heading"></a></h1>
+<h1>Coverage Report Object<a class="headerlink" href="#coverage-report-object" title="Link to this heading"></a></h1>
 <p>Many of the tools that format and visualize coverage data make use of the coverage report
 object implemented by PyUCIS. The <cite>CoverageReport</cite> object contains information about
 the covergroups, covergroup instances, coverpoints and cross coverpoints in a coverage
 database. It contains data on the percentage of coverage achieved, as well as detailed
 information on the number of hits in each coverpoint and cross bin.</p>
 <section id="building-a-coveragereport">
-<h2>Building a CoverageReport<a class="headerlink" href="#building-a-coveragereport" title="Permalink to this heading"></a></h2>
+<h2>Building a CoverageReport<a class="headerlink" href="#building-a-coveragereport" title="Link to this heading"></a></h2>
 <p>The best way to obtain a coverage report is to use the <cite>CoverageReportBuilder</cite> class.
 The <cite>build</cite> method on this class accepts a UCIS database object and returns a
 <cite>CoverageReport</cite> class.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReportBuilder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.</span></span><span class="sig-name descname"><span class="pre">CoverageReportBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReportBuilder" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.</span></span><span class="sig-name descname"><span class="pre">CoverageReportBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReportBuilder" title="Link to this definition"></a></dt>
 <dd><p>Builds a coverage-report object from a UCIS database</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.report.CoverageReportBuilder.build">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UCIS</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.report.CoverageReport" title="ucis.report.CoverageReport"><span class="pre">CoverageReport</span></a></span></span><a class="headerlink" href="#ucis.report.CoverageReportBuilder.build" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">UCIS</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.report.CoverageReport" title="ucis.report.CoverageReport"><span class="pre">CoverageReport</span></a></span></span><a class="headerlink" href="#ucis.report.CoverageReportBuilder.build" title="Link to this definition"></a></dt>
 <dd><p>Builds a CoverageReport object from a UCIS database</p>
 </dd></dl>
 
@@ -113,21 +129,21 @@ The <cite>build</cite> method on this class accepts a UCIS database object and r
 
 </section>
 <section id="coveragereport-object">
-<h2>CoverageReport Object<a class="headerlink" href="#coveragereport-object" title="Permalink to this heading"></a></h2>
+<h2>CoverageReport Object<a class="headerlink" href="#coveragereport-object" title="Link to this heading"></a></h2>
 <p>The <cite>CoverageReport</cite> object is a tree of covergroups and coverpoints.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.</span></span><span class="sig-name descname"><span class="pre">CoverageReport</span></span><a class="headerlink" href="#ucis.report.CoverageReport" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.</span></span><span class="sig-name descname"><span class="pre">CoverageReport</span></span><a class="headerlink" href="#ucis.report.CoverageReport" title="Link to this definition"></a></dt>
 <dd><p>Root coverage-report object</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.coverage" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.coverage" title="Link to this definition"></a></dt>
 <dd><p>Coverage percentage achieved by all covergroups</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.covergroups">
-<span class="sig-name descname"><span class="pre">covergroups</span></span><a class="headerlink" href="#ucis.report.CoverageReport.covergroups" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">covergroups</span></span><a class="headerlink" href="#ucis.report.CoverageReport.covergroups" title="Link to this definition"></a></dt>
 <dd><p>List of (type) covergroups</p>
 </dd></dl>
 
@@ -135,49 +151,49 @@ The <cite>build</cite> method on this class accepts a UCIS database object and r
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Covergroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Covergroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup" title="Link to this definition"></a></dt>
 <dd><p>Contains coverage data for a covergroup type or instance</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.covergroup_m">
-<span class="sig-name descname"><span class="pre">covergroup_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Covergroup" title="ucis.report.coverage_report.CoverageReport.Covergroup"><span class="pre">Covergroup</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.covergroup_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">covergroup_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Covergroup" title="ucis.report.coverage_report.CoverageReport.Covergroup"><span class="pre">Covergroup</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.covergroup_m" title="Link to this definition"></a></dt>
 <dd><p>Map of covergroup instance names to object
 This is only populated when <cite>self</cite> is a type covergroup</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.covergroups">
-<span class="sig-name descname"><span class="pre">covergroups</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Covergroup" title="ucis.report.coverage_report.CoverageReport.Covergroup"><span class="pre">Covergroup</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.covergroups" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">covergroups</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Covergroup" title="ucis.report.coverage_report.CoverageReport.Covergroup"><span class="pre">Covergroup</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.covergroups" title="Link to this definition"></a></dt>
 <dd><p>List of covergroup sub-instances. This is only
 populated when <cite>self</cite> is a type covergroup</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.coverpoint_m">
-<span class="sig-name descname"><span class="pre">coverpoint_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Coverpoint" title="ucis.report.coverage_report.CoverageReport.Coverpoint"><span class="pre">Coverpoint</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.coverpoint_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverpoint_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Coverpoint" title="ucis.report.coverage_report.CoverageReport.Coverpoint"><span class="pre">Coverpoint</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.coverpoint_m" title="Link to this definition"></a></dt>
 <dd><p>Map of coverpoint name to object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.coverpoints">
-<span class="sig-name descname"><span class="pre">coverpoints</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Coverpoint" title="ucis.report.coverage_report.CoverageReport.Coverpoint"><span class="pre">Coverpoint</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.coverpoints" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverpoints</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Coverpoint" title="ucis.report.coverage_report.CoverageReport.Coverpoint"><span class="pre">Coverpoint</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.coverpoints" title="Link to this definition"></a></dt>
 <dd><p>List of coverpoints in the covergroup</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.cross_m">
-<span class="sig-name descname"><span class="pre">cross_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.10)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Cross" title="ucis.report.coverage_report.CoverageReport.Cross"><span class="pre">Cross</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.cross_m" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">cross_m</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.12)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#ucis.report.CoverageReport.Cross" title="ucis.report.coverage_report.CoverageReport.Cross"><span class="pre">Cross</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.cross_m" title="Link to this definition"></a></dt>
 <dd><p>Map of cross name to object</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.crosses">
-<span class="sig-name descname"><span class="pre">crosses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.10)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Cross" title="ucis.report.coverage_report.CoverageReport.Cross"><span class="pre">Cross</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.crosses" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">crosses</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.12)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.report.CoverageReport.Cross" title="ucis.report.coverage_report.CoverageReport.Cross"><span class="pre">Cross</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.crosses" title="Link to this definition"></a></dt>
 <dd><p>List of cross points in the covergroup</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Covergroup.instname">
-<span class="sig-name descname"><span class="pre">instname</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.instname" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">instname</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Covergroup.instname" title="Link to this definition"></a></dt>
 <dd><p>Covergroup instance name</p>
 </dd></dl>
 
@@ -185,23 +201,23 @@ populated when <cite>self</cite> is a type covergroup</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.CoverItem">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">CoverItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">CoverItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem" title="Link to this definition"></a></dt>
 <dd><p>Base type for covergroups and coverpoints</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.CoverItem.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.coverage" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.coverage" title="Link to this definition"></a></dt>
 <dd><p>Coverage percentage achieved by the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.CoverItem.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.name" title="Link to this definition"></a></dt>
 <dd><p>Name of the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.CoverItem.weight">
-<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.weight" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.CoverItem.weight" title="Link to this definition"></a></dt>
 <dd><p>Weight given to this item when calculating coverage %</p>
 </dd></dl>
 
@@ -209,24 +225,24 @@ populated when <cite>self</cite> is a type covergroup</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Coverpoint">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Coverpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Coverpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ucis.report.CoverageReport.CoverItem" title="ucis.report.coverage_report.CoverageReport.CoverItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoverItem</span></code></a></p>
 <p>Contains coverage data about a coverpoint</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Coverpoint.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.coverage" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.coverage" title="Link to this definition"></a></dt>
 <dd><p>Coverage percentage achieved by the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Coverpoint.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.name" title="Link to this definition"></a></dt>
 <dd><p>Name of the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Coverpoint.weight">
-<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.weight" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Coverpoint.weight" title="Link to this definition"></a></dt>
 <dd><p>Weight given to this item when calculating coverage %</p>
 </dd></dl>
 
@@ -234,24 +250,24 @@ populated when <cite>self</cite> is a type covergroup</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Cross">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Cross" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ucis.report.CoverageReport.</span></span><span class="sig-name descname"><span class="pre">Cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.report.CoverageReport.Cross" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ucis.report.CoverageReport.CoverItem" title="ucis.report.coverage_report.CoverageReport.CoverItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoverItem</span></code></a></p>
 <p>Contains coverage data for a cross</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Cross.coverage">
-<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.coverage" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">coverage</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.coverage" title="Link to this definition"></a></dt>
 <dd><p>Coverage percentage achieved by the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Cross.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.name" title="Link to this definition"></a></dt>
 <dd><p>Name of the cover item</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="ucis.report.CoverageReport.Cross.weight">
-<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.weight" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#ucis.report.CoverageReport.Cross.weight" title="Link to this definition"></a></dt>
 <dd><p>Weight given to this item when calculating coverage %</p>
 </dd></dl>
 
@@ -271,7 +287,7 @@ populated when <cite>self</cite> is a type covergroup</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2023, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

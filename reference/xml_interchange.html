@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>XML Interchange Format &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +31,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> pyucis
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
           </a>
               <div class="version">
                 0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -81,9 +87,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="reference.html">PyUCIS Reference</a> &raquo;</li>
-      <li>XML Interchange Format</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
+      <li class="breadcrumb-item active">XML Interchange Format</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/xml_interchange.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,7 +100,7 @@
            <div itemprop="articleBody">
              
   <section id="xml-interchange-format">
-<h1>XML Interchange Format<a class="headerlink" href="#xml-interchange-format" title="Permalink to this heading"></a></h1>
+<h1>XML Interchange Format<a class="headerlink" href="#xml-interchange-format" title="Link to this heading"></a></h1>
 <p>The Accelera UCIS Standard document specifies an XML interchange format. While the
 XML document structure has some similarities with the data model accessed via the
 UCIS C API, there are also significant differences.</p>
@@ -108,11 +114,11 @@ details are shaped by how existing tools interpret the XML interchange
 format. Because our goal is to maximize interoperability, PyUCIS
 deliberately shapes its data output (especially) to maximize interoperability</p>
 <section id="functional-coverage">
-<h2>Functional Coverage<a class="headerlink" href="#functional-coverage" title="Permalink to this heading"></a></h2>
+<h2>Functional Coverage<a class="headerlink" href="#functional-coverage" title="Link to this heading"></a></h2>
 <p>Functional coverage data is stored in <cite>cgInstance</cite> sections within a
 <cite>covergroupCoverage</cite> scope.</p>
 <section id="covergroup-instance-type-linkage">
-<h3>Covergroup instance/type linkage<a class="headerlink" href="#covergroup-instance-type-linkage" title="Permalink to this heading"></a></h3>
+<h3>Covergroup instance/type linkage<a class="headerlink" href="#covergroup-instance-type-linkage" title="Link to this heading"></a></h3>
 <p>The cgId section inside the cgInstance specifies the associated covergroup type.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">cgInstance</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;top.cg_i1&quot;</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
   <span class="o">&lt;</span><span class="n">options</span><span class="o">/&gt;</span>
@@ -127,7 +133,7 @@ deliberately shapes its data output (especially) to maximize interoperability</p
 covergroup type <cite>top::my_covergroup</cite>.</p>
 </section>
 <section id="covergroup-instance-and-type-data">
-<h3>Covergroup instance and type data<a class="headerlink" href="#covergroup-instance-and-type-data" title="Permalink to this heading"></a></h3>
+<h3>Covergroup instance and type data<a class="headerlink" href="#covergroup-instance-and-type-data" title="Link to this heading"></a></h3>
 <p>The UCIS data model represents covergroup type coverage (the merge of all
 covergroup instances of a given type) as a scope that contains a series
 of sub-scopes that hold per-instance coverage data. The XML interchange
@@ -142,7 +148,7 @@ with a single <cite>cgInstance</cite> entry represents coverage for the covergro
 For example, a covergroup with <cite>per_instance</cite> set to false.</p>
 </section>
 <section id="coverage-instance-options">
-<h3>Coverage Instance Options<a class="headerlink" href="#coverage-instance-options" title="Permalink to this heading"></a></h3>
+<h3>Coverage Instance Options<a class="headerlink" href="#coverage-instance-options" title="Link to this heading"></a></h3>
 <p>When reading XML, PyUCIS considers the following coverage options significant:</p>
 <ul class="simple">
 <li><p>_per_instance_ - Indicates whether per-instance data is recorded</p></li>
@@ -154,7 +160,7 @@ bins explicitly. Some consumers of XML interchange format attempt to create auto
 option is not explicitly set to 0.</p>
 </section>
 <section id="coverpoint-bins">
-<h3>Coverpoint Bins<a class="headerlink" href="#coverpoint-bins" title="Permalink to this heading"></a></h3>
+<h3>Coverpoint Bins<a class="headerlink" href="#coverpoint-bins" title="Link to this heading"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">coverpoint</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cp1&quot;</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">options</span><span class="o">/&gt;</span>
     <span class="o">&lt;</span><span class="n">coverpointBin</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;a[0]&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;bins&quot;</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
@@ -174,7 +180,7 @@ writes the bin type as one of <cite>bins</cite>, <cite>ignore</cite>, <cite>ille
 range as <cite>-1</cite>. This is because UCIS doesn’t provide relevant data to record.</p>
 </section>
 <section id="cross-bins">
-<h3>Cross Bins<a class="headerlink" href="#cross-bins" title="Permalink to this heading"></a></h3>
+<h3>Cross Bins<a class="headerlink" href="#cross-bins" title="Link to this heading"></a></h3>
 <p>The most common case with cross bins is to record auto-bins resulting from
 the cross of the relevant coverpoints.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">cross</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;cp1Xcp2&quot;</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
@@ -214,7 +220,7 @@ improves interoperability with some tools.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2022, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2023, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
