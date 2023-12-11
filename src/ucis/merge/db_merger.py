@@ -86,10 +86,9 @@ class DbMerger(object):
                 name = src_cg.getScopeName()
                 
                 if name not in cg_name_m.keys():
-                    scope_l = [None]*len(src_scopes)
-                    cg_name_m[name] = scope_l
-                    cg_name_l.append(name)
-                cg_name_m[name][i] = src_cg
+                  cg_name_m[name] = []
+                  cg_name_l.append(name)
+                cg_name_m[name].append(src_cg)
 
         for name in cg_name_l:                
             src_cg_l = list(filter(lambda cg: cg is not None, cg_name_m[name]))
