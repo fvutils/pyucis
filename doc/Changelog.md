@@ -1,4 +1,8 @@
 
+## 0.1.4
+- Update XML writer to properly emit ignore and illegal bins
+- Update XML reader to properly read crossExpr elements
+
 ## 0.1.3
 - Adjust XML reader to reconstruct type coverage based on
   instance coverage saved in the UCIS XML file

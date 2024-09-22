@@ -223,7 +223,8 @@ class XmlWriter():
         
         self.write_options(cpElem, cp)
         
-        self.write_coverpoint_bins(cpElem, cp.coverItems(CoverTypeT.CVGBIN))
+        self.write_coverpoint_bins(cpElem, cp.coverItems(
+            CoverTypeT.CVGBIN|CoverTypeT.IGNOREBIN|CoverTypeT.ILLEGALBIN))
 
     def write_coverpoint_bins(self, cpElem, coveritems : Iterator[CoverIndex]):
         # TODO: should probably organize bins into a structure that fits more nicely into the interchage format
@@ -232,7 +233,7 @@ class XmlWriter():
             cov_data = cp_bin.getCoverData()
             cpBinElem = self.mkElem(cpElem, "coverpointBin")
             self.setAttr(cpBinElem, "name", cp_bin.getName())
-            
+
             if cp_bin.data.type == CoverTypeT.CVGBIN:
                 self.setAttr(cpBinElem, "type", "bins")
             elif cp_bin.data.type == CoverTypeT.IGNOREBIN:
@@ -268,7 +269,8 @@ class XmlWriter():
             crossExpr = self.mkElem(crossElem, "crossExpr")
             crossExpr.text = cr.getIthCrossedCoverpoint(i).getScopeName() 
         
-        self.write_cross_bins(crossElem, cr.coverItems(CoverTypeT.CVGBIN))
+        self.write_cross_bins(crossElem, cr.coverItems(
+            CoverTypeT.CVGBIN|CoverTypeT.IGNOREBIN|CoverTypeT.ILLEGALBIN))
         
     def write_cross_bins(self, crossElem, coveritems : Iterator[CoverIndex]):
         

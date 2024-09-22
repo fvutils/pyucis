@@ -230,8 +230,8 @@ class XmlReader():
 
                 if cp_name not in cr_m.keys():
                     cp_l = []
-                    crossExpr = next(cr_e.iter("crossExpr"))
-                    for cp_n in crossExpr.text.split(','):
+                    for crossExpr in cr_e.iter("crossExpr"):
+                        cp_n = crossExpr.text.strip()
                         logging.debug("cp_n=\"" + cp_n + "\"")
                         if cp_n in cp_m.keys():
                             cp_l.append(cp_m[cp_n][0])

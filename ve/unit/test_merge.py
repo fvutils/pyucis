@@ -486,8 +486,28 @@ class TestMerge(TestCase):
         
         dst_db = MemFactory.create()
 
+        from ucis.xml.xml_writer import XmlWriter
+        from ucis.xml.xml_reader import XmlReader
+        from io import StringIO
+
+
         merger = DbMerger()
         merger.merge(dst_db, [src_db])
+
+        # writer = XmlWriter()
+        # cov = StringIO()
+        # writer.write(cov, dst_db)        
+        # print("Result:\n%s\n" % cov.getvalue())
+        # reader = XmlReader()
+        # dst_db_p = reader.read(StringIO(cov.getvalue()))
+
+        # from ucis.report.text_coverage_report_formatter import TextCoverageReportFormatter
+
+        # rpt_p = CoverageReportBuilder.build(dst_db_p)
+        # rpt_s_p = StringIO()
+        # rpt_fmt = TextCoverageReportFormatter(rpt_p, rpt_s_p)
+        # rpt_fmt.report()
+        # print("Final report:\n%s\n" % rpt_s_p.getvalue())
         
         rpt = CoverageReportBuilder.build(dst_db)
         
