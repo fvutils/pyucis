@@ -22,6 +22,7 @@ Created on Jan 6, 2020
 
 from datetime import datetime
 import logging
+from io import StringIO
 from logging import _srcfile
 import sys
 from typing import Dict
@@ -47,7 +48,12 @@ class XmlReader():
         self.module_scope_m : Dict[str, MemScope] = {}
         self.inst_scope_m : Dict[str, MemScope] = {}
         pass
-    
+
+    def loads(self, s) -> UCIS:
+        fp = StringIO(s)
+        return self.read(fp)
+
+
     def read(self, file) -> UCIS:
         tree = etree.parse(file)
         root = tree.getroot()
