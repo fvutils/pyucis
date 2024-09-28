@@ -343,16 +343,16 @@ class XmlReader():
                 kind)
 
     def readCrossInst(self, cg_i, cr_e, cr_type_i, cp_m):
-        crossExpr = next(cr_e.iter("crossExpr"))
         name = self.getAttr(cr_e, "name", "<unknown>")
         
         cp_l = []
-        for cp_n in crossExpr.text.split(','):
+        for crossExpr in cr_e.iter("crossExpr"):
+            cp_n = crossExpr.text.strip()
             logging.debug("cp_n=\"" + cp_n + "\"")
             if cp_n in cp_m.keys():
                 cp_l.append(cp_m[cp_n])
             else:
-                raise Exception("Cross " + name + " references missing coverpoint " + cp_n)
+                raise Exception("Cross " + cp_n + " references missing coverpoint " + cp_n)
 
         srcinfo = None
         

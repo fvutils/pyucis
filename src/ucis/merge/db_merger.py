@@ -109,9 +109,7 @@ class DbMerger(object):
         self._merge_crosses(dst_cg, dst_cp_m, src_cg_l)
         
         self._merge_coverinsts(dst_cg, src_cg_l)
-        
-        pass
-    
+
     def _merge_coverinsts(self, dst_cg, src_cg_l):
 
         cg_i_m = {}
