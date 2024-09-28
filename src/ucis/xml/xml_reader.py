@@ -22,6 +22,7 @@ Created on Jan 6, 2020
 
 from datetime import datetime
 import logging
+from io import StringIO
 from logging import _srcfile
 import sys
 from typing import Dict
@@ -47,7 +48,12 @@ class XmlReader():
         self.module_scope_m : Dict[str, MemScope] = {}
         self.inst_scope_m : Dict[str, MemScope] = {}
         pass
-    
+
+    def loads(self, s) -> UCIS:
+        fp = StringIO(s)
+        return self.read(fp)
+
+
     def read(self, file) -> UCIS:
         tree = etree.parse(file)
         root = tree.getroot()
@@ -337,16 +343,16 @@ class XmlReader():
                 kind)
 
     def readCrossInst(self, cg_i, cr_e, cr_type_i, cp_m):
-        crossExpr = next(cr_e.iter("crossExpr"))
         name = self.getAttr(cr_e, "name", "<unknown>")
         
         cp_l = []
-        for cp_n in crossExpr.text.split(','):
+        for crossExpr in cr_e.iter("crossExpr"):
+            cp_n = crossExpr.text.strip()
             logging.debug("cp_n=\"" + cp_n + "\"")
             if cp_n in cp_m.keys():
                 cp_l.append(cp_m[cp_n])
             else:
-                raise Exception("Cross " + name + " references missing coverpoint " + cp_n)
+                raise Exception("Cross " + cp_n + " references missing coverpoint " + cp_n)
 
         srcinfo = None
         
