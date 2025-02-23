@@ -1,53 +1,54 @@
 package:
-    name: pyucis
-    version: None
+  name: pyucis
+  dep-sets:
+  - name: default
     deps:
-        - name: lxml
-          src: pypi
-        - name: pyyaml
-          src: pypi
-        - name: jsonschema
-          src: pypi
-        - name: python-jsonschema-objects
-          src: pypi
-    dev-deps:
-        - name: jsonschema
-          src: pypi
-        - name: python-jsonschema-objects
-          src: pypi
-        - name: pylint
-          type: python
-          src: pypi
-        - name: flake8
-          type: python
-          src: pypi
-        - name: pytest
-          type: python
-          src: pypi
-        - name: pytest-cov
-          type: python
-          src: pypi
-        - name: lxml
-          src: pypi
-        - name: pyyaml
-          src: pypi
-        - name: Sphinx
-          src: pypi
-        - name: sphinx-jsonschema
-          src: pypi
-        - name: sphinx-rtd-theme
-          src: pypi
-        - name: cairosvg
-          src: pypi
-        - name: sphinxcontrib-makedomain
-          src: pypi
-        - name: sphinxcontrib-spelling
-          src: pypi
-        - name: pyenchant
-          src: pypi
-        - name: sphinx-issues
-          src: pypi
-        - name: sphinx-argparse
-          src: pypi
+    - name: lxml
+      src: pypi
+    - name: pyyaml
+      src: pypi
+    - name: jsonschema
+      src: pypi
+    - name: python-jsonschema-objects
+      src: pypi
+  - name: default-dev
+    deps:
+    - name: jsonschema
+      src: pypi
+    - name: python-jsonschema-objects
+      src: pypi
+    - name: pylint
+      src: pypi
+    - name: flake8
+      type: python
+      src: pypi
+    - name: pytest
+      type: python
+      src: pypi
+    - name: pytest-cov
+      type: python
+      src: pypi
+    - name: lxml
+      src: pypi
+    - name: pyyaml
+      src: pypi
+    - name: Sphinx
+      src: pypi
+    - name: sphinx-jsonschema
+      src: pypi
+    - name: sphinx-rtd-theme
+      src: pypi
+    - name: cairosvg
+      src: pypi
+    - name: sphinxcontrib-makedomain
+      src: pypi
+    - name: sphinxcontrib-spelling
+      src: pypi
+    - name: pyenchant
+      src: pypi
+    - name: sphinx-issues
+      src: pypi
+    - name: sphinx-argparse
+      src: pypi
 
 
