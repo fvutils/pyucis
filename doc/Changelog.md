@@ -1,4 +1,7 @@
 
+## 0.1.5
+- (#26) - Correct a whitespace issue found during bytecode pre-compilation 
+
 ## 0.1.4
 - Update XML writer to properly emit ignore and illegal bins
 - Update XML reader to properly read crossExpr elements
