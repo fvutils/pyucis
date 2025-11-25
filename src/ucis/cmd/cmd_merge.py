@@ -25,29 +25,33 @@ def merge(args):
     input_desc : FormatDescDb = rgy.getDatabaseDesc(args.input_format)
     output_desc : FormatDescDb = rgy.getDatabaseDesc(args.output_format)
 
-    db_l : List[UCIS] = []
+    out_if = output_desc.fmt_if()
+    out_db : UCIS = out_if.create()
+    db_if : FormatIfDb = input_desc.fmt_if()
+    merger = DbMerger()
+
     for input in args.db:
-        db_if : FormatIfDb = input_desc.fmt_if()
+        print("read and merge: ", input)
+        out_db_ref : UCIS = out_if.create()
+        db_l : List[UCIS] = []
         try:
             db = db_if.read(input)
             db_l.append(db)
+            db_l.append(out_db)
         except Exception as e:
             raise Exception("Failed to read input file %s: %s" % (
                 input,
                 str(e)
             ))
 
-    out_if = output_desc.fmt_if()
-    out_db : UCIS = out_if.create() 
+        try:
+            merger.merge(out_db_ref, db_l)
+        except Exception as e:
+            raise Exception("Merge operation failed: %s" % str(e))
 
-    merger = DbMerger()
-    try:
-        merger.merge(out_db, db_l)
-    except Exception as e:
-        raise Exception("Merge operation failed: %s" % str(e))
+        out_db = out_db_ref
+        db.close()
     
     out_db.write(args.out)
-    for db in db_l:
-        db.close()
 
     
