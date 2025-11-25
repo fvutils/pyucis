@@ -42,9 +42,12 @@ def get_parser():
         help="Specifies the format of the input databases. Defaults to 'xml'")
     merge.add_argument("--output-format", "-of",
         help="Specifies the format of the input databases. Defaults to 'xml'")
+    merge.add_argument("--file-list", "-f",
+        help="File containing list of databases to merge (one per line)")
     merge.add_argument("--libucis", "-l",
         help="Specifies the name/path of the UCIS shared library")
-    merge.add_argument("db", nargs="+")
+    merge.add_argument("db", nargs="*",
+        help="Database files to merge (can be combined with --file-list)")
     merge.set_defaults(func=cmd_merge.merge)
     
     list_db_formats = subparser.add_parser("list-db-formats",
