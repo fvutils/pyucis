@@ -69,6 +69,10 @@ class FormatRgy(object):
         DbFormatIfLib.register(self)
         DbFormatIfYaml.register(self)
         
+        # Register SQLite format
+        from ucis.sqlite.db_format_if_sqlite import DbFormatIfSqlite
+        DbFormatIfSqlite.register(self)
+        
         FormatRptJson.register(self)
         FormatRptText.register(self)
     

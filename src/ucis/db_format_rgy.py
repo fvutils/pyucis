@@ -7,6 +7,7 @@ from ucis.xml.db_format_if_xml import DbFormatIfXml
 from ucis.mem.db_format_if_mem import DbFormatIfMem
 from ucis.yaml.db_format_if_yaml import DbFormatIfYaml
 from ucis.lib.db_format_if_lib import DbFormatIfLib
+from ucis.sqlite.db_format_if_sqlite import DbFormatIfSqlite
 
 class DbFormatRgy(object):
     
@@ -31,10 +32,11 @@ class DbFormatRgy(object):
         return self._fmt_if_m[name]()
         
     def init(self):
-        self.addFormatIf("lib", DbFormatIfLib)
-        self.addFormatIf("mem", DbFormatIfMem)
-        self.addFormatIf("xml", DbFormatIfXml)
-        self.addFormatIf("yml", DbFormatIfYaml)
+        self.addFormatIf("lib", DbFormatIfLib, "Native library format")
+        self.addFormatIf("mem", DbFormatIfMem, "In-memory format")
+        self.addFormatIf("xml", DbFormatIfXml, "XML format")
+        self.addFormatIf("yml", DbFormatIfYaml, "YAML format")
+        self.addFormatIf("sqlite", DbFormatIfSqlite, "SQLite database format")
         pass
     
     @classmethod

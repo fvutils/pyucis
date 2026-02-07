@@ -50,7 +50,13 @@ package:
       src: pypi
     - name: sphinx-argparse
       src: pypi
+<<<<<<< HEAD
     - name: mcp
       src: pypi
 
+=======
+    - name: sqlite
+      url: https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip
+      cache: true
+>>>>>>> 381bcca (Initial sqlite implementation)
 

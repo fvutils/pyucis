@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find SQLite3 dependency
+find_dependency(SQLite3 REQUIRED)
+
+# Include targets
+include("${CMAKE_CURRENT_LIST_DIR}/ucisTargets.cmake")
+
+check_required_components(ucis)
