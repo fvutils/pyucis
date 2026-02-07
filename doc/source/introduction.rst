@@ -129,6 +129,36 @@ Example:
     ucis merge -o merged.ucis test1.ucis test2.ucis
 
 
+MCP Server for AI Integration
+==============================
+
+PyUCIS includes a Model Context Protocol (MCP) server that enables AI agents and 
+assistants to interact with coverage databases through a standardized API. This 
+allows intelligent analysis, automated reporting, and natural language queries 
+against your verification coverage data.
+
+The MCP server provides 17+ specialized tools for:
+
+- **Database Operations**: Open, close, and manage multiple coverage databases
+- **Coverage Analysis**: Get summaries, identify gaps, analyze metrics
+- **Advanced Queries**: Covergroups, bins, assertions, toggle coverage
+- **Comparison**: Compare databases for regression detection
+- **Export**: Generate LCOV, Cobertura, JaCoCo, and Clover reports
+
+See :doc:`mcp_server` for detailed documentation on installation, configuration,
+and integration with AI platforms like Claude Desktop.
+
+Quick start:
+
+.. code-block:: bash
+
+    # Install with MCP support
+    pip install pyucis[dev]
+    
+    # Start the MCP server
+    pyucis-mcp-server
+
+
 Contributors
 ============
 

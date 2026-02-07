@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyucis"
+version = "0.1.4"
+authors = [
+    {name = "Matthew Ballance", email = "matt.ballance@gmail.com"},
+]
+description = "PyUCIS provides a Python API for manipulating UCIS coverage data."
+readme = "README.md"
+license = {text = "Apache 2.0"}
+keywords = ["SystemVerilog", "Verilog", "RTL", "Coverage", "UCIS", "verification"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Testing",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "lxml",
+    "python-jsonschema-objects",
+    "jsonschema",
+    "pyyaml",
+    "mcp>=0.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ivpm",
+    "pylint",
+    "flake8",
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+]
+
+[project.urls]
+Homepage = "https://github.com/fvutils/pyucis"
+Repository = "https://github.com/fvutils/pyucis"
+Issues = "https://github.com/fvutils/pyucis/issues"
+
+[project.scripts]
+pyucis = "ucis.__main__:main"
+pyucis-mcp-server = "ucis.mcp.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"*" = ["*.xsd"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=ucis --cov-report=term-missing"
+
+[tool.pylint.messages_control]
+disable = ["C0111", "C0103"]
+
+[tool.flake8]
+max-line-length = 120
+exclude = [".git", "__pycache__", "build", "dist", "ve", "packages"]
