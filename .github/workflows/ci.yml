@@ -27,6 +27,7 @@ jobs:
         /bin/bash runtest.sh
     - name: Build Docs
       run: |
+        ./packages/python/bin/python3 -m pip install -r doc/requirements.txt
         make html
         touch doc/build/html/.nojekyll
         cp -r doc/build/html .
