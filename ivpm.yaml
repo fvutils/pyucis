@@ -50,5 +50,7 @@ package:
       src: pypi
     - name: sphinx-argparse
       src: pypi
+    - name: mcp
+      src: pypi
 
 

@@ -11,7 +11,7 @@ setup(
   name = "pyucis",
   packages=find_namespace_packages(where='src'),
   package_dir = {'' : 'src'},
-  package_data = {'' : ['*.xsd']},
+  package_data = {'' : ['*.xsd', 'share/SKILL.md']},
   version=version,
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",

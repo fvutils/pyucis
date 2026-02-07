@@ -86,6 +86,79 @@ must be obtained from the appropriate back-end factory:
         db.close()
 
 
+Command-Line Tools
+==================
+
+PyUCIS includes comprehensive command-line tools for coverage analysis and reporting.
+The ``ucis`` command provides several operations:
+
+**Show Commands** (New!)
+  Extract and analyze coverage data with support for multiple output formats:
+  
+  - **12 analysis commands**: summary, gaps, covergroups, bins, tests, hierarchy, 
+    metrics, compare, hotspots, code-coverage, assertions, toggle
+  - **4 export formats**: LCOV, Cobertura, JaCoCo, Clover
+  - **CI/CD integration**: Works with Jenkins, GitLab CI, GitHub Actions, SonarQube, and more
+  - **JSON & text output**: Machine-readable and human-readable formats
+  
+  See :doc:`show_commands` for detailed documentation.
+
+**Merge**
+  Combine multiple coverage databases into a single unified database
+
+**Convert**
+  Convert between different UCIS database formats (XML, YAML, LibUCIS)
+
+**Report**
+  Generate coverage reports from UCIS databases
+
+Example:
+
+.. code-block:: bash
+
+    # Analyze coverage
+    ucis show summary coverage.ucis
+    
+    # Export to CI/CD formats
+    ucis show code-coverage coverage.ucis --output-format lcov > coverage.info
+    
+    # Compare databases
+    ucis show compare baseline.ucis current.ucis
+    
+    # Merge databases
+    ucis merge -o merged.ucis test1.ucis test2.ucis
+
+
+MCP Server for AI Integration
+==============================
+
+PyUCIS includes a Model Context Protocol (MCP) server that enables AI agents and 
+assistants to interact with coverage databases through a standardized API. This 
+allows intelligent analysis, automated reporting, and natural language queries 
+against your verification coverage data.
+
+The MCP server provides 17+ specialized tools for:
+
+- **Database Operations**: Open, close, and manage multiple coverage databases
+- **Coverage Analysis**: Get summaries, identify gaps, analyze metrics
+- **Advanced Queries**: Covergroups, bins, assertions, toggle coverage
+- **Comparison**: Compare databases for regression detection
+- **Export**: Generate LCOV, Cobertura, JaCoCo, and Clover reports
+
+See :doc:`mcp_server` for detailed documentation on installation, configuration,
+and integration with AI platforms like Claude Desktop.
+
+Quick start:
+
+.. code-block:: bash
+
+    # Install with MCP support
+    pip install pyucis[dev]
+    
+    # Start the MCP server
+    pyucis-mcp-server
+
+
 Contributors
 ============
 
