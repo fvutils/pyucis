@@ -8,15 +8,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Introduction &mdash; pyucis 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -46,10 +46,14 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-pyucis">What is PyUCIS?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-tools">Command-Line Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mcp-server-for-ai-integration">MCP Server for AI Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributors">Contributors</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
 </ul>
 
@@ -161,6 +165,68 @@ must be obtained from the appropriate back-end factory:</p>
 </pre></div>
 </div>
 </section>
+<section id="command-line-tools">
+<h2>Command-Line Tools<a class="headerlink" href="#command-line-tools" title="Link to this heading"></a></h2>
+<p>PyUCIS includes comprehensive command-line tools for coverage analysis and reporting.
+The <code class="docutils literal notranslate"><span class="pre">ucis</span></code> command provides several operations:</p>
+<dl>
+<dt><strong>Show Commands</strong> (New!)</dt><dd><p>Extract and analyze coverage data with support for multiple output formats:</p>
+<ul class="simple">
+<li><p><strong>12 analysis commands</strong>: summary, gaps, covergroups, bins, tests, hierarchy,
+metrics, compare, hotspots, code-coverage, assertions, toggle</p></li>
+<li><p><strong>4 export formats</strong>: LCOV, Cobertura, JaCoCo, Clover</p></li>
+<li><p><strong>CI/CD integration</strong>: Works with Jenkins, GitLab CI, GitHub Actions, SonarQube, and more</p></li>
+<li><p><strong>JSON &amp; text output</strong>: Machine-readable and human-readable formats</p></li>
+</ul>
+<p>See <a class="reference internal" href="show_commands.html"><span class="doc">Show Commands Reference</span></a> for detailed documentation.</p>
+</dd>
+<dt><strong>Merge</strong></dt><dd><p>Combine multiple coverage databases into a single unified database</p>
+</dd>
+<dt><strong>Convert</strong></dt><dd><p>Convert between different UCIS database formats (XML, YAML, LibUCIS)</p>
+</dd>
+<dt><strong>Report</strong></dt><dd><p>Generate coverage reports from UCIS databases</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze coverage</span>
+ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.ucis
+
+<span class="c1"># Export to CI/CD formats</span>
+ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>coverage.ucis<span class="w"> </span>--output-format<span class="w"> </span>lcov<span class="w"> </span>&gt;<span class="w"> </span>coverage.info
+
+<span class="c1"># Compare databases</span>
+ucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> </span>baseline.ucis<span class="w"> </span>current.ucis
+
+<span class="c1"># Merge databases</span>
+ucis<span class="w"> </span>merge<span class="w"> </span>-o<span class="w"> </span>merged.ucis<span class="w"> </span>test1.ucis<span class="w"> </span>test2.ucis
+</pre></div>
+</div>
+</section>
+<section id="mcp-server-for-ai-integration">
+<h2>MCP Server for AI Integration<a class="headerlink" href="#mcp-server-for-ai-integration" title="Link to this heading"></a></h2>
+<p>PyUCIS includes a Model Context Protocol (MCP) server that enables AI agents and
+assistants to interact with coverage databases through a standardized API. This
+allows intelligent analysis, automated reporting, and natural language queries
+against your verification coverage data.</p>
+<p>The MCP server provides 17+ specialized tools for:</p>
+<ul class="simple">
+<li><p><strong>Database Operations</strong>: Open, close, and manage multiple coverage databases</p></li>
+<li><p><strong>Coverage Analysis</strong>: Get summaries, identify gaps, analyze metrics</p></li>
+<li><p><strong>Advanced Queries</strong>: Covergroups, bins, assertions, toggle coverage</p></li>
+<li><p><strong>Comparison</strong>: Compare databases for regression detection</p></li>
+<li><p><strong>Export</strong>: Generate LCOV, Cobertura, JaCoCo, and Clover reports</p></li>
+</ul>
+<p>See <a class="reference internal" href="mcp_server.html"><span class="doc">MCP Server</span></a> for detailed documentation on installation, configuration,
+and integration with AI platforms like Claude Desktop.</p>
+<p>Quick start:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install with MCP support</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyucis<span class="o">[</span>dev<span class="o">]</span>
+
+<span class="c1"># Start the MCP server</span>
+pyucis-mcp-server
+</pre></div>
+</div>
+</section>
 <section id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
 <blockquote>
@@ -180,7 +246,7 @@ must be obtained from the appropriate back-end factory:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2025, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

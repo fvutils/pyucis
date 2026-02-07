@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP Server &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyUCIS Reference" href="reference/reference.html" />
+    <link rel="prev" title="Show Commands Reference" href="show_commands.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MCP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features">Features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-operations">Database Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-analysis-tools">Coverage Analysis Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-source">From Source</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#from-pypi">From PyPI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#starting-the-server">Starting the Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-for-claude-desktop">Configuration for Claude Desktop</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#available-tools">Available Tools</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-management">Database Management</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#open-database">open_database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#close-database">close_database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#list-databases">list_databases</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-database-info">get_database_info</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-queries">Coverage Queries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#get-coverage-summary">get_coverage_summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-coverage-gaps">get_coverage_gaps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-covergroups">get_covergroups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-bins">get_bins</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-tests">get_tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-hierarchy">get_hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-metrics">get_metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-analysis">Advanced Analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compare-databases">compare_databases</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-hotspots">get_hotspots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-code-coverage">get_code_coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-assertions">get_assertions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-toggle-coverage">get_toggle_coverage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#export-formats">Export Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lcov-format">LCOV Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cobertura-format">Cobertura Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jacoco-format">JaCoCo Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clover-format">Clover Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ci-cd-integration-examples">CI/CD Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gitlab-ci">GitLab CI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#jenkins-pipeline">Jenkins Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#development">Development</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project-structure">Project Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#server-not-starting">Server Not Starting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-issues">Connection Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-loading-errors">Database Loading Errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MCP Server</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/mcp_server.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mcp-server">
+<h1>MCP Server<a class="headerlink" href="#mcp-server" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The PyUCIS MCP (Model Context Protocol) server enables AI agents and assistants to
+interact with UCIS coverage databases through a standardized API. This allows for
+intelligent coverage analysis, automated reporting, natural language queries, and
+seamless integration with AI-powered development workflows.</p>
+<p>The MCP server uses stdio-based communication, making it compatible with various
+MCP clients including Claude Desktop, VS Code extensions, and custom integrations.</p>
+</section>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h2>
+<section id="database-operations">
+<h3>Database Operations<a class="headerlink" href="#database-operations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>open_database</strong>: Load UCIS databases in XML, YAML, or UCIS binary formats</p></li>
+<li><p><strong>close_database</strong>: Clean up database resources</p></li>
+<li><p><strong>list_databases</strong>: List all currently open databases</p></li>
+<li><p><strong>get_database_info</strong>: Retrieve database metadata and statistics</p></li>
+</ul>
+</section>
+<section id="coverage-analysis-tools">
+<h3>Coverage Analysis Tools<a class="headerlink" href="#coverage-analysis-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>get_coverage_summary</strong>: Overall coverage statistics by type (statement, branch, etc.)</p></li>
+<li><p><strong>get_coverage_gaps</strong>: Identify uncovered or low-coverage items with configurable thresholds</p></li>
+<li><p><strong>get_covergroups</strong>: Retrieve covergroup details with optional bin information</p></li>
+<li><p><strong>get_bins</strong>: Detailed bin-level coverage with advanced filtering capabilities</p></li>
+<li><p><strong>get_tests</strong>: Test execution information and results</p></li>
+<li><p><strong>get_hierarchy</strong>: Navigate and explore the design hierarchy</p></li>
+<li><p><strong>get_metrics</strong>: Advanced coverage metrics and analysis</p></li>
+</ul>
+</section>
+<section id="advanced-features">
+<h3>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>compare_databases</strong>: Compare two databases for regression analysis and coverage deltas</p></li>
+<li><p><strong>get_hotspots</strong>: Identify high-value coverage targets for optimization</p></li>
+<li><p><strong>get_code_coverage</strong>: Export code coverage in multiple formats (LCOV, Cobertura, JaCoCo, Clover)</p></li>
+<li><p><strong>get_assertions</strong>: SVA/PSL assertion coverage details</p></li>
+<li><p><strong>get_toggle_coverage</strong>: Signal toggle coverage information</p></li>
+</ul>
+</section>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Python 3.8 or later</p></li>
+<li><p>mcp &gt;= 0.9.0</p></li>
+<li><p>lxml</p></li>
+<li><p>python-jsonschema-objects</p></li>
+<li><p>jsonschema</p></li>
+<li><p>pyyaml</p></li>
+</ul>
+</section>
+<section id="from-source">
+<h3>From Source<a class="headerlink" href="#from-source" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+<span class="nb">cd</span><span class="w"> </span>pyucis-mcp
+
+<span class="c1"># Create and activate virtual environment</span>
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate<span class="w">  </span><span class="c1"># On Windows: venv\Scripts\activate</span>
+
+<span class="c1"># Install with MCP server support</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="from-pypi">
+<h3>From PyPI<a class="headerlink" href="#from-pypi" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install with MCP support</span>
+pip<span class="w"> </span>install<span class="w"> </span>pyucis<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<section id="starting-the-server">
+<h3>Starting the Server<a class="headerlink" href="#starting-the-server" title="Link to this heading"></a></h3>
+<p>The MCP server uses stdio-based communication:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start the server</span>
+pyucis-mcp-server
+</pre></div>
+</div>
+<p>The server will listen for JSON-RPC messages on stdin and respond on stdout.</p>
+</section>
+<section id="configuration-for-claude-desktop">
+<h3>Configuration for Claude Desktop<a class="headerlink" href="#configuration-for-claude-desktop" title="Link to this heading"></a></h3>
+<p>To integrate with Claude Desktop, add the following to your configuration file:</p>
+<p><strong>macOS</strong>: <code class="docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/Claude/claude_desktop_config.json</span></code></p>
+<p><strong>Linux</strong>: <code class="docutils literal notranslate"><span class="pre">~/.config/Claude/claude_desktop_config.json</span></code></p>
+<p><strong>Windows</strong>: <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Claude\claude_desktop_config.json</span></code></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pyucis&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyucis-mcp-server&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;env&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After adding the configuration, restart Claude Desktop. The PyUCIS tools will be
+available in your conversations.</p>
+</section>
+</section>
+<section id="available-tools">
+<h2>Available Tools<a class="headerlink" href="#available-tools" title="Link to this heading"></a></h2>
+<section id="database-management">
+<h3>Database Management<a class="headerlink" href="#database-management" title="Link to this heading"></a></h3>
+<section id="open-database">
+<h4>open_database<a class="headerlink" href="#open-database" title="Link to this heading"></a></h4>
+<p>Open a UCIS database for analysis.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">path</span></code> (string, required): Path to the database file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> (string, optional): Format type - “xml”, “yaml”, or “ucis” (auto-detected if not specified)</p></li>
+</ul>
+<p><strong>Returns:</strong> Database ID for subsequent operations</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;path&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/coverage.xml&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;xml&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="close-database">
+<h4>close_database<a class="headerlink" href="#close-database" title="Link to this heading"></a></h4>
+<p>Close an open database and release resources.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID returned from open_database</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db_1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="list-databases">
+<h4>list_databases<a class="headerlink" href="#list-databases" title="Link to this heading"></a></h4>
+<p>List all currently open databases.</p>
+<p><strong>Returns:</strong> Array of database information including IDs, paths, and status</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-database-info">
+<h4>get_database_info<a class="headerlink" href="#get-database-info" title="Link to this heading"></a></h4>
+<p>Get metadata and statistics for a database.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Database metadata including format, size, and coverage type counts</p>
+</section>
+</section>
+<section id="coverage-queries">
+<h3>Coverage Queries<a class="headerlink" href="#coverage-queries" title="Link to this heading"></a></h3>
+<section id="get-coverage-summary">
+<h4>get_coverage_summary<a class="headerlink" href="#get-coverage-summary" title="Link to this heading"></a></h4>
+<p>Get overall coverage statistics aggregated by coverage type.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Coverage percentages for statement, branch, condition, expression, FSM, and toggle coverage</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db_1&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-coverage-gaps">
+<h4>get_coverage_gaps<a class="headerlink" href="#get-coverage-gaps" title="Link to this heading"></a></h4>
+<p>Identify coverage gaps and items below a specified threshold.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code> (number, optional): Coverage percentage threshold (default: 80)</p></li>
+</ul>
+<p><strong>Returns:</strong> List of uncovered or low-coverage items with details</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db_1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-covergroups">
+<h4>get_covergroups<a class="headerlink" href="#get-covergroups" title="Link to this heading"></a></h4>
+<p>Retrieve covergroup information with optional bin details.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">include_bins</span></code> (boolean, optional): Include detailed bin information (default: false)</p></li>
+</ul>
+<p><strong>Returns:</strong> List of covergroups with coverage percentages and bin data if requested</p>
+</section>
+<section id="get-bins">
+<h4>get_bins<a class="headerlink" href="#get-bins" title="Link to this heading"></a></h4>
+<p>Get detailed bin-level coverage with advanced filtering.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">covergroup</span></code> (string, optional): Filter by covergroup name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coverpoint</span></code> (string, optional): Filter by coverpoint name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_hits</span></code> (number, optional): Minimum hit count filter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_hits</span></code> (number, optional): Maximum hit count filter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_by</span></code> (string, optional): Sort order - “count” or “name”</p></li>
+</ul>
+<p><strong>Returns:</strong> Detailed bin information including hit counts and coverage status</p>
+</section>
+<section id="get-tests">
+<h4>get_tests<a class="headerlink" href="#get-tests" title="Link to this heading"></a></h4>
+<p>Get test execution information and results.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> List of tests with execution status, timestamps, and coverage contributions</p>
+</section>
+<section id="get-hierarchy">
+<h4>get_hierarchy<a class="headerlink" href="#get-hierarchy" title="Link to this heading"></a></h4>
+<p>Navigate and explore the design hierarchy.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_depth</span></code> (number, optional): Maximum traversal depth (default: unlimited)</p></li>
+</ul>
+<p><strong>Returns:</strong> Hierarchical structure of design elements</p>
+</section>
+<section id="get-metrics">
+<h4>get_metrics<a class="headerlink" href="#get-metrics" title="Link to this heading"></a></h4>
+<p>Get advanced coverage metrics and analysis.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Comprehensive metrics including coverage density, complexity, and quality scores</p>
+</section>
+</section>
+<section id="advanced-analysis">
+<h3>Advanced Analysis<a class="headerlink" href="#advanced-analysis" title="Link to this heading"></a></h3>
+<section id="compare-databases">
+<h4>compare_databases<a class="headerlink" href="#compare-databases" title="Link to this heading"></a></h4>
+<p>Compare two databases for regression detection and coverage deltas.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Baseline database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">compare_db_id</span></code> (string, required): Comparison database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Coverage differences, regressions, and improvements</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;baseline_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;compare_db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;current_db&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-hotspots">
+<h4>get_hotspots<a class="headerlink" href="#get-hotspots" title="Link to this heading"></a></h4>
+<p>Identify high-value coverage targets for optimization.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">threshold</span></code> (number, optional): Coverage threshold percentage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">limit</span></code> (number, optional): Maximum items per category</p></li>
+</ul>
+<p><strong>Returns:</strong> Priority-ordered list of coverage hotspots</p>
+</section>
+<section id="get-code-coverage">
+<h4>get_code_coverage<a class="headerlink" href="#get-code-coverage" title="Link to this heading"></a></h4>
+<p>Export code coverage in various industry-standard formats.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">output_format</span></code> (string, required): Export format - “json”, “lcov”, “cobertura”, “jacoco”, or “clover”</p></li>
+</ul>
+<p><strong>Returns:</strong> Formatted coverage data suitable for CI/CD tools</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;db_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;db_1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;output_format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lcov&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="get-assertions">
+<h4>get_assertions<a class="headerlink" href="#get-assertions" title="Link to this heading"></a></h4>
+<p>Get assertion coverage for SVA and PSL assertions.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Assertion coverage details including pass/fail counts</p>
+</section>
+<section id="get-toggle-coverage">
+<h4>get_toggle_coverage<a class="headerlink" href="#get-toggle-coverage" title="Link to this heading"></a></h4>
+<p>Get signal toggle coverage information.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">db_id</span></code> (string, required): Database ID</p></li>
+</ul>
+<p><strong>Returns:</strong> Toggle coverage for signals including 0-&gt;1 and 1-&gt;0 transitions</p>
+</section>
+</section>
+</section>
+<section id="export-formats">
+<h2>Export Formats<a class="headerlink" href="#export-formats" title="Link to this heading"></a></h2>
+<p>The MCP server supports multiple export formats for integration with CI/CD tools:</p>
+<section id="lcov-format">
+<h3>LCOV Format<a class="headerlink" href="#lcov-format" title="Link to this heading"></a></h3>
+<p>Standard format for code coverage, compatible with:</p>
+<ul class="simple">
+<li><p>genhtml (HTML report generation)</p></li>
+<li><p>Codecov</p></li>
+<li><p>Coveralls</p></li>
+<li><p>GitHub Actions coverage reports</p></li>
+</ul>
+<p><strong>Use case:</strong> Visual HTML reports and cloud-based coverage tracking</p>
+</section>
+<section id="cobertura-format">
+<h3>Cobertura Format<a class="headerlink" href="#cobertura-format" title="Link to this heading"></a></h3>
+<p>XML format widely used in CI/CD pipelines:</p>
+<ul class="simple">
+<li><p>Jenkins (Cobertura Plugin)</p></li>
+<li><p>GitLab CI</p></li>
+<li><p>SonarQube</p></li>
+<li><p>Azure DevOps</p></li>
+</ul>
+<p><strong>Use case:</strong> Enterprise CI/CD integration and code quality platforms</p>
+</section>
+<section id="jacoco-format">
+<h3>JaCoCo Format<a class="headerlink" href="#jacoco-format" title="Link to this heading"></a></h3>
+<p>Java coverage format also supported by many tools:</p>
+<ul class="simple">
+<li><p>Maven</p></li>
+<li><p>Gradle</p></li>
+<li><p>SonarQube</p></li>
+<li><p>Bamboo</p></li>
+</ul>
+<p><strong>Use case:</strong> Java-based toolchains and enterprise quality gates</p>
+</section>
+<section id="clover-format">
+<h3>Clover Format<a class="headerlink" href="#clover-format" title="Link to this heading"></a></h3>
+<p>Atlassian coverage format:</p>
+<ul class="simple">
+<li><p>Bamboo</p></li>
+<li><p>Jenkins (Clover Plugin)</p></li>
+<li><p>IntelliJ IDEA</p></li>
+</ul>
+<p><strong>Use case:</strong> Atlassian ecosystem integration</p>
+</section>
+</section>
+<section id="ci-cd-integration-examples">
+<h2>CI/CD Integration Examples<a class="headerlink" href="#ci-cd-integration-examples" title="Link to this heading"></a></h2>
+<section id="github-actions">
+<h3>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Coverage Analysis</span>
+<span class="nt">on</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">push</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">pull_request</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">coverage</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate LCOV Report</span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">          </span><span class="no">pip install pyucis[dev]</span>
+<span class="w">          </span><span class="no">pyucis show code-coverage coverage.xml --output-format lcov &gt; coverage.info</span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload to Codecov</span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v3</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./coverage.info</span>
+</pre></div>
+</div>
+</section>
+<section id="gitlab-ci">
+<h3>GitLab CI<a class="headerlink" href="#gitlab-ci" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">coverage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">stage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test</span>
+<span class="w">  </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip install pyucis[dev]</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pyucis show code-coverage coverage.xml --output-format cobertura &gt; coverage.xml</span>
+<span class="w">  </span><span class="nt">artifacts</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">reports</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">coverage_report</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">coverage_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cobertura</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage.xml</span>
+</pre></div>
+</div>
+</section>
+<section id="jenkins-pipeline">
+<h3>Jenkins Pipeline<a class="headerlink" href="#jenkins-pipeline" title="Link to this heading"></a></h3>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">pipeline</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">agent</span><span class="w"> </span><span class="n">any</span>
+<span class="w">    </span><span class="n">stages</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">stage</span><span class="o">(</span><span class="s1">&#39;Coverage&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">            </span><span class="n">steps</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;pip install pyucis[dev]&#39;</span>
+<span class="w">                </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;pyucis show code-coverage coverage.xml --output-format cobertura &gt; coverage.xml&#39;</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">            </span><span class="n">post</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                </span><span class="n">always</span><span class="w"> </span><span class="o">{</span>
+<span class="w">                    </span><span class="n">cobertura</span><span class="w"> </span><span class="nl">coberturaReportFile:</span><span class="w"> </span><span class="s1">&#39;coverage.xml&#39;</span>
+<span class="w">                </span><span class="o">}</span>
+<span class="w">            </span><span class="o">}</span>
+<span class="w">        </span><span class="o">}</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="development">
+<h2>Development<a class="headerlink" href="#development" title="Link to this heading"></a></h2>
+<section id="running-tests">
+<h3>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run all MCP server tests</span>
+pytest<span class="w"> </span>tests/test_mcp_*.py<span class="w"> </span>-v
+
+<span class="c1"># Run with coverage</span>
+pytest<span class="w"> </span>tests/test_mcp_*.py<span class="w"> </span>-v<span class="w"> </span>--cov<span class="o">=</span>ucis.mcp<span class="w"> </span>--cov-report<span class="o">=</span>html
+</pre></div>
+</div>
+</section>
+<section id="project-structure">
+<h3>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>src/ucis/mcp/
+├── __init__.py          # Package initialization
+├── server.py            # MCP server implementation
+├── db_manager.py        # Database handle management
+└── tools.py             # Tool implementations
+
+tests/
+├── test_db_manager.py   # Database manager tests
+└── test_tools.py        # Tool implementation tests
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="server-not-starting">
+<h3>Server Not Starting<a class="headerlink" href="#server-not-starting" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Server fails to start or crashes immediately</p>
+<p><strong>Solutions:</strong></p>
+<ol class="arabic">
+<li><p>Verify Python version is 3.8 or later:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>--version
+</pre></div>
+</div>
+</li>
+<li><p>Check all dependencies are installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pyucis<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>Test with verbose output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis-mcp-server<span class="w"> </span>--help
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="connection-issues">
+<h3>Connection Issues<a class="headerlink" href="#connection-issues" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Claude Desktop or other clients cannot connect</p>
+<p><strong>Solutions:</strong></p>
+<ol class="arabic simple">
+<li><p>Verify the configuration file syntax is correct (valid JSON)</p></li>
+<li><p>Check the command path is correct and executable</p></li>
+<li><p>Restart the client application after configuration changes</p></li>
+<li><p>Check client logs for error messages</p></li>
+</ol>
+</section>
+<section id="database-loading-errors">
+<h3>Database Loading Errors<a class="headerlink" href="#database-loading-errors" title="Link to this heading"></a></h3>
+<p><strong>Issue:</strong> Cannot open database files</p>
+<p><strong>Solutions:</strong></p>
+<ol class="arabic simple">
+<li><p>Verify file path is absolute or correctly relative</p></li>
+<li><p>Check file format matches the database content</p></li>
+<li><p>Ensure file permissions allow reading</p></li>
+<li><p>For XML files, validate against UCIS schema</p></li>
+</ol>
+</section>
+<section id="performance-optimization">
+<h3>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h3>
+<p>For large databases:</p>
+<ul class="simple">
+<li><p>Use specific queries instead of loading entire databases</p></li>
+<li><p>Close databases when no longer needed</p></li>
+<li><p>Use filtering options to reduce result sizes</p></li>
+<li><p>Consider pagination for large result sets</p></li>
+</ul>
+</section>
+</section>
+<section id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://modelcontextprotocol.io/">Model Context Protocol Specification</a></p></li>
+<li><p><a class="reference external" href="https://www.accellera.org/activities/committees/ucis">UCIS Standard Documentation</a></p></li>
+<li><p><a class="reference external" href="https://github.com/fvutils/pyucis">PyUCIS GitHub Repository</a></p></li>
+<li><p><a class="reference external" href="https://github.com/fvutils/pyucis/issues">Issue Tracker</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>Apache License 2.0</p>
+<p>See the LICENSE file in the repository for full license text.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="show_commands.html" class="btn btn-neutral float-left" title="Show Commands Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reference/reference.html" class="btn btn-neutral float-right" title="PyUCIS Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

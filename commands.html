@@ -8,19 +8,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Commands &mdash; pyucis 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PyUCIS Reference" href="reference/reference.html" />
+    <link rel="next" title="Show Commands Reference" href="show_commands.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
 </head>
 
@@ -64,10 +64,17 @@
 <li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat2">Named Arguments</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#show">show</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments_repeat3">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Sub-commands_repeat1">Sub-commands</a></li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
 </ul>
 
@@ -101,7 +108,8 @@
 coverage data.</p>
 <p><p>Manipulate UCIS coverage data</p>
 </p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">}</span> <span class="o">...</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+            <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">,</span><span class="n">show</span><span class="p">}</span> <span class="o">...</span>
 </pre></div>
 </div>
 <section id="Sub-commands">
@@ -219,6 +227,462 @@ coverage data.</p>
 </dl>
 </section>
 </section>
+<section id="show">
+<h3>show<a class="headerlink" href="#show" title="Link to this heading"></a></h3>
+<p>Query and display coverage information from UCIS database</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
+          <span class="p">{</span><span class="n">summary</span><span class="p">,</span><span class="n">gaps</span><span class="p">,</span><span class="n">covergroups</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span><span class="n">tests</span><span class="p">,</span><span class="n">hierarchy</span><span class="p">,</span><span class="n">metrics</span><span class="p">,</span><span class="n">compare</span><span class="p">,</span><span class="n">hotspots</span><span class="p">,</span><span class="n">code</span><span class="o">-</span><span class="n">coverage</span><span class="p">,</span><span class="n">assertions</span><span class="p">,</span><span class="n">toggle</span><span class="p">}</span>
+          <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat3">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat3" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>show_cmd</kbd></dt>
+<dd><p>Possible choices: summary, gaps, covergroups, bins, tests, hierarchy, metrics, compare, hotspots, code-coverage, assertions, toggle</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat1">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat1" title="Link to this heading"></a></h4>
+<section id="summary">
+<h5>summary<a class="headerlink" href="#summary" title="Link to this heading"></a></h5>
+<p>Display overall coverage summary</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">summary</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                  <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                  <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat4">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat4" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat3">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat3" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="gaps">
+<h5>gaps<a class="headerlink" href="#gaps" title="Link to this heading"></a></h5>
+<p>Display coverage gaps (uncovered bins and coverpoints)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">gaps</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span> <span class="p">[</span><span class="o">--</span><span class="n">threshold</span> <span class="n">THRESHOLD</span><span class="p">]</span>
+               <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat5">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat5" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat4">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat4" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+<dt><kbd>--threshold, -t</kbd></dt>
+<dd><p>Only show coverpoints with coverage below this threshold (0-100)</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="covergroups">
+<h5>covergroups<a class="headerlink" href="#covergroups" title="Link to this heading"></a></h5>
+<p>Display detailed covergroup information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">covergroups</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span> <span class="p">[</span><span class="o">--</span><span class="n">include</span><span class="o">-</span><span class="n">bins</span><span class="p">]</span>
+                      <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat6">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat6" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat5">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat5" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+<dt><kbd>--include-bins, -b</kbd></dt>
+<dd><p>Include detailed bin information</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="bins">
+<h5>bins<a class="headerlink" href="#bins" title="Link to this heading"></a></h5>
+<p>Display bin-level coverage details</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">bins</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span> <span class="p">[</span><span class="o">--</span><span class="n">covergroup</span> <span class="n">COVERGROUP</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="n">coverpoint</span> <span class="n">COVERPOINT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">min</span><span class="o">-</span><span class="n">hits</span> <span class="n">MIN_HITS</span><span class="p">]</span>
+               <span class="p">[</span><span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">hits</span> <span class="n">MAX_HITS</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">sort</span> <span class="p">{</span><span class="n">count</span><span class="p">,</span><span class="n">name</span><span class="p">}]</span>
+               <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat7">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat7" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat6">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat6" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+<dt><kbd>--covergroup, -cg</kbd></dt>
+<dd><p>Filter by covergroup name</p>
+</dd>
+<dt><kbd>--coverpoint, -cp</kbd></dt>
+<dd><p>Filter by coverpoint name</p>
+</dd>
+<dt><kbd>--min-hits</kbd></dt>
+<dd><p>Show only bins with at least this many hits</p>
+</dd>
+<dt><kbd>--max-hits</kbd></dt>
+<dd><p>Show only bins with at most this many hits</p>
+</dd>
+<dt><kbd>--sort, -s</kbd></dt>
+<dd><p>Possible choices: count, name</p>
+<p>Sort bins by ‘count’ or ‘name’</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="tests">
+<h5>tests<a class="headerlink" href="#tests" title="Link to this heading"></a></h5>
+<p>Display test execution information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">tests</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat8">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat8" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat7">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat7" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="hierarchy">
+<h5>hierarchy<a class="headerlink" href="#hierarchy" title="Link to this heading"></a></h5>
+<p>Display design hierarchy structure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">hierarchy</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                    <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span> <span class="p">[</span><span class="o">--</span><span class="nb">max</span><span class="o">-</span><span class="n">depth</span> <span class="n">MAX_DEPTH</span><span class="p">]</span>
+                    <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat9">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat9" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat8">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat8" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+<dt><kbd>--max-depth, -d</kbd></dt>
+<dd><p>Maximum depth to traverse</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="metrics">
+<h5>metrics<a class="headerlink" href="#metrics" title="Link to this heading"></a></h5>
+<p>Display coverage metrics and statistics</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">metrics</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                  <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                  <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat10">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat10" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat9">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat9" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="compare">
+<h5>compare<a class="headerlink" href="#compare" title="Link to this heading"></a></h5>
+<p>Compare coverage between two databases</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">compare</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                  <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                  <span class="n">db</span> <span class="n">compare_db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat11">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat11" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the baseline coverage database</p>
+</dd>
+<dt><kbd>compare_db</kbd></dt>
+<dd><p>Path to the comparison database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat10">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat10" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="hotspots">
+<h5>hotspots<a class="headerlink" href="#hotspots" title="Link to this heading"></a></h5>
+<p>Identify coverage hotspots and high-value targets</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">hotspots</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span> <span class="p">[</span><span class="o">--</span><span class="n">threshold</span> <span class="n">THRESHOLD</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">--</span><span class="n">limit</span> <span class="n">LIMIT</span><span class="p">]</span>
+                   <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat12">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat12" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat11">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat11" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format. Defaults to ‘json’</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+<dt><kbd>--threshold, -t</kbd></dt>
+<dd><p>Coverage threshold for low-coverage groups (default: 80)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">80.0</span></code></p>
+</dd>
+<dt><kbd>--limit, -l</kbd></dt>
+<dd><p>Maximum number of items to show per category (default: 10)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">10</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="code-coverage">
+<h5>code-coverage<a class="headerlink" href="#code-coverage" title="Link to this heading"></a></h5>
+<p>Display code coverage with support for LCOV/Cobertura formats</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">code</span><span class="o">-</span><span class="n">coverage</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                        <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">,</span><span class="n">lcov</span><span class="p">,</span><span class="n">cobertura</span><span class="p">,</span><span class="n">jacoco</span><span class="p">,</span><span class="n">clover</span><span class="p">}]</span>
+                        <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat13">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat13" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat12">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat12" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt, lcov, cobertura, jacoco, clover</p>
+<p>Specifies the output format</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="assertions">
+<h5>assertions<a class="headerlink" href="#assertions" title="Link to this heading"></a></h5>
+<p>Display assertion coverage information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">assertions</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                     <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                     <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat14">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat14" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat13">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat13" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="toggle">
+<h5>toggle<a class="headerlink" href="#toggle" title="Link to this heading"></a></h5>
+<p>Display toggle coverage information</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">show</span> <span class="n">toggle</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
+                 <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">json</span><span class="p">,</span><span class="n">text</span><span class="p">,</span><span class="n">txt</span><span class="p">}]</span>
+                 <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat15">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat15" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat14">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat14" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Specifies the output location for the report</p>
+</dd>
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: json, text, txt</p>
+<p>Specifies the output format</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'json'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
 </section>
 </section>
 
@@ -227,13 +691,13 @@ coverage data.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reference/reference.html" class="btn btn-neutral float-right" title="PyUCIS Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="show_commands.html" class="btn btn-neutral float-right" title="Show Commands Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019-2025, Matthew Ballance and Contributors.</p>
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

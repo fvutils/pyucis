@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Show Commands Reference &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MCP Server" href="mcp_server.html" />
+    <link rel="prev" title="Commands" href="commands.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Show Commands Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-commands">Available Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#core-analysis-commands">Core Analysis Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#show-summary">show summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-gaps">show gaps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-covergroups">show covergroups</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-bins">show bins</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#design-structure-commands">Design Structure Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#show-hierarchy">show hierarchy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-tests">show tests</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-analysis-commands">Advanced Analysis Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#show-metrics">show metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-compare">show compare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-hotspots">show hotspots</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-type-commands">Coverage Type Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#show-code-coverage">show code-coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-assertions">show assertions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#show-toggle">show toggle</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ci-cd-integration-examples">CI/CD Integration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#jenkins">Jenkins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gitlab-ci">GitLab CI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sonarqube">SonarQube</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#output-formats">Output Formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#json-format">JSON Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#text-format">Text Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standard-coverage-formats">Standard Coverage Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-options">Common Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-analysis-workflow">Coverage Analysis Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automation">Automation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Show Commands Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/show_commands.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="show-commands-reference">
+<h1>Show Commands Reference<a class="headerlink" href="#show-commands-reference" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">show</span></code> commands provide comprehensive coverage analysis and reporting
+capabilities with support for industry-standard format export.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The show commands extract and present coverage data from UCIS databases in various
+formats, enabling:</p>
+<ul class="simple">
+<li><p><strong>Coverage Analysis</strong>: Detailed examination of functional, code, assertion, and toggle coverage</p></li>
+<li><p><strong>Gap Identification</strong>: Finding uncovered items requiring attention</p></li>
+<li><p><strong>Database Comparison</strong>: Regression detection between coverage runs</p></li>
+<li><p><strong>Format Export</strong>: Generating reports in LCOV, Cobertura, JaCoCo, and Clover formats</p></li>
+<li><p><strong>CI/CD Integration</strong>: Seamless integration with Jenkins, GitLab CI, GitHub Actions, and more</p></li>
+</ul>
+<p>All show commands support both JSON (for automation) and text (for human readability) output formats.</p>
+</section>
+<section id="available-commands">
+<h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading"></a></h2>
+<section id="core-analysis-commands">
+<h3>Core Analysis Commands<a class="headerlink" href="#core-analysis-commands" title="Link to this heading"></a></h3>
+<section id="show-summary">
+<h4>show summary<a class="headerlink" href="#show-summary" title="Link to this heading"></a></h4>
+<p>Display overall coverage statistics across all coverage types.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>json
+ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>text
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Overall coverage percentage</p></li>
+<li><p>Breakdown by coverage type (functional, code, assertion, toggle)</p></li>
+<li><p>Test statistics (pass/fail counts)</p></li>
+<li><p>Database metadata</p></li>
+</ul>
+</section>
+<section id="show-gaps">
+<h4>show gaps<a class="headerlink" href="#show-gaps" title="Link to this heading"></a></h4>
+<p>Identify uncovered or low-coverage items requiring attention.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>database.ucis<span class="w"> </span>--threshold<span class="w"> </span><span class="m">80</span>
+ucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>database.ucis<span class="w"> </span>--threshold<span class="w"> </span><span class="m">90</span><span class="w"> </span>--limit<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--threshold</span></code>: Show items below this coverage percentage (default: 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code>: Maximum number of items to show (default: unlimited)</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Uncovered covergroups and bins</p></li>
+<li><p>Coverage percentages for each item</p></li>
+<li><p>Priority ranking based on weights</p></li>
+</ul>
+</section>
+<section id="show-covergroups">
+<h4>show covergroups<a class="headerlink" href="#show-covergroups" title="Link to this heading"></a></h4>
+<p>Display detailed covergroup information.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>database.ucis
+ucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>database.ucis<span class="w"> </span>--pattern<span class="w"> </span><span class="s2">&quot;alu_*&quot;</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--pattern</span></code>: Filter covergroups by name pattern</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Covergroup names and coverage percentages</p></li>
+<li><p>Coverpoint details</p></li>
+<li><p>Bin counts and status</p></li>
+</ul>
+</section>
+<section id="show-bins">
+<h4>show bins<a class="headerlink" href="#show-bins" title="Link to this heading"></a></h4>
+<p>Display bin-level coverage details with filtering.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>bins<span class="w"> </span>database.ucis<span class="w"> </span>--covergroup<span class="w"> </span>cg_example
+ucis<span class="w"> </span>show<span class="w"> </span>bins<span class="w"> </span>database.ucis<span class="w"> </span>--status<span class="w"> </span>hit
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--covergroup</span></code>: Filter by covergroup name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--coverpoint</span></code>: Filter by coverpoint name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--status</span></code>: Filter by hit status (hit/missed)</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Bin names and hit counts</p></li>
+<li><p>Value ranges</p></li>
+<li><p>Hit/missed status</p></li>
+</ul>
+</section>
+</section>
+<section id="design-structure-commands">
+<h3>Design Structure Commands<a class="headerlink" href="#design-structure-commands" title="Link to this heading"></a></h3>
+<section id="show-hierarchy">
+<h4>show hierarchy<a class="headerlink" href="#show-hierarchy" title="Link to this heading"></a></h4>
+<p>Display the design hierarchy and scope structure.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>hierarchy<span class="w"> </span>database.ucis
+ucis<span class="w"> </span>show<span class="w"> </span>hierarchy<span class="w"> </span>database.ucis<span class="w"> </span>--depth<span class="w"> </span><span class="m">3</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--depth</span></code>: Maximum depth to traverse (default: unlimited)</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Design unit hierarchy</p></li>
+<li><p>Instance paths</p></li>
+<li><p>Scope types and coverage</p></li>
+</ul>
+</section>
+<section id="show-tests">
+<h4>show tests<a class="headerlink" href="#show-tests" title="Link to this heading"></a></h4>
+<p>Display test execution information.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>tests<span class="w"> </span>database.ucis
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Test names and execution dates</p></li>
+<li><p>Pass/fail status</p></li>
+<li><p>Test-specific coverage</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-analysis-commands">
+<h3>Advanced Analysis Commands<a class="headerlink" href="#advanced-analysis-commands" title="Link to this heading"></a></h3>
+<section id="show-metrics">
+<h4>show metrics<a class="headerlink" href="#show-metrics" title="Link to this heading"></a></h4>
+<p>Display advanced coverage metrics and analysis.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>metrics<span class="w"> </span>database.ucis
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Coverage efficiency metrics</p></li>
+<li><p>Bin distribution analysis</p></li>
+<li><p>Weighted coverage calculations</p></li>
+<li><p>Actionable recommendations</p></li>
+</ul>
+</section>
+<section id="show-compare">
+<h4>show compare<a class="headerlink" href="#show-compare" title="Link to this heading"></a></h4>
+<p>Compare two coverage databases to detect regressions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> </span>baseline.ucis<span class="w"> </span>current.ucis
+ucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> </span>old.ucis<span class="w"> </span>new.ucis<span class="w"> </span>--output-format<span class="w"> </span>json
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p>Two database paths (baseline and current)</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Coverage deltas (increased/decreased)</p></li>
+<li><p>New and removed items</p></li>
+<li><p>Bin-level changes</p></li>
+<li><p>Regression detection</p></li>
+</ul>
+</section>
+<section id="show-hotspots">
+<h4>show hotspots<a class="headerlink" href="#show-hotspots" title="Link to this heading"></a></h4>
+<p>Identify coverage hotspots requiring attention.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>hotspots<span class="w"> </span>database.ucis<span class="w"> </span>--target<span class="w"> </span><span class="m">90</span>
+ucis<span class="w"> </span>show<span class="w"> </span>hotspots<span class="w"> </span>database.ucis<span class="w"> </span>--limit<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--target</span></code>: Target coverage percentage (default: 80)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--limit</span></code>: Maximum items per category (default: 10)</p></li>
+</ul>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Low-coverage items prioritized by impact</p></li>
+<li><p>Actionable recommendations</p></li>
+<li><p>Estimated effort to reach target</p></li>
+</ul>
+</section>
+</section>
+<section id="coverage-type-commands">
+<h3>Coverage Type Commands<a class="headerlink" href="#coverage-type-commands" title="Link to this heading"></a></h3>
+<section id="show-code-coverage">
+<h4>show code-coverage<a class="headerlink" href="#show-code-coverage" title="Link to this heading"></a></h4>
+<p>Display code coverage with multi-format export support.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>json
+ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>lcov<span class="w"> </span>&gt;<span class="w"> </span>coverage.info
+ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>cobertura<span class="w"> </span>&gt;<span class="w"> </span>coverage.xml
+ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>jacoco<span class="w"> </span>&gt;<span class="w"> </span>jacoco.xml
+ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>clover<span class="w"> </span>&gt;<span class="w"> </span>clover.xml
+</pre></div>
+</div>
+<p><strong>Supported Formats:</strong></p>
+<ul class="simple">
+<li><p><strong>json</strong>: Machine-readable JSON (default)</p></li>
+<li><p><strong>text</strong>: Human-readable text</p></li>
+<li><p><strong>lcov</strong>: LCOV .info format (Codecov, Coveralls, genhtml)</p></li>
+<li><p><strong>cobertura</strong>: Cobertura XML (Jenkins, GitLab CI, SonarQube)</p></li>
+<li><p><strong>jacoco</strong>: JaCoCo XML (Maven, Gradle, SonarQube)</p></li>
+<li><p><strong>clover</strong>: Clover XML (Bamboo, Jenkins)</p></li>
+</ul>
+</section>
+<section id="show-assertions">
+<h4>show assertions<a class="headerlink" href="#show-assertions" title="Link to this heading"></a></h4>
+<p>Display assertion coverage information.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>assertions<span class="w"> </span>database.ucis
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Assertion names and status</p></li>
+<li><p>Pass/fail counts</p></li>
+<li><p>Coverage percentage</p></li>
+</ul>
+<p><strong>Note:</strong> Requires assertion coverage data in the database.</p>
+</section>
+<section id="show-toggle">
+<h4>show toggle<a class="headerlink" href="#show-toggle" title="Link to this heading"></a></h4>
+<p>Display toggle coverage for signals.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>toggle<span class="w"> </span>database.ucis
+</pre></div>
+</div>
+<p><strong>Output includes:</strong></p>
+<ul class="simple">
+<li><p>Signal names</p></li>
+<li><p>0→1 and 1→0 toggle status</p></li>
+<li><p>Fully/partially toggled counts</p></li>
+<li><p>Coverage percentage</p></li>
+</ul>
+<p><strong>Note:</strong> Requires toggle coverage data in the database.</p>
+</section>
+</section>
+</section>
+<section id="ci-cd-integration-examples">
+<h2>CI/CD Integration Examples<a class="headerlink" href="#ci-cd-integration-examples" title="Link to this heading"></a></h2>
+<p>The show commands integrate seamlessly with CI/CD pipelines:</p>
+<section id="jenkins">
+<h3>Jenkins<a class="headerlink" href="#jenkins" title="Link to this heading"></a></h3>
+<p>Generate Cobertura XML for Jenkins Cobertura plugin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>results.ucis<span class="w"> </span>--output-format<span class="w"> </span>cobertura<span class="w"> </span>&gt;<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p>JaCoCo XML for Jenkins JaCoCo plugin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>results.ucis<span class="w"> </span>--output-format<span class="w"> </span>jacoco<span class="w"> </span>&gt;<span class="w"> </span>jacoco.xml
+</pre></div>
+</div>
+</section>
+<section id="gitlab-ci">
+<h3>GitLab CI<a class="headerlink" href="#gitlab-ci" title="Link to this heading"></a></h3>
+<p>Generate LCOV for GitLab test coverage visualization:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ucis show code-coverage coverage.ucis --output-format lcov &gt; coverage.info</span>
+<span class="w">  </span><span class="nt">artifacts</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">reports</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">coverage_report</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">coverage_format</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cobertura</span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage.xml</span>
+</pre></div>
+</div>
+</section>
+<section id="github-actions">
+<h3>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading"></a></h3>
+<p>Upload coverage to Codecov:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate LCOV</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ucis show code-coverage coverage.ucis --output-format lcov &gt; coverage.info</span>
+
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload to Codecov</span>
+<span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v3</span>
+<span class="w">  </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./coverage.info</span>
+</pre></div>
+</div>
+</section>
+<section id="sonarqube">
+<h3>SonarQube<a class="headerlink" href="#sonarqube" title="Link to this heading"></a></h3>
+<p>Generate coverage for SonarQube analysis:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>results.ucis<span class="w"> </span>--output-format<span class="w"> </span>cobertura<span class="w"> </span>&gt;<span class="w"> </span>coverage.xml
+sonar-scanner<span class="w"> </span>-Dsonar.coverageReportPaths<span class="o">=</span>coverage.xml
+</pre></div>
+</div>
+</section>
+</section>
+<section id="output-formats">
+<h2>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading"></a></h2>
+<p>All show commands support multiple output formats:</p>
+<section id="json-format">
+<h3>JSON Format<a class="headerlink" href="#json-format" title="Link to this heading"></a></h3>
+<p>Machine-readable structured data with complete coverage information:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>json
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">jq</span></code> for filtering:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>db.ucis<span class="w"> </span>-of<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.coverage_by_type.functional&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="text-format">
+<h3>Text Format<a class="headerlink" href="#text-format" title="Link to this heading"></a></h3>
+<p>Human-readable formatted output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>database.ucis<span class="w"> </span>--output-format<span class="w"> </span>text
+</pre></div>
+</div>
+</section>
+<section id="standard-coverage-formats">
+<h3>Standard Coverage Formats<a class="headerlink" href="#standard-coverage-formats" title="Link to this heading"></a></h3>
+<p><strong>LCOV Format</strong> (<code class="docutils literal notranslate"><span class="pre">.info</span></code> files):</p>
+<ul class="simple">
+<li><p>Supported by: genhtml, Codecov, Coveralls, GitLab CI</p></li>
+<li><p>Line, branch, and function coverage</p></li>
+<li><p>Text-based format</p></li>
+</ul>
+<p><strong>Cobertura XML</strong>:</p>
+<ul class="simple">
+<li><p>Supported by: Jenkins, GitLab CI, SonarQube, Azure DevOps</p></li>
+<li><p>Package/class structure</p></li>
+<li><p>Line and branch coverage</p></li>
+</ul>
+<p><strong>JaCoCo XML</strong>:</p>
+<ul class="simple">
+<li><p>Supported by: Maven, Gradle, SonarQube, IntelliJ IDEA</p></li>
+<li><p>Instruction, branch, line, method, class counters</p></li>
+<li><p>Session information</p></li>
+</ul>
+<p><strong>Clover XML</strong>:</p>
+<ul class="simple">
+<li><p>Supported by: Bamboo, Jenkins (Clover plugin)</p></li>
+<li><p>Statement, conditional, method metrics</p></li>
+<li><p>Project/package/file hierarchy</p></li>
+</ul>
+</section>
+</section>
+<section id="common-options">
+<h2>Common Options<a class="headerlink" href="#common-options" title="Link to this heading"></a></h2>
+<p>All show commands support these options:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">--out,</span> <span class="pre">-o</span> <span class="pre">&lt;path&gt;</span></code></dt><dd><p>Write output to specified file instead of stdout</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--input-format,</span> <span class="pre">-if</span> <span class="pre">&lt;format&gt;</span></code></dt><dd><p>Input database format (xml, yaml, libucis). Default: xml</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--output-format,</span> <span class="pre">-of</span> <span class="pre">&lt;format&gt;</span></code></dt><dd><p>Output format. Available formats depend on the command:</p>
+<ul class="simple">
+<li><p>All commands: json, text (or txt)</p></li>
+<li><p>code-coverage: json, text, lcov, cobertura, jacoco, clover</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="coverage-analysis-workflow">
+<h3>Coverage Analysis Workflow<a class="headerlink" href="#coverage-analysis-workflow" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Get Overview</strong>: Start with <code class="docutils literal notranslate"><span class="pre">show</span> <span class="pre">summary</span></code> to understand overall coverage</p></li>
+<li><p><strong>Identify Gaps</strong>: Use <code class="docutils literal notranslate"><span class="pre">show</span> <span class="pre">gaps</span></code> to find items needing attention</p></li>
+<li><p><strong>Analyze Hotspots</strong>: Use <code class="docutils literal notranslate"><span class="pre">show</span> <span class="pre">hotspots</span></code> for prioritized recommendations</p></li>
+<li><p><strong>Detailed Investigation</strong>: Use specific commands (covergroups, bins) to drill down</p></li>
+<li><p><strong>Track Progress</strong>: Use <code class="docutils literal notranslate"><span class="pre">show</span> <span class="pre">compare</span></code> to measure improvements</p></li>
+</ol>
+</section>
+<section id="ci-cd-integration">
+<h3>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Generate Format</strong>: Export to appropriate format for your platform</p></li>
+<li><p><strong>Validate Output</strong>: Ensure format is correct before upload</p></li>
+<li><p><strong>Set Thresholds</strong>: Use coverage gates to enforce quality</p></li>
+<li><p><strong>Track Trends</strong>: Compare runs to detect regressions</p></li>
+</ol>
+</section>
+<section id="automation">
+<h3>Automation<a class="headerlink" href="#automation" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use JSON Output</strong>: For scripting and automation</p></li>
+<li><p><strong>Pipe to Tools</strong>: Combine with jq, grep, awk for filtering</p></li>
+<li><p><strong>Set Exit Codes</strong>: Check coverage thresholds in scripts</p></li>
+<li><p><strong>Generate Reports</strong>: Create custom dashboards from JSON data</p></li>
+</ol>
+<p>Example Automation Script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Check if coverage meets threshold</span>
+
+<span class="nv">COVERAGE</span><span class="o">=</span><span class="k">$(</span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.ucis<span class="w"> </span>-of<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.overall_coverage&#39;</span><span class="k">)</span>
+<span class="nv">THRESHOLD</span><span class="o">=</span><span class="m">80</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">((</span><span class="w"> </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$COVERAGE</span><span class="s2"> &lt; </span><span class="nv">$THRESHOLD</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="w"> </span>-l<span class="k">)</span><span class="w"> </span><span class="o">))</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Coverage </span><span class="nv">$COVERAGE</span><span class="s2">% below threshold </span><span class="nv">$THRESHOLD</span><span class="s2">%&quot;</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Coverage </span><span class="nv">$COVERAGE</span><span class="s2">% meets threshold&quot;</span>
+<span class="nb">exit</span><span class="w"> </span><span class="m">0</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="commands.html" class="btn btn-neutral float-left" title="Commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcp_server.html" class="btn btn-neutral float-right" title="MCP Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
