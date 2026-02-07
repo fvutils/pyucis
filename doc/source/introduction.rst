@@ -86,6 +86,49 @@ must be obtained from the appropriate back-end factory:
         db.close()
 
 
+Command-Line Tools
+==================
+
+PyUCIS includes comprehensive command-line tools for coverage analysis and reporting.
+The ``ucis`` command provides several operations:
+
+**Show Commands** (New!)
+  Extract and analyze coverage data with support for multiple output formats:
+  
+  - **12 analysis commands**: summary, gaps, covergroups, bins, tests, hierarchy, 
+    metrics, compare, hotspots, code-coverage, assertions, toggle
+  - **4 export formats**: LCOV, Cobertura, JaCoCo, Clover
+  - **CI/CD integration**: Works with Jenkins, GitLab CI, GitHub Actions, SonarQube, and more
+  - **JSON & text output**: Machine-readable and human-readable formats
+  
+  See :doc:`show_commands` for detailed documentation.
+
+**Merge**
+  Combine multiple coverage databases into a single unified database
+
+**Convert**
+  Convert between different UCIS database formats (XML, YAML, LibUCIS)
+
+**Report**
+  Generate coverage reports from UCIS databases
+
+Example:
+
+.. code-block:: bash
+
+    # Analyze coverage
+    ucis show summary coverage.ucis
+    
+    # Export to CI/CD formats
+    ucis show code-coverage coverage.ucis --output-format lcov > coverage.info
+    
+    # Compare databases
+    ucis show compare baseline.ucis current.ucis
+    
+    # Merge databases
+    ucis merge -o merged.ucis test1.ucis test2.ucis
+
+
 Contributors
 ============
 

@@ -8,6 +8,7 @@ Contents:
    
    introduction
    commands
+   show_commands
    reference/reference
    
    

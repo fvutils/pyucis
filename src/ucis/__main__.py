@@ -6,7 +6,7 @@ Created on Jun 11, 2022
 import argparse
 from ucis.cmd import cmd_list_db_formats
 from ucis.cmd import cmd_list_report_formats
-from ucis.cmd import cmd_report, cmd_merge, cmd_convert
+from ucis.cmd import cmd_report, cmd_merge, cmd_convert, cmd_show
 import sys
 import traceback
 
@@ -65,6 +65,206 @@ def get_parser():
         help="Specifies the output format of the report. Defaults to 'txt'")
     report.add_argument("db", help="Path to the coverage database")
     report.set_defaults(func=cmd_report.report)
+
+    show = subparser.add_parser("show",
+        help="Query and display coverage information from UCIS database")
+    show_subparser = show.add_subparsers(dest='show_cmd')
+    show_subparser.required = True
+    
+    # show summary subcommand
+    show_summary = show_subparser.add_parser("summary",
+        help="Display overall coverage summary")
+    show_summary.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_summary.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_summary.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_summary.add_argument("db", help="Path to the coverage database")
+    
+    # show gaps subcommand
+    show_gaps = show_subparser.add_parser("gaps",
+        help="Display coverage gaps (uncovered bins and coverpoints)")
+    show_gaps.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_gaps.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_gaps.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_gaps.add_argument("--threshold", "-t",
+        help="Only show coverpoints with coverage below this threshold (0-100)",
+        type=float,
+        default=None)
+    show_gaps.add_argument("db", help="Path to the coverage database")
+    
+    # show covergroups subcommand
+    show_covergroups = show_subparser.add_parser("covergroups",
+        help="Display detailed covergroup information")
+    show_covergroups.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_covergroups.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_covergroups.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_covergroups.add_argument("--include-bins", "-b",
+        help="Include detailed bin information",
+        action='store_true',
+        default=False)
+    show_covergroups.add_argument("db", help="Path to the coverage database")
+    
+    # show bins subcommand
+    show_bins = show_subparser.add_parser("bins",
+        help="Display bin-level coverage details")
+    show_bins.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_bins.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_bins.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_bins.add_argument("--covergroup", "-cg",
+        help="Filter by covergroup name")
+    show_bins.add_argument("--coverpoint", "-cp",
+        help="Filter by coverpoint name")
+    show_bins.add_argument("--min-hits",
+        help="Show only bins with at least this many hits",
+        type=int,
+        default=None)
+    show_bins.add_argument("--max-hits",
+        help="Show only bins with at most this many hits",
+        type=int,
+        default=None)
+    show_bins.add_argument("--sort", "-s",
+        help="Sort bins by 'count' or 'name'",
+        choices=['count', 'name'],
+        default=None)
+    show_bins.add_argument("db", help="Path to the coverage database")
+    
+    # show tests subcommand
+    show_tests = show_subparser.add_parser("tests",
+        help="Display test execution information")
+    show_tests.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_tests.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_tests.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_tests.add_argument("db", help="Path to the coverage database")
+    
+    # show hierarchy subcommand
+    show_hierarchy = show_subparser.add_parser("hierarchy",
+        help="Display design hierarchy structure")
+    show_hierarchy.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_hierarchy.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_hierarchy.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_hierarchy.add_argument("--max-depth", "-d",
+        help="Maximum depth to traverse",
+        type=int,
+        default=None)
+    show_hierarchy.add_argument("db", help="Path to the coverage database")
+    
+    # show metrics subcommand
+    show_metrics = show_subparser.add_parser("metrics",
+        help="Display coverage metrics and statistics")
+    show_metrics.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_metrics.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_metrics.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_metrics.add_argument("db", help="Path to the coverage database")
+    
+    # show compare subcommand
+    show_compare = show_subparser.add_parser("compare",
+        help="Compare coverage between two databases")
+    show_compare.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_compare.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_compare.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_compare.add_argument("db", help="Path to the baseline coverage database")
+    show_compare.add_argument("compare_db", help="Path to the comparison database")
+    
+    # show hotspots subcommand
+    show_hotspots = show_subparser.add_parser("hotspots",
+        help="Identify coverage hotspots and high-value targets")
+    show_hotspots.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_hotspots.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_hotspots.add_argument("--output-format", "-of",
+        help="Specifies the output format. Defaults to 'json'",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_hotspots.add_argument("--threshold", "-t",
+        help="Coverage threshold for low-coverage groups (default: 80)",
+        type=float,
+        default=80.0)
+    show_hotspots.add_argument("--limit", "-l",
+        help="Maximum number of items to show per category (default: 10)",
+        type=int,
+        default=10)
+    show_hotspots.add_argument("db", help="Path to the coverage database")
+    
+    # show code-coverage subcommand
+    show_code_cov = show_subparser.add_parser("code-coverage",
+        help="Display code coverage with support for LCOV/Cobertura formats")
+    show_code_cov.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_code_cov.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_code_cov.add_argument("--output-format", "-of",
+        help="Specifies the output format",
+        default='json',
+        choices=['json', 'text', 'txt', 'lcov', 'cobertura', 'jacoco', 'clover'])
+    show_code_cov.add_argument("db", help="Path to the coverage database")
+    
+    # show assertions
+    show_assertions = show_subparser.add_parser("assertions",
+        help="Display assertion coverage information")
+    show_assertions.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_assertions.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_assertions.add_argument("--output-format", "-of",
+        help="Specifies the output format",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_assertions.add_argument("db", help="Path to the coverage database")
+    
+    # show toggle
+    show_toggle = show_subparser.add_parser("toggle",
+        help="Display toggle coverage information")
+    show_toggle.add_argument("--out", "-o",
+        help="Specifies the output location for the report")
+    show_toggle.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    show_toggle.add_argument("--output-format", "-of",
+        help="Specifies the output format",
+        default='json',
+        choices=['json', 'text', 'txt'])
+    show_toggle.add_argument("db", help="Path to the coverage database")
+    
+    show.set_defaults(func=cmd_show.show)
 
     
     return parser
