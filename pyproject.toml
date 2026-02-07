@@ -60,7 +60,7 @@ where = ["src"]
 namespaces = true
 
 [tool.setuptools.package-data]
-"*" = ["*.xsd"]
+"*" = ["*.xsd", "share/SKILL.md"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

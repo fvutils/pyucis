@@ -9,6 +9,7 @@ from ucis.cmd import cmd_list_report_formats
 from ucis.cmd import cmd_report, cmd_merge, cmd_convert, cmd_show
 import sys
 import traceback
+import os
 
 def get_parser():
     parser = argparse.ArgumentParser(description="Manipulate UCIS coverage data")
@@ -270,6 +271,10 @@ def get_parser():
     return parser
 
 def main():
+    # Print skill information at the start
+    print_skill_info()
+    print()
+    
     parser = get_parser()
 
     argv = []
@@ -288,6 +293,25 @@ def main():
     except Exception as e:
         traceback.print_exc()
         print("Error: %s" % "{0}".format(e))
+
+def print_skill_info():
+    """Print the absolute path to the PyUCIS AgentSkills file."""
+    # Get the absolute path to the ucis module
+    import ucis
+    ucis_module_path = os.path.abspath(os.path.dirname(ucis.__file__))
+    skill_path = os.path.join(ucis_module_path, "share", "SKILL.md")
+    
+    print("=" * 70)
+    print("PyUCIS AgentSkills Information")
+    print("=" * 70)
+    print(f"\nSkill Definition: {skill_path}")
+    print("\nNote for LLM Agents:")
+    print("  This file contains detailed information about PyUCIS capabilities,")
+    print("  usage patterns, and best practices. LLM agents should reference")
+    print("  this skill to better understand how to work with UCIS coverage")
+    print("  databases and leverage PyUCIS tools effectively.")
+    print("\nFor more information, visit: https://agentskills.io")
+    print("=" * 70)
 
 if __name__ == "__main__":
     main()

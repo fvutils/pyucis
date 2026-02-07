@@ -10,6 +10,7 @@ Python API to Unified Coverage Interoperability Standard (UCIS) Data Model
 - **Python API** for manipulating UCIS coverage databases
 - **CLI Tools** for database conversion, merging, and reporting
 - **MCP Server** for AI agent integration (see [MCP_SERVER.md](MCP_SERVER.md))
+- **AgentSkills Support** for enhanced AI agent understanding (see https://agentskills.io)
 - Support for XML, YAML, and UCIS binary formats
 - Multiple export formats: LCOV, Cobertura, JaCoCo, Clover
 
@@ -56,6 +57,16 @@ See [MCP_SERVER.md](MCP_SERVER.md) for detailed documentation on:
 - Available MCP tools (17+ coverage analysis tools)
 - Integration with Claude Desktop and other AI platforms
 - API usage examples
+
+### AgentSkills Support
+
+PyUCIS includes an [AgentSkills](https://agentskills.io) skill definition that provides LLM agents with comprehensive information about PyUCIS capabilities. When you run any PyUCIS command, the absolute path to the skill file is displayed, allowing agents to reference it for better understanding of UCIS coverage data manipulation.
+
+```bash
+# Running any pyucis command displays the skill file location
+pyucis --help
+# Output includes: Skill Definition: /path/to/ucis/share/SKILL.md
+```
 
 ### Python API
 
