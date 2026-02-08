@@ -12,66 +12,109 @@ coverage data via the UCIS data model:
 - An object-oriented Python API
 - A functional C-style Python API that is identical to the API defined in the Accellera standard
 
-The PyUCIS library currently supports three back-ends for storing
+The PyUCIS library supports multiple back-ends for storing
 and accessing coverage data:
 
-- In-Memory: An in-memory transient data model
-- XML: Ability to write and read a UCIS data model to the Accellera-defined interchange format
-- Library: Ability to call a tool-provided implementation of the UCIS C API
+- **In-Memory**: Fast transient data model stored in RAM
+- **SQLite**: Persistent, queryable storage using SQLite3 databases  
+- **XML**: Read and write UCIS data in the Accellera-defined interchange format
+- **YAML**: Human-readable text format for coverage data
+- **Library**: Call tool-provided implementations of the UCIS C API
 
-Here is a short example of using the object-oriented Python API to create
-a covergroup with a single coverpoint. Note that the database handle (`db`)
-must be obtained from the appropriate back-end factory:
+SQLite Backend
+==============
+
+The SQLite backend is a powerful option for persistent coverage storage:
+
+* **Persistent Storage** - Coverage data saved directly to .ucisdb files
+* **SQL Queries** - Direct database access for custom analysis
+* **Large Databases** - Efficient handling of very large coverage datasets
+* **Native C Library** - High-performance UCIS 1.0 C API implementation
+
+Quick example using SQLite:
 
 .. code-block:: python3
 
+    from ucis.sqlite import SqliteUCIS
+    from ucis.scope_type_t import ScopeTypeT
+    from ucis.source_t import SourceT
+    
+    # Create or open database
+    db = SqliteUCIS("coverage.ucisdb")
+    
+    # Build hierarchy
+    top = db.createScope("top", None, 1, SourceT.NONE, 
+                        ScopeTypeT.INSTANCE, 0)
+    
+    # Create covergroup
+    cg = top.createCovergroup("addr_cg", None, 1, SourceT.NONE)
+    
+    # Close database
+    db.close()
+
+See :doc:`reference/sqlite_api` for complete SQLite API documentation.
+
+Object-Oriented API Example
+============================
+
+Here is an example using the in-memory backend with the object-oriented Python API:
+
+.. code-block:: python3
+
+        from ucis.mem import MemFactory
+        from ucis.history_node_kind import HistoryNodeKind
+        from ucis.test_status_t import TestStatusT
+        from ucis.source_t import SourceT
+        from ucis.source_info import SourceInfo
+        from ucis.test_data import TestData
+        
+        # Create in-memory database
+        db = MemFactory.create()
+        
         testnode = db.createHistoryNode(
             None, 
             "logicalName",
-            ucisdb,
-            UCIS_HISTORYNODE_TEST)
+            "test.sv",
+            HistoryNodeKind.TEST)
         td = TestData(
-            teststatus=UCIS_TESTSTATUS_OK,
+            teststatus=TestStatusT.OK,
             toolcategory="UCIS:simulator",
             date="20200202020"
             )
         testnode.setTestData(td)
         
-        file = db.createFileHandle("dummy", os.getcwd())
+        file = db.createFileHandle("dummy.v", os.getcwd())
 
         srcinfo = SourceInfo(file, 0, 0)
         du = db.createScope(
             "foo.bar",
             srcinfo,
             1, # weight
-            UCIS_OTHER,
-            UCIS_DU_MODULE,
-            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
-            | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
-            | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
-            | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+            SourceT.VLOG,
+            ScopeTypeT.DU_MODULE,
+            0  # flags
             )
         
         instance = db.createInstance(
             "dummy",
             None, # sourceinfo
             1, # weight
-            UCIS_OTHER,
-            UCIS_INSTANCE,
+            SourceT.VLOG,
+            ScopeTypeT.INSTANCE,
             du,
-            UCIS_INST_ONCE)
+            0)  # flags
         
         cg = instance.createCovergroup(
             "cg",
             SourceInfo(file, 3, 0),
             1, # weight
-            UCIS_OTHER)
+            SourceT.VLOG)
         
         cp = cg.createCoverpoint(
             "t",
             SourceInfo(file, 4, 0),
             1, # weight
-            UCIS_VLOG
+            SourceT.VLOG
             )
         cp.setComment("Hello There")
         
@@ -82,7 +125,7 @@ must be obtained from the appropriate back-end factory:
             4,
             "a")
 
-        db.write(ucisdb, None, True, -1)
+        db.write("output.xml", None, True, -1)
         db.close()
 
 
@@ -162,5 +205,6 @@ Quick start:
 Contributors
 ============
 
-   Ballance
+   Matthew Ballance
+
 
