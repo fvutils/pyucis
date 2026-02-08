@@ -46,6 +46,8 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-pyucis">What is PyUCIS?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sqlite-backend">SQLite Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#object-oriented-api-example">Object-Oriented API Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line-tools">Command-Line Tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mcp-server-for-ai-integration">MCP Server for AI Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributors">Contributors</a></li>
@@ -93,63 +95,103 @@ coverage data via the UCIS data model:</p>
 <li><p>An object-oriented Python API</p></li>
 <li><p>A functional C-style Python API that is identical to the API defined in the Accellera standard</p></li>
 </ul>
-<p>The PyUCIS library currently supports three back-ends for storing
+<p>The PyUCIS library supports multiple back-ends for storing
 and accessing coverage data:</p>
 <ul class="simple">
-<li><p>In-Memory: An in-memory transient data model</p></li>
-<li><p>XML: Ability to write and read a UCIS data model to the Accellera-defined interchange format</p></li>
-<li><p>Library: Ability to call a tool-provided implementation of the UCIS C API</p></li>
+<li><p><strong>In-Memory</strong>: Fast transient data model stored in RAM</p></li>
+<li><p><strong>SQLite</strong>: Persistent, queryable storage using SQLite3 databases</p></li>
+<li><p><strong>XML</strong>: Read and write UCIS data in the Accellera-defined interchange format</p></li>
+<li><p><strong>YAML</strong>: Human-readable text format for coverage data</p></li>
+<li><p><strong>Library</strong>: Call tool-provided implementations of the UCIS C API</p></li>
 </ul>
-<p>Here is a short example of using the object-oriented Python API to create
-a covergroup with a single coverpoint. Note that the database handle (<cite>db</cite>)
-must be obtained from the appropriate back-end factory:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">testnode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createHistoryNode</span><span class="p">(</span>
+</section>
+<section id="sqlite-backend">
+<h2>SQLite Backend<a class="headerlink" href="#sqlite-backend" title="Link to this heading"></a></h2>
+<p>The SQLite backend is a powerful option for persistent coverage storage:</p>
+<ul class="simple">
+<li><p><strong>Persistent Storage</strong> - Coverage data saved directly to .ucisdb files</p></li>
+<li><p><strong>SQL Queries</strong> - Direct database access for custom analysis</p></li>
+<li><p><strong>Large Databases</strong> - Efficient handling of very large coverage datasets</p></li>
+<li><p><strong>Native C Library</strong> - High-performance UCIS 1.0 C API implementation</p></li>
+</ul>
+<p>Quick example using SQLite:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
+
+<span class="c1"># Create or open database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.ucisdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build hierarchy</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                    <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Create covergroup</span>
+<span class="n">cg</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">createCovergroup</span><span class="p">(</span><span class="s2">&quot;addr_cg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
+
+<span class="c1"># Close database</span>
+<span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="reference/sqlite_api.html"><span class="doc">SQLite Backend API</span></a> for complete SQLite API documentation.</p>
+</section>
+<section id="object-oriented-api-example">
+<h2>Object-Oriented API Example<a class="headerlink" href="#object-oriented-api-example" title="Link to this heading"></a></h2>
+<p>Here is an example using the in-memory backend with the object-oriented Python API:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.mem</span> <span class="kn">import</span> <span class="n">MemFactory</span>
+<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+<span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
+<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span> <span class="nn">ucis.source_info</span> <span class="kn">import</span> <span class="n">SourceInfo</span>
+<span class="kn">from</span> <span class="nn">ucis.test_data</span> <span class="kn">import</span> <span class="n">TestData</span>
+
+<span class="c1"># Create in-memory database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">MemFactory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+<span class="n">testnode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createHistoryNode</span><span class="p">(</span>
     <span class="kc">None</span><span class="p">,</span>
     <span class="s2">&quot;logicalName&quot;</span><span class="p">,</span>
-    <span class="n">ucisdb</span><span class="p">,</span>
-    <span class="n">UCIS_HISTORYNODE_TEST</span><span class="p">)</span>
+    <span class="s2">&quot;test.sv&quot;</span><span class="p">,</span>
+    <span class="n">HistoryNodeKind</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
 <span class="n">td</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
-    <span class="n">teststatus</span><span class="o">=</span><span class="n">UCIS_TESTSTATUS_OK</span><span class="p">,</span>
+    <span class="n">teststatus</span><span class="o">=</span><span class="n">TestStatusT</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
     <span class="n">toolcategory</span><span class="o">=</span><span class="s2">&quot;UCIS:simulator&quot;</span><span class="p">,</span>
     <span class="n">date</span><span class="o">=</span><span class="s2">&quot;20200202020&quot;</span>
     <span class="p">)</span>
 <span class="n">testnode</span><span class="o">.</span><span class="n">setTestData</span><span class="p">(</span><span class="n">td</span><span class="p">)</span>
 
-<span class="n">file</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createFileHandle</span><span class="p">(</span><span class="s2">&quot;dummy&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createFileHandle</span><span class="p">(</span><span class="s2">&quot;dummy.v&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
 
 <span class="n">srcinfo</span> <span class="o">=</span> <span class="n">SourceInfo</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">du</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span>
     <span class="s2">&quot;foo.bar&quot;</span><span class="p">,</span>
     <span class="n">srcinfo</span><span class="p">,</span>
     <span class="mi">1</span><span class="p">,</span> <span class="c1"># weight</span>
-    <span class="n">UCIS_OTHER</span><span class="p">,</span>
-    <span class="n">UCIS_DU_MODULE</span><span class="p">,</span>
-    <span class="n">UCIS_ENABLED_STMT</span> <span class="o">|</span> <span class="n">UCIS_ENABLED_BRANCH</span>
-    <span class="o">|</span> <span class="n">UCIS_ENABLED_COND</span> <span class="o">|</span> <span class="n">UCIS_ENABLED_EXPR</span>
-    <span class="o">|</span> <span class="n">UCIS_ENABLED_FSM</span> <span class="o">|</span> <span class="n">UCIS_ENABLED_TOGGLE</span>
-    <span class="o">|</span> <span class="n">UCIS_INST_ONCE</span> <span class="o">|</span> <span class="n">UCIS_SCOPE_UNDER_DU</span>
+    <span class="n">SourceT</span><span class="o">.</span><span class="n">VLOG</span><span class="p">,</span>
+    <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">DU_MODULE</span><span class="p">,</span>
+    <span class="mi">0</span>  <span class="c1"># flags</span>
     <span class="p">)</span>
 
 <span class="n">instance</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createInstance</span><span class="p">(</span>
     <span class="s2">&quot;dummy&quot;</span><span class="p">,</span>
     <span class="kc">None</span><span class="p">,</span> <span class="c1"># sourceinfo</span>
     <span class="mi">1</span><span class="p">,</span> <span class="c1"># weight</span>
-    <span class="n">UCIS_OTHER</span><span class="p">,</span>
-    <span class="n">UCIS_INSTANCE</span><span class="p">,</span>
+    <span class="n">SourceT</span><span class="o">.</span><span class="n">VLOG</span><span class="p">,</span>
+    <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span>
     <span class="n">du</span><span class="p">,</span>
-    <span class="n">UCIS_INST_ONCE</span><span class="p">)</span>
+    <span class="mi">0</span><span class="p">)</span>  <span class="c1"># flags</span>
 
 <span class="n">cg</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">createCovergroup</span><span class="p">(</span>
     <span class="s2">&quot;cg&quot;</span><span class="p">,</span>
     <span class="n">SourceInfo</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="mi">1</span><span class="p">,</span> <span class="c1"># weight</span>
-    <span class="n">UCIS_OTHER</span><span class="p">)</span>
+    <span class="n">SourceT</span><span class="o">.</span><span class="n">VLOG</span><span class="p">)</span>
 
 <span class="n">cp</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">createCoverpoint</span><span class="p">(</span>
     <span class="s2">&quot;t&quot;</span><span class="p">,</span>
     <span class="n">SourceInfo</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="mi">1</span><span class="p">,</span> <span class="c1"># weight</span>
-    <span class="n">UCIS_VLOG</span>
+    <span class="n">SourceT</span><span class="o">.</span><span class="n">VLOG</span>
     <span class="p">)</span>
 <span class="n">cp</span><span class="o">.</span><span class="n">setComment</span><span class="p">(</span><span class="s2">&quot;Hello There&quot;</span><span class="p">)</span>
 
@@ -160,7 +202,7 @@ must be obtained from the appropriate back-end factory:</p>
     <span class="mi">4</span><span class="p">,</span>
     <span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
-<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ucisdb</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;output.xml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -230,7 +272,7 @@ pyucis-mcp-server
 <section id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Link to this heading"></a></h2>
 <blockquote>
-<div><p>Ballance</p>
+<div><p>Matthew Ballance</p>
 </div></blockquote>
 </section>
 </section>

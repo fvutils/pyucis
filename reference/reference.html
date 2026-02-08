@@ -56,10 +56,16 @@
 <li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html">Best Practices for Recording Coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html">Native C Library API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#back-end-apis">Back-End APIs</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#in-memory">In-Memory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sqlite">SQLite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#native-c-library">Native C Library</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ucis-c-api">UCIS C API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#xml">XML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml">YAML</a></li>
 </ul>
 </li>
 </ul>
@@ -148,18 +154,82 @@ used by PyUCIS.</p>
 <li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html#ucis.__init__.ucis_Time"><code class="docutils literal notranslate"><span class="pre">ucis_Time()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#quick-start">Quick Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#database-format">Database Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#design-principles">Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#schema-initialization">Schema Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#table-reference">Table Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#query-examples">Query Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#performance-tuning">Performance Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="native_api.html">Native C Library API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#building">Building</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#api-reference">API Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#type-definitions">Type Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#complete-examples">Complete Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#performance">Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html#see-also">See Also</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <section id="back-end-apis">
 <h2>Back-End APIs<a class="headerlink" href="#back-end-apis" title="Link to this heading"></a></h2>
+<p>PyUCIS supports multiple backend storage implementations, each with different trade-offs:</p>
 <section id="in-memory">
 <h3>In-Memory<a class="headerlink" href="#in-memory" title="Link to this heading"></a></h3>
+<p>The in-memory backend stores all coverage data in RAM for fast access. Best for:</p>
+<ul class="simple">
+<li><p>Small to medium databases that fit in memory</p></li>
+<li><p>Temporary coverage processing</p></li>
+<li><p>Fast iteration and analysis</p></li>
+</ul>
+<p>See <a class="reference internal" href="ucis_oo_api.html"><span class="doc">UCIS Object-Oriented API</span></a> for the Python object-oriented API.</p>
+</section>
+<section id="sqlite">
+<h3>SQLite<a class="headerlink" href="#sqlite" title="Link to this heading"></a></h3>
+<p>The SQLite backend provides persistent, queryable storage using SQLite3 databases. Best for:</p>
+<ul class="simple">
+<li><p>Large coverage databases</p></li>
+<li><p>Persistent storage requirements</p></li>
+<li><p>SQL-based queries and analysis</p></li>
+<li><p>Integration with database tools</p></li>
+</ul>
+<p>See <a class="reference internal" href="sqlite_api.html"><span class="doc">SQLite Backend API</span></a> for the Python SQLite API and <a class="reference internal" href="sqlite_schema_reference.html"><span class="doc">SQLite Schema Reference</span></a> for detailed schema documentation.</p>
+</section>
+<section id="native-c-library">
+<h3>Native C Library<a class="headerlink" href="#native-c-library" title="Link to this heading"></a></h3>
+<p>The native C library provides a UCIS 1.0 compliant C API with SQLite3 backend. Best for:</p>
+<ul class="simple">
+<li><p>C/C++ applications</p></li>
+<li><p>Performance-critical operations</p></li>
+<li><p>Integration with native tools</p></li>
+<li><p>Python ctypes integration</p></li>
+</ul>
+<p>See <a class="reference internal" href="native_api.html"><span class="doc">Native C Library API</span></a> for the C API documentation.</p>
 </section>
 <section id="ucis-c-api">
 <h3>UCIS C API<a class="headerlink" href="#ucis-c-api" title="Link to this heading"></a></h3>
+<p>The UCIS C API wrapper provides access to external UCIS libraries. See <a class="reference internal" href="ucis_c_api.html"><span class="doc">UCIS C-Style API</span></a> for details.</p>
 </section>
 <section id="xml">
 <h3>XML<a class="headerlink" href="#xml" title="Link to this heading"></a></h3>
+<p>The XML backend reads and writes UCIS data in XML format for interchange. See <a class="reference internal" href="xml_interchange.html"><span class="doc">XML Interchange Format</span></a> for details.</p>
+</section>
+<section id="yaml">
+<h3>YAML<a class="headerlink" href="#yaml" title="Link to this heading"></a></h3>
+<p>The YAML backend provides a human-readable text format. See <a class="reference internal" href="yaml_coverage.html"><span class="doc">YAML Coverage Data Format</span></a> for details.</p>
 </section>
 </section>
 </section>

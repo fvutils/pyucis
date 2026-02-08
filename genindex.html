@@ -79,10 +79,12 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#W"><strong>W</strong></a>
@@ -99,6 +101,10 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#begin_transaction">begin_transaction()</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReportBuilder.build">build() (ucis.report.CoverageReportBuilder static method)</a>
 </li>
   </ul></td>
@@ -107,6 +113,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#close">close()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#commit">commit()</a>
+</li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.coverage">coverage (ucis.report.CoverageReport attribute)</a>
 
       <ul>
@@ -125,8 +135,6 @@
 </li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.covergroup_m">covergroup_m (ucis.report.CoverageReport.Covergroup attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.covergroups">covergroups (ucis.report.CoverageReport attribute)</a>
 
       <ul>
@@ -135,11 +143,29 @@
       </ul></li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem">CoverItem (class in ucis.report.CoverageReport)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#coverItems">coverItems()</a>
+</li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint">Coverpoint (class in ucis.report.CoverageReport)</a>
 </li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoint_m">coverpoint_m (ucis.report.CoverageReport.Covergroup attribute)</a>
 </li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoints">coverpoints (ucis.report.CoverageReport.Covergroup attribute)</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createCovergroup">createCovergroup()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createFileHandle">createFileHandle()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createHistoryNode">createHistoryNode()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createInstance">createInstance()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createNextCover">createNextCover()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createScope">createScope()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#createToggle">createToggle()</a>
 </li>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross">Cross (class in ucis.report.CoverageReport)</a>
 </li>
@@ -153,15 +179,89 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.getHandleProperty">getHandleProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#getAPIVersion">getAPIVersion()</a>
 </li>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.getIntProperty">getIntProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#getCmd">getCmd()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getCost">getCost()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getCount">getCount()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getCoverData">getCoverData()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getCpuTime">getCpuTime()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getDate">getDate()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getFlags">getFlags()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getGoal">getGoal()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getHandleProperty">getHandleProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.getHandleProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#getIntProperty">getIntProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.getIntProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#getKind">getKind()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getLogicalName">getLogicalName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getName">getName()</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.getRealProperty">getRealProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#getNumTests">getNumTests()</a>
 </li>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.getStringProperty">getStringProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#getPathSeparator">getPathSeparator()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getPhysicalName">getPhysicalName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getRealProperty">getRealProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.getRealProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#getScopeName">getScopeName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getScopeType">getScopeType()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getSeed">getSeed()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getSimTime">getSimTime()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getSourceInfo">getSourceInfo()</a>, <a href="reference/sqlite_api.html#id0">[1]</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getStringProperty">getStringProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.getStringProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#getTestStatus">getTestStatus()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getUserName">getUserName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getWeight">getWeight()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getWrittenBy">getWrittenBy()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#getWrittenTime">getWrittenTime()</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#historyNodes">historyNodes()</a>
 </li>
   </ul></td>
 </tr></table>
@@ -169,7 +269,13 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#incrementCover">incrementCover()</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.instname">instname (ucis.report.CoverageReport.Covergroup attribute)</a>
+</li>
+      <li><a href="reference/sqlite_api.html#isModified">isModified()</a>
 </li>
   </ul></td>
 </tr></table>
@@ -209,18 +315,78 @@
   </ul></td>
 </tr></table>
 
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#rollback">rollback()</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.setHandleProperty">setHandleProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#scopes">scopes()</a>
 </li>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.setIntProperty">setIntProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#setCmd">setCmd()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setCost">setCost()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setCount">setCount()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setCpuTime">setCpuTime()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setDate">setDate()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setGoal">setGoal()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setHandleProperty">setHandleProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.setHandleProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#setIntProperty">setIntProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.setIntProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#setLogicalName">setLogicalName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setPathSeparator">setPathSeparator()</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.setRealProperty">setRealProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#setPhysicalName">setPhysicalName()</a>
 </li>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.setStringProperty">setStringProperty() (ucis.Obj method)</a>
+      <li><a href="reference/sqlite_api.html#setRealProperty">setRealProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.setRealProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#setSeed">setSeed()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setSimTime">setSimTime()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setStringProperty">setStringProperty()</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.setStringProperty">(ucis.Obj method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite_api.html#setTestStatus">setTestStatus()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setUserName">setUserName()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setWeight">setWeight()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setWrittenBy">setWrittenBy()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#setWrittenTime">setWrittenTime()</a>
+</li>
+      <li><a href="reference/sqlite_api.html#SqliteUCIS">SqliteUCIS (built-in class)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -235,31 +401,65 @@
         <li><a href="reference/ucis_c_api.html#module-ucis.__init__">module</a>
 </li>
       </ul></li>
+      <li><a href="reference/native_api.html#c.ucis_Close">ucis_Close (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Close">ucis_Close() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_CoverIterate">ucis_CoverIterate (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateFileHandle">ucis_CreateFileHandle() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_CreateHistoryNode">ucis_CreateHistoryNode (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateHistoryNode">ucis_CreateHistoryNode() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_CreateInstance">ucis_CreateInstance (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateInstance">ucis_CreateInstance() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_CreateNextCover">ucis_CreateNextCover (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateNextCover">ucis_CreateNextCover() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_CreateScope">ucis_CreateScope (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateScope">ucis_CreateScope() (in module ucis.__init__)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateToggle">ucis_CreateToggle() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_GetAPIVersion">ucis_GetAPIVersion (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_GetCoverData">ucis_GetCoverData (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetHandleProperty">ucis_GetHandleProperty() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetIntProperty">ucis_GetIntProperty() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_GetLastError">ucis_GetLastError (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_GetParent">ucis_GetParent (C function)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetIntProperty">ucis_GetIntProperty() (in module ucis.__init__)</a>
-</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetRealProperty">ucis_GetRealProperty() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_GetScopeName">ucis_GetScopeName (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_GetScopeType">ucis_GetScopeType (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetStringProperty">ucis_GetStringProperty() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_HistoryNodeIterate">ucis_HistoryNodeIterate (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_IncrementCoverData">ucis_IncrementCoverData (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_Open">ucis_Open (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_RemoveScope">ucis_RemoveScope() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_ScopeIterate">ucis_ScopeIterate (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_SetCoverData">ucis_SetCoverData (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetHandleProperty">ucis_SetHandleProperty() (in module ucis.__init__)</a>
 </li>
@@ -267,11 +467,21 @@
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetRealProperty">ucis_SetRealProperty() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_SetScopeFlags">ucis_SetScopeFlags (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_SetScopeGoal">ucis_SetScopeGoal (C function)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_SetScopeWeight">ucis_SetScopeWeight (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetStringProperty">ucis_SetStringProperty() (in module ucis.__init__)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetTestData">ucis_SetTestData() (in module ucis.__init__)</a>
 </li>
+      <li><a href="reference/native_api.html#c.ucis_SetTestStatus">ucis_SetTestStatus (C function)</a>
+</li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Time">ucis_Time() (in module ucis.__init__)</a>
+</li>
+      <li><a href="reference/native_api.html#c.ucis_Write">ucis_Write (C function)</a>
 </li>
       <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Write">ucis_Write() (in module ucis.__init__)</a>
 </li>
@@ -289,6 +499,10 @@
         <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross.weight">(ucis.report.CoverageReport.Cross attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/sqlite_api.html#write">write()</a>
+</li>
   </ul></td>
 </tr></table>
 
