@@ -52,8 +52,15 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         self._parent_id = None
         self._source_info = None
         
-        # Now call Scope.__init__ which might call setGoal
+        # Flag to prevent database updates during initialization
+        self._initializing = True
+        
+        # Now call Scope.__init__ which calls setGoal(100)
+        # This will set _goal in memory but won't update database
         Scope.__init__(self)
+        
+        # Clear initialization flag
+        self._initializing = False
         
     def _ensure_loaded(self):
         """Lazy load scope data from database"""
@@ -110,7 +117,7 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         source_token = -1
         
         if srcinfo and srcinfo.file:
-            file_path = srcinfo.file.getFilename()
+            file_path = srcinfo.file.getFileName()
             # Get or create file
             cursor = self.ucis_db.conn.execute(
                 "SELECT file_id FROM files WHERE file_path = ?",
@@ -155,7 +162,10 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     def createCovergroup(self, name: str, srcinfo: SourceInfo, weight: int,
                         source: SourceT) -> 'Scope':
         """Create a covergroup scope"""
-        return self.createScope(name, srcinfo, weight, source, ScopeTypeT.COVERGROUP, 0)
+        scope = self.createScope(name, srcinfo, weight, source, ScopeTypeT.COVERGROUP, 0)
+        # Return as specialized SqliteCovergroup
+        from ucis.sqlite.sqlite_covergroup import SqliteCovergroup
+        return SqliteCovergroup(self.ucis_db, scope.scope_id)
     
     def createNextCover(self, name: str, data: CoverData, 
                        sourceinfo: SourceInfo) -> CoverIndex:
@@ -174,7 +184,7 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         source_token = -1
         
         if sourceinfo and sourceinfo.file:
-            file_path = sourceinfo.file.getFilename()
+            file_path = sourceinfo.file.getFileName()
             cursor = self.ucis_db.conn.execute(
                 "SELECT file_id FROM files WHERE file_path = ?",
                 (file_path,)
@@ -216,6 +226,10 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     
     def setWeight(self, w: int):
         """Set scope weight"""
+        # Skip during initialization to preserve database value
+        if getattr(self, '_initializing', False):
+            return
+            
         self._ensure_loaded()
         self._weight = w
         self.ucis_db.conn.execute(
@@ -230,6 +244,11 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     
     def setGoal(self, goal: int):
         """Set coverage goal"""
+        # During initialization, Scope.__init__() calls setGoal(100)
+        # We want to skip this so the database value is preserved
+        if getattr(self, '_initializing', False):
+            return
+        
         self._ensure_loaded()
         self._goal = goal
         self.ucis_db.conn.execute(
@@ -273,7 +292,7 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
             )
         
         for row in cursor:
-            yield SqliteScope(self.ucis_db, row[0])
+            yield SqliteScope.create_specialized_scope(self.ucis_db, row[0])
     
     def coverItems(self, mask: CoverTypeT) -> Iterator['CoverIndex']:
         """Iterate coverage items matching type mask"""
@@ -317,3 +336,31 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         """Get object kind for attributes/tags"""
         from ucis.sqlite.sqlite_attributes import ObjectKind
         return ObjectKind.SCOPE
+    
+    @staticmethod
+    def create_specialized_scope(ucis_db, scope_id: int) -> 'SqliteScope':
+        """Factory method to create appropriate scope subclass based on type"""
+        # Query scope type
+        cursor = ucis_db.conn.execute(
+            "SELECT scope_type FROM scopes WHERE scope_id = ?",
+            (scope_id,)
+        )
+        row = cursor.fetchone()
+        if not row:
+            raise ValueError(f"Scope {scope_id} not found")
+        
+        scope_type = row[0]
+        
+        # Return specialized subclass based on type
+        if scope_type & ScopeTypeT.COVERGROUP:
+            from ucis.sqlite.sqlite_covergroup import SqliteCovergroup
+            return SqliteCovergroup(ucis_db, scope_id)
+        elif scope_type & ScopeTypeT.CROSS:
+            from ucis.sqlite.sqlite_cross import SqliteCross
+            return SqliteCross(ucis_db, scope_id)
+        elif scope_type & ScopeTypeT.COVERPOINT:
+            from ucis.sqlite.sqlite_coverpoint import SqliteCoverpoint
+            return SqliteCoverpoint(ucis_db, scope_id)
+        else:
+            # Generic scope
+            return SqliteScope(ucis_db, scope_id)

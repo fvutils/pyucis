@@ -523,7 +523,7 @@ default="0"/>
 <xsd:element name="cgParms" type="NAME_VALUE"
 minOccurs="0" maxOccurs="unbounded"/>
 <xsd:element name="coverpoint" type="COVERPOINT"
-minOccurs="1" maxOccurs="unbounded"/>
+minOccurs="0" maxOccurs="unbounded"/>
 <xsd:element name="cross" type="CROSS"
 minOccurs="0" maxOccurs="unbounded"/>
 <xsd:element name="userAttr" type="USER_ATTR"

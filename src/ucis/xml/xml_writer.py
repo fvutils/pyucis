@@ -48,6 +48,8 @@ class XmlWriter():
         self.db = None
         self.root = None
         self.file_id_m : Dict[str,int] = {}
+        self.instance_id_m : Dict[Scope,int] = {}
+        self.next_instance_id = 0
         pass
     
     def write(self, file, db : UCIS):
@@ -159,14 +161,33 @@ class XmlWriter():
             
             # TODO: userAttr
             
-    def write_instance_coverages(self, s):
-        # TODO: determine the du_scope associated with this instance
+    def write_instance_coverages(self, s, parent_instance_id=None):
+        # Assign instance ID
+        instance_id = self.next_instance_id
+        self.instance_id_m[s] = instance_id
+        self.next_instance_id += 1
+        
         inst = self.mkElem(self.root, "instanceCoverages")
         inst.set("name", s.getScopeName())
         inst.set("key", "0") # TODO:
-        self.addId(inst, None)
+        inst.set("instanceId", str(instance_id))
+        
+        # Set moduleName from the DU scope if available
+        du_scope = s.getInstanceDu()
+        if du_scope is not None:
+            inst.set("moduleName", du_scope.getScopeName())
+        
+        # Set parentInstanceId if this is a child instance
+        if parent_instance_id is not None:
+            inst.set("parentInstanceId", str(parent_instance_id))
+        
+        self.addId(inst, s.getSourceInfo())
         
         self.write_covergroups(inst, s)
+        
+        # Recursively write child instances
+        for child in s.scopes(ScopeTypeT.INSTANCE):
+            self.write_instance_coverages(child, instance_id)
         
         
     def write_covergroups(self, inst, scope):
@@ -221,7 +242,7 @@ class XmlWriter():
         self.setAttr(cpElem, "name", cp.getScopeName())
         self.setAttr(cpElem, "key", "0")
         
-        self.write_options(cpElem, cp)
+        self.write_options(cpElem, cp, is_coverpoint=True)
         
         self.write_coverpoint_bins(cpElem, cp.coverItems(
             CoverTypeT.CVGBIN|CoverTypeT.IGNOREBIN|CoverTypeT.ILLEGALBIN))
@@ -261,7 +282,7 @@ class XmlWriter():
         crossElem = self.mkElem(cgInstElem, "cross")
         self.setAttr(crossElem, "name", cr.getScopeName())
         self.setAttr(crossElem, "key", "0")
-        self.write_options(crossElem, cr)
+        self.write_options(crossElem, cr, is_cross=True)  # Cross has its own minimal schema
 
         # Each cross expression lists one element of the cross        
 
@@ -288,8 +309,49 @@ class XmlWriter():
             self.setAttr(contents, "coverageCount", str(cov_data.data))
             
     
-    def write_options(self, parent, opts_item):
-        self.mkElem(parent, "options")
+    def write_options(self, parent, opts_item, is_coverpoint=False, is_cross=False):
+        optionsElem = self.mkElem(parent, "options")
+        
+        # Write covergroup/coverpoint/cross options according to UCIS spec
+        try:
+            # Common options for all types
+            self.setAttr(optionsElem, "weight", str(opts_item.getWeight()))
+            
+            # Goal: use 100 as default if negative (UCIS default)
+            goal = opts_item.getGoal()
+            if goal < 0:
+                goal = 100
+            self.setAttr(optionsElem, "goal", str(goal))
+            
+            # AtLeast: use 1 as default if <= 0 (UCIS default)
+            at_least = opts_item.getAtLeast()
+            if at_least <= 0:
+                at_least = 1
+            self.setAttr(optionsElem, "at_least", str(at_least))
+            
+            # Covergroup-specific options (not for coverpoints or cross)
+            if not is_coverpoint and not is_cross:
+                if hasattr(opts_item, 'getPerInstance'):
+                    self.setAttrBool(optionsElem, "per_instance", opts_item.getPerInstance())
+                if hasattr(opts_item, 'getMergeInstances'):
+                    self.setAttrBool(optionsElem, "merge_instances", opts_item.getMergeInstances())
+                if hasattr(opts_item, 'getGetInstCoverage'):
+                    self.setAttrBool(optionsElem, "get_inst_coverage", opts_item.getGetInstCoverage())
+                if hasattr(opts_item, 'getStrobe'):
+                    self.setAttrBool(optionsElem, "strobe", opts_item.getStrobe())
+                
+            # Coverpoint-specific options (not for cross)
+            if is_coverpoint and not is_cross:
+                if hasattr(opts_item, 'getAutoBinMax'):
+                    auto_bin_max = opts_item.getAutoBinMax()
+                    if auto_bin_max <= 0:
+                        auto_bin_max = 64  # UCIS default
+                    self.setAttr(optionsElem, "auto_bin_max", str(auto_bin_max))
+                if hasattr(opts_item, 'getDetectOverlap'):
+                    self.setAttrBool(optionsElem, "detect_overlap", opts_item.getDetectOverlap())
+        except (AttributeError, NotImplementedError):
+            # If methods don't exist, just skip them
+            pass
         
 
     def write_statement_id(self, stmt_id : StatementId, p, name="id"):
@@ -335,11 +397,16 @@ class XmlWriter():
             fileid = self.file_id_m[srcinfo.file.getFileName()]
         self.setAttr(idElem, "file", str(fileid))
             
-        self.setAttr(idElem, "line",
-                     str(srcinfo.line) if srcinfo is not None else str(1))
+        # XML schema requires positiveInteger (>= 1) for line and inlineCount
+        line = 1
+        if srcinfo is not None and srcinfo.line >= 1:
+            line = srcinfo.line
+        self.setAttr(idElem, "line", str(line))
         
-        self.setAttr(idElem, "inlineCount", 
-            str(srcinfo.token) if srcinfo is not None else str(1))
+        inlineCount = 1
+        if srcinfo is not None and srcinfo.token >= 1:
+            inlineCount = srcinfo.token
+        self.setAttr(idElem, "inlineCount", str(inlineCount))
         
 
     def find_all_files(self, scope_i : Iterator[Scope]):

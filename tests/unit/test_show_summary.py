@@ -4,15 +4,15 @@ Tests for UCIS show summary command
 import json
 import os
 import tempfile
-from unittest.case import TestCase
 from io import StringIO
 import sys
+import pytest
 
-from db_creator import DbCreator
+from .db_creator import DbCreator
 from ucis.cmd.show.show_summary import ShowSummary
 
 
-class TestShowSummary(TestCase):
+class TestShowSummary:
     """Test suite for show summary command."""
     
     def test_summary_basic_structure(self):
@@ -56,20 +56,20 @@ class TestShowSummary(TestCase):
         data = cmd.get_data()
         
         # Verify structure
-        self.assertIn('overall_coverage', data)
-        self.assertIn('coverage_by_type', data)
-        self.assertIn('statistics', data)
-        self.assertIn('tests', data)
+        assert 'overall_coverage' in data
+        assert 'coverage_by_type' in data
+        assert 'statistics' in data
+        assert 'tests' in data
         
         # Verify coverage calculation
-        self.assertIsInstance(data['overall_coverage'], (int, float))
+        assert isinstance(data['overall_coverage'], (int, float))
         
         # Verify statistics
         stats = data['statistics']
-        self.assertEqual(stats['total_covergroups'], 1)
-        self.assertEqual(stats['total_coverpoints'], 1)
-        self.assertEqual(stats['total_bins'], 3)
-        self.assertEqual(stats['covered_bins'], 2)  # bin1 and bin2 are covered
+        assert stats['total_covergroups'] == 1
+        assert stats['total_coverpoints'] == 1
+        assert stats['total_bins'] == 3
+        assert stats['covered_bins'] == 2  # bin1 and bin2 are covered
         
     def test_summary_multiple_covergroups(self):
         """Test summary with multiple covergroups."""
@@ -123,9 +123,9 @@ class TestShowSummary(TestCase):
         
         # Verify we have 2 covergroups
         stats = data['statistics']
-        self.assertEqual(stats['total_covergroups'], 2)
-        self.assertEqual(stats['total_bins'], 4)
-        self.assertEqual(stats['covered_bins'], 3)
+        assert stats['total_covergroups'] == 2
+        assert stats['total_bins'] == 4
+        assert stats['covered_bins'] == 3
         
     def test_summary_json_output(self):
         """Test that JSON output is valid."""
@@ -168,8 +168,8 @@ class TestShowSummary(TestCase):
         output_str = output.getvalue()
         parsed = json.loads(output_str)
         
-        self.assertIn('overall_coverage', parsed)
-        self.assertIn('statistics', parsed)
+        assert 'overall_coverage' in parsed
+        assert 'statistics' in parsed
         
     def test_summary_text_output(self):
         """Test that text output is generated."""
@@ -210,6 +210,6 @@ class TestShowSummary(TestCase):
         
         # Verify text output contains key fields
         output_str = output.getvalue()
-        self.assertIn('overall_coverage', output_str)
-        self.assertIn('statistics', output_str)
-        self.assertIn('total_bins', output_str)
+        assert 'overall_coverage' in output_str
+        assert 'statistics' in output_str
+        assert 'total_bins' in output_str

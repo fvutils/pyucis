@@ -36,6 +36,7 @@ from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
 from ucis.mem.mem_file_handle import MemFileHandle
 from ucis.mem.mem_scope import MemScope
 from ucis.mem.mem_ucis import MemUCIS
+from ucis.source_info import SourceInfo
 from ucis.statement_id import StatementId
 from ucis.ucis import UCIS
 from ucis.xml import validate_ucis_xml
@@ -47,6 +48,7 @@ class XmlReader():
         self.file_m : Dict[int,MemFileHandle] = {}
         self.module_scope_m : Dict[str, MemScope] = {}
         self.inst_scope_m : Dict[str, MemScope] = {}
+        self.inst_id_m : Dict[int, MemScope] = {}  # Map instanceId to scope
         pass
 
     def loads(self, s) -> UCIS:
@@ -122,31 +124,58 @@ class XmlReader():
     
     def readInstanceCoverage(self, instN):
         name = instN.attrib["name"]
-        stmt_id = None
+        instance_id = self.getAttr(instN, "instanceId", None)
+        parent_instance_id = self.getAttr(instN, "parentInstanceId", None)
+        
+        # Read source info from <id> element
+        srcinfo = None
         for stmt_idN in instN.iter("id"):
             stmt_id = self.readStatementId(stmt_idN)
+            # Convert StatementId to SourceInfo (item -> token)
+            srcinfo = SourceInfo(stmt_id.file, stmt_id.line, stmt_id.item)
+            break  # Only first one
             
-        srcinfo = None
-            
-        # TODO: Creating a coverage instance depends on
-        # having a du_type
+        # Get module/DU scope
         module_scope_name = self.getAttr(instN, "moduleName", "default")
-        
         type_scope = self.getScope(
             module_scope_name, 
             None, 
             UCIS_OTHER) # TODO: how do we determine source type?
         
-        inst_scope = self.getInstScope(
-            name,
-            srcinfo,
-            UCIS_OTHER,
-            type_scope)
+        # Determine parent scope
+        parent_scope = None
+        if parent_instance_id is not None:
+            parent_id = int(parent_instance_id)
+            parent_scope = self.inst_id_m.get(parent_id, None)
         
+        # Create instance under parent (or at top level if no parent)
+        if parent_scope is None:
+            inst_scope = self.db.createInstance(
+                name,
+                srcinfo,
+                1,  # Weight not in XML schema
+                UCIS_OTHER,
+                UCIS_INSTANCE,
+                type_scope,
+                UCIS_INST_ONCE)
+        else:
+            inst_scope = parent_scope.createInstance(
+                name,
+                srcinfo,
+                1,  # Weight not in XML schema
+                UCIS_OTHER,
+                UCIS_INSTANCE,
+                type_scope,
+                UCIS_INST_ONCE)
+        
+        # Store in lookup maps
+        self.inst_scope_m[name] = inst_scope
+        if instance_id is not None:
+            self.inst_id_m[int(instance_id)] = inst_scope
+        
+        # Read coverage content
         for cg in instN.iter("covergroupCoverage"):
             self.readCovergroups(cg, inst_scope, module_scope_name)
-
-#        self.setIntIfEx(instN, ret.setAli, name)
 
     def readCovergroups(self, cg, inst_scope, module_scope_name):
         # This entry is for a given covergroup type
@@ -183,6 +212,10 @@ class XmlReader():
                 None,
                 1,
                 UCIS_OTHER)
+            
+            # Read options from first instance (type-level options)
+            if len(cg_type_m[cg_typename]) > 0:
+                self.readOptions(cg_type_m[cg_typename][0], cg_typescope)
 
             # Process all instances of a given covergroup type
             self.readCovergroup(cg_typescope, cg_type_m[cg_typename])
@@ -203,6 +236,9 @@ class XmlReader():
                 srcinfo,
                 1,
                 UCIS_OTHER)
+            
+            # Read covergroup instance options
+            self.readOptions(cg_e, cg_i)
 
             # Build up a map of coverpoint name/inst-handle refs
             cg_inst_cp_m = {}
@@ -218,6 +254,9 @@ class XmlReader():
                         srcinfo,
                         1,
                         UCIS_OTHER)
+                    
+                    # Read coverpoint options
+                    self.readOptions(cp_e, cp_t)
 
                     # Tuple of coverpoint type and map between
                     # bin name and count
@@ -229,6 +268,10 @@ class XmlReader():
                     cp_i = cp_m[cp_name]
 
                 cp_inst = self.readCoverpointInst(cg_i, cp_e, cp_i)
+                
+                # Also read options for instance
+                self.readOptions(cp_e, cp_inst)
+                
                 cg_inst_cp_m[cp_name] = cp_inst
 
             for cr_e in cg_e.iter("cross"):
@@ -479,6 +522,35 @@ class XmlReader():
     def setIntIfEx(self, n, f, name):
         if name in n.attrib:
             f(int(n.attrib[name]))
+            
+    def setBoolIfEx(self, n, f, name):
+        if name in n.attrib:
+            f(n.attrib[name] == "true")
+    
+    def readOptions(self, parent_elem, target_obj):
+        """Read options element and apply to target object"""
+        options = parent_elem.find("options")
+        if options is not None:
+            # Read common options
+            self.setIntIfEx(options, target_obj.setWeight, "weight")
+            self.setIntIfEx(options, target_obj.setGoal, "goal")
+            self.setIntIfEx(options, target_obj.setAtLeast, "at_least")
+            
+            # Read covergroup-specific options
+            if hasattr(target_obj, 'setPerInstance'):
+                self.setBoolIfEx(options, target_obj.setPerInstance, "per_instance")
+            if hasattr(target_obj, 'setMergeInstances'):
+                self.setBoolIfEx(options, target_obj.setMergeInstances, "merge_instances")
+            if hasattr(target_obj, 'setGetInstCoverage'):
+                self.setBoolIfEx(options, target_obj.setGetInstCoverage, "get_inst_coverage")
+                
+            # Read CvgScope options
+            if hasattr(target_obj, 'setAutoBinMax'):
+                self.setIntIfEx(options, target_obj.setAutoBinMax, "auto_bin_max")
+            if hasattr(target_obj, 'setDetectOverlap'):
+                self.setBoolIfEx(options, target_obj.setDetectOverlap, "detect_overlap")
+            if hasattr(target_obj, 'setStrobe'):
+                self.setBoolIfEx(options, target_obj.setStrobe, "strobe")
 
     def setFloatIfEx(self, n, f, name):
         if name in n.attrib:

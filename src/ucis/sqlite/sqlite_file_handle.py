@@ -31,11 +31,11 @@ class SqliteFileHandle(FileHandle):
         self.file_id = file_id
         self.filename = filename
     
-    def getFilename(self) -> str:
+    def getFileName(self) -> str:
         """Get file name"""
         return self.filename
     
-    def setFilename(self, name: str):
+    def setFileName(self, name: str):
         """Set file name"""
         self.filename = name
         self.ucis_db.conn.execute(

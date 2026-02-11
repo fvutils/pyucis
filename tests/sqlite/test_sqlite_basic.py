@@ -232,7 +232,7 @@ class TestSqliteBasic(unittest.TestCase):
         # Create file handle
         fh = ucis.createFileHandle("test.sv", None)
         self.assertIsNotNone(fh)
-        self.assertEqual(fh.getFilename(), "test.sv")
+        self.assertEqual(fh.getFileName(), "test.sv")
         
         # Get same file handle again (should be cached)
         fh2 = ucis.createFileHandle("test.sv", None)

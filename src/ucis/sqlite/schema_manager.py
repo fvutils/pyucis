@@ -23,7 +23,7 @@ Creates and manages database schema based on sqlite_schema.md
 import sqlite3
 from datetime import datetime
 
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "2.0"
 
 def create_schema(conn: sqlite3.Connection):
     """Create all tables and indexes for UCIS database"""
@@ -75,6 +75,13 @@ def create_schema(conn: sqlite3.Connection):
             source_line INTEGER,
             source_token INTEGER,
             language_type INTEGER,
+            per_instance INTEGER DEFAULT 0,
+            merge_instances INTEGER DEFAULT 1,
+            get_inst_coverage INTEGER DEFAULT 0,
+            at_least INTEGER DEFAULT 1,
+            auto_bin_max INTEGER DEFAULT 64,
+            detect_overlap INTEGER DEFAULT 0,
+            strobe INTEGER DEFAULT 0,
             
             FOREIGN KEY (parent_id) REFERENCES scopes(scope_id) ON DELETE CASCADE,
             FOREIGN KEY (source_file_id) REFERENCES files(file_id) ON DELETE SET NULL
@@ -392,3 +399,54 @@ def check_schema_exists(conn: sqlite3.Connection) -> bool:
         "SELECT name FROM sqlite_master WHERE type='table' AND name='db_metadata'"
     )
     return cursor.fetchone() is not None
+
+
+def migrate_to_v2(conn: sqlite3.Connection):
+    """Migrate schema from v1 to v2: Add covergroup/coverpoint option columns"""
+    cursor = conn.cursor()
+    
+    # Check if columns already exist
+    cursor.execute("PRAGMA table_info(scopes)")
+    columns = {row[1] for row in cursor.fetchall()}
+    
+    # Add new columns if they don't exist
+    if 'per_instance' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN per_instance INTEGER DEFAULT 0")
+    if 'merge_instances' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN merge_instances INTEGER DEFAULT 1")
+    if 'get_inst_coverage' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN get_inst_coverage INTEGER DEFAULT 0")
+    if 'at_least' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN at_least INTEGER DEFAULT 1")
+    if 'auto_bin_max' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN auto_bin_max INTEGER DEFAULT 64")
+    if 'detect_overlap' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN detect_overlap INTEGER DEFAULT 0")
+    if 'strobe' not in columns:
+        cursor.execute("ALTER TABLE scopes ADD COLUMN strobe INTEGER DEFAULT 0")
+    
+    # Update schema version
+    cursor.execute(
+        "INSERT OR REPLACE INTO db_metadata (key, value) VALUES ('SCHEMA_VERSION', '2.0')"
+    )
+    
+    conn.commit()
+
+
+def ensure_schema_current(conn: sqlite3.Connection):
+    """Ensure database schema is at current version, running migrations if needed"""
+    if not check_schema_exists(conn):
+        # New database - create with latest schema
+        create_schema(conn)
+        return
+    
+    version = get_schema_version(conn)
+    
+    # Run migrations as needed
+    if version is None or version == "1.0":
+        print("Migrating SQLite schema from v1.0 to v2.0...")
+        migrate_to_v2(conn)
+        print("Migration complete")
+    # Future migrations would go here
+    # elif version == "2.0":
+    #     migrate_to_v3(conn)

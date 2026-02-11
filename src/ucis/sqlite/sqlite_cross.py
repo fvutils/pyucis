@@ -20,18 +20,49 @@ SQLite-backed Cross Coverage implementation with coverpoint linkage
 """
 
 from typing import List
-from ucis.sqlite.sqlite_scope import SqliteScope
+from ucis.sqlite.sqlite_coverpoint import SqliteCoverpoint
+from ucis.cross import Cross
 from ucis.cover_data import CoverData
+# Import SqliteScope for type hints
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from ucis.sqlite.sqlite_scope import SqliteScope
 
 
-class SqliteCross(SqliteScope):
+class SqliteCross(SqliteCoverpoint, Cross):
     """Cross coverage scope linking multiple coverpoints"""
     
     def __init__(self, ucis_db, scope_id: int):
-        super().__init__(ucis_db, scope_id)
+        # Must set ucis_db FIRST for getattr check in setGoal
+        self.ucis_db = ucis_db
+        self._initializing = True
+        
+        # Initialize cached state
         self._coverpoints_cache = None
+        
+        # Initialize parent classes
+        SqliteCoverpoint.__init__(self, ucis_db, scope_id)
+        
+        # Reset initialization flag before calling Cross.__init__
+        self._initializing = True
+        Cross.__init__(self)
+        
+        # Clear initialization flag NOW
+        self._initializing = False
     
-    def addCoverpoint(self, coverpoint: SqliteScope, index: int = None):
+    # UCIS standard Cross interface methods
+    def getNumCrossedCoverpoints(self) -> int:
+        """Get number of coverpoints in cross (UCIS standard method)"""
+        return self.getNumCoverpoints()
+    
+    def getIthCrossedCoverpoint(self, index: int):
+        """Get the i-th coverpoint in cross (UCIS standard method)"""
+        coverpoints = self.getCoverpoints()
+        if 0 <= index < len(coverpoints):
+            return coverpoints[index]
+        return None
+    
+    def addCoverpoint(self, coverpoint: 'SqliteScope', index: int = None):
         """Add a coverpoint to this cross"""
         # Auto-assign index if not provided
         if index is None:
@@ -53,7 +84,7 @@ class SqliteCross(SqliteScope):
         # Invalidate cache
         self._coverpoints_cache = None
     
-    def getCoverpoints(self) -> List[SqliteScope]:
+    def getCoverpoints(self) -> List['SqliteScope']:
         """Get list of linked coverpoints in order"""
         if self._coverpoints_cache is not None:
             return self._coverpoints_cache
@@ -67,6 +98,7 @@ class SqliteCross(SqliteScope):
         
         self._coverpoints_cache = []
         for row in cursor:
+            from ucis.sqlite.sqlite_scope import SqliteScope
             cvp = SqliteScope(self.ucis_db, row[0])
             self._coverpoints_cache.append(cvp)
         

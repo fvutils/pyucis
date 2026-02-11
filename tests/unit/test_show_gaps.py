@@ -2,13 +2,13 @@
 Tests for UCIS show gaps command
 """
 import json
-from unittest.case import TestCase
+import pytest
 
-from db_creator import DbCreator
+from .db_creator import DbCreator
 from ucis.cmd.show.show_gaps import ShowGaps
 
 
-class TestShowGaps(TestCase):
+class TestShowGaps:
     """Test suite for show gaps command."""
     
     def test_gaps_basic_structure(self):
@@ -49,20 +49,20 @@ class TestShowGaps(TestCase):
         data = cmd.get_data()
         
         # Verify structure
-        self.assertIn('summary', data)
-        self.assertIn('uncovered_bins', data)
+        assert 'summary' in data
+        assert 'uncovered_bins' in data
         
         # Verify summary
         summary = data['summary']
-        self.assertEqual(summary['total_bins'], 3)
-        self.assertEqual(summary['covered_bins'], 2)
-        self.assertEqual(summary['uncovered_bins'], 1)
+        assert summary['total_bins'] == 3
+        assert summary['covered_bins'] == 2
+        assert summary['uncovered_bins'] == 1
         
         # Verify uncovered bins list
         uncovered = data['uncovered_bins']
-        self.assertEqual(len(uncovered), 1)
-        self.assertEqual(uncovered[0]['bin'], 'bin2')
-        self.assertEqual(uncovered[0]['count'], 0)
+        assert len(uncovered) == 1
+        assert uncovered[0]['bin'] == 'bin2'
+        assert uncovered[0]['count'] == 0
         
     def test_gaps_multiple_covergroups(self):
         """Test gaps with multiple covergroups."""
@@ -118,9 +118,9 @@ class TestShowGaps(TestCase):
         data = cmd.get_data()
         
         # Should find 3 gaps total
-        self.assertEqual(len(data['uncovered_bins']), 3)
-        self.assertEqual(data['summary']['uncovered_bins'], 3)
-        self.assertEqual(data['summary']['total_bins'], 5)
+        assert len(data['uncovered_bins']) == 3
+        assert data['summary']['uncovered_bins'] == 3
+        assert data['summary']['total_bins'] == 5
         
     def test_gaps_fully_covered(self):
         """Test gaps when everything is covered."""
@@ -160,9 +160,9 @@ class TestShowGaps(TestCase):
         data = cmd.get_data()
         
         # No gaps
-        self.assertEqual(len(data['uncovered_bins']), 0)
-        self.assertEqual(data['summary']['uncovered_bins'], 0)
-        self.assertEqual(data['summary']['overall_coverage'], 100.0)
+        assert len(data['uncovered_bins']) == 0
+        assert data['summary']['uncovered_bins'] == 0
+        assert data['summary']['overall_coverage'] == 100.0
         
     def test_gaps_threshold_filter(self):
         """Test threshold filtering."""
@@ -217,9 +217,9 @@ class TestShowGaps(TestCase):
         data = cmd.get_data()
         
         # Should only show gap from partial coverpoint (50% < 75%)
-        self.assertEqual(len(data['uncovered_bins']), 1)
-        self.assertEqual(data['uncovered_bins'][0]['coverpoint'], 'cp_a')
+        assert len(data['uncovered_bins']) == 1
+        assert data['uncovered_bins'][0]['coverpoint'] == 'cp_a'
         
         # Verify filter metadata
-        self.assertIn('filter', data)
-        self.assertEqual(data['filter']['threshold'], 75.0)
+        assert 'filter' in data
+        assert data['filter']['threshold'] == 75.0

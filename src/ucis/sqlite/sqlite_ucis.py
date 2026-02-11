@@ -71,6 +71,9 @@ class SqliteUCIS(SqliteScope, UCIS):
             )
             root_scope_id = cursor.lastrowid
         else:
+            # Existing database - run migrations if needed
+            schema_manager.ensure_schema_current(self.conn)
+            
             # Find root scope
             cursor = self.conn.execute(
                 "SELECT scope_id FROM scopes WHERE parent_id IS NULL LIMIT 1"
