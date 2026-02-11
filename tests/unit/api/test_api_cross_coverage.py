@@ -39,10 +39,6 @@ class TestApiCrossCoverage:
         """Test basic cross coverage creation"""
         backend_name, create_db, write_db, read_db, temp_file = backend
         
-        # XML has limitations with cross coverage
-        if backend_name == "xml":
-            pytest.skip(f"{backend_name} backend has limitations with cross coverage")
-        
         db = create_db()
         
         # Setup: Create test structure
@@ -61,7 +57,14 @@ class TestApiCrossCoverage:
         
         # Create two coverpoints that will be crossed
         cp1 = cg.createCoverpoint("cp1", SourceInfo(file_h, 6, 0), 1, UCIS_VLOG)
+        # XML requires bins in coverpoints
+        if backend_name == "xml":
+            cp1.createBin("cp1_bin", SourceInfo(file_h, 6, 0), 1, 0, "val1", UCIS_CVGBIN)
+        
         cp2 = cg.createCoverpoint("cp2", SourceInfo(file_h, 7, 0), 1, UCIS_VLOG)
+        # XML requires bins in coverpoints
+        if backend_name == "xml":
+            cp2.createBin("cp2_bin", SourceInfo(file_h, 7, 0), 1, 0, "val2", UCIS_CVGBIN)
         
         # Create cross coverage
         cross = cg.createCross("cross_cp1_cp2", SourceInfo(file_h, 8, 0), 
@@ -109,10 +112,6 @@ class TestApiCrossCoverage:
     def test_cross_with_bins(self, backend):
         """Test cross coverage with bins"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        
-        # XML may not support all cross bin features
-        if backend_name == "xml":
-            pytest.skip(f"{backend_name} backend has limitations with cross bins")
         
         db = create_db()
         
@@ -177,10 +176,6 @@ class TestApiCrossCoverage:
     def test_cross_three_coverpoints(self, backend):
         backend_name, create_db, write_db, read_db, temp_file = backend
         
-        # XML has limitations with cross coverage
-        if backend_name == "xml":
-            pytest.skip(f"{backend_name} backend has limitations with cross coverage")
-        
         """Test cross coverage with three coverpoints"""
         
         db = create_db()
@@ -200,8 +195,17 @@ class TestApiCrossCoverage:
         cg = inst.createCovergroup("cg_3way", SourceInfo(file_h, 5, 0), 1, UCIS_VLOG)
         
         cp1 = cg.createCoverpoint("addr", SourceInfo(file_h, 6, 0), 1, UCIS_VLOG)
+        # XML requires bins in coverpoints
+        if backend_name == "xml":
+            cp1.createBin("addr_bin", SourceInfo(file_h, 6, 0), 1, 0, "val1", UCIS_CVGBIN)
+        
         cp2 = cg.createCoverpoint("data", SourceInfo(file_h, 7, 0), 1, UCIS_VLOG)
+        if backend_name == "xml":
+            cp2.createBin("data_bin", SourceInfo(file_h, 7, 0), 1, 0, "val2", UCIS_CVGBIN)
+        
         cp3 = cg.createCoverpoint("ctrl", SourceInfo(file_h, 8, 0), 1, UCIS_VLOG)
+        if backend_name == "xml":
+            cp3.createBin("ctrl_bin", SourceInfo(file_h, 8, 0), 1, 0, "val3", UCIS_CVGBIN)
         
         # Create 3-way cross
         cross = cg.createCross("addr_data_ctrl", SourceInfo(file_h, 9, 0), 

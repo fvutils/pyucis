@@ -1,4 +1,13 @@
 
+## 0.1.6 (Unreleased)
+- Fixed XML schema bug: coverpoint minOccurs changed from 1 to 0 (matches UCIS spec)
+- Implemented complete XML options read/write support (weight, goal, at_least, per_instance, etc.)
+- Verified XML cross coverage fully functional (was incorrectly thought to have limitations)
+- Removed pytest-asyncio dependency (converted to asyncio.run())
+- Fixed method name typo: getFilename → getFileName (per UCIS spec)
+- Improved test coverage: 179 → 198 passing tests (95.7% pass rate)
+- Documented all legitimate XML format limitations per UCIS schema
+
 ## 0.1.5
 - (#26) - Correct a whitespace issue found during bytecode pre-compilation 
 
