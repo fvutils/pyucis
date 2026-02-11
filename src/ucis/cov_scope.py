@@ -24,6 +24,43 @@ Created on Jan 8, 2020
 from ucis.scope import Scope
 
 class CovScope(Scope):
+    """Base class for generic coverage scopes.
+    
+    CovScope is the base class for all coverage-related scopes in the UCIS
+    hierarchy. It sits between the generic Scope class and more specialized
+    coverage scope types like FuncCovScope (functional coverage) and code
+    coverage scopes.
+    
+    CovScope provides common infrastructure for coverage scopes but adds
+    minimal functionality beyond the base Scope class. It serves primarily
+    as a structural marker in the type hierarchy to distinguish coverage
+    scopes from non-coverage scopes (like pure structural scopes).
+    
+    Subclass hierarchy:
+        Scope
+        └── CovScope (this class)
+            ├── FuncCovScope (functional coverage)
+            │   └── CvgScope (covergroups/coverpoints)
+            └── (Code coverage scopes)
+    
+    Note:
+        CovScope is rarely instantiated directly. Use specific subclasses
+        like Covergroup, Coverpoint, or code coverage scope types instead.
+        
+    Example:
+        >>> # CovScope is not directly used; use subclasses instead
+        >>> # For functional coverage:
+        >>> cg = design.createCovergroup("cg_bus", src_info, 1, SourceT.SV)
+        >>>
+        >>> # For code coverage:
+        >>> instance = design.createInstance("u_core", src_info, 1, SourceT.SV, "core")
+        
+    See Also:
+        Scope: Base scope class
+        FuncCovScope: Functional coverage base
+        CvgScope: Covergroup scope base
+        InstanceScope: Design instance scope
+    """
     
     def __init__(self):
         

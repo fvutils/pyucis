@@ -25,34 +25,143 @@ from enum import IntEnum, auto
 
 
 class StrProperty(IntEnum):
-    FILE_NAME = 0 #/* UCISDB file/directory name (read only) */
-    SCOPE_NAME = auto() #/* Scope name */
-    SCOPE_HIER_NAME = auto() #/* Hierarchical scope name */
-    INSTANCE_DU_NAME = auto() #/* Instance' design unit name */
-    UNIQUE_ID = auto() #/* Scope or coveritem unique-id (read only) */
-    VER_STANDARD = auto() #/* Standard (Currently fixed to be "UCIS") */
-    VER_STANDARD_VERSION = auto() #/* Version of standard (e.g. "2011", etc) */
-    VER_VENDOR_ID = auto() #/* Vendor id (e.g. "CDNS", "MENT", "SNPS", etc) */
-    VER_VENDOR_TOOL = auto() #/* Vendor tool (e.g. "Incisive", "Questa", "VCS", etc) */
-    VER_VENDOR_VERSION = auto() #/* Vendor tool version (e.g. "6.5c", "Jun-12-2009", etc) */
-    GENERIC = auto() #/* Miscellaneous string data */
-    ITH_CROSSED_CVP_NAME = auto() #/* Ith coverpoint name of a cross */
-    HIST_CMDLINE = auto() #/* Test run command line */
-    HIST_RUNCWD = auto() #/* Test run working directory */
-    COMMENT = auto() #/* Comment */
-    TEST_TIMEUNIT = auto() #/* Test run simulation time unit */
-    TEST_DATE = auto() #/* Test run date */
-    TEST_SIMARGS = auto() #/* Test run simulator arguments */
-    TEST_USERNAME = auto() #/* Test run user name */
-    TEST_NAME = auto() #/* Test run name */
-    TEST_SEED = auto() #/* Test run seed */
-    TEST_HOSTNAME = auto() #/* Test run hostname */
-    TEST_HOSTOS = auto() #/* Test run hostOS */
-    EXPR_TERMS = auto() #/* Input ordered expr term strings delimited by '#' */
-    TOGGLE_CANON_NAME = auto() #/* Toggle object canonical name */
-    UNIQUE_ID_ALIAS = auto() #/* Scope or coveritem unique-id alias */
-    DESIGN_VERSION_ID = auto() #/* Version of the design or elaboration-id */
-    DU_SIGNATURE = auto()
+    """String property identifiers for UCIS objects.
+    
+    Defines property identifiers for accessing string-valued properties on
+    UCIS objects via getStringProperty() and setStringProperty() methods.
+    
+    String properties store textual metadata including:
+    - File and scope names
+    - Version information (tool, vendor, standard)
+    - Test run metadata (command line, date, username, etc.)
+    - Design identification (signatures, version IDs)
+    - Comments and descriptions
+    
+    Properties are categorized by scope:
+    - Database-level: Version info, file names
+    - Scope-level: Names, hierarchical paths, signatures
+    - History node: Test metadata, command lines
+    - Coverage-specific: Toggle names, expression terms
+    
+    Example:
+        >>> # Access version information
+        >>> vendor = db.getStringProperty(-1, StrProperty.VER_VENDOR_ID)
+        >>> tool = db.getStringProperty(-1, StrProperty.VER_VENDOR_TOOL)
+        >>> print(f"Tool: {vendor} {tool}")
+        >>>
+        >>> # Set test metadata on history node
+        >>> hist.setStringProperty(-1, StrProperty.TEST_NAME, "regression_test_42")
+        >>> hist.setStringProperty(-1, StrProperty.TEST_HOSTNAME, "build-server-01")
+        >>>
+        >>> # Get scope name
+        >>> name = scope.getStringProperty(-1, StrProperty.SCOPE_NAME)
+        
+    See Also:
+        Obj.getStringProperty(): Get string property value
+        Obj.setStringProperty(): Set string property value
+        IntProperty: Integer property identifiers
+        RealProperty: Real property identifiers
+        UCIS LRM Section 8.16 "Property Management"
+    """
+    
+    # File and database properties
+    FILE_NAME = 0
+    """UCIS database file or directory name (read-only)."""
+    
+    # Scope properties
+    SCOPE_NAME = auto()
+    """Scope name (base name without hierarchy)."""
+    
+    SCOPE_HIER_NAME = auto()
+    """Hierarchical scope name (full path from root)."""
+    
+    INSTANCE_DU_NAME = auto()
+    """Instance's design unit name (DU reference)."""
+    
+    UNIQUE_ID = auto()
+    """Scope or coveritem unique identifier (read-only)."""
+    
+    # Version and tool information
+    VER_STANDARD = auto()
+    """Standard name (fixed to "UCIS")."""
+    
+    VER_STANDARD_VERSION = auto()
+    """Version of UCIS standard (e.g., "2011")."""
+    
+    VER_VENDOR_ID = auto()
+    """Vendor identifier (e.g., "CDNS", "MENT", "SNPS")."""
+    
+    VER_VENDOR_TOOL = auto()
+    """Vendor tool name (e.g., "Incisive", "Questa", "VCS")."""
+    
+    VER_VENDOR_VERSION = auto()
+    """Vendor tool version (e.g., "6.5c", "Jun-12-2009")."""
+    
+    # Generic properties
+    GENERIC = auto()
+    """Miscellaneous string data."""
+    
+    # Coverage-specific properties
+    ITH_CROSSED_CVP_NAME = auto()
+    """Ith coverpoint name of a cross (for cross coverage)."""
+    
+    COMMENT = auto()
+    """Descriptive comment text."""
+    
+    # History node properties (test run metadata)
+    HIST_CMDLINE = auto()
+    """Test run command line string."""
+    
+    HIST_RUNCWD = auto()
+    """Test run working directory path."""
+    
     HIST_TOOLCATEGORY = auto()
+    """Tool category for history node."""
+    
     HIST_LOG_NAME = auto()
+    """Log file name for history node."""
+    
     HIST_PHYS_NAME = auto()
+    """Physical name for history node."""
+    
+    # Test data properties
+    TEST_TIMEUNIT = auto()
+    """Test run simulation time unit."""
+    
+    TEST_DATE = auto()
+    """Test run date/timestamp."""
+    
+    TEST_SIMARGS = auto()
+    """Test run simulator arguments."""
+    
+    TEST_USERNAME = auto()
+    """Test run user name."""
+    
+    TEST_NAME = auto()
+    """Test run name or identifier."""
+    
+    TEST_SEED = auto()
+    """Test run random seed value."""
+    
+    TEST_HOSTNAME = auto()
+    """Test run hostname."""
+    
+    TEST_HOSTOS = auto()
+    """Test run host operating system."""
+    
+    # Code coverage properties
+    EXPR_TERMS = auto()
+    """Input ordered expression term strings delimited by '#'."""
+    
+    TOGGLE_CANON_NAME = auto()
+    """Toggle object canonical name."""
+    
+    # Design identification
+    UNIQUE_ID_ALIAS = auto()
+    """Scope or coveritem unique identifier alias."""
+    
+    DESIGN_VERSION_ID = auto()
+    """Version of the design or elaboration identifier."""
+    
+    DU_SIGNATURE = auto()
+    """Design unit signature for unique identification."""

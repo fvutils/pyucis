@@ -29,11 +29,81 @@ from ucis.obj import Obj
 from ucis.int_property import IntProperty
 
 class HistoryNode(Obj):
+    """History node tracking test runs and merge operations.
+    
+    HistoryNode represents a node in the coverage database history tree. History
+    nodes track the provenance of coverage data, recording:
+    - Individual test runs (TEST nodes) with complete execution metadata
+    - Database merge operations (MERGE nodes) combining multiple sources
+    
+    The history tree enables:
+    - Traceability of which tests contributed to coverage
+    - Regression analysis and test filtering
+    - Coverage attribution and debugging
+    - Merge tracking for database composition
+    
+    Each TEST history node contains comprehensive test metadata including
+    execution status, timing, command line, seed, user, and resource usage.
+    
+    History nodes extend Obj, so they support the property interface for
+    additional metadata storage.
+    
+    Example:
+        >>> from ucis.test_status_t import TestStatusT
+        >>> from ucis.test_data import TestData
+        >>> 
+        >>> # Create test history node
+        >>> test = db.createHistoryNode(
+        ...     parent=None,
+        ...     logicalName="test_basic",
+        ...     physicalName="/results/test_basic.ucis",
+        ...     kind=HistoryNodeKind.TEST)
+        >>>
+        >>> # Set test metadata
+        >>> test_data = TestData(
+        ...     teststatus=TestStatusT.OK,
+        ...     toolcategory="simulator",
+        ...     date="2024-01-15",
+        ...     seed="12345")
+        >>> test.setTestData(test_data)
+        >>>
+        >>> # Query test info
+        >>> status = test.getTestStatus()
+        >>> seed = test.getSeed()
+        >>> cmd = test.getCmd()
+        
+    See Also:
+        UCIS.createHistoryNode(): Create history nodes
+        HistoryNodeKind: Node type enumeration
+        TestStatusT: Test status values
+        TestData: Test metadata container
+        UCIS LRM Section 4.13 "History Nodes"
+        UCIS LRM Section 8.13 "History Node Management"
+    """
     
     def __init__(self):
         super().__init__()
     
     def setTestData(self, testdata : TestData):
+        """Set test metadata from TestData object.
+        
+        Convenience method to set all test-related fields from a TestData
+        object in one call. Calls individual setters for each field.
+        
+        Args:
+            testdata: TestData object containing test metadata.
+            
+        Example:
+            >>> test_data = TestData(
+            ...     teststatus=TestStatusT.OK,
+            ...     toolcategory="simulator",
+            ...     date="2024-01-15",
+            ...     seed="12345")
+            >>> hist_node.setTestData(test_data)
+            
+        See Also:
+            TestData: Test metadata container
+        """
         self.setTestStatus(testdata.teststatus)
         self.setToolCategory(testdata.toolcategory)
         self.setDate(testdata.date)
@@ -47,6 +117,25 @@ class HistoryNode(Obj):
         self.setCompulsory(testdata.compulsory)
         self.setUserName(testdata.user)
         self.setCost(testdata.cost)
+   
+    # Note: This class has 30+ getter/setter methods for history node metadata.
+    # Key methods include:
+    # - getLogicalName/setLogicalName: Node identifier
+    # - getPhysicalName/setPhysicalName: Database file path
+    # - getKind: Node type (TEST or MERGE)
+    # - getTestStatus/setTestStatus: Test execution status
+    # - getSimTime/setSimTime, getTimeUnit/setTimeUnit: Simulation timing
+    # - getRunCwd/setRunCwd: Working directory
+    # - getCpuTime/setCpuTime: CPU time consumed
+    # - getSeed/setSeed: Random seed
+    # - getCmd/setCmd, getArgs/setArgs: Command and arguments
+    # - getDate/setDate: Execution date
+    # - getUserName/setUserName: User who ran test
+    # - getVendorId/setVendorId, getVendorTool/setVendorTool: Tool info
+    # - getComment/setComment: Descriptive comment
+    #
+    # All getters raise UnimplError if not implemented by backend.
+    # See implementation for full method signatures.
    
     def getUserAttr(self):
         raise UnimplError()

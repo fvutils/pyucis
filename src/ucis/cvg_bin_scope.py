@@ -24,6 +24,33 @@ Created on Jan 8, 2020
 from ucis.cvg_scope import CvgScope
 
 class CvgBinScope(CvgScope):
+    """Base class for coverage bin scopes.
+    
+    CvgBinScope is a specialized coverage scope class used for certain
+    types of bins or bin-like structures that need scope-level representation
+    rather than being simple cover items.
+    
+    This class extends CvgScope, inheriting all coverpoint/cross options
+    (at_least, auto_bin_max, detect_overlap, etc.), but is used for
+    specialized bin-related scopes in the UCIS hierarchy.
+    
+    Note:
+        This is primarily a structural class in the type hierarchy. Most
+        coverage bins are represented as cover items (CoverItem) accessed
+        via CoverIndex, not as scopes. CvgBinScope is used for special cases
+        where bin-like entities need to be scopes.
+        
+    Example:
+        >>> # CvgBinScope is typically not directly instantiated by users
+        >>> # It's used internally by the UCIS implementation for specialized
+        >>> # bin scope structures
+        
+    See Also:
+        CvgScope: Base coverage scope class
+        CoverItem: Regular coverage items (bins)
+        CoverIndex: Access to coverage items
+        Coverpoint: Coverpoint containing bins
+    """
     
     def __init__(self):
         super().__init__()

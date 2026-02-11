@@ -24,6 +24,50 @@ Created on Jan 8, 2020
 from ucis.cvg_scope import CvgScope
 
 class IllegalBinScope(CvgScope):
+    """Scope for illegal bins in functional coverage.
+    
+    IllegalBinScope represents bins that should never be hit during normal
+    operation. Illegal bins are used in SystemVerilog covergroups to flag
+    error conditions, unexpected value combinations, or design violations.
+    
+    Illegal bins:
+    - Should remain at zero hits during correct operation
+    - Any hits typically indicate a design bug or incorrect stimulus
+    - Are reported as errors or warnings by coverage tools
+    - Do not contribute to coverage percentage calculations
+    
+    When an illegal bin is hit, coverage tools typically report it as a
+    coverage violation, helping identify design or verification issues.
+    
+    Example:
+        >>> # Illegal bins flag error conditions
+        >>> cp = cg.createCoverpoint("cp_opcode", src_info, 1, SourceT.SV)
+        >>>
+        >>> # Create illegal bin for reserved opcodes
+        >>> illegal_bin = cp.createBin(
+        ...     "illegal_reserved",
+        ...     src_info,
+        ...     at_least=0,  # Should stay at 0
+        ...     count=0,
+        ...     rhs="[8'hF0:8'hFF]",  # Reserved range
+        ...     kind=CoverTypeT.ILLEGALBIN)
+        >>>
+        >>> # Check for violations
+        >>> data = illegal_bin.getCoverData()
+        >>> if data.data > 0:
+        ...     print(f"ERROR: Illegal bin hit {data.data} times!")
+        
+    Note:
+        Most implementations treat illegal bins as cover items (CoverItem)
+        rather than scopes. IllegalBinScope exists for implementations that
+        need scope-level representation of illegal bins.
+        
+    See Also:
+        CvgScope: Base coverage scope class
+        IgnoreBinScope: Ignore bin scope
+        CoverTypeT.ILLEGALBIN: Illegal bin type
+        Coverpoint.createBin(): Create bins including illegal bins
+    """
     
     def __init__(self):
         super().__init__()

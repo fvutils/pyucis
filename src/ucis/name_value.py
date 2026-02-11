@@ -23,13 +23,54 @@ Created on Jan 5, 2020
 '''
 
 class NameValue():
+    """Name-value pair container.
+    
+    Simple data structure for storing name-value pairs, commonly used for
+    design parameters, attributes, and other key-value metadata.
+    
+    Attributes:
+        name (str): The name/key of the pair.
+        value (str): The value associated with the name.
+        
+    Example:
+        >>> # Create design parameter
+        >>> param = NameValue("WIDTH", "32")
+        >>> print(f"{param.getName()} = {param.getValue()}")
+        >>>
+        >>> # Use in parameter lists
+        >>> params = [
+        ...     NameValue("DATA_WIDTH", "64"),
+        ...     NameValue("ADDR_WIDTH", "32"),
+        ...     NameValue("DEPTH", "1024")
+        ... ]
+        
+    See Also:
+        InstanceCoverage.getDesignParameters(): Returns list of NameValue
+        InstanceCoverage.addDesignParameter(): Accepts NameValue parameter
+    """
     
     def __init__(self, name, value):
+        """Create name-value pair.
+        
+        Args:
+            name: Name/key string.
+            value: Value string.
+        """
         self.name = name
         self.value = value
         
     def getName(self) -> str:
+        """Get the name/key.
+        
+        Returns:
+            Name string.
+        """
         return self.name
     
     def getValue(self) -> str:
+        """Get the value.
+        
+        Returns:
+            Value string.
+        """
         return self.value
