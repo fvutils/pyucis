@@ -23,8 +23,8 @@ jobs:
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
     - name: Run Tests
       run: |
-        cd ve/unit
-        /bin/bash runtest.sh
+        ./packages/python/bin/python3 -m pip install pytest
+        ./packages/python/bin/python3 -m pytest tests/unit
     - name: Build Docs
       run: |
         ./packages/python/bin/python3 -m pip install -r doc/requirements.txt
