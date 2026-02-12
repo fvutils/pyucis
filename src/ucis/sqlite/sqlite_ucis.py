@@ -33,12 +33,134 @@ from ucis.file_handle import FileHandle
 from ucis.scope_type_t import ScopeTypeT
 from ucis.source_t import SourceT
 from ucis.int_property import IntProperty
+from ucis.source_info import SourceInfo
 
 from ucis.sqlite.sqlite_scope import SqliteScope
 from ucis.sqlite.sqlite_obj import SqliteObj
 from ucis.sqlite.sqlite_history_node import SqliteHistoryNode
 from ucis.sqlite.sqlite_file_handle import SqliteFileHandle
 from ucis.sqlite import schema_manager
+
+
+def _convert_to_sqlite(source_ucis: UCIS) -> 'SqliteUCIS':
+    """
+    Convert a non-SQLite UCIS database to SqliteUCIS.
+    
+    This creates a temporary in-memory SQLite database and copies all
+    scopes, coverage items, and history nodes from the source.
+    
+    Args:
+        source_ucis: The source UCIS database to convert
+        
+    Returns:
+        A SqliteUCIS instance with the copied data
+    """
+    # Create in-memory SQLite database
+    sqlite_db = SqliteUCIS()
+    
+    # Copy metadata
+    sqlite_db.setWrittenBy(source_ucis.getWrittenBy())
+    sqlite_db.setWrittenTime(source_ucis.getWrittenTime())
+    
+    # Copy file handles
+    file_handle_map = {}
+    if hasattr(source_ucis, 'file_handle_m'):
+        for filename, src_fh in source_ucis.file_handle_m.items():
+            # Preserve working directory if available
+            workdir = getattr(src_fh, 'workingDir', None)
+            file_handle_map[filename] = sqlite_db.createFileHandle(filename, workdir)
+    
+    # Copy history nodes
+    for src_hist in source_ucis.historyNodes(-1):
+        _copy_history_node(src_hist, sqlite_db, None)
+    
+    # Copy scopes recursively from root
+    _copy_scope_recursive(source_ucis, sqlite_db, file_handle_map)
+    
+    return sqlite_db
+
+
+def _copy_history_node(src_node, dst_db: 'SqliteUCIS', parent):
+    """Copy a history node from source to destination database"""
+    dst_node = dst_db.createHistoryNode(
+        parent,
+        src_node.getLogicalName(),
+        src_node.getPhysicalName(),
+        src_node.getKind()
+    )
+    
+    # Copy metadata
+    if hasattr(src_node, 'getTestStatus'):
+        dst_node.setTestStatus(src_node.getTestStatus())
+    if hasattr(src_node, 'getSeed'):
+        dst_node.setSeed(src_node.getSeed())
+    if hasattr(src_node, 'getCmd'):
+        dst_node.setCmd(src_node.getCmd())
+    if hasattr(src_node, 'getCpuTime'):
+        dst_node.setCpuTime(src_node.getCpuTime())
+    if hasattr(src_node, 'getDate'):
+        dst_node.setDate(src_node.getDate())
+    if hasattr(src_node, 'getUserName'):
+        dst_node.setUserName(src_node.getUserName())
+    
+    return dst_node
+
+
+def _copy_scope_recursive(src_scope, dst_scope, file_handle_map):
+    """Recursively copy scopes and coverage items from source to destination"""
+    
+    # Copy coverage items for this scope
+    for src_cover in src_scope.coverItems(-1):
+        # Map source file handle to destination file handle
+        src_info = src_cover.getSourceInfo()
+        dst_info = src_info
+        if src_info and src_info.file and hasattr(src_info.file, 'filename'):
+            filename = src_info.file.filename
+            if filename in file_handle_map:
+                dst_info = SourceInfo(
+                    file_handle_map[filename],
+                    src_info.line,
+                    src_info.token
+                )
+        
+        dst_scope.createNextCover(
+            src_cover.getName(),
+            src_cover.getCoverData(),
+            dst_info
+        )
+    
+    # Recursively copy child scopes
+    for src_child in src_scope.scopes(-1):
+        # Map source file handle to destination file handle
+        src_info = src_child.getSourceInfo()
+        dst_info = src_info
+        if src_info and src_info.file and hasattr(src_info.file, 'filename'):
+            filename = src_info.file.filename
+            if filename in file_handle_map:
+                dst_info = SourceInfo(
+                    file_handle_map[filename],
+                    src_info.line,
+                    src_info.token
+                )
+        
+        # Get flags - MemScope stores it in m_flags but doesn't implement getFlags()
+        # Default to 0 if not available
+        try:
+            flags = src_child.getFlags()
+        except (NotImplementedError, AttributeError):
+            flags = getattr(src_child, 'm_flags', 0)
+        
+        dst_child = dst_scope.createScope(
+            src_child.getScopeName(),
+            dst_info,
+            src_child.getWeight(),
+            0,  # source type
+            src_child.getScopeType(),
+            flags
+        )
+        
+        # Recursively copy children
+        _copy_scope_recursive(src_child, dst_child, file_handle_map)
 
 
 class SqliteUCIS(SqliteScope, UCIS):
@@ -307,7 +429,7 @@ class SqliteUCIS(SqliteScope, UCIS):
         Merge coverage from another UCIS database
         
         Args:
-            source_ucis: Source SqliteUCIS database to merge from
+            source_ucis: Source UCIS database to merge from (can be any UCIS type)
             create_history: Whether to create merge history node
             
         Returns:
@@ -315,5 +437,18 @@ class SqliteUCIS(SqliteScope, UCIS):
         """
         from ucis.sqlite.sqlite_merge import SqliteMerger
         
-        merger = SqliteMerger(self)
-        return merger.merge(source_ucis, create_history)
+        # If source is not a SqliteUCIS, convert it first
+        if not isinstance(source_ucis, SqliteUCIS):
+            source_ucis = _convert_to_sqlite(source_ucis)
+            temp_source = source_ucis  # Keep reference to close later
+        else:
+            temp_source = None
+        
+        try:
+            merger = SqliteMerger(self)
+            result = merger.merge(source_ucis, create_history)
+            return result
+        finally:
+            # Clean up temporary SQLite database if we created one
+            if temp_source is not None:
+                temp_source.close()
