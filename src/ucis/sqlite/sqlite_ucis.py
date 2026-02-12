@@ -33,6 +33,7 @@ from ucis.file_handle import FileHandle
 from ucis.scope_type_t import ScopeTypeT
 from ucis.source_t import SourceT
 from ucis.int_property import IntProperty
+from ucis.source_info import SourceInfo
 
 from ucis.sqlite.sqlite_scope import SqliteScope
 from ucis.sqlite.sqlite_obj import SqliteObj
@@ -65,7 +66,9 @@ def _convert_to_sqlite(source_ucis: UCIS) -> 'SqliteUCIS':
     file_handle_map = {}
     if hasattr(source_ucis, 'file_handle_m'):
         for filename, src_fh in source_ucis.file_handle_m.items():
-            file_handle_map[filename] = sqlite_db.createFileHandle(filename, None)
+            # Preserve working directory if available
+            workdir = getattr(src_fh, 'workingDir', None)
+            file_handle_map[filename] = sqlite_db.createFileHandle(filename, workdir)
     
     # Copy history nodes
     for src_hist in source_ucis.historyNodes(-1):
@@ -114,7 +117,6 @@ def _copy_scope_recursive(src_scope, dst_scope, file_handle_map):
         if src_info and src_info.file and hasattr(src_info.file, 'filename'):
             filename = src_info.file.filename
             if filename in file_handle_map:
-                from ucis.source_info import SourceInfo
                 dst_info = SourceInfo(
                     file_handle_map[filename],
                     src_info.line,
@@ -135,7 +137,6 @@ def _copy_scope_recursive(src_scope, dst_scope, file_handle_map):
         if src_info and src_info.file and hasattr(src_info.file, 'filename'):
             filename = src_info.file.filename
             if filename in file_handle_map:
-                from ucis.source_info import SourceInfo
                 dst_info = SourceInfo(
                     file_handle_map[filename],
                     src_info.line,
@@ -143,6 +144,7 @@ def _copy_scope_recursive(src_scope, dst_scope, file_handle_map):
                 )
         
         # Get flags - MemScope stores it in m_flags but doesn't implement getFlags()
+        # Default to 0 if not available
         try:
             flags = src_child.getFlags()
         except (NotImplementedError, AttributeError):
@@ -152,7 +154,7 @@ def _copy_scope_recursive(src_scope, dst_scope, file_handle_map):
             src_child.getScopeName(),
             dst_info,
             src_child.getWeight(),
-            0,  # source
+            0,  # source type
             src_child.getScopeType(),
             flags
         )
