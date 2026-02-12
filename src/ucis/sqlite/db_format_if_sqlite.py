@@ -77,7 +77,7 @@ class DbFormatIfSqlite(FormatIfDb):
     def register(cls, rgy):
         """Register SQLite format with format registry"""
         rgy.addDatabaseFormat(FormatDescDb(
-            fmt_if=cls(),
+            fmt_if=cls,
             name='sqlite',
             flags=FormatDbFlags.Create | FormatDbFlags.Read | FormatDbFlags.Write,
             description='SQLite database format - persistent, queryable storage'
