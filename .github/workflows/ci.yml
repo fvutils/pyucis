@@ -24,6 +24,7 @@ jobs:
     - name: Run Tests
       run: |
         ./packages/python/bin/python3 -m pip install pytest
+        ./packages/python/bin/python3 -m pip install -e .
         ./packages/python/bin/python3 -m pytest tests/unit
     - name: Build Docs
       run: |
