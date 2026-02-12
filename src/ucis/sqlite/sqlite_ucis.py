@@ -71,7 +71,12 @@ class SqliteUCIS(SqliteScope, UCIS):
             )
             root_scope_id = cursor.lastrowid
         else:
-            # Existing database - run migrations if needed
+            # Existing database - validate it's a PyUCIS database
+            is_valid, error_msg = schema_manager.is_pyucis_database(self.conn)
+            if not is_valid:
+                raise ValueError(f"Invalid PyUCIS database: {error_msg}")
+            
+            # Ensure schema version is current
             schema_manager.ensure_schema_current(self.conn)
             
             # Find root scope
@@ -302,13 +307,14 @@ class SqliteUCIS(SqliteScope, UCIS):
         else:
             return super().getIntProperty(coverindex, property)
     
-    def merge(self, source_ucis, create_history: bool = True):
+    def merge(self, source_ucis, create_history: bool = True, squash_history: bool = False):
         """
         Merge coverage from another UCIS database
         
         Args:
             source_ucis: Source SqliteUCIS database to merge from
             create_history: Whether to create merge history node
+            squash_history: If True, collapse per-test history into a summary node
             
         Returns:
             MergeStats object with statistics
@@ -316,4 +322,4 @@ class SqliteUCIS(SqliteScope, UCIS):
         from ucis.sqlite.sqlite_merge import SqliteMerger
         
         merger = SqliteMerger(self)
-        return merger.merge(source_ucis, create_history)
+        return merger.merge(source_ucis, create_history, squash_history)

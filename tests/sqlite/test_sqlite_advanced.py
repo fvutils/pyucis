@@ -108,9 +108,9 @@ class TestSqliteMerge(unittest.TestCase):
     def test_merge_file_databases(self):
         """Test merging file-based databases"""
         with tempfile.TemporaryDirectory() as tmpdir:
-            db1_path = os.path.join(tmpdir, "db1.ucisdb")
-            db2_path = os.path.join(tmpdir, "db2.ucisdb")
-            merged_path = os.path.join(tmpdir, "merged.ucisdb")
+            db1_path = os.path.join(tmpdir, "db1.cdb")
+            db2_path = os.path.join(tmpdir, "db2.cdb")
+            merged_path = os.path.join(tmpdir, "merged.cdb")
             
             # Create first database
             db1 = SqliteUCIS(db1_path)
@@ -223,7 +223,7 @@ class TestSqliteAttributes(unittest.TestCase):
     
     def test_attribute_persistence(self):
         """Test attributes persist across database close/reopen"""
-        with tempfile.NamedTemporaryFile(suffix='.ucisdb', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix='.cdb', delete=False) as f:
             db_path = f.name
         
         try:
@@ -312,7 +312,7 @@ class TestSqliteTags(unittest.TestCase):
     
     def test_tag_persistence(self):
         """Test tags persist across database close/reopen"""
-        with tempfile.NamedTemporaryFile(suffix='.ucisdb', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix='.cdb', delete=False) as f:
             db_path = f.name
         
         try:

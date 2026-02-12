@@ -45,6 +45,10 @@ def get_parser():
         help="Specifies the format of the input databases. Defaults to 'xml'")
     merge.add_argument("--libucis", "-l",
         help="Specifies the name/path of the UCIS shared library")
+    merge.add_argument("--squash-history",
+        action="store_true",
+        default=False,
+        help="Collapse per-test history into a single summary node")
     merge.add_argument("db", nargs="+")
     merge.set_defaults(func=cmd_merge.merge)
     

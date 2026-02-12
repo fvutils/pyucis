@@ -58,13 +58,14 @@ class SqliteMerger:
         self._scope_path_cache = {}  # Cache of scope paths
         self._scope_match_cache = {}  # Cache source->target scope mappings
     
-    def merge(self, source_ucis, create_history: bool = True):
+    def merge(self, source_ucis, create_history: bool = True, squash_history: bool = False):
         """
         Merge source database into target database
         
         Args:
             source_ucis: Source SqliteUCIS to merge from
             create_history: Whether to create merge history node
+            squash_history: If True, collapse per-test history into a summary node
             
         Returns:
             MergeStats object with merge statistics
@@ -75,21 +76,58 @@ class SqliteMerger:
         self.target.begin_transaction()
         
         try:
-            # Create merge history node
+            # Create merge history node or find summary node
             merge_node = None
             if create_history:
-                merge_node = self.target.createHistoryNode(
-                    None,
-                    f"merge_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                    None,
-                    HistoryNodeKind.MERGE
-                )
-                merge_node.setDate(int(datetime.now().timestamp()))
-            
-            # Copy test history nodes from source
-            for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
-                self._copy_history_node(src_test, merge_node)
-                self.stats.tests_merged += 1
+                if squash_history:
+                    # Find or create summary history node
+                    summary_node = None
+                    for node in self.target.historyNodes(HistoryNodeKind.MERGE):
+                        if node.getLogicalName() == "merged_summary":
+                            summary_node = node
+                            break
+                    
+                    if summary_node is None:
+                        # Create new summary node
+                        summary_node = self.target.createHistoryNode(
+                            None,
+                            "merged_summary",
+                            None,
+                            HistoryNodeKind.MERGE
+                        )
+                        summary_node.setDate(int(datetime.now().timestamp()))
+                        # Initialize test counter
+                        cursor = self.target.conn.cursor()
+                        cursor.execute(
+                            "INSERT INTO history_properties (history_id, property_key, property_type, int_value) VALUES (?, ?, ?, ?)",
+                            (summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF, 0, 0)
+                        )
+                    
+                    merge_node = summary_node
+                    
+                    # Increment test count
+                    test_count = len(list(source_ucis.historyNodes(HistoryNodeKind.TEST)))
+                    cursor = self.target.conn.cursor()
+                    cursor.execute(
+                        "UPDATE history_properties SET int_value = int_value + ? WHERE history_id = ? AND property_key = ?",
+                        (test_count, merge_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF)
+                    )
+                    self.stats.tests_merged += test_count
+                    
+                else:
+                    # Create regular merge node with test history
+                    merge_node = self.target.createHistoryNode(
+                        None,
+                        f"merge_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                        None,
+                        HistoryNodeKind.MERGE
+                    )
+                    merge_node.setDate(int(datetime.now().timestamp()))
+                    
+                    # Copy test history nodes from source
+                    for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
+                        self._copy_history_node(src_test, merge_node)
+                        self.stats.tests_merged += 1
             
             # Merge scopes recursively starting from root
             self._merge_scope_recursive(source_ucis, self.target)
@@ -271,7 +309,7 @@ class SqliteMerger:
 
 
 def merge_databases(target_path: str, source_paths: list, 
-                   output_path: str = None) -> MergeStats:
+                   output_path: str = None, squash_history: bool = False) -> MergeStats:
     """
     Convenience function to merge multiple databases
     
@@ -279,6 +317,7 @@ def merge_databases(target_path: str, source_paths: list,
         target_path: Path to target database (base)
         source_paths: List of paths to source databases to merge
         output_path: Optional output path (if None, modifies target in-place)
+        squash_history: If True, collapse per-test history into a summary node
         
     Returns:
         MergeStats from the merge operation
@@ -301,7 +340,7 @@ def merge_databases(target_path: str, source_paths: list,
     for src_path in source_paths:
         source = SqliteUCIS(src_path)
         
-        stats = merger.merge(source)
+        stats = merger.merge(source, squash_history=squash_history)
         
         # Accumulate statistics
         total_stats.scopes_matched += stats.scopes_matched

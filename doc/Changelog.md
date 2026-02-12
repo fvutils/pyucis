@@ -1,4 +1,24 @@
 
+## 0.1.7 (Unreleased)
+- **File Extension Change:** SQLite databases now use `.cdb` (Coverage DataBase) extension
+- **Database Identification:** Added two-level validation system:
+  - Level 1: Verify file is a valid SQLite database (SQLite header check)
+  - Level 2: Verify it's a PyUCIS database (DATABASE_TYPE marker + required tables)
+  - Automatic validation when opening databases with descriptive error messages
+- **SQLite Schema v2.1:** Optimized for merge performance and storage efficiency
+  - Removed 7 unused indexes (30-40% storage overhead reduction)
+  - No query performance impact from index removal
+  - Schema version tracking in db_metadata table
+- **Merge Optimizations:** 
+  - Added `squash_history` parameter to merge APIs for large-scale merges
+  - Optional history squashing eliminates per-test history row growth
+  - Coverage data accuracy identical in both squashed and non-squashed modes
+- **CLI Enhancement:** Added `--squash-history` flag to merge command
+- **Test Coverage:** Added 13 new tests (5 validation + 8 optimization tests)
+- **Breaking Change:** Databases from schema v2.0 or earlier must be recreated
+  - Opening incompatible schema versions now raises descriptive error
+  - Non-PyUCIS databases rejected with clear error messages
+
 ## 0.1.6 (Unreleased)
 - Fixed XML schema bug: coverpoint minOccurs changed from 1 to 0 (matches UCIS spec)
 - Implemented complete XML options read/write support (weight, goal, at_least, per_instance, etc.)

@@ -25,6 +25,27 @@ def merge(args):
     input_desc : FormatDescDb = rgy.getDatabaseDesc(args.input_format)
     output_desc : FormatDescDb = rgy.getDatabaseDesc(args.output_format)
 
+    # Check if both formats are SQLite to use optimized merge
+    squash_history = getattr(args, 'squash_history', False)
+    if args.input_format == "sqlite" and args.output_format == "sqlite" and squash_history:
+        # Use SQLite-specific merge with squash_history
+        from ucis.sqlite import SqliteUCIS
+        from ucis.sqlite.sqlite_merge import SqliteMerger
+        
+        # Create output database
+        out_db = SqliteUCIS(args.out)
+        merger = SqliteMerger(out_db)
+        
+        # Merge each input
+        for input_path in args.db:
+            src_db = SqliteUCIS(input_path)
+            merger.merge(src_db, create_history=True, squash_history=True)
+            src_db.close()
+        
+        out_db.close()
+        return
+
+    # Default generic merge path
     db_l : List[UCIS] = []
     for input in args.db:
         db_if : FormatIfDb = input_desc.fmt_if()

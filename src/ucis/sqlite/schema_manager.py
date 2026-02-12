@@ -23,7 +23,7 @@ Creates and manages database schema based on sqlite_schema.md
 import sqlite3
 from datetime import datetime
 
-SCHEMA_VERSION = "2.0"
+SCHEMA_VERSION = "2.1"
 
 def create_schema(conn: sqlite3.Connection):
     """Create all tables and indexes for UCIS database"""
@@ -89,11 +89,7 @@ def create_schema(conn: sqlite3.Connection):
     """)
     
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_parent ON scopes(parent_id)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_type ON scopes(scope_type)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_name ON scopes(scope_name)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_parent_name ON scopes(parent_id, scope_name)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_parent_type_name ON scopes(parent_id, scope_type, scope_name)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_source ON scopes(source_file_id, source_line) WHERE source_file_id IS NOT NULL")
     
     # 4. Cover Items
     cursor.execute("""
@@ -120,11 +116,7 @@ def create_schema(conn: sqlite3.Connection):
         )
     """)
     
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_scope ON coveritems(scope_id)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_type ON coveritems(cover_type)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_name ON coveritems(cover_name)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_scope_index ON coveritems(scope_id, cover_index)")
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_source ON coveritems(source_file_id, source_line) WHERE source_file_id IS NOT NULL")
     
     # 5. History Nodes
     cursor.execute("""
@@ -369,6 +361,8 @@ def initialize_metadata(conn: sqlite3.Connection):
     
     # Insert default metadata
     metadata = [
+        ('DATABASE_TYPE', 'PYUCIS'),
+        ('DATABASE_FORMAT_VERSION', '1.0'),
         ('UCIS_VERSION', '1.0'),
         ('API_VERSION', '1.0'),
         ('SCHEMA_VERSION', SCHEMA_VERSION),
@@ -382,6 +376,108 @@ def initialize_metadata(conn: sqlite3.Connection):
     )
     
     conn.commit()
+
+
+def is_valid_sqlite_file(filepath: str) -> bool:
+    """
+    Check if a file is a valid SQLite database.
+    
+    Args:
+        filepath: Path to file to check
+        
+    Returns:
+        True if file is a valid SQLite database
+    """
+    import os
+    
+    if not os.path.exists(filepath):
+        return False
+    
+    if os.path.getsize(filepath) < 100:  # SQLite header is 100 bytes
+        return False
+    
+    try:
+        # Check SQLite magic header
+        with open(filepath, 'rb') as f:
+            header = f.read(16)
+            # SQLite files start with "SQLite format 3\000"
+            if header[:15] != b'SQLite format 3':
+                return False
+        
+        # Try to open it as SQLite
+        conn = sqlite3.connect(filepath)
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master LIMIT 1")
+        conn.close()
+        return True
+    except Exception:
+        return False
+
+
+def is_pyucis_database(conn_or_filepath) -> tuple:
+    """
+    Check if a database is a valid PyUCIS coverage database.
+    
+    Args:
+        conn_or_filepath: Either a sqlite3.Connection or a file path string
+        
+    Returns:
+        Tuple of (is_valid: bool, error_message: str or None)
+    """
+    close_conn = False
+    
+    try:
+        # Handle both connection and filepath
+        if isinstance(conn_or_filepath, str):
+            # First check if it's a valid SQLite file
+            if not is_valid_sqlite_file(conn_or_filepath):
+                return (False, "Not a valid SQLite database file")
+            
+            conn = sqlite3.connect(conn_or_filepath)
+            close_conn = True
+        else:
+            conn = conn_or_filepath
+        
+        cursor = conn.cursor()
+        
+        # Check for db_metadata table
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='db_metadata'"
+        )
+        if not cursor.fetchone():
+            if close_conn:
+                conn.close()
+            return (False, "Missing db_metadata table - not a PyUCIS database")
+        
+        # Check for DATABASE_TYPE marker
+        cursor.execute("SELECT value FROM db_metadata WHERE key = 'DATABASE_TYPE'")
+        row = cursor.fetchone()
+        if not row or row[0] != 'PYUCIS':
+            if close_conn:
+                conn.close()
+            return (False, "Missing or invalid DATABASE_TYPE marker - not a PyUCIS database")
+        
+        # Check for required tables
+        required_tables = ['scopes', 'coveritems', 'history_nodes']
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name IN (?, ?, ?)",
+            required_tables
+        )
+        found_tables = {row[0] for row in cursor.fetchall()}
+        
+        if len(found_tables) != len(required_tables):
+            missing = set(required_tables) - found_tables
+            if close_conn:
+                conn.close()
+            return (False, f"Missing required tables: {', '.join(missing)}")
+        
+        if close_conn:
+            conn.close()
+        
+        return (True, None)
+        
+    except Exception as e:
+        return (False, f"Error checking database: {str(e)}")
 
 
 def get_schema_version(conn: sqlite3.Connection) -> str:
@@ -401,52 +497,18 @@ def check_schema_exists(conn: sqlite3.Connection) -> bool:
     return cursor.fetchone() is not None
 
 
-def migrate_to_v2(conn: sqlite3.Connection):
-    """Migrate schema from v1 to v2: Add covergroup/coverpoint option columns"""
-    cursor = conn.cursor()
-    
-    # Check if columns already exist
-    cursor.execute("PRAGMA table_info(scopes)")
-    columns = {row[1] for row in cursor.fetchall()}
-    
-    # Add new columns if they don't exist
-    if 'per_instance' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN per_instance INTEGER DEFAULT 0")
-    if 'merge_instances' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN merge_instances INTEGER DEFAULT 1")
-    if 'get_inst_coverage' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN get_inst_coverage INTEGER DEFAULT 0")
-    if 'at_least' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN at_least INTEGER DEFAULT 1")
-    if 'auto_bin_max' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN auto_bin_max INTEGER DEFAULT 64")
-    if 'detect_overlap' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN detect_overlap INTEGER DEFAULT 0")
-    if 'strobe' not in columns:
-        cursor.execute("ALTER TABLE scopes ADD COLUMN strobe INTEGER DEFAULT 0")
-    
-    # Update schema version
-    cursor.execute(
-        "INSERT OR REPLACE INTO db_metadata (key, value) VALUES ('SCHEMA_VERSION', '2.0')"
-    )
-    
-    conn.commit()
-
-
 def ensure_schema_current(conn: sqlite3.Connection):
-    """Ensure database schema is at current version, running migrations if needed"""
+    """Ensure database schema is at current version"""
     if not check_schema_exists(conn):
         # New database - create with latest schema
         create_schema(conn)
+        initialize_metadata(conn)
         return
     
+    # Verify schema version matches current
     version = get_schema_version(conn)
-    
-    # Run migrations as needed
-    if version is None or version == "1.0":
-        print("Migrating SQLite schema from v1.0 to v2.0...")
-        migrate_to_v2(conn)
-        print("Migration complete")
-    # Future migrations would go here
-    # elif version == "2.0":
-    #     migrate_to_v3(conn)
+    if version != SCHEMA_VERSION:
+        raise Exception(
+            f"Database schema version mismatch: found {version}, expected {SCHEMA_VERSION}. "
+            f"Please recreate the database with the current schema version."
+        )

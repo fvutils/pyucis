@@ -44,7 +44,7 @@ class TestSqliteBasic(unittest.TestCase):
     
     def test_create_file_db(self):
         """Test creating a file-based database"""
-        with tempfile.NamedTemporaryFile(suffix='.ucisdb', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix='.cdb', delete=False) as f:
             db_path = f.name
         
         try:
@@ -291,7 +291,7 @@ class TestSqliteBasic(unittest.TestCase):
     
     def test_persistence(self):
         """Test data persistence across close/open"""
-        with tempfile.NamedTemporaryFile(suffix='.ucisdb', delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix='.cdb', delete=False) as f:
             db_path = f.name
         
         try:
