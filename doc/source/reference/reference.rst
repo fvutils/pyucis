@@ -10,6 +10,7 @@ used by PyUCIS.
 
    coverage_report_api
    coverage_report_json
+   html_coverage_report
    xml_interchange
    yaml_coverage
    recording_coverage_best_practices

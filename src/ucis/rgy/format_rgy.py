@@ -75,6 +75,10 @@ class FormatRgy(object):
         
         FormatRptJson.register(self)
         FormatRptText.register(self)
+        
+        # Register HTML format
+        from ucis.report.format_rpt_html import FormatRptHtml
+        FormatRptHtml.register(self)
     
     @classmethod
     def inst(cls):
