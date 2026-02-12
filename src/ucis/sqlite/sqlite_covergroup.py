@@ -233,3 +233,13 @@ class SqliteCovergroup(SqliteScope, Covergroup):
             cross.addCoverpoint(coverpoint, index)
         
         return cross
+    
+    def createCoverInstance(self, name: str, srcinfo: SourceInfo, weight: int,
+                          source: SourceT) -> 'Covergroup':
+        """Create a covergroup instance under this covergroup type"""
+        # Create scope with COVERINSTANCE type
+        scope = self.createScope(name, srcinfo, weight, source,
+                                ScopeTypeT.COVERINSTANCE, 0)
+        
+        # Return as SqliteCovergroup to support covergroup operations
+        return SqliteCovergroup(self.ucis_db, scope.scope_id)
