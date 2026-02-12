@@ -153,12 +153,23 @@ The ``ucis`` command provides several operations:
   Convert between different UCIS database formats (XML, YAML, LibUCIS)
 
 **Report**
-  Generate coverage reports from UCIS databases
+  Generate coverage reports from UCIS databases in multiple formats:
+  
+  - **HTML** - Interactive single-file report with charts, bin details, and filtering
+  - **JSON** - Machine-readable structured data
+  - **Text** - Human-readable terminal output
+  - **XML** - Interchange format
+  - **Cobertura** - XML format for CI/CD tools
+  
+  See :doc:`reference/html_coverage_report` for HTML report documentation.
 
 Example:
 
 .. code-block:: bash
 
+    # Generate interactive HTML report
+    ucis report coverage.ucis -of html -o report.html
+    
     # Analyze coverage
     ucis show summary coverage.ucis
     

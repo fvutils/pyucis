@@ -1,0 +1,802 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Coverage Report Format &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="XML Interchange Format" href="xml_interchange.html" />
+    <link rel="prev" title="JSON Coverage Report" href="coverage_report_json.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mcp_server.html">MCP Server</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">HTML Coverage Report Format</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generating-html-reports">Generating HTML Reports</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#command-line">Command Line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#report-features">Report Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary-dashboard">Summary Dashboard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#hierarchical-navigation">Hierarchical Navigation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverpoint-bin-details">Coverpoint Bin Details</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interactive-visualizations">Interactive Visualizations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-gaps-view">Coverage Gaps View</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#by-type-view">By Type View</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#technical-details">Technical Details</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-structure">File Structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-format">Data Format</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#technologies-used">Technologies Used</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-size">File Size</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance">Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gap-analysis">Gap Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bin-coverage-analysis">Bin Coverage Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subsystem-comparison">Subsystem Comparison</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#management-reporting">Management Reporting</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#advantages">Advantages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#over-text-reports">Over Text Reports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#over-database-tools">Over Database Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#over-commercial-tools">Over Commercial Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-options">Advanced Options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compression">Compression</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#theming">Theming</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#customization">Customization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-script">Python Script</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.formatters.format_html.HtmlFormatter"><code class="docutils literal notranslate"><span class="pre">HtmlFormatter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constructor-parameters">Constructor Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#format-method">Format Method</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yaml_coverage.html">YAML Coverage Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_api.html">Native C Library API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html#back-end-apis">Back-End APIs</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
+      <li class="breadcrumb-item active">HTML Coverage Report Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/html_coverage_report.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="html-coverage-report-format">
+<h1>HTML Coverage Report Format<a class="headerlink" href="#html-coverage-report-format" title="Link to this heading"></a></h1>
+<p>The HTML coverage report format generates a single-file, interactive HTML report that provides comprehensive visualization and analysis of UCIS coverage data. The report can be opened directly in any modern web browser without requiring a web server or external dependencies.</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Single-File Portability</strong> - All data, code, and styles embedded in one HTML file</p></li>
+<li><p><strong>Interactive Navigation</strong> - Expandable hierarchical tree with filtering and search</p></li>
+<li><p><strong>D3.js Visualizations</strong> - Pie charts, bar charts, and treemaps for coverage analysis</p></li>
+<li><p><strong>Coverpoint Bin Details</strong> - View individual bins with hit counts, goals, and status</p></li>
+<li><p><strong>Zero Dependencies</strong> - JavaScript libraries loaded from CDN (works offline if cached)</p></li>
+<li><p><strong>Responsive Design</strong> - Professional UI that works on desktop and tablet</p></li>
+<li><p><strong>Export Friendly</strong> - Easy to share via email, archive, or web hosting</p></li>
+</ul>
+<section id="generating-html-reports">
+<h2>Generating HTML Reports<a class="headerlink" href="#generating-html-reports" title="Link to this heading"></a></h2>
+<section id="command-line">
+<h3>Command Line<a class="headerlink" href="#command-line" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">pyucis</span> <span class="pre">report</span></code> command can generate HTML reports using the <code class="docutils literal notranslate"><span class="pre">-of</span> <span class="pre">html</span></code> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic HTML report</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.xml<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+
+<span class="c1"># From SQLite database</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.ucis<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+
+<span class="c1"># From YAML</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.yaml<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+</pre></div>
+</div>
+<p>The generated HTML file can be opened directly in any browser:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firefox<span class="w"> </span>report.html
+<span class="c1"># or</span>
+chrome<span class="w"> </span>report.html
+<span class="c1"># or</span>
+open<span class="w"> </span>report.html<span class="w">  </span><span class="c1"># macOS</span>
+</pre></div>
+</div>
+</section>
+<section id="python-api">
+<h3>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
+<p>You can generate HTML reports programmatically using the <code class="docutils literal notranslate"><span class="pre">HtmlFormatter</span></code> class:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+
+<span class="c1"># Load database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create formatter</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">(</span>
+    <span class="n">include_source</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Include source file info</span>
+    <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>       <span class="c1"># Don&#39;t compress data (better for debugging)</span>
+    <span class="n">theme</span><span class="o">=</span><span class="s1">&#39;light&#39;</span>         <span class="c1"># Use light theme</span>
+<span class="p">)</span>
+
+<span class="c1"># Generate report</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="report-features">
+<h2>Report Features<a class="headerlink" href="#report-features" title="Link to this heading"></a></h2>
+<section id="summary-dashboard">
+<h3>Summary Dashboard<a class="headerlink" href="#summary-dashboard" title="Link to this heading"></a></h3>
+<p>The summary view provides high-level coverage metrics:</p>
+<ul class="simple">
+<li><p><strong>Total Coverage Percentage</strong> - Overall coverage across all items</p></li>
+<li><p><strong>Total Items</strong> - Count of all coverage items (bins, statements, etc.)</p></li>
+<li><p><strong>Covered Items</strong> - Count of items that have been hit</p></li>
+<li><p><strong>Uncovered Items</strong> - Count of items that have not been hit</p></li>
+<li><p><strong>Coverage by Type</strong> - Breakdown by coverage type (functional, line, branch, etc.)</p></li>
+<li><p><strong>Progress Bar</strong> - Visual representation of overall coverage</p></li>
+</ul>
+</section>
+<section id="hierarchical-navigation">
+<h3>Hierarchical Navigation<a class="headerlink" href="#hierarchical-navigation" title="Link to this heading"></a></h3>
+<p>The hierarchy view displays the complete design/verification structure:</p>
+<p><strong>Tree Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Expandable/Collapsible Nodes</strong> - Click arrows (▶/▼) to show/hide children</p></li>
+<li><p><strong>Expand All / Collapse All</strong> - Buttons to quickly navigate deep hierarchies</p></li>
+<li><p><strong>Type-Specific Icons</strong> - Visual distinction between modules (📦), covergroups (📋), coverpoints (🎯), etc.</p></li>
+<li><p><strong>Scope Type Labels</strong> - Shows type in parentheses, e.g., “my_covergroup (COVERGROUP)”</p></li>
+<li><p><strong>Coverage Indicators</strong> - Color-coded percentages (green ≥80%, orange 50-80%, red &lt;50%)</p></li>
+<li><p><strong>4-Level Deep Support</strong> - Handles nested hierarchies up to 4 levels</p></li>
+</ul>
+<p><strong>Filtering:</strong></p>
+<ul class="simple">
+<li><p><strong>Search</strong> - Real-time text search across scope names</p></li>
+<li><p><strong>Status Filter</strong> - Filter by all/covered/uncovered/partial coverage</p></li>
+<li><p><strong>Coverage Threshold</strong> - Show only scopes meeting minimum coverage percentage</p></li>
+<li><p><strong>Reset</strong> - Clear all filters with one click</p></li>
+</ul>
+</section>
+<section id="coverpoint-bin-details">
+<h3>Coverpoint Bin Details<a class="headerlink" href="#coverpoint-bin-details" title="Link to this heading"></a></h3>
+<p>When you click on a coverpoint in the hierarchy, a detailed table displays all bins:</p>
+<p><strong>Bin Table Columns:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Bin Name</strong> - Identifier for the bin (monospace font)</p></li>
+<li><p><strong>Type</strong> - Badge showing bin type:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bin</span></code> (blue) - Regular coverage bin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignore_bin</span></code> (orange) - Excluded from coverage calculations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">illegal_bin</span></code> (red) - Should never be hit</p></li>
+</ul>
+</li>
+<li><p><strong>Hits</strong> - Number of times the bin was hit (formatted with thousands separators)</p></li>
+<li><p><strong>Goal</strong> - Target hit count (at_least threshold)</p></li>
+<li><p><strong>Status</strong> - Badge showing bin status:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">covered</span></code> (green) - Hit count ≥ goal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uncovered</span></code> (red) - Hit count &lt; goal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ignored</span></code> (gray) - Excluded bin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">illegal</span></code> (red) - Illegal bin was hit (error!)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ok</span></code> (green) - Illegal bin not hit</p></li>
+</ul>
+</li>
+<li><p><strong>Coverage</strong> - Mini progress bar + percentage showing hits/goal ratio</p></li>
+</ol>
+<p><strong>Visual Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Row Highlighting</strong> - Green background for covered bins, red for illegal bins that were hit</p></li>
+<li><p><strong>Hover Effects</strong> - Subtle highlighting when hovering over rows</p></li>
+<li><p><strong>Sortable</strong> - (Future: Click headers to sort)</p></li>
+<li><p><strong>Color-Coded Progress Bars</strong> - Green (covered), orange (partial), red (uncovered)</p></li>
+</ul>
+</section>
+<section id="interactive-visualizations">
+<h3>Interactive Visualizations<a class="headerlink" href="#interactive-visualizations" title="Link to this heading"></a></h3>
+<p>The Charts tab provides three D3.js-powered visualizations:</p>
+<section id="pie-chart-coverage-by-type">
+<h4>Pie Chart: Coverage by Type<a class="headerlink" href="#pie-chart-coverage-by-type" title="Link to this heading"></a></h4>
+<p>Displays coverage percentage breakdown by type (functional, line, branch, toggle, etc.):</p>
+<ul class="simple">
+<li><p><strong>Color-Coded Segments</strong> - Each type has a distinct color</p></li>
+<li><p><strong>Interactive Tooltips</strong> - Hover to see exact percentages</p></li>
+<li><p><strong>Smart Labels</strong> - Only show labels for segments &gt;5% to avoid clutter</p></li>
+<li><p><strong>Hover Effects</strong> - Segments highlight on mouseover</p></li>
+</ul>
+</section>
+<section id="bar-chart-top-coverage-gaps">
+<h4>Bar Chart: Top Coverage Gaps<a class="headerlink" href="#bar-chart-top-coverage-gaps" title="Link to this heading"></a></h4>
+<p>Shows the 10 scopes with the lowest coverage:</p>
+<ul class="simple">
+<li><p><strong>Horizontal Bars</strong> - Length represents coverage percentage</p></li>
+<li><p><strong>Color-Coded</strong> - Red (&lt;50%), orange (50-80%), green (≥80%)</p></li>
+<li><p><strong>Labeled Axes</strong> - Clear percentage scale and scope names</p></li>
+<li><p><strong>Interactive Tooltips</strong> - Hover for scope name and exact percentage</p></li>
+<li><p><strong>Priority Identification</strong> - Focus on items that need the most work</p></li>
+</ul>
+</section>
+<section id="treemap-hierarchical-coverage">
+<h4>Treemap: Hierarchical Coverage<a class="headerlink" href="#treemap-hierarchical-coverage" title="Link to this heading"></a></h4>
+<p>Visualizes the entire design hierarchy as nested rectangles:</p>
+<ul class="simple">
+<li><p><strong>Rectangle Size</strong> - Proportional to scope weight (importance)</p></li>
+<li><p><strong>Rectangle Color</strong> - Based on coverage percentage:</p>
+<ul>
+<li><p>Red (0-50%) - Low coverage, needs attention</p></li>
+<li><p>Orange (50-80%) - Moderate coverage</p></li>
+<li><p>Green (80-100%) - Good coverage</p></li>
+</ul>
+</li>
+<li><p><strong>Labels</strong> - Scope name and coverage % shown for larger cells</p></li>
+<li><p><strong>Interactive Tooltips</strong> - Hover for detailed information</p></li>
+<li><p><strong>Hover Highlighting</strong> - Border thickness increases on mouseover</p></li>
+<li><p><strong>Quick Overview</strong> - See entire project status at a glance</p></li>
+</ul>
+</section>
+</section>
+<section id="coverage-gaps-view">
+<h3>Coverage Gaps View<a class="headerlink" href="#coverage-gaps-view" title="Link to this heading"></a></h3>
+<p>Shows all scopes with less than 100% coverage:</p>
+<ul class="simple">
+<li><p><strong>Filtered List</strong> - Only incomplete coverage items</p></li>
+<li><p><strong>Quick Identification</strong> - Find areas that need more verification</p></li>
+<li><p><strong>Coverage Percentages</strong> - See how close each item is to completion</p></li>
+</ul>
+</section>
+<section id="by-type-view">
+<h3>By Type View<a class="headerlink" href="#by-type-view" title="Link to this heading"></a></h3>
+<p>Lists coverage statistics grouped by coverage type:</p>
+<ul class="simple">
+<li><p><strong>Functional Coverage</strong> - Covergroups and coverpoints</p></li>
+<li><p><strong>Code Coverage</strong> - Line, branch, toggle, block, etc.</p></li>
+<li><p><strong>Organized Display</strong> - Easy to see strengths and weaknesses</p></li>
+</ul>
+</section>
+</section>
+<section id="technical-details">
+<h2>Technical Details<a class="headerlink" href="#technical-details" title="Link to this heading"></a></h2>
+<section id="file-structure">
+<h3>File Structure<a class="headerlink" href="#file-structure" title="Link to this heading"></a></h3>
+<p>The HTML report is completely self-contained:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>UCIS Coverage Report<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="c">/* Embedded CSS (~15 KB) */</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="cm">&lt;!-- Application HTML structure --&gt;</span>
+
+    <span class="cm">&lt;!-- Embedded JSON data --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;coverage-data&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;application/json&quot;</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;metadata&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{...},</span>
+<span class="w">        </span><span class="s2">&quot;summary&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{...},</span>
+<span class="w">        </span><span class="s2">&quot;scopes&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[...]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+    <span class="cm">&lt;!-- Embedded JavaScript (~20 KB) --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="c1">// Alpine.js reactive framework</span>
+<span class="w">        </span><span class="c1">// D3.js visualization code</span>
+<span class="w">        </span><span class="c1">// Application logic</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+    <span class="cm">&lt;!-- Load libraries from CDN --&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://cdn.jsdelivr.net/npm/d3@7&quot;</span><span class="p">&gt;&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="data-format">
+<h3>Data Format<a class="headerlink" href="#data-format" title="Link to this heading"></a></h3>
+<p>Coverage data is embedded as JSON within a <code class="docutils literal notranslate"><span class="pre">&lt;script&gt;</span></code> tag:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyucis v1.0.0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-02-12 02:00:00&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;database&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;coverage.ucis&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;summary&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;total_coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">73.5</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;total_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1250</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;covered_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">919</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;uncovered_items&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">331</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;coverage_by_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;functional&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">68.0</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;line&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">82.5</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;branch&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">71.2</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;scopes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scope_1&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DU_MODULE&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">73.5</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;weight&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;children&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">],</span>
+<span class="w">            </span><span class="nt">&quot;bins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="err">...</span><span class="p">]</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="technologies-used">
+<h3>Technologies Used<a class="headerlink" href="#technologies-used" title="Link to this heading"></a></h3>
+<p>The HTML report uses modern web technologies:</p>
+<ul class="simple">
+<li><p><strong>Alpine.js v3</strong> - Lightweight reactive framework (~15 KB)</p></li>
+<li><p><strong>D3.js v7</strong> - Data visualization library (~40 KB)</p></li>
+<li><p><strong>Tailwind-inspired CSS</strong> - Modern, responsive styling</p></li>
+<li><p><strong>ES6+ JavaScript</strong> - Modern JavaScript features</p></li>
+</ul>
+<p><strong>Browser Requirements:</strong></p>
+<ul class="simple">
+<li><p>Chrome 90+</p></li>
+<li><p>Firefox 88+</p></li>
+<li><p>Safari 14+</p></li>
+<li><p>Edge 90+</p></li>
+<li><p>Any modern browser with JavaScript enabled</p></li>
+</ul>
+<p>Libraries are loaded from CDN for convenience but are cached by the browser after the first load.</p>
+</section>
+<section id="file-size">
+<h3>File Size<a class="headerlink" href="#file-size" title="Link to this heading"></a></h3>
+<p>Typical file sizes:</p>
+<ul class="simple">
+<li><p><strong>Template + Code</strong>: ~50-60 KB (HTML, CSS, JavaScript)</p></li>
+<li><p><strong>Data</strong>: Variable based on coverage size</p></li>
+<li><p><strong>Total</strong>: Usually 100-500 KB for typical projects</p></li>
+<li><p><strong>Libraries</strong>: Loaded from CDN (not counted in file size)</p></li>
+</ul>
+<p>For very large databases, data can optionally be compressed using gzip and base64 encoding (5-10x reduction).</p>
+</section>
+<section id="performance">
+<h3>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Load Time</strong>: &lt; 3 seconds for typical projects</p></li>
+<li><p><strong>Chart Rendering</strong>: &lt; 500ms per chart</p></li>
+<li><p><strong>Tree Expansion</strong>: Instant (reactive UI)</p></li>
+<li><p><strong>Search/Filter</strong>: Real-time (&lt; 100ms)</p></li>
+<li><p><strong>Memory Usage</strong>: Efficient DOM rendering</p></li>
+<li><p><strong>Scalability</strong>: Tested with 1000+ scopes</p></li>
+</ul>
+</section>
+</section>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading"></a></h2>
+<section id="gap-analysis">
+<h3>Gap Analysis<a class="headerlink" href="#gap-analysis" title="Link to this heading"></a></h3>
+<p>Identify areas needing more verification:</p>
+<ol class="arabic simple">
+<li><p>Open “Coverage Gaps” tab to see all incomplete items</p></li>
+<li><p>Or use hierarchy view with filters:</p>
+<ul class="simple">
+<li><p>Set “Status” to “Partial” or “Uncovered”</p></li>
+<li><p>Set “Min Coverage” to filter by threshold</p></li>
+<li><p>Use search to find specific modules</p></li>
+</ul>
+</li>
+<li><p>Click “📊 Charts” tab and check bar chart for top gaps</p></li>
+<li><p>Focus verification effort on red/orange items</p></li>
+</ol>
+</section>
+<section id="bin-coverage-analysis">
+<h3>Bin Coverage Analysis<a class="headerlink" href="#bin-coverage-analysis" title="Link to this heading"></a></h3>
+<p>Analyze functional coverage bins:</p>
+<ol class="arabic simple">
+<li><p>Navigate hierarchy to find covergroup</p></li>
+<li><p>Expand covergroup to see coverpoints</p></li>
+<li><p>Click on a coverpoint</p></li>
+<li><p>Review bin table:</p>
+<ul class="simple">
+<li><p>Green rows = covered bins (good!)</p></li>
+<li><p>Red “uncovered” badges = need more hits</p></li>
+<li><p>Red “illegal” badges = bins that shouldn’t be hit but were!</p></li>
+<li><p>Gray “ignored” = excluded as expected</p></li>
+</ul>
+</li>
+<li><p>Check hit counts vs. goals to prioritize test development</p></li>
+</ol>
+</section>
+<section id="subsystem-comparison">
+<h3>Subsystem Comparison<a class="headerlink" href="#subsystem-comparison" title="Link to this heading"></a></h3>
+<p>Compare coverage across design subsystems:</p>
+<ol class="arabic simple">
+<li><p>Open “Hierarchy” tab</p></li>
+<li><p>Expand top-level module to see instances</p></li>
+<li><p>Compare coverage percentages at a glance</p></li>
+<li><p>Or switch to “📊 Charts” tab</p></li>
+<li><p>View treemap to see:</p>
+<ul class="simple">
+<li><p>Large boxes = more important (higher weight)</p></li>
+<li><p>Red boxes = need attention (low coverage)</p></li>
+<li><p>Green boxes = well covered</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="management-reporting">
+<h3>Management Reporting<a class="headerlink" href="#management-reporting" title="Link to this heading"></a></h3>
+<p>Share coverage status with stakeholders:</p>
+<ol class="arabic simple">
+<li><p>Generate HTML report once</p></li>
+<li><p>Share via email (single file attachment)</p></li>
+<li><p>Or host on internal web server</p></li>
+<li><p>Or save to SharePoint/shared drive</p></li>
+<li><p>Stakeholders can:</p>
+<ul class="simple">
+<li><p>View interactive charts (no tools required)</p></li>
+<li><p>Drill down into details</p></li>
+<li><p>See coverage trends over time (by comparing reports)</p></li>
+<li><p>No UCIS tools or databases needed</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<section id="advantages">
+<h2>Advantages<a class="headerlink" href="#advantages" title="Link to this heading"></a></h2>
+<section id="over-text-reports">
+<h3>Over Text Reports<a class="headerlink" href="#over-text-reports" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Visual</strong> - Charts and colors instead of plain text</p></li>
+<li><p><strong>Interactive</strong> - Navigate, filter, and drill down</p></li>
+<li><p><strong>Comprehensive</strong> - All data in one place</p></li>
+<li><p><strong>Shareable</strong> - Easy to email or host</p></li>
+</ul>
+</section>
+<section id="over-database-tools">
+<h3>Over Database Tools<a class="headerlink" href="#over-database-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Portable</strong> - Single file, works anywhere</p></li>
+<li><p><strong>No Installation</strong> - Just open in browser</p></li>
+<li><p><strong>Offline Capable</strong> - Works without internet (after first CDN load)</p></li>
+<li><p><strong>Universal</strong> - Any platform with a web browser</p></li>
+</ul>
+</section>
+<section id="over-commercial-tools">
+<h3>Over Commercial Tools<a class="headerlink" href="#over-commercial-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Free and Open Source</strong> - No licensing costs</p></li>
+<li><p><strong>Customizable</strong> - Source code available for modifications</p></li>
+<li><p><strong>Standard Format</strong> - Uses UCIS standard</p></li>
+<li><p><strong>Integration Friendly</strong> - Easy to incorporate into CI/CD</p></li>
+</ul>
+</section>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<p>The HTML format has some limitations:</p>
+<ul class="simple">
+<li><p><strong>Read-Only</strong> - Cannot modify coverage data (use UCIS tools for that)</p></li>
+<li><p><strong>No Real-Time Updates</strong> - Static snapshot at generation time</p></li>
+<li><p><strong>CDN Dependency</strong> - Requires internet for first load (libraries can be inlined if needed)</p></li>
+<li><p><strong>Browser Required</strong> - Cannot view from command line (use text format instead)</p></li>
+<li><p><strong>Large Data</strong> - Very large databases (100MB+) may load slowly in browser</p></li>
+</ul>
+<p>For these cases, consider:</p>
+<ul class="simple">
+<li><p><strong>JSON format</strong> - For programmatic processing</p></li>
+<li><p><strong>SQLite format</strong> - For querying with SQL</p></li>
+<li><p><strong>Text format</strong> - For command-line viewing</p></li>
+<li><p><strong>XML format</strong> - For tool interchange</p></li>
+</ul>
+</section>
+<section id="advanced-options">
+<h2>Advanced Options<a class="headerlink" href="#advanced-options" title="Link to this heading"></a></h2>
+<section id="compression">
+<h3>Compression<a class="headerlink" href="#compression" title="Link to this heading"></a></h3>
+<p>For large databases, enable compression:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Data is compressed using gzip and encoded as base64, typically reducing size by 5-10x. Note: Decompression in browser is not yet implemented, so compressed reports will show a warning message.</p>
+</section>
+<section id="theming">
+<h3>Theming<a class="headerlink" href="#theming" title="Link to this heading"></a></h3>
+<p>Choose light or dark theme:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">(</span><span class="n">theme</span><span class="o">=</span><span class="s1">&#39;light&#39;</span><span class="p">)</span>  <span class="c1"># or &#39;dark&#39;</span>
+</pre></div>
+</div>
+<p>Currently only light theme is fully implemented.</p>
+</section>
+<section id="customization">
+<h3>Customization<a class="headerlink" href="#customization" title="Link to this heading"></a></h3>
+<p>The HTML formatter is designed to be extensible:</p>
+<ul class="simple">
+<li><p><strong>Custom CSS</strong> - Modify <code class="docutils literal notranslate"><span class="pre">_get_css()</span></code> method to change styles</p></li>
+<li><p><strong>Additional Views</strong> - Add new tabs/views in <code class="docutils literal notranslate"><span class="pre">_render_template()</span></code></p></li>
+<li><p><strong>Custom Charts</strong> - Add D3.js visualizations in <code class="docutils literal notranslate"><span class="pre">_get_javascript()</span></code></p></li>
+<li><p><strong>Data Preprocessing</strong> - Modify <code class="docutils literal notranslate"><span class="pre">_build_coverage_data()</span></code> to include additional fields</p></li>
+</ul>
+<p>See <code class="docutils literal notranslate"><span class="pre">src/ucis/formatters/format_html.py</span></code> for implementation details.</p>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate report from XML</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.xml<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+
+<span class="c1"># Open in default browser</span>
+xdg-open<span class="w"> </span>report.html<span class="w">  </span><span class="c1"># Linux</span>
+open<span class="w"> </span>report.html<span class="w">      </span><span class="c1"># macOS</span>
+start<span class="w"> </span>report.html<span class="w">     </span><span class="c1"># Windows</span>
+</pre></div>
+</div>
+</section>
+<section id="ci-cd-integration">
+<h3>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="c1"># Generate coverage report in CI pipeline</span>
+
+<span class="c1"># Run tests and collect coverage</span>
+run_tests.sh
+
+<span class="c1"># Generate HTML report</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.ucis<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>coverage_report.html
+
+<span class="c1"># Archive as build artifact</span>
+cp<span class="w"> </span>coverage_report.html<span class="w"> </span><span class="nv">$ARTIFACTS_DIR</span>/
+
+<span class="c1"># Or publish to web server</span>
+scp<span class="w"> </span>coverage_report.html<span class="w"> </span>user@server:/var/www/coverage/
+</pre></div>
+</div>
+</section>
+<section id="python-script">
+<h3>Python Script<a class="headerlink" href="#python-script" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;Generate HTML coverage report with custom filtering.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+
+<span class="c1"># Load database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.ucis&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate report</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">(</span>
+    <span class="n">include_source</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">theme</span><span class="o">=</span><span class="s1">&#39;light&#39;</span>
+<span class="p">)</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;coverage_report.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ HTML report generated: coverage_report.html&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  Open in browser to view interactive report&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.formatters.format_html.HtmlFormatter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.formatters.format_html.</span></span><span class="sig-name descname"><span class="pre">HtmlFormatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'light'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.formatters.format_html.HtmlFormatter" title="Link to this definition"></a></dt>
+<dd><p>Format UCIS data as interactive HTML report.</p>
+<p>Generates a self-contained HTML file with:
+- Embedded coverage data (JSON, optionally compressed)
+- Interactive UI (Alpine.js)
+- Visualizations (D3.js)
+- Source code viewer (Prism.js)</p>
+<p>Initialize HTML formatter.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>include_source: Embed source file contents in report
+compress: Compress JSON data with gzip
+theme: Default theme (‘light’ or ‘dark’)</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.formatters.format_html.HtmlFormatter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'light'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.formatters.format_html.HtmlFormatter.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize HTML formatter.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>include_source: Embed source file contents in report
+compress: Compress JSON data with gzip
+theme: Default theme (‘light’ or ‘dark’)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.formatters.format_html.HtmlFormatter.format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TextIO" title="(in Python v3.14)"><span class="pre">TextIO</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.formatters.format_html.HtmlFormatter.format" title="Link to this definition"></a></dt>
+<dd><p>Generate single-file HTML report.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>db: UCIS database
+output: Output file/stream</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<section id="constructor-parameters">
+<h3>Constructor Parameters<a class="headerlink" href="#constructor-parameters" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'light'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#init__" title="Link to this definition"></a></dt>
+<dd><p>Initialize HTML formatter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_source</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Include source file information in report (default: True)</p></li>
+<li><p><strong>compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Compress JSON data with gzip (default: False, not fully implemented)</p></li>
+<li><p><strong>theme</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – UI theme - ‘light’ or ‘dark’ (default: ‘light’, dark theme not fully implemented)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="format-method">
+<h3>Format Method<a class="headerlink" href="#format-method" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="format">
+<span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#format" title="Link to this definition"></a></dt>
+<dd><p>Generate HTML report from UCIS database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – UCIS database object (any backend)</p></li>
+<li><p><strong>output</strong> – Output file handle or stream (must be writable)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.14)"><strong>Exception</strong></a> – If database cannot be read or output cannot be written</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;report.html&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="coverage_report_api.html"><span class="doc">Coverage Report Object</span></a> - Coverage report data structure</p></li>
+<li><p><a class="reference internal" href="coverage_report_json.html"><span class="doc">JSON Coverage Report</span></a> - JSON format specification</p></li>
+<li><p><a class="reference internal" href="xml_interchange.html"><span class="doc">XML Interchange Format</span></a> - XML format for interchange</p></li>
+<li><p><a class="reference internal" href="yaml_coverage.html"><span class="doc">YAML Coverage Data Format</span></a> - YAML human-readable format</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="coverage_report_json.html" class="btn btn-neutral float-left" title="JSON Coverage Report" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="xml_interchange.html" class="btn btn-neutral float-right" title="XML Interchange Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

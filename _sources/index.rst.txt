@@ -9,7 +9,8 @@ PyUCIS is a Python implementation of the Unified Coverage Interoperability Stand
 * **SQLite Backend** - Persistent, queryable storage with SQL access
 * **Native C Library** - High-performance UCIS 1.0 C API with SQLite backend
 * **Full UCIS API** - Complete implementation of the UCIS object-oriented API
-* **Coverage Reporting** - JSON, XML, Cobertura, and text report formats
+* **Coverage Reporting** - Interactive HTML, JSON, XML, Cobertura, and text report formats
+* **Interactive HTML Reports** - Single-file reports with visualizations, bin details, and filtering
 * **Coverage Merging** - Combine coverage from multiple test runs
 * **Cross-Platform** - Works on Linux, macOS, and Windows
 
