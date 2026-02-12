@@ -34,7 +34,6 @@ def create_sample_mem_db():
     from ucis.cover_type_t import CoverTypeT
     from ucis.flags_t import FlagsT
     from ucis.xml.xml_factory import XmlFactory
-    import tempfile
 
     db = MemUCIS()
     fh = db.createFileHandle("test.sv", os.getcwd())

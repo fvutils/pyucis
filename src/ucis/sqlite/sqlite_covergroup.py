@@ -236,7 +236,21 @@ class SqliteCovergroup(SqliteScope, Covergroup):
     
     def createCoverInstance(self, name: str, srcinfo: SourceInfo, weight: int,
                           source: SourceT) -> 'Covergroup':
-        """Create a covergroup instance under this covergroup type"""
+        """Create a covergroup instance under this covergroup type.
+        
+        Creates a new COVERINSTANCE scope representing a specific instantiation
+        of this covergroup type. Used when per-instance coverage is enabled to
+        track coverage separately for each instance.
+        
+        Args:
+            name: Instance name identifying this instantiation.
+            srcinfo: Source location of the instance.
+            weight: Relative weight for this instance.
+            source: Source language (e.g., SourceT.SV for SystemVerilog).
+            
+        Returns:
+            Newly created SqliteCovergroup object representing the instance.
+        """
         # Create scope with COVERINSTANCE type
         scope = self.createScope(name, srcinfo, weight, source,
                                 ScopeTypeT.COVERINSTANCE, 0)
