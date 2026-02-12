@@ -21,6 +21,7 @@ SQLite-backed UCIS database implementation
 
 import sqlite3
 import os
+import shutil
 from typing import Iterator, Dict
 from datetime import datetime
 import getpass
@@ -60,9 +61,16 @@ class SqliteUCIS(SqliteScope, UCIS):
         is_new_db = not schema_manager.check_schema_exists(self.conn)
         
         if is_new_db:
-            # Create schema
-            schema_manager.create_schema(self.conn)
-            schema_manager.initialize_metadata(self.conn)
+            # Try to use template database for faster creation
+            template = os.path.join(os.path.dirname(__file__), 'template.ucisdb')
+            if self.db_path != ":memory:" and os.path.exists(template):
+                self.conn.close()
+                shutil.copy2(template, self.db_path)
+                self.conn = sqlite3.connect(self.db_path)
+                self.conn.row_factory = sqlite3.Row
+            else:
+                schema_manager.create_schema(self.conn)
+                schema_manager.initialize_metadata(self.conn)
             
             # Create root scope (use 0 as a special marker for root)
             cursor = self.conn.execute(
@@ -70,6 +78,7 @@ class SqliteUCIS(SqliteScope, UCIS):
                    VALUES (NULL, 0, '', 0, 1, 100)"""
             )
             root_scope_id = cursor.lastrowid
+            self.conn.commit()
         else:
             # Existing database - validate it's a PyUCIS database
             is_valid, error_msg = schema_manager.is_pyucis_database(self.conn)
@@ -112,6 +121,47 @@ class SqliteUCIS(SqliteScope, UCIS):
         self._file_handle_cache: Dict[str, SqliteFileHandle] = {}
         
         self._modified = False
+    
+    @classmethod
+    def open_readonly(cls, db_path: str) -> 'SqliteUCIS':
+        """Open a database in read-only mode with minimal overhead.
+
+        Skips schema validation, migration, and WAL setup.
+        Intended for merge sources that are only read, never written.
+        """
+        obj = object.__new__(cls)
+
+        obj.db_path = db_path
+        obj.conn = sqlite3.connect(
+            f"file:{db_path}?mode=ro", uri=True
+        )
+        obj.conn.row_factory = sqlite3.Row
+
+        # Find root scope — single query
+        row = obj.conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id IS NULL LIMIT 1"
+        ).fetchone()
+        if not row:
+            raise ValueError(f"No root scope in {db_path}")
+
+        # Minimal attribute setup (bypass Scope.__init__)
+        obj.ucis_db = obj
+        obj.scope_id = row[0]
+        obj._loaded = False
+        obj._scope_name = None
+        obj._scope_type = None
+        obj._scope_flags = None
+        obj._weight = None
+        obj._goal = 100
+        obj._parent_id = None
+        obj._source_info = None
+        obj._initializing = False
+        obj._property_cache = {}
+        obj._file_handle_cache = {}
+        obj._modified = False
+        obj._readonly = True
+
+        return obj
     
     def getAPIVersion(self) -> str:
         """Get API version"""
@@ -278,7 +328,8 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def close(self):
         """Close the database"""
-        self.conn.commit()
+        if not getattr(self, '_readonly', False):
+            self.conn.commit()
         self.conn.close()
     
     def begin_transaction(self):

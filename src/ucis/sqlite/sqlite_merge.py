@@ -254,58 +254,77 @@ class SqliteMerger:
         )
     
     def _merge_coveritems(self, src_scope, tgt_scope):
-        """Merge coverage items from source to target scope"""
-        
-        # Build map of target coveritems by index
-        tgt_items = {}
-        for tgt_cover in tgt_scope.coverItems(-1):
-            # Get cover_index
-            cursor = self.target.conn.execute(
-                "SELECT cover_index FROM coveritems WHERE cover_id = ?",
-                (tgt_cover.cover_id,)
-            )
-            row = cursor.fetchone()
-            if row:
-                tgt_items[row[0]] = tgt_cover
-        
-        # Merge source coveritems
-        for src_cover in src_scope.coverItems(-1):
-            # Get source cover_index
-            cursor = src_scope.ucis_db.conn.execute(
-                "SELECT cover_index FROM coveritems WHERE cover_id = ?",
-                (src_cover.cover_id,)
-            )
-            row = cursor.fetchone()
-            if not row:
-                continue
-            
+        """Merge coverage items using bulk queries."""
+
+        # 1. Bulk-fetch ALL target coveritems in one query
+        tgt_map = {}  # cover_index → (cover_id, cover_data)
+        for row in self.target.conn.execute(
+            """SELECT cover_id, cover_index, cover_data
+               FROM coveritems WHERE scope_id = ?""",
+            (tgt_scope.scope_id,)
+        ):
+            tgt_map[row[1]] = (row[0], row[2])
+
+        # 2. Bulk-fetch ALL source coveritems in one query
+        src_rows = list(src_scope.ucis_db.conn.execute(
+            """SELECT cover_index, cover_type, cover_name, cover_data,
+                      cover_flags, at_least, weight, goal, limit_val,
+                      source_file_id, source_line, source_token
+               FROM coveritems WHERE scope_id = ?""",
+            (src_scope.scope_id,)
+        ))
+
+        # 3. Separate into updates vs inserts
+        updates = []   # (new_count, cover_id)
+        inserts = []   # full row tuples for new items
+        next_index = max(tgt_map.keys(), default=-1) + 1
+
+        for row in src_rows:
             src_index = row[0]
-            
-            if src_index in tgt_items:
-                # Matching item exists - accumulate coverage
-                tgt_cover = tgt_items[src_index]
-                old_count = tgt_cover.getCoverData().data
-                add_count = src_cover.getCoverData().data
-                new_count = old_count + add_count
-                
-                tgt_cover.setCount(new_count)
-                
+            src_count = row[3]
+
+            if src_index in tgt_map:
+                tgt_id, tgt_count = tgt_map[src_index]
+                updates.append((tgt_count + src_count, tgt_id))
                 self.stats.coveritems_matched += 1
-                self.stats.total_hits_added += add_count
-                
-                # Track test contribution if we have test info
-                # (This would require tracking which test contributed this coverage)
-                
+                self.stats.total_hits_added += src_count
             else:
-                # No matching item - create new one
-                new_cover = tgt_scope.createNextCover(
-                    src_cover.getName(),
-                    src_cover.getCoverData(),
-                    src_cover.getSourceInfo()
-                )
-                
+                inserts.append((
+                    tgt_scope.scope_id, next_index,
+                    row[1],   # cover_type
+                    row[2],   # cover_name
+                    src_count, # cover_data
+                    row[4],   # cover_flags
+                    row[5],   # at_least
+                    row[6],   # weight
+                    row[7],   # goal
+                    row[8],   # limit_val
+                    None,     # source_file_id (skip cross-DB file refs)
+                    row[10],  # source_line
+                    row[11],  # source_token
+                ))
+                next_index += 1
                 self.stats.coveritems_added += 1
-                self.stats.total_hits_added += src_cover.getCoverData().data
+                self.stats.total_hits_added += src_count
+
+        # 4. Batch UPDATE existing items
+        if updates:
+            self.target.conn.executemany(
+                "UPDATE coveritems SET cover_data = ? WHERE cover_id = ?",
+                updates
+            )
+
+        # 5. Batch INSERT new items
+        if inserts:
+            self.target.conn.executemany(
+                """INSERT INTO coveritems
+                   (scope_id, cover_index, cover_type, cover_name,
+                    cover_data, cover_flags, at_least, weight,
+                    goal, limit_val, source_file_id, source_line,
+                    source_token)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                inserts
+            )
 
 
 def merge_databases(target_path: str, source_paths: list, 
@@ -338,7 +357,7 @@ def merge_databases(target_path: str, source_paths: list,
     
     # Merge each source
     for src_path in source_paths:
-        source = SqliteUCIS(src_path)
+        source = SqliteUCIS.open_readonly(src_path)
         
         stats = merger.merge(source, squash_history=squash_history)
         
