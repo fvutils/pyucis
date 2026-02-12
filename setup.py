@@ -7,8 +7,6 @@ version="0.1.5"
 if "BUILD_NUM" in os.environ.keys():
     version = version + "." + os.environ["BUILD_NUM"]
 
-print(f"Building pyucis version: {version}")
-
 setup(
   name = "pyucis",
   packages=find_namespace_packages(where='src'),
