@@ -24,9 +24,44 @@ jobs:
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
     - name: Run Tests
       run: |
-        ./packages/python/bin/python3 -m pip install pytest
+        ./packages/python/bin/python3 -m pip install pytest pytest-cov
         ./packages/python/bin/python3 -m pip install -e .
-        ./packages/python/bin/python3 -m pytest tests/unit
+        ./packages/python/bin/python3 -m pytest tests/unit --cov=ucis --cov-report=term-missing --cov-report=html --cov-report=json
+    - name: Upload Coverage to Summary
+      if: always()
+      run: |
+        # Generate coverage percentage
+        COVERAGE=$(./packages/python/bin/python3 -c "import json; data=json.load(open('coverage.json')); print(f\"{data['totals']['percent_covered']:.1f}\")")
+        
+        # Add to GitHub Step Summary
+        echo "## Test Coverage Report" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Overall Coverage: ${COVERAGE}%**" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Add coverage details
+        ./packages/python/bin/python3 << 'EOF' >> $GITHUB_STEP_SUMMARY
+        import json
+        data = json.load(open('coverage.json'))
+        
+        print("| File | Statements | Missing | Coverage |")
+        print("|------|------------|---------|----------|")
+        
+        for file, info in sorted(data['files'].items()):
+            if 'ucis' in file:  # Only show project files
+                fname = file.split('src/')[-1] if 'src/' in file else file
+                stmts = info['summary']['num_statements']
+                missing = info['summary']['missing_lines']
+                covered = info['summary']['covered_lines']
+                pct = info['summary']['percent_covered']
+                print(f"| {fname} | {stmts} | {missing} | {pct:.1f}% |")
+        EOF
+    - name: Upload Coverage HTML
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: htmlcov/
     - name: Build Docs
       run: |
         ./packages/python/bin/python3 -m pip install -r doc/requirements.txt
