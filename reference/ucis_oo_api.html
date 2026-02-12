@@ -109,50 +109,317 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ucis.Obj">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.</span></span><span class="sig-name descname"><span class="pre">Obj</span></span><a class="headerlink" href="#ucis.Obj" title="Link to this definition"></a></dt>
-<dd><dl class="py method">
+<dd><p>Base class for all UCIS objects.</p>
+<p>The Obj class provides the foundation for all objects in the UCIS data model,
+including scopes, cover items, and history nodes. It implements a property-based
+interface for accessing and modifying object attributes through type-specific
+getter and setter methods.</p>
+<p>Properties in UCIS are accessed by enumerated property identifiers (IntProperty,
+RealProperty, StrProperty, HandleProperty) and may be associated with either the
+object itself (when coverindex &lt; 0) or with a specific cover item within a scope
+(when coverindex &gt;= 0).</p>
+<p>This class serves as an abstract base class and is typically extended by concrete
+implementations such as Scope, CoverItem, and HistoryNode.</p>
+<dl class="simple">
+<dt>Note:</dt><dd><p>The property interface provides a uniform way to access diverse object attributes
+without requiring separate methods for each property. Properties are defined by
+the UCIS standard and enable tool-independent data access.</p>
+</dd>
+<dt>See Also:</dt><dd><p>UCIS LRM Section 8.3 “Database Property Functions”
+UCIS LRM Section 8.4 “User-defined Attribute Functions”</p>
+</dd>
+</dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getIntProperty">
 <span class="sig-name descname"><span class="pre">getIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.Obj.getIntProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get an integer property value from this object.</p>
+<p>Retrieves integer-valued properties such as weights, goals, counts, flags,
+and other numeric attributes. Properties can apply to the object as a whole
+(scope-level) or to a specific cover item within the object.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+<dt>property: Integer property identifier from the IntProperty enumeration,</dt><dd><p>such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, NUM_TESTS, etc.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>The integer value of the requested property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable to this object type.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the weight of a scope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">weight</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getIntProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">SCOPE_WEIGHT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the goal of a specific cover item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">goal</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getIntProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">COVER_GOAL</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Note:</dt><dd><p>If the return value would naturally be -1, this method returns -1 without
+raising an error. Error handlers are only invoked for true error conditions.</p>
+</dd>
+<dt>See Also:</dt><dd><p>setIntProperty(): Set integer property values
+UCIS LRM Section 8.3.5 “ucis_GetIntProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.setIntProperty">
 <span class="sig-name descname"><span class="pre">setIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setIntProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set an integer property value on this object.</p>
+<p>Modifies integer-valued properties such as weights, goals, and flags.
+Properties can be set on the object as a whole or on a specific cover item.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+<dt>property: Integer property identifier from the IntProperty enumeration,</dt><dd><p>such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, etc.</p>
+</dd>
+</dl>
+<p>value: New integer value for the property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable or read-only.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the weight of a scope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setIntProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">SCOPE_WEIGHT</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the goal of a specific cover item  </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setIntProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">COVER_GOAL</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Note:</dt><dd><p>Some properties are read-only (e.g., NUM_TESTS, SCOPE_NUM_COVERITEMS)
+and cannot be set. Attempting to set a read-only property will raise
+an error.</p>
+</dd>
+<dt>See Also:</dt><dd><p>getIntProperty(): Get integer property values
+UCIS LRM Section 8.3.6 “ucis_SetIntProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getRealProperty">
 <span class="sig-name descname"><span class="pre">getRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RealProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#ucis.Obj.getRealProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get a floating-point property value from this object.</p>
+<p>Retrieves real-valued (floating-point) properties such as coverage percentages,
+thresholds, and other numeric attributes that require fractional precision.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+</dl>
+<p>property: Real property identifier from the RealProperty enumeration.</p>
+</dd>
+<dt>Returns:</dt><dd><p>The floating-point value of the requested property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable to this object type.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get coverage percentage</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pct</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getRealProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">RealProperty</span><span class="o">.</span><span class="n">COVERAGE_PCT</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>See Also:</dt><dd><p>setRealProperty(): Set real property values
+UCIS LRM Section 8.3.7 “ucis_GetRealProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.setRealProperty">
 <span class="sig-name descname"><span class="pre">setRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RealProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setRealProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set a floating-point property value on this object.</p>
+<p>Modifies real-valued (floating-point) properties such as coverage percentages
+and thresholds.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+</dl>
+<p>property: Real property identifier from the RealProperty enumeration.
+value: New floating-point value for the property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable or read-only.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a threshold value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setRealProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">RealProperty</span><span class="o">.</span><span class="n">THRESHOLD</span><span class="p">,</span> <span class="mf">95.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>See Also:</dt><dd><p>getRealProperty(): Get real property values
+UCIS LRM Section 8.3.8 “ucis_SetRealProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getStringProperty">
 <span class="sig-name descname"><span class="pre">getStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.Obj.getStringProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get a string property value from this object.</p>
+<p>Retrieves string-valued properties such as names, comments, file paths,
+and other textual attributes.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+<dt>property: String property identifier from the StrProperty enumeration,</dt><dd><p>such as NAME, COMMENT, FILE_NAME, etc.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>The string value of the requested property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable to this object type.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the name of a scope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getStringProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">NAME</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get a comment on a cover item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">comment</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getStringProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>See Also:</dt><dd><p>setStringProperty(): Set string property values
+UCIS LRM Section 8.3.9 “ucis_GetStringProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.setStringProperty">
 <span class="sig-name descname"><span class="pre">setStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setStringProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set a string property value on this object.</p>
+<p>Modifies string-valued properties such as names, comments, and other
+textual attributes.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+<dt>property: String property identifier from the StrProperty enumeration,</dt><dd><p>such as NAME, COMMENT, etc.</p>
+</dd>
+</dl>
+<p>value: New string value for the property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable or read-only.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a comment on a scope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setStringProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">,</span> <span class="s2">&quot;Main test scope&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a comment on a specific cover item</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setStringProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">,</span> <span class="s2">&quot;Edge case&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Note:</dt><dd><p>Some string properties like NAME may be read-only after object creation
+to maintain data model consistency.</p>
+</dd>
+<dt>See Also:</dt><dd><p>getStringProperty(): Get string property values
+UCIS LRM Section 8.3.10 “ucis_SetStringProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getHandleProperty">
 <span class="sig-name descname"><span class="pre">getHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Scope</span></span></span><a class="headerlink" href="#ucis.Obj.getHandleProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Get an object reference (handle) property from this object.</p>
+<p>Retrieves properties that reference other UCIS objects, such as parent
+scopes, design unit references, or related objects in the coverage hierarchy.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+<dt>property: Handle property identifier from the HandleProperty enumeration,</dt><dd><p>such as PARENT, DU_SCOPE, etc.</p>
+</dd>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>Reference to the related UCIS object (typically a Scope subclass).</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable to this object type.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the parent scope</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parent</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">PARENT</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the design unit scope for an instance</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">du</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">getHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">DU_SCOPE</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>See Also:</dt><dd><p>setHandleProperty(): Set object reference properties
+UCIS LRM Section 8.3.11 “ucis_GetHandleProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.setHandleProperty">
 <span class="sig-name descname"><span class="pre">setHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setHandleProperty" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Set an object reference (handle) property on this object.</p>
+<p>Modifies properties that reference other UCIS objects in the coverage
+hierarchy, establishing relationships between objects.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+</dd>
+</dl>
+<p>property: Handle property identifier from the HandleProperty enumeration.
+value: Reference to the UCIS object to associate with this property.</p>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
+ValueError: If the property is not applicable or read-only.
+TypeError: If the value is not a compatible object type.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Associate a design unit with an instance</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">setHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">DU_SCOPE</span><span class="p">,</span> <span class="n">du</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Note:</dt><dd><p>Most handle properties are set during object creation and may be
+read-only afterward to maintain hierarchy consistency.</p>
+</dd>
+<dt>See Also:</dt><dd><p>getHandleProperty(): Get object reference properties
+UCIS LRM Section 8.3.12 “ucis_SetHandleProperty”</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.accept">
 <span class="sig-name descname"><span class="pre">accept</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.accept" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Accept a visitor for traversing the UCIS object hierarchy.</p>
+<p>Implements the Visitor design pattern, allowing external traversal and
+processing of the UCIS object tree without modifying the object classes.
+Visitors can implement operations like reporting, merging, filtering, or
+custom analysis.</p>
+<dl>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>v: Visitor object implementing the appropriate visit methods for</dt><dd><p>each object type (visitScope, visitCoverItem, etc.).</p>
+</dd>
+</dl>
+</dd>
+<dt>Raises:</dt><dd><p>UnimplError: If the visitor pattern is not implemented.</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyVisitor</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">visitScope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visiting scope: </span><span class="si">{</span><span class="n">scope</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">visitor</span> <span class="o">=</span> <span class="n">MyVisitor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">visitor</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Note:</dt><dd><p>The visitor pattern enables separation of algorithms from the object
+structure they operate on, facilitating extensibility without modifying
+core classes.</p>
+</dd>
+<dt>See Also:</dt><dd><p>Visitor design pattern documentation</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
