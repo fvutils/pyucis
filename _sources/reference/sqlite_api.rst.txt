@@ -11,7 +11,7 @@ Overview
 Features
 ========
 
-* **Persistent Storage** - Coverage data saved directly to SQLite database files (.ucisdb)
+* **Persistent Storage** - Coverage data saved directly to SQLite database files (.cdb)
 * **Full API Compatibility** - Drop-in replacement for in-memory and libucis implementations
 * **Lazy Loading** - Memory-efficient loading of large databases
 * **Transaction Support** - Atomic operations with rollback capability
@@ -27,10 +27,11 @@ Architecture
 The SQLite backend implements a comprehensive relational database schema that captures all UCIS concepts:
 
 * **15 normalized tables** with full referential integrity
-* **30+ indexes** for optimized query performance
+* **Optimized indexes** for efficient query performance (v2.1: reduced to essential indexes only)
 * **Foreign key constraints** for data consistency
 * **WAL mode** for concurrent read access
 * **Prepared statements** for efficient repeated operations
+* **Schema versioning** for compatibility tracking
 
 *************
 Quick Start
@@ -48,7 +49,7 @@ Creating a Database
     from ucis.history_node_kind import HistoryNodeKind
 
     # Create or open database
-    ucis = SqliteUCIS("coverage.ucisdb")
+    ucis = SqliteUCIS("coverage.cdb")
     
     # Build design hierarchy
     top = ucis.createScope("top", None, 1, SourceT.NONE, ScopeTypeT.INSTANCE, 0)
@@ -72,7 +73,7 @@ Querying Coverage
 .. code-block:: python
 
     # Reopen database
-    ucis = SqliteUCIS("coverage.ucisdb")
+    ucis = SqliteUCIS("coverage.cdb")
     
     # Iterate through hierarchy
     for scope in ucis.scopes(ScopeTypeT.INSTANCE):
@@ -92,7 +93,7 @@ Using Transactions
 
 .. code-block:: python
 
-    ucis = SqliteUCIS("coverage.ucisdb")
+    ucis = SqliteUCIS("coverage.cdb")
     
     # Begin transaction for bulk operations
     ucis.begin_transaction()
@@ -492,6 +493,120 @@ Handle Properties
 
    Get a handle property value.
 
+**************
+Merge Support
+**************
+
+The SQLite backend provides efficient merge operations for combining coverage data from multiple test runs.
+
+Merge Operations
+================
+
+.. py:method:: merge(source_ucis, create_history: bool = True, squash_history: bool = False) -> MergeStats
+
+   Merge coverage data from another UCIS database into this database.
+   
+   :param source_ucis: Source database to merge from
+   :type source_ucis: SqliteUCIS
+   :param create_history: Whether to create merge history node (default: True)
+   :type create_history: bool
+   :param squash_history: Collapse per-test history into summary node (default: False)
+   :type squash_history: bool
+   :return: Statistics about the merge operation
+   :rtype: MergeStats
+
+**Basic Merge:**
+
+.. code-block:: python
+
+    target = SqliteUCIS("merged.cdb")
+    source = SqliteUCIS("test1.cdb")
+    
+    # Merge with full history tracking
+    stats = target.merge(source)
+    print(f"Merged {stats.tests_merged} tests")
+    print(f"Added {stats.coveritems_added} new bins")
+    print(f"Updated {stats.coveritems_matched} existing bins")
+    
+    source.close()
+    target.close()
+
+**Squashed History Merge:**
+
+For large-scale merges where per-test history is not needed, use ``squash_history=True`` to reduce storage:
+
+.. code-block:: python
+
+    target = SqliteUCIS("merged.cdb")
+    
+    # Merge multiple databases with squashed history
+    for test_db in ["test1.cdb", "test2.cdb", "test3.cdb"]:
+        source = SqliteUCIS(test_db)
+        target.merge(source, squash_history=True)
+        source.close()
+    
+    # Result: Single summary history node instead of N test nodes
+    # Coverage data is identical, but history overhead is eliminated
+    target.close()
+
+Convenience Function
+====================
+
+.. py:function:: merge_databases(target_path: str, source_paths: list, output_path: str = None, squash_history: bool = False) -> MergeStats
+
+   Merge multiple databases in one operation.
+   
+   :param target_path: Path to target (base) database
+   :param source_paths: List of source database paths to merge
+   :param output_path: Optional output path (None = modify target in-place)
+   :param squash_history: Collapse history into summary (default: False)
+   :return: Cumulative merge statistics
+
+.. code-block:: python
+
+    from ucis.sqlite.sqlite_merge import merge_databases
+    
+    stats = merge_databases(
+        "base.cdb",
+        ["test1.cdb", "test2.cdb", "test3.cdb"],
+        "final.cdb",
+        squash_history=True
+    )
+    print(f"Total tests merged: {stats.tests_merged}")
+
+Command-Line Interface
+======================
+
+Merge databases using the CLI:
+
+.. code-block:: bash
+
+    # Standard merge (preserves all test history)
+    pyucis merge -if sqlite -of sqlite test*.cdb -o merged.cdb
+    
+    # Optimized merge (squashed history, reduced storage)
+    pyucis merge --squash-history -if sqlite -of sqlite test*.cdb -o merged.cdb
+
+Merge Behavior
+==============
+
+**Coverage Accumulation:**
+
+* Bin counts are summed across all source databases
+* Missing bins are created with source count
+* Existing bins are updated in-place (no row duplication)
+
+**History Tracking:**
+
+* ``squash_history=False``: All test nodes preserved, full traceability
+* ``squash_history=True``: Single summary node with test count only
+
+**Storage Impact:**
+
+* Normal merge: ~N KB per test (history metadata)
+* Squashed merge: ~1 KB total (single summary node)
+* Coverage data size is identical in both modes
+
 ************
 Performance
 ************
@@ -567,15 +682,70 @@ Database Format
 File Extension
 ==============
 
-SQLite databases use the ``.ucisdb`` extension by convention, though any extension works.
+SQLite databases use the ``.cdb`` (Coverage DataBase) extension by convention, though any extension works.
+
+Database Identification
+=======================
+
+PyUCIS databases include identification markers to distinguish them from arbitrary SQLite files:
+
+* **SQLite Header:** Standard SQLite file format (starts with "SQLite format 3")
+* **DATABASE_TYPE Marker:** Metadata key set to "PYUCIS" for validation
+* **Required Tables:** scopes, coveritems, history_nodes tables must exist
+
+**Validation Functions:**
+
+.. code-block:: python
+
+    from ucis.sqlite import schema_manager
+    
+    # Check if file is a valid SQLite database
+    if schema_manager.is_valid_sqlite_file("myfile.db"):
+        print("Valid SQLite file")
+    
+    # Check if it's a PyUCIS coverage database
+    is_valid, error_msg = schema_manager.is_pyucis_database("coverage.cdb")
+    if is_valid:
+        print("Valid PyUCIS database")
+    else:
+        print(f"Invalid: {error_msg}")
+
+**Automatic Validation:**
+
+The SQLite backend automatically validates databases when opening:
+
+.. code-block:: python
+
+    # Automatically validates file format and PyUCIS markers
+    db = SqliteUCIS("coverage.cdb")
+    
+    # Raises ValueError if:
+    # - Not a valid SQLite file
+    # - Missing DATABASE_TYPE marker
+    # - Missing required tables
+    # - Schema version mismatch
 
 Compatibility
 =============
 
 * SQLite version: 3.31.0 or later recommended
-* Schema version: 1.0
+* **Schema version: 2.1** (stored in db_metadata table)
+* **Database format version: 1.0** (PyUCIS identification)
 * Python version: 3.7+
 * No external dependencies beyond Python's built-in sqlite3 module
+
+**Schema Version Checking:**
+
+The SQLite backend automatically verifies schema version compatibility when opening databases. If a database has an incompatible schema version, an exception is raised:
+
+.. code-block:: python
+
+    try:
+        db = SqliteUCIS("old_database.cdb")
+    except ValueError as e:
+        # "Database schema version mismatch: found 2.0, expected 2.1.
+        #  Please recreate the database with the current schema version."
+        print(e)
 
 Direct SQL Access
 =================
@@ -585,7 +755,7 @@ SQLite databases can be queried directly using standard SQLite tools:
 .. code-block:: bash
 
     # Open with sqlite3 command-line tool
-    sqlite3 coverage.ucisdb
+    sqlite3 coverage.cdb
     
     # Run queries
     SELECT scope_name, scope_type FROM scopes WHERE parent_id IS NULL;
@@ -609,7 +779,7 @@ Converting from other formats:
     from ucis.sqlite import SqliteUCIS
     
     xml_db = XMLUCIS("old.xml")
-    sqlite_db = SqliteUCIS("new.ucisdb")
+    sqlite_db = SqliteUCIS("new.cdb")
     # Copy logic here
     
     # From YAML
@@ -634,7 +804,7 @@ Complete Example
     from ucis.test_status_t import TestStatusT
     
     # Create database
-    ucis = SqliteUCIS("example.ucisdb")
+    ucis = SqliteUCIS("example.cdb")
     
     # Build hierarchy
     top = ucis.createScope("top", None, 1, SourceT.NONE, 

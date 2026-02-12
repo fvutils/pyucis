@@ -77,6 +77,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#property-system">Property System</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#merge-support">Merge Support</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merge-operations">Merge Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#convenience-function">Convenience Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merge-behavior">Merge Behavior</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#optimization-strategies">Optimization Strategies</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#typical-performance">Typical Performance</a></li>
@@ -85,6 +92,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#database-format">Database Format</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#file-extension">File Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-identification">Database Identification</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#compatibility">Compatibility</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#direct-sql-access">Direct SQL Access</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#migration">Migration</a></li>
@@ -137,7 +145,7 @@
 <section id="features">
 <h3>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Persistent Storage</strong> - Coverage data saved directly to SQLite database files (.ucisdb)</p></li>
+<li><p><strong>Persistent Storage</strong> - Coverage data saved directly to SQLite database files (.cdb)</p></li>
 <li><p><strong>Full API Compatibility</strong> - Drop-in replacement for in-memory and libucis implementations</p></li>
 <li><p><strong>Lazy Loading</strong> - Memory-efficient loading of large databases</p></li>
 <li><p><strong>Transaction Support</strong> - Atomic operations with rollback capability</p></li>
@@ -153,10 +161,11 @@
 <p>The SQLite backend implements a comprehensive relational database schema that captures all UCIS concepts:</p>
 <ul class="simple">
 <li><p><strong>15 normalized tables</strong> with full referential integrity</p></li>
-<li><p><strong>30+ indexes</strong> for optimized query performance</p></li>
+<li><p><strong>Optimized indexes</strong> for efficient query performance (v2.1: reduced to essential indexes only)</p></li>
 <li><p><strong>Foreign key constraints</strong> for data consistency</p></li>
 <li><p><strong>WAL mode</strong> for concurrent read access</p></li>
 <li><p><strong>Prepared statements</strong> for efficient repeated operations</p></li>
+<li><p><strong>Schema versioning</strong> for compatibility tracking</p></li>
 </ul>
 </section>
 </section>
@@ -171,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
 
 <span class="c1"># Create or open database</span>
-<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.ucisdb&quot;</span><span class="p">)</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
 
 <span class="c1"># Build design hierarchy</span>
 <span class="n">top</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -194,7 +203,7 @@
 <section id="querying-coverage">
 <h3>Querying Coverage<a class="headerlink" href="#querying-coverage" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reopen database</span>
-<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.ucisdb&quot;</span><span class="p">)</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
 
 <span class="c1"># Iterate through hierarchy</span>
 <span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">ucis</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">):</span>
@@ -213,7 +222,7 @@
 </section>
 <section id="using-transactions">
 <h3>Using Transactions<a class="headerlink" href="#using-transactions" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.ucisdb&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
 
 <span class="c1"># Begin transaction for bulk operations</span>
 <span class="n">ucis</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">()</span>
@@ -813,6 +822,127 @@
 </section>
 </section>
 </section>
+<section id="merge-support">
+<h2>Merge Support<a class="headerlink" href="#merge-support" title="Link to this heading"></a></h2>
+<p>The SQLite backend provides efficient merge operations for combining coverage data from multiple test runs.</p>
+<section id="merge-operations">
+<h3>Merge Operations<a class="headerlink" href="#merge-operations" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_ucis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MergeStats</span></span></span><a class="headerlink" href="#merge" title="Link to this definition"></a></dt>
+<dd><p>Merge coverage data from another UCIS database into this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_ucis</strong> (<a class="reference internal" href="#SqliteUCIS" title="SqliteUCIS"><em>SqliteUCIS</em></a>) – Source database to merge from</p></li>
+<li><p><strong>create_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to create merge history node (default: True)</p></li>
+<li><p><strong>squash_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Collapse per-test history into summary node (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Statistics about the merge operation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MergeStats</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Basic Merge:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;merged.cdb&quot;</span><span class="p">)</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Merge with full history tracking</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">tests_merged</span><span class="si">}</span><span class="s2"> tests&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">coveritems_added</span><span class="si">}</span><span class="s2"> new bins&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">coveritems_matched</span><span class="si">}</span><span class="s2"> existing bins&quot;</span><span class="p">)</span>
+
+<span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Squashed History Merge:</strong></p>
+<p>For large-scale merges where per-test history is not needed, use <code class="docutils literal notranslate"><span class="pre">squash_history=True</span></code> to reduce storage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;merged.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Merge multiple databases with squashed history</span>
+<span class="k">for</span> <span class="n">test_db</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test2.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test3.cdb&quot;</span><span class="p">]:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="n">test_db</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">squash_history</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Result: Single summary history node instead of N test nodes</span>
+<span class="c1"># Coverage data is identical, but history overhead is eliminated</span>
+<span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="convenience-function">
+<h3>Convenience Function<a class="headerlink" href="#convenience-function" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="merge_databases">
+<span class="sig-name descname"><span class="pre">merge_databases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MergeStats</span></span></span><a class="headerlink" href="#merge_databases" title="Link to this definition"></a></dt>
+<dd><p>Merge multiple databases in one operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_path</strong> – Path to target (base) database</p></li>
+<li><p><strong>source_paths</strong> – List of source database paths to merge</p></li>
+<li><p><strong>output_path</strong> – Optional output path (None = modify target in-place)</p></li>
+<li><p><strong>squash_history</strong> – Collapse history into summary (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cumulative merge statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_merge</span> <span class="kn">import</span> <span class="n">merge_databases</span>
+
+<span class="n">stats</span> <span class="o">=</span> <span class="n">merge_databases</span><span class="p">(</span>
+    <span class="s2">&quot;base.cdb&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test2.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test3.cdb&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;final.cdb&quot;</span><span class="p">,</span>
+    <span class="n">squash_history</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total tests merged: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">tests_merged</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="command-line-interface">
+<h3>Command-Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h3>
+<p>Merge databases using the CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard merge (preserves all test history)</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>-if<span class="w"> </span>sqlite<span class="w"> </span>-of<span class="w"> </span>sqlite<span class="w"> </span>test*.cdb<span class="w"> </span>-o<span class="w"> </span>merged.cdb
+
+<span class="c1"># Optimized merge (squashed history, reduced storage)</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>--squash-history<span class="w"> </span>-if<span class="w"> </span>sqlite<span class="w"> </span>-of<span class="w"> </span>sqlite<span class="w"> </span>test*.cdb<span class="w"> </span>-o<span class="w"> </span>merged.cdb
+</pre></div>
+</div>
+</section>
+<section id="merge-behavior">
+<h3>Merge Behavior<a class="headerlink" href="#merge-behavior" title="Link to this heading"></a></h3>
+<p><strong>Coverage Accumulation:</strong></p>
+<ul class="simple">
+<li><p>Bin counts are summed across all source databases</p></li>
+<li><p>Missing bins are created with source count</p></li>
+<li><p>Existing bins are updated in-place (no row duplication)</p></li>
+</ul>
+<p><strong>History Tracking:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">squash_history=False</span></code>: All test nodes preserved, full traceability</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">squash_history=True</span></code>: Single summary node with test count only</p></li>
+</ul>
+<p><strong>Storage Impact:</strong></p>
+<ul class="simple">
+<li><p>Normal merge: ~N KB per test (history metadata)</p></li>
+<li><p>Squashed merge: ~1 KB total (single summary node)</p></li>
+<li><p>Coverage data size is identical in both modes</p></li>
+</ul>
+</section>
+</section>
 <section id="performance">
 <h2>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h2>
 <section id="optimization-strategies">
@@ -876,22 +1006,69 @@
 <h2>Database Format<a class="headerlink" href="#database-format" title="Link to this heading"></a></h2>
 <section id="file-extension">
 <h3>File Extension<a class="headerlink" href="#file-extension" title="Link to this heading"></a></h3>
-<p>SQLite databases use the <code class="docutils literal notranslate"><span class="pre">.ucisdb</span></code> extension by convention, though any extension works.</p>
+<p>SQLite databases use the <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> (Coverage DataBase) extension by convention, though any extension works.</p>
+</section>
+<section id="database-identification">
+<h3>Database Identification<a class="headerlink" href="#database-identification" title="Link to this heading"></a></h3>
+<p>PyUCIS databases include identification markers to distinguish them from arbitrary SQLite files:</p>
+<ul class="simple">
+<li><p><strong>SQLite Header:</strong> Standard SQLite file format (starts with “SQLite format 3”)</p></li>
+<li><p><strong>DATABASE_TYPE Marker:</strong> Metadata key set to “PYUCIS” for validation</p></li>
+<li><p><strong>Required Tables:</strong> scopes, coveritems, history_nodes tables must exist</p></li>
+</ul>
+<p><strong>Validation Functions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">schema_manager</span>
+
+<span class="c1"># Check if file is a valid SQLite database</span>
+<span class="k">if</span> <span class="n">schema_manager</span><span class="o">.</span><span class="n">is_valid_sqlite_file</span><span class="p">(</span><span class="s2">&quot;myfile.db&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valid SQLite file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check if it&#39;s a PyUCIS coverage database</span>
+<span class="n">is_valid</span><span class="p">,</span> <span class="n">error_msg</span> <span class="o">=</span> <span class="n">schema_manager</span><span class="o">.</span><span class="n">is_pyucis_database</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valid PyUCIS database&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Automatic Validation:</strong></p>
+<p>The SQLite backend automatically validates databases when opening:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automatically validates file format and PyUCIS markers</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Raises ValueError if:</span>
+<span class="c1"># - Not a valid SQLite file</span>
+<span class="c1"># - Missing DATABASE_TYPE marker</span>
+<span class="c1"># - Missing required tables</span>
+<span class="c1"># - Schema version mismatch</span>
+</pre></div>
+</div>
 </section>
 <section id="compatibility">
 <h3>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p>SQLite version: 3.31.0 or later recommended</p></li>
-<li><p>Schema version: 1.0</p></li>
+<li><p><strong>Schema version: 2.1</strong> (stored in db_metadata table)</p></li>
+<li><p><strong>Database format version: 1.0</strong> (PyUCIS identification)</p></li>
 <li><p>Python version: 3.7+</p></li>
 <li><p>No external dependencies beyond Python’s built-in sqlite3 module</p></li>
 </ul>
+<p><strong>Schema Version Checking:</strong></p>
+<p>The SQLite backend automatically verifies schema version compatibility when opening databases. If a database has an incompatible schema version, an exception is raised:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;old_database.cdb&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="c1"># &quot;Database schema version mismatch: found 2.0, expected 2.1.</span>
+    <span class="c1">#  Please recreate the database with the current schema version.&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
 <section id="direct-sql-access">
 <h3>Direct SQL Access<a class="headerlink" href="#direct-sql-access" title="Link to this heading"></a></h3>
 <p>SQLite databases can be queried directly using standard SQLite tools:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open with sqlite3 command-line tool</span>
-sqlite3<span class="w"> </span>coverage.ucisdb
+sqlite3<span class="w"> </span>coverage.cdb
 
 <span class="c1"># Run queries</span>
 SELECT<span class="w"> </span>scope_name,<span class="w"> </span>scope_type<span class="w"> </span>FROM<span class="w"> </span>scopes<span class="w"> </span>WHERE<span class="w"> </span>parent_id<span class="w"> </span>IS<span class="w"> </span>NULL<span class="p">;</span>
@@ -912,7 +1089,7 @@ SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </sp
 <span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
 
 <span class="n">xml_db</span> <span class="o">=</span> <span class="n">XMLUCIS</span><span class="p">(</span><span class="s2">&quot;old.xml&quot;</span><span class="p">)</span>
-<span class="n">sqlite_db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;new.ucisdb&quot;</span><span class="p">)</span>
+<span class="n">sqlite_db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;new.cdb&quot;</span><span class="p">)</span>
 <span class="c1"># Copy logic here</span>
 
 <span class="c1"># From YAML</span>
@@ -935,7 +1112,7 @@ SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </sp
 <span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
 
 <span class="c1"># Create database</span>
-<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;example.ucisdb&quot;</span><span class="p">)</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;example.cdb&quot;</span><span class="p">)</span>
 
 <span class="c1"># Build hierarchy</span>
 <span class="n">top</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
