@@ -18,6 +18,7 @@ jobs:
         python3 -m ivpm update -a
         ./packages/python/bin/python3 -m pip install wheel twine 
         ./packages/python/bin/python3 -m pip install pip setuptools --upgrade
+        rm -rf dist build *.egg-info
         export BUILD_NUM=$GITHUB_RUN_ID
         echo "BUILD_NUM=${BUILD_NUM}"
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
