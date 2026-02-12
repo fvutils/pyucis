@@ -2,17 +2,11 @@
 import os
 from setuptools import setup, find_namespace_packages
 
-version="0.1.5"
-
-if "BUILD_NUM" in os.environ.keys():
-    version = version + "." + os.environ["BUILD_NUM"]
-
 setup(
   name = "pyucis",
   packages=find_namespace_packages(where='src'),
   package_dir = {'' : 'src'},
   package_data = {'' : ['*.xsd', 'share/SKILL.md']},
-  version=version,
   author = "Matthew Ballance",
   author_email = "matt.ballance@gmail.com",
   description = ("PyUCIS provides a Python API for manipulating UCIS coverage data."),

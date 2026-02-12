@@ -1,0 +1,10 @@
+	   doc/source/index.rst
+	   doc/source/introduction.rst
+	   doc/source/reference/reference.rst
+	   src/ucis/rgy/format_rgy.py
+
+	doc/source/reference/html_coverage_report.rst
+	src/ucis/formatters/format_html.py
+	src/ucis/report/format_rpt_html.py
+	tests/unit/test_html_formatter.py
+
