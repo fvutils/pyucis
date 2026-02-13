@@ -83,5 +83,6 @@ class CoverData():
         self.weight = 0 # if UCIS_HAS_WEIGHT
         self.limit = 0 # if UCIS_HAS_LIMIT
         self.bitlen = 0 # if bytevector
+        self.at_least = 1 # Minimum count for coverage (default 1)
                  
             
