@@ -374,3 +374,20 @@ class SqliteUCIS(SqliteScope, UCIS):
         
         merger = SqliteMerger(self)
         return merger.merge(source_ucis, create_history, squash_history)
+
+    def merge_many(self, sources, create_history: bool = True, squash_history: bool = False):
+        """
+        Merge multiple source databases in a single transaction.
+
+        Args:
+            sources: Iterable of source SqliteUCIS databases to merge from
+            create_history: Whether to create merge history nodes
+            squash_history: If True, collapse per-test history into summary
+
+        Returns:
+            MergeStats object with accumulated statistics
+        """
+        from ucis.sqlite.sqlite_merge import SqliteMerger
+
+        merger = SqliteMerger(self)
+        return merger.merge_many(sources, create_history, squash_history)

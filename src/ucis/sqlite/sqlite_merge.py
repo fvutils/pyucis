@@ -57,7 +57,51 @@ class SqliteMerger:
         self.stats = MergeStats()
         self._scope_path_cache = {}  # Cache of scope paths
         self._scope_match_cache = {}  # Cache source->target scope mappings
+        self._src_tree = None  # Cached source scope tree
+        self._tgt_tree = None  # Cached target scope tree
+        self._tgt_coveritems = {}  # scope_id -> {cover_index -> [cover_id, count]}
     
+    def _load_scope_tree(self, db):
+        """Load entire scope tree into memory in a single query."""
+        tree = {}       # scope_id -> {name, type, parent_id, children: [scope_id]}
+        children = {}   # parent_id -> [scope_id]
+        root_id = None
+
+        for row in db.conn.execute(
+            "SELECT scope_id, parent_id, scope_type, scope_name FROM scopes"
+        ):
+            sid, pid, stype, sname = row
+            tree[sid] = {"name": sname, "type": stype, "parent_id": pid, "children": []}
+            children.setdefault(pid, []).append(sid)
+            if pid is None:
+                root_id = sid
+
+        for sid, info in tree.items():
+            info["children"] = children.get(sid, [])
+
+        return tree, root_id
+
+    def _find_matching_scope_fast(self, tgt_parent_id, src_scope_id):
+        """Find matching target scope using cached trees (dict lookup)."""
+        src = self._src_tree[src_scope_id]
+        for tgt_child_id in self._tgt_tree[tgt_parent_id]["children"]:
+            tgt = self._tgt_tree[tgt_child_id]
+            if tgt["name"] == src["name"] and tgt["type"] == src["type"]:
+                return tgt_child_id
+        return None
+
+    def _get_tgt_coveritems(self, scope_id):
+        """Get cached target coveritem map, loading on first access."""
+        if scope_id not in self._tgt_coveritems:
+            m = {}
+            for row in self.target.conn.execute(
+                "SELECT cover_id, cover_index, cover_data FROM coveritems WHERE scope_id=?",
+                (scope_id,)
+            ):
+                m[row[1]] = [row[0], row[2]]  # mutable list for in-place update
+            self._tgt_coveritems[scope_id] = m
+        return self._tgt_coveritems[scope_id]
+
     def merge(self, source_ucis, create_history: bool = True, squash_history: bool = False):
         """
         Merge source database into target database
@@ -129,8 +173,17 @@ class SqliteMerger:
                         self._copy_history_node(src_test, merge_node)
                         self.stats.tests_merged += 1
             
-            # Merge scopes recursively starting from root
-            self._merge_scope_recursive(source_ucis, self.target)
+            # Pre-load scope trees for fast traversal (Fix 1)
+            self._src_tree, src_root = self._load_scope_tree(source_ucis)
+            if self._tgt_tree is None:
+                self._tgt_tree, tgt_root = self._load_scope_tree(self.target)
+            else:
+                tgt_root = self._tgt_root
+
+            self._tgt_root = tgt_root
+
+            # Merge scopes recursively using cached trees
+            self._merge_scope_recursive_fast(source_ucis, src_root, tgt_root)
             
             # Commit transaction
             self.target.commit()
@@ -142,6 +195,109 @@ class SqliteMerger:
             self.target.rollback()
             raise Exception(f"Merge failed: {e}") from e
     
+    def merge_many(self, sources, create_history: bool = True, squash_history: bool = False):
+        """
+        Merge multiple source databases in a single transaction.
+
+        Source scope trees are loaded once from the first source and reused
+        when subsequent sources share the same structure (Fix 3 + Fix 4).
+
+        Args:
+            sources: Iterable of (source_ucis, close_after) tuples or plain
+                     source_ucis objects.
+            create_history: Whether to create merge history nodes.
+            squash_history: If True, collapse per-test history into summary.
+
+        Returns:
+            MergeStats with accumulated statistics.
+        """
+        total = MergeStats()
+        self._tgt_tree, self._tgt_root = self._load_scope_tree(self.target)
+
+        self.target.begin_transaction()
+        try:
+            src_tree = None
+            for src in sources:
+                stats = self._merge_one(
+                    src, create_history, squash_history, reuse_src_tree=src_tree
+                )
+                if src_tree is None:
+                    src_tree = self._src_tree
+                total.scopes_matched += stats.scopes_matched
+                total.scopes_added += stats.scopes_added
+                total.coveritems_matched += stats.coveritems_matched
+                total.coveritems_added += stats.coveritems_added
+                total.total_hits_added += stats.total_hits_added
+                total.tests_merged += stats.tests_merged
+                total.conflicts.extend(stats.conflicts)
+
+            self.target.commit()
+        except Exception:
+            self.target.rollback()
+            raise
+
+        return total
+
+    def _merge_one(self, source_ucis, create_history, squash_history,
+                   reuse_src_tree=None):
+        """Merge a single source inside an existing transaction."""
+        self.stats = MergeStats()
+
+        # History handling
+        if create_history:
+            if squash_history:
+                summary_node = None
+                for node in self.target.historyNodes(HistoryNodeKind.MERGE):
+                    if node.getLogicalName() == "merged_summary":
+                        summary_node = node
+                        break
+
+                if summary_node is None:
+                    summary_node = self.target.createHistoryNode(
+                        None, "merged_summary", None, HistoryNodeKind.MERGE
+                    )
+                    summary_node.setDate(int(datetime.now().timestamp()))
+                    cursor = self.target.conn.cursor()
+                    cursor.execute(
+                        "INSERT INTO history_properties (history_id, property_key, property_type, int_value) VALUES (?, ?, ?, ?)",
+                        (summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF, 0, 0)
+                    )
+
+                test_count = len(list(source_ucis.historyNodes(HistoryNodeKind.TEST)))
+                cursor = self.target.conn.cursor()
+                cursor.execute(
+                    "UPDATE history_properties SET int_value = int_value + ? WHERE history_id = ? AND property_key = ?",
+                    (test_count, summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF)
+                )
+                self.stats.tests_merged += test_count
+            else:
+                merge_node = self.target.createHistoryNode(
+                    None,
+                    f"merge_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                    None,
+                    HistoryNodeKind.MERGE
+                )
+                merge_node.setDate(int(datetime.now().timestamp()))
+                for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
+                    self._copy_history_node(src_test, merge_node)
+                    self.stats.tests_merged += 1
+
+        # Reuse source tree if provided (Fix 4)
+        if reuse_src_tree is not None:
+            self._src_tree = reuse_src_tree
+            # Find root from the cached tree
+            for sid, info in self._src_tree.items():
+                if info["parent_id"] is None:
+                    src_root = sid
+                    break
+        else:
+            self._src_tree, src_root = self._load_scope_tree(source_ucis)
+
+        tgt_root = self._tgt_root
+        self._merge_scope_recursive_fast(source_ucis, src_root, tgt_root)
+
+        return self.stats
+
     def _copy_history_node(self, src_node, merge_parent):
         """Copy a history node from source to target"""
         # Check if test already exists (by logical name)
@@ -241,6 +397,25 @@ class SqliteMerger:
             
             # Recursively merge children
             self._merge_scope_recursive(src_child, tgt_child)
+
+    def _merge_scope_recursive_fast(self, source_ucis, src_scope_id, tgt_scope_id):
+        """Recursively merge scopes using cached trees (Fix 1)."""
+
+        # Merge coverage items for this scope
+        self._merge_coveritems_fast(source_ucis, src_scope_id, tgt_scope_id)
+
+        # Recursively merge child scopes via dict lookups
+        for src_child_id in self._src_tree[src_scope_id]["children"]:
+            tgt_child_id = self._find_matching_scope_fast(tgt_scope_id, src_child_id)
+
+            if tgt_child_id is None:
+                # No match — create new scope in target DB and update cached tree
+                tgt_child_id = self._copy_scope_fast(source_ucis, src_child_id, tgt_scope_id)
+                self.stats.scopes_added += 1
+            else:
+                self.stats.scopes_matched += 1
+
+            self._merge_scope_recursive_fast(source_ucis, src_child_id, tgt_child_id)
     
     def _copy_scope(self, src_scope, tgt_parent):
         """Create a copy of source scope under target parent"""
@@ -252,6 +427,25 @@ class SqliteMerger:
             src_scope.getScopeType(),
             src_scope.getFlags()
         )
+
+    def _copy_scope_fast(self, source_ucis, src_scope_id, tgt_parent_id):
+        """Create a copy of source scope under target parent using cached tree."""
+        src = self._src_tree[src_scope_id]
+        from ucis.sqlite.sqlite_scope import SqliteScope
+        parent_scope = SqliteScope(self.target, tgt_parent_id)
+        new_scope = parent_scope.createScope(
+            src["name"], None, 1, 0, src["type"], 0
+        )
+        new_id = new_scope.scope_id
+        # Update the target tree cache
+        self._tgt_tree[new_id] = {
+            "name": src["name"],
+            "type": src["type"],
+            "parent_id": tgt_parent_id,
+            "children": [],
+        }
+        self._tgt_tree[tgt_parent_id]["children"].append(new_id)
+        return new_id
     
     def _merge_coveritems(self, src_scope, tgt_scope):
         """Merge coverage items using bulk queries."""
@@ -326,6 +520,163 @@ class SqliteMerger:
                 inserts
             )
 
+    def _merge_coveritems_fast(self, source_ucis, src_scope_id, tgt_scope_id):
+        """Merge coverage items using cached target map (Fix 2)."""
+
+        # Get (or build on first access) cached target coveritems
+        tgt_map = self._get_tgt_coveritems(tgt_scope_id)
+
+        # Bulk-fetch source coveritems
+        src_rows = list(source_ucis.conn.execute(
+            """SELECT cover_index, cover_type, cover_name, cover_data,
+                      cover_flags, at_least, weight, goal, limit_val,
+                      source_file_id, source_line, source_token
+               FROM coveritems WHERE scope_id = ?""",
+            (src_scope_id,)
+        ))
+
+        updates = []   # (new_count, cover_id)
+        inserts = []
+        next_index = max(tgt_map.keys(), default=-1) + 1
+
+        for row in src_rows:
+            src_index = row[0]
+            src_count = row[3]
+
+            if src_index in tgt_map:
+                tgt_entry = tgt_map[src_index]
+                new_count = tgt_entry[1] + src_count
+                updates.append((new_count, tgt_entry[0]))
+                tgt_entry[1] = new_count  # update cache in-place
+                self.stats.coveritems_matched += 1
+                self.stats.total_hits_added += src_count
+            else:
+                inserts.append((
+                    tgt_scope_id, next_index,
+                    row[1], row[2], src_count,
+                    row[4], row[5], row[6], row[7], row[8],
+                    None, row[10], row[11],
+                ))
+                next_index += 1
+                self.stats.coveritems_added += 1
+                self.stats.total_hits_added += src_count
+
+        if updates:
+            self.target.conn.executemany(
+                "UPDATE coveritems SET cover_data = ? WHERE cover_id = ?",
+                updates
+            )
+
+        if inserts:
+            cursor = self.target.conn.executemany(
+                """INSERT INTO coveritems
+                   (scope_id, cover_index, cover_type, cover_name,
+                    cover_data, cover_flags, at_least, weight,
+                    goal, limit_val, source_file_id, source_line,
+                    source_token)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                inserts
+            )
+            # Update cache with newly inserted items
+            for ins in inserts:
+                # Re-query to get cover_id for newly inserted row
+                row = self.target.conn.execute(
+                    "SELECT cover_id FROM coveritems WHERE scope_id=? AND cover_index=?",
+                    (tgt_scope_id, ins[1])
+                ).fetchone()
+                if row:
+                    tgt_map[ins[1]] = [row[0], ins[4]]
+
+    def _merge_coveritems_attached(self, source_ucis, scope_mapping):
+        """
+        Merge coveritems using ATTACH DATABASE for pure-SQL performance (Fix 5).
+        
+        Only works for file-based SQLite databases.
+        """
+        src_path = getattr(source_ucis, 'db_path', None)
+        if not src_path or src_path == ":memory:":
+            return False
+        if self.target.db_path == ":memory:":
+            return False
+
+        self.target.conn.execute("ATTACH DATABASE ? AS merge_src", (src_path,))
+        try:
+            # Build temp scope mapping table
+            self.target.conn.execute("""
+                CREATE TEMP TABLE IF NOT EXISTS _merge_scope_map (
+                    src_scope_id INTEGER PRIMARY KEY,
+                    tgt_scope_id INTEGER NOT NULL
+                )
+            """)
+            self.target.conn.execute("DELETE FROM _merge_scope_map")
+
+            for src_id, tgt_id in scope_mapping.items():
+                self.target.conn.execute(
+                    "INSERT INTO _merge_scope_map VALUES (?,?)", (src_id, tgt_id)
+                )
+
+            # Update existing coveritems (accumulate counts)
+            result = self.target.conn.execute("""
+                UPDATE coveritems SET cover_data = cover_data + (
+                    SELECT src_ci.cover_data
+                    FROM merge_src.coveritems src_ci
+                    INNER JOIN _merge_scope_map sm ON src_ci.scope_id = sm.src_scope_id
+                    WHERE coveritems.scope_id = sm.tgt_scope_id
+                      AND coveritems.cover_index = src_ci.cover_index
+                )
+                WHERE EXISTS (
+                    SELECT 1 FROM merge_src.coveritems src_ci
+                    INNER JOIN _merge_scope_map sm ON src_ci.scope_id = sm.src_scope_id
+                    WHERE coveritems.scope_id = sm.tgt_scope_id
+                      AND coveritems.cover_index = src_ci.cover_index
+                )
+            """)
+            self.stats.coveritems_matched += result.rowcount
+
+            # Insert new coveritems
+            result = self.target.conn.execute("""
+                INSERT INTO coveritems (
+                    scope_id, cover_index, cover_type, cover_name,
+                    cover_data, cover_flags, at_least, weight,
+                    goal, limit_val, source_file_id, source_line, source_token
+                )
+                SELECT
+                    sm.tgt_scope_id,
+                    src_ci.cover_index,
+                    src_ci.cover_type,
+                    src_ci.cover_name,
+                    src_ci.cover_data,
+                    src_ci.cover_flags,
+                    src_ci.at_least,
+                    src_ci.weight,
+                    src_ci.goal,
+                    src_ci.limit_val,
+                    src_ci.source_file_id,
+                    src_ci.source_line,
+                    src_ci.source_token
+                FROM merge_src.coveritems src_ci
+                INNER JOIN _merge_scope_map sm ON src_ci.scope_id = sm.src_scope_id
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM coveritems tgt_ci
+                    WHERE tgt_ci.scope_id = sm.tgt_scope_id
+                      AND tgt_ci.cover_index = src_ci.cover_index
+                )
+            """)
+            self.stats.coveritems_added += result.rowcount
+
+            # Invalidate coveritem cache for affected scopes
+            for tgt_id in scope_mapping.values():
+                self._tgt_coveritems.pop(tgt_id, None)
+
+            self.target.conn.execute("DROP TABLE IF EXISTS _merge_scope_map")
+        finally:
+            try:
+                self.target.conn.execute("DETACH DATABASE merge_src")
+            except Exception:
+                pass
+
+        return True
+
 
 def merge_databases(target_path: str, source_paths: list, 
                    output_path: str = None, squash_history: bool = False) -> MergeStats:
@@ -353,25 +704,18 @@ def merge_databases(target_path: str, source_paths: list,
     target = SqliteUCIS(target_path)
     merger = SqliteMerger(target)
     
-    total_stats = MergeStats()
-    
-    # Merge each source
-    for src_path in source_paths:
-        source = SqliteUCIS.open_readonly(src_path)
+    # Open all sources and use merge_many for single-transaction merge
+    sources = []
+    try:
+        for src_path in source_paths:
+            sources.append(SqliteUCIS.open_readonly(src_path))
         
-        stats = merger.merge(source, squash_history=squash_history)
-        
-        # Accumulate statistics
-        total_stats.scopes_matched += stats.scopes_matched
-        total_stats.scopes_added += stats.scopes_added
-        total_stats.coveritems_matched += stats.coveritems_matched
-        total_stats.coveritems_added += stats.coveritems_added
-        total_stats.total_hits_added += stats.total_hits_added
-        total_stats.tests_merged += stats.tests_merged
-        total_stats.conflicts.extend(stats.conflicts)
-        
-        source.close()
-    
-    target.close()
+        total_stats = merger.merge_many(
+            sources, squash_history=squash_history
+        )
+    finally:
+        for src in sources:
+            src.close()
+        target.close()
     
     return total_stats
