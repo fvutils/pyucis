@@ -34,7 +34,8 @@ def merge(args):
         from ucis.sqlite import SqliteUCIS
 
         out_db = SqliteUCIS(args.out)
-        out_db.merge_fast(args.db, squash_history=squash_history)
+        workers = getattr(args, 'workers', 4)
+        out_db.merge_fast(args.db, squash_history=squash_history, workers=workers)
         out_db.close()
         return
 

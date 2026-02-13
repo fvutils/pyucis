@@ -20,6 +20,8 @@ Coverage merge functionality for SQLite UCIS databases
 """
 
 import sqlite3
+import array
+import concurrent.futures
 from datetime import datetime
 from ucis.history_node_kind import HistoryNodeKind
 from ucis.scope_type_t import ScopeTypeT
@@ -239,31 +241,78 @@ class SqliteMerger:
 
         return total
 
-    def merge_fast(self, source_paths, squash_history=False):
-        """Merge multiple source databases using optimised read pattern.
+    def _read_source(self, src_path, source_ids_match, scope_map, ci_map):
+        """Read coveritem data from a source .cdb file.
+        
+        Args:
+            src_path: Path to source database file
+            source_ids_match: Whether source scope_ids match target
+            scope_map: Dict mapping (scope_name, scope_type) to target scope_id
+            ci_map: Dict mapping (scope_id, cover_index) to cover_id
+            
+        Returns:
+            Tuple of (rows, stats_dict) where rows is list of coveritem data
+            and stats_dict contains matched count and total hits
+        """
+        conn = sqlite3.connect(src_path)
+        stats = {'matched': 0, 'hits': 0}
+        deltas = {}
+        
+        if source_ids_match:
+            # Direct scope_id lookup — skip JOIN
+            rows = conn.execute(
+                "SELECT scope_id, cover_index, cover_data FROM coveritems"
+            ).fetchall()
+            
+            for row in rows:
+                src_sid, cidx, cdata = row[0], row[1], row[2]
+                tgt_cid = ci_map.get((src_sid, cidx))
+                if tgt_cid is not None:
+                    deltas[tgt_cid] = deltas.get(tgt_cid, 0) + cdata
+                    stats['matched'] += 1
+                    stats['hits'] += cdata
+        else:
+            # Use minimal 4-column read with JOIN
+            rows = conn.execute("""
+                SELECT ss.scope_name, ss.scope_type,
+                       ci.cover_index, ci.cover_data
+                FROM coveritems ci
+                INNER JOIN scopes ss ON ci.scope_id = ss.scope_id
+            """).fetchall()
+            
+            for row in rows:
+                sname, stype = row[0], row[1]
+                cidx, cdata = row[2], row[3]
+                tgt_sid = scope_map.get((sname, stype))
+                if tgt_sid is None:
+                    continue
+                
+                tgt_cid = ci_map.get((tgt_sid, cidx))
+                if tgt_cid is not None:
+                    deltas[tgt_cid] = deltas.get(tgt_cid, 0) + cdata
+                    stats['matched'] += 1
+                    stats['hits'] += cdata
+        
+        conn.close()
+        return deltas, stats
 
-        Opens each source with raw sqlite3.connect, reads all coveritem
-        data in a single JOIN query, maps to target via cached dicts,
-        and writes via executemany.  Eliminates per-scope query overhead.
+    def merge_fast(self, source_paths, squash_history=False, workers=4):
+        """Merge multiple source databases using parallel reads and optimised accumulation.
+
+        Opens sources in parallel using ThreadPoolExecutor, reads coveritem
+        data, accumulates deltas using array-based storage for performance,
+        and writes once via executemany.
 
         Args:
             source_paths: List of file paths to source .cdb databases.
             squash_history: If True, collapse history into summary node.
+            workers: Number of parallel reader threads (default: 4).
 
         Returns:
             MergeStats with accumulated statistics.
         """
         # 1. Build target lookup maps (once)
         scope_map = {}     # (scope_name, scope_type) -> tgt_scope_id
-        for r in self.target.conn.execute(
-            "SELECT scope_id, scope_name, scope_type FROM scopes"
-        ):
-            scope_map[(r[0] if isinstance(r, (list, tuple)) else r['scope_name'],
-                        r[1] if isinstance(r, (list, tuple)) else r['scope_type'])] = (
-                r[0] if isinstance(r, (list, tuple)) else r['scope_id']
-            )
-        # Rebuild with proper indexing using raw cursor
-        scope_map = {}
         raw_cur = self.target.conn.execute(
             "SELECT scope_id, scope_name, scope_type FROM scopes"
         )
@@ -283,86 +332,69 @@ class SqliteMerger:
             cidx = r[2] if isinstance(r, (list, tuple)) else r['cover_index']
             ci_map[(sid, cidx)] = cid
 
-        # Check if source scope_ids match target (Step 3b optimisation)
-        source_ids_match = None
+        # 2. Check if source scope_ids match target (first source only)
+        source_ids_match = False
+        if source_paths:
+            first_conn = sqlite3.connect(source_paths[0])
+            src_scopes = {}
+            for sr in first_conn.execute(
+                "SELECT scope_id, scope_name, scope_type FROM scopes"
+            ):
+                src_scopes[(sr[1], sr[2])] = sr[0]
+            source_ids_match = all(
+                src_scopes.get(k) == v
+                for k, v in scope_map.items()
+                if k[0]  # skip root with empty name
+            ) and len(src_scopes) == len(scope_map)
+            first_conn.close()
 
-        # Accumulate deltas across ALL sources (Step 3c)
-        all_deltas = {}    # cover_id -> total_delta
-        all_inserts = []   # rows needing insert
-
-        # 2. Process each source
+        # 3. Read ALL sources in parallel using ThreadPoolExecutor
         self.target.begin_transaction()
         try:
-            for src_path in source_paths:
-                # 2a. Read source data
-                sc = sqlite3.connect(src_path)
+            # Create partial function with fixed arguments for _read_source
+            from functools import partial
+            read_func = partial(
+                self._read_source,
+                source_ids_match=source_ids_match,
+                scope_map=scope_map,
+                ci_map=ci_map
+            )
+            
+            with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+                results = list(pool.map(read_func, source_paths))
 
-                if source_ids_match is None:
-                    # First source: check if scope_ids match target
-                    src_scopes = {}
-                    for sr in sc.execute(
-                        "SELECT scope_id, scope_name, scope_type FROM scopes"
-                    ):
-                        src_scopes[(sr[1], sr[2])] = sr[0]
-                    source_ids_match = all(
-                        src_scopes.get(k) == v
-                        for k, v in scope_map.items()
-                        if k[0]  # skip root with empty name
-                    ) and len(src_scopes) == len(scope_map)
+            # 4. Accumulate deltas using array for performance (Step 2)
+            if ci_map:
+                max_cid = max(ci_map.values()) + 1
+                deltas = array.array('q', [0] * max_cid)  # signed int64
+                
+                for result_deltas, stats_dict in results:
+                    for cid, delta in result_deltas.items():
+                        deltas[cid] += delta
+                    self.stats.coveritems_matched += stats_dict['matched']
+                    self.stats.total_hits_added += stats_dict['hits']
+                    self.stats.tests_merged += 1
+                
+                # 5. Single batch UPDATE with non-zero deltas
+                updates = [(int(deltas[cid]), cid) for cid in range(max_cid) if deltas[cid] != 0]
+                if updates:
+                    self.target.conn.executemany(
+                        "UPDATE coveritems SET cover_data = cover_data + ? WHERE cover_id = ?",
+                        updates
+                    )
+            else:
+                # Empty ci_map - just count tests
+                for result_deltas, stats_dict in results:
+                    self.stats.coveritems_matched += stats_dict['matched']
+                    self.stats.total_hits_added += stats_dict['hits']
+                    self.stats.tests_merged += 1
 
-                if source_ids_match:
-                    # Direct scope_id lookup — skip JOIN (Step 3b)
-                    rows = sc.execute(
-                        "SELECT scope_id, cover_index, cover_data FROM coveritems"
-                    ).fetchall()
-                    sc.close()
-
-                    for row in rows:
-                        src_sid, cidx, cdata = row[0], row[1], row[2]
-                        tgt_cid = ci_map.get((src_sid, cidx))
-                        if tgt_cid is not None:
-                            all_deltas[tgt_cid] = all_deltas.get(tgt_cid, 0) + cdata
-                            self.stats.coveritems_matched += 1
-                            self.stats.total_hits_added += cdata
-                else:
-                    # Use minimal 4-column read with JOIN (Step 3a)
-                    rows = sc.execute("""
-                        SELECT ss.scope_name, ss.scope_type,
-                               ci.cover_index, ci.cover_data
-                        FROM coveritems ci
-                        INNER JOIN scopes ss ON ci.scope_id = ss.scope_id
-                    """).fetchall()
-                    sc.close()
-
-                    for row in rows:
-                        sname, stype = row[0], row[1]
-                        cidx, cdata = row[2], row[3]
-                        tgt_sid = scope_map.get((sname, stype))
-                        if tgt_sid is None:
-                            continue
-
-                        tgt_cid = ci_map.get((tgt_sid, cidx))
-                        if tgt_cid is not None:
-                            all_deltas[tgt_cid] = all_deltas.get(tgt_cid, 0) + cdata
-                            self.stats.coveritems_matched += 1
-                            self.stats.total_hits_added += cdata
-
-                # 2b. Handle history
-                if not squash_history:
-                    self._create_test_history_from_path(src_path)
-
-                self.stats.tests_merged += 1
-
-            # 3. Single batch UPDATE for ALL sources (Step 3c)
-            if all_deltas:
-                self.target.conn.executemany(
-                    "UPDATE coveritems SET cover_data = cover_data + ? WHERE cover_id = ?",
-                    [(delta, cid) for cid, delta in all_deltas.items()]
-                )
-
-            # 4. Squash history summary if requested
+            # 6. Handle history
             if squash_history:
                 self._create_squash_summary(len(source_paths))
+            else:
+                for src_path in source_paths:
+                    self._create_test_history_from_path(src_path)
 
             self.target.commit()
         except:

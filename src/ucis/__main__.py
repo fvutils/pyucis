@@ -53,6 +53,10 @@ def get_parser():
         action="store_true",
         default=False,
         help="Use optimised merge path (SQLite-to-SQLite only)")
+    merge.add_argument("--workers", "-j",
+        type=int,
+        default=4,
+        help="Number of parallel reader threads for merge_fast (default: 4)")
     merge.add_argument("db", nargs="+")
     merge.set_defaults(func=cmd_merge.merge)
     
