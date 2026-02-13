@@ -11,6 +11,7 @@ PyUCIS is a Python implementation of the Unified Coverage Interoperability Stand
 * **Full UCIS API** - Complete implementation of the UCIS object-oriented API
 * **Coverage Reporting** - Interactive HTML, JSON, XML, Cobertura, and text report formats
 * **Interactive HTML Reports** - Single-file reports with visualizations, bin details, and filtering
+* **Interactive Terminal UI** - Real-time coverage exploration with keyboard-driven navigation
 * **Coverage Merging** - Combine coverage from multiple test runs
 * **Cross-Platform** - Works on Linux, macOS, and Windows
 
@@ -21,6 +22,7 @@ Contents:
    
    introduction
    commands
+   tui
    show_commands
    mcp_server
    reference/reference
