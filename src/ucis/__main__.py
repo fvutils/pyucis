@@ -279,8 +279,21 @@ def get_parser():
     
     show.set_defaults(func=cmd_show.show)
 
+    # TUI subcommand
+    tui = subparser.add_parser("tui",
+        help="Launch interactive Terminal UI for exploring coverage data")
+    tui.add_argument("--input-format", "-if",
+        help="Specifies the format of the input database. Defaults to 'xml'")
+    tui.add_argument("db", help="Path to the coverage database")
+    tui.set_defaults(func=lambda args: _launch_tui(args))
     
     return parser
+
+def _launch_tui(args):
+    """Launch the TUI application."""
+    from ucis.tui.app import TUIApp
+    app = TUIApp(args.db)
+    app.run()
 
 def main():
     # Print skill information at the start
