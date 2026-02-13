@@ -1,0 +1,756 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Terminal UI &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Show Commands Reference" href="show_commands.html" />
+    <link rel="prev" title="Commands" href="commands.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Interactive Terminal UI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#launch-the-tui">Launch the TUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tui-views">TUI Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard-view">Dashboard View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hierarchy-view">Hierarchy View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gaps-view">Gaps View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hotspots-view">Hotspots View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metrics-view">Metrics View</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#keyboard-shortcuts">Keyboard Shortcuts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#global-navigation">Global Navigation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-tree-navigation">List/Tree Navigation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tips-tricks">Tips &amp; Tricks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#efficient-workflows">Efficient Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-tips">Performance Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remote-workflows">Remote Workflows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#color-scheme">Color Scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparison-tui-vs-html-reports">Comparison: TUI vs. HTML Reports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-help">Getting Help</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-1-daily-verification-workflow">Example 1: Daily Verification Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-2-coverage-debugging">Example 2: Coverage Debugging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-3-remote-verification">Example 3: Remote Verification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-4-coverage-comparison">Example 4: Coverage Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Interactive Terminal UI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tui.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="interactive-terminal-ui">
+<h1>Interactive Terminal UI<a class="headerlink" href="#interactive-terminal-ui" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>PyUCIS includes an interactive Terminal User Interface (TUI) for exploring and analyzing
+coverage databases directly from the command line. The TUI provides a fast, keyboard-driven
+alternative to HTML reports, ideal for real-time coverage assessment during verification.</p>
+<p><strong>Key Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Fast Navigation</strong> - Keyboard shortcuts for efficient browsing</p></li>
+<li><p><strong>Real-Time Analysis</strong> - No need to generate static reports</p></li>
+<li><p><strong>Remote-Friendly</strong> - Works over SSH and in terminal-only environments</p></li>
+<li><p><strong>Priority-Driven</strong> - Built-in hotspot analysis for test planning</p></li>
+<li><p><strong>Rich Visualizations</strong> - Color-coded indicators and formatted tables</p></li>
+<li><p><strong>Low Overhead</strong> - Lightweight compared to browser-based reports</p></li>
+</ul>
+</section>
+<section id="launch-the-tui">
+<h2>Launch the TUI<a class="headerlink" href="#launch-the-tui" title="Link to this heading"></a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">view</span></code> command to open any coverage database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View a coverage database</span>
+ucis<span class="w"> </span>view<span class="w"> </span>coverage.xml
+
+<span class="c1"># View SQLite database</span>
+ucis<span class="w"> </span>view<span class="w"> </span>coverage.ucisdb
+
+<span class="c1"># View YAML format</span>
+ucis<span class="w"> </span>view<span class="w"> </span>coverage.yaml
+</pre></div>
+</div>
+<p>The TUI will load the database and display the Dashboard view by default.</p>
+</section>
+<section id="tui-views">
+<h2>TUI Views<a class="headerlink" href="#tui-views" title="Link to this heading"></a></h2>
+<p>The TUI provides five specialized views for coverage analysis:</p>
+<section id="dashboard-view">
+<h3>Dashboard View<a class="headerlink" href="#dashboard-view" title="Link to this heading"></a></h3>
+<p><strong>Keyboard:</strong> Press <code class="docutils literal notranslate"><span class="pre">1</span></code> or launch the TUI</p>
+<p>The Dashboard provides a high-level overview of coverage statistics:</p>
+<ul class="simple">
+<li><p><strong>Total Coverage Percentage</strong> - Overall coverage across all items</p></li>
+<li><p><strong>Coverage Breakdown</strong> - Detailed counts by coverage type:</p>
+<ul>
+<li><p>Covergroups, Coverpoints, Bins</p></li>
+<li><p>Assertions, Toggles, Branches</p></li>
+<li><p>Statements, Expressions, FSM states/transitions</p></li>
+</ul>
+</li>
+<li><p><strong>Color-Coded Status</strong> - Visual indicators for coverage levels:</p>
+<ul>
+<li><p>🟢 Green (≥80%) - Good coverage</p></li>
+<li><p>🟡 Yellow (50-80%) - Needs attention</p></li>
+<li><p>🔴 Red (&lt;50%) - Critical gaps</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Quick health check of verification progress</p></li>
+<li><p>High-level status for stakeholder updates</p></li>
+<li><p>Starting point before drilling into details</p></li>
+</ul>
+</section>
+<section id="hierarchy-view">
+<h3>Hierarchy View<a class="headerlink" href="#hierarchy-view" title="Link to this heading"></a></h3>
+<p><strong>Keyboard:</strong> Press <code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+<p>Navigate the design/verification hierarchy with an interactive tree structure:</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Expandable Tree</strong> - Show/hide child scopes with arrow keys</p></li>
+<li><p><strong>Coverage Indicators</strong> - Percentage and color coding for each node</p></li>
+<li><p><strong>Breadth-First Display</strong> - See all scopes at each level</p></li>
+<li><p><strong>Scope Details</strong> - Type, weight, and source information</p></li>
+</ul>
+<p><strong>Navigation:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">↑/↓</span></code> - Move between tree items</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">→</span></code> - Expand selected node to show children</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">←</span></code> - Collapse selected node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Enter</span></code> - Toggle expansion</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Home/End</span></code> - Jump to first/last item</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PgUp/PgDn</span></code> - Scroll by page</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Understanding design structure and organization</p></li>
+<li><p>Finding specific modules or covergroups</p></li>
+<li><p>Identifying hierarchy branches with low coverage</p></li>
+<li><p>Navigating from top-level to detailed coverage items</p></li>
+</ul>
+</section>
+<section id="gaps-view">
+<h3>Gaps View<a class="headerlink" href="#gaps-view" title="Link to this heading"></a></h3>
+<p><strong>Keyboard:</strong> Press <code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+<p>Focus on incomplete coverage items that need attention:</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Filtered List</strong> - Only shows items below 100% coverage</p></li>
+<li><p><strong>Sorted by Priority</strong> - Lowest coverage items first</p></li>
+<li><p><strong>Coverage Percentage</strong> - Current status for each gap</p></li>
+<li><p><strong>Full Path</strong> - Hierarchical location of each item</p></li>
+<li><p><strong>Gap Count</strong> - Total number of incomplete items</p></li>
+</ul>
+<p><strong>Information Displayed:</strong></p>
+<ul class="simple">
+<li><p>Item name and type (covergroup, coverpoint, assertion, etc.)</p></li>
+<li><p>Current coverage percentage</p></li>
+<li><p>Full hierarchical path</p></li>
+<li><p>Scope type and details</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Test planning - identify what needs coverage</p></li>
+<li><p>Prioritizing verification efforts</p></li>
+<li><p>Tracking progress toward coverage goals</p></li>
+<li><p>Finding zero-hit items quickly</p></li>
+</ul>
+</section>
+<section id="hotspots-view">
+<h3>Hotspots View<a class="headerlink" href="#hotspots-view" title="Link to this heading"></a></h3>
+<p><strong>Keyboard:</strong> Press <code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+<p>Intelligent priority-based recommendations for coverage improvement:</p>
+<p><strong>Priority Levels:</strong></p>
+<ul class="simple">
+<li><p><strong>P0 - Critical:</strong> Low coverage modules (&lt;50%) requiring immediate attention</p></li>
+<li><p><strong>P1 - High Priority:</strong></p>
+<ul>
+<li><p>Completely untested coverpoints (0% coverage)</p></li>
+<li><p>Near-complete items (90%+) - “low hanging fruit”</p></li>
+</ul>
+</li>
+<li><p><strong>P2 - Medium Priority:</strong> Other partially covered items needing work</p></li>
+</ul>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Smart Prioritization</strong> - Algorithmic ranking based on multiple factors</p></li>
+<li><p><strong>Impact Analysis</strong> - Focus on items that will improve coverage most</p></li>
+<li><p><strong>Actionable Targets</strong> - Clear next steps for verification team</p></li>
+<li><p><strong>Effort Optimization</strong> - Balance between coverage gain and test complexity</p></li>
+</ul>
+<p><strong>Information Displayed:</strong></p>
+<ul class="simple">
+<li><p>Priority level (P0/P1/P2) with color coding</p></li>
+<li><p>Item name and hierarchical path</p></li>
+<li><p>Current coverage percentage</p></li>
+<li><p>Recommended action (test, complete, investigate)</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Sprint planning and task assignment</p></li>
+<li><p>Identifying quick wins vs. long-term efforts</p></li>
+<li><p>Resource allocation for verification</p></li>
+<li><p>Coverage closure strategy</p></li>
+</ul>
+</section>
+<section id="metrics-view">
+<h3>Metrics View<a class="headerlink" href="#metrics-view" title="Link to this heading"></a></h3>
+<p><strong>Keyboard:</strong> Press <code class="docutils literal notranslate"><span class="pre">5</span></code></p>
+<p>Statistical analysis and quality indicators for coverage data:</p>
+<p><strong>Coverage Distribution:</strong></p>
+<ul class="simple">
+<li><p><strong>By Hit Count</strong> - Histogram of bins in ranges:</p>
+<ul>
+<li><p>0 hits (uncovered)</p></li>
+<li><p>1-10 hits (lightly tested)</p></li>
+<li><p>11-100 hits (moderately tested)</p></li>
+<li><p>100+ hits (heavily tested)</p></li>
+</ul>
+</li>
+<li><p><strong>Visualization</strong> - Bar chart showing distribution</p></li>
+</ul>
+<p><strong>Statistical Measures:</strong></p>
+<ul class="simple">
+<li><p><strong>Mean Hit Count</strong> - Average hits per bin</p></li>
+<li><p><strong>Median Hit Count</strong> - Middle value (50th percentile)</p></li>
+<li><p><strong>Min/Max Hits</strong> - Range of coverage activity</p></li>
+<li><p><strong>Standard Deviation</strong> - Variance in testing intensity</p></li>
+</ul>
+<p><strong>Quality Indicators:</strong></p>
+<ul class="simple">
+<li><p><strong>Complete Tier</strong> - Items at 100% coverage</p></li>
+<li><p><strong>High Tier</strong> - Items at 80-99% coverage</p></li>
+<li><p><strong>Medium Tier</strong> - Items at 50-79% coverage</p></li>
+<li><p><strong>Low Tier</strong> - Items below 50% coverage</p></li>
+</ul>
+<p><strong>Utilization Metrics:</strong></p>
+<ul class="simple">
+<li><p><strong>Bin Utilization Rate</strong> - Percentage of bins with any hits</p></li>
+<li><p><strong>Zero-Hit Ratio</strong> - Percentage of completely untested bins</p></li>
+<li><p><strong>Average Bins per Coverpoint</strong> - Coverage granularity indicator</p></li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Quality assessment beyond just percentages</p></li>
+<li><p>Identifying under-tested vs. over-tested areas</p></li>
+<li><p>Detecting potential test redundancy (over-testing)</p></li>
+<li><p>Understanding verification intensity patterns</p></li>
+<li><p>Coverage model validation</p></li>
+</ul>
+</section>
+</section>
+<section id="keyboard-shortcuts">
+<h2>Keyboard Shortcuts<a class="headerlink" href="#keyboard-shortcuts" title="Link to this heading"></a></h2>
+<section id="global-navigation">
+<h3>Global Navigation<a class="headerlink" href="#global-navigation" title="Link to this heading"></a></h3>
+<p>These shortcuts work in all views:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">1</span></code></p></td>
+<td><p>Switch to Dashboard view</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p></td>
+<td><p>Switch to Hierarchy view</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p></td>
+<td><p>Switch to Gaps view</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p></td>
+<td><p>Switch to Hotspots view</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">5</span></code></p></td>
+<td><p>Switch to Metrics view</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">?</span></code></p></td>
+<td><p>Show help overlay with all shortcuts</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">q</span></code> or <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code></p></td>
+<td><p>Quit the TUI</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="list-tree-navigation">
+<h3>List/Tree Navigation<a class="headerlink" href="#list-tree-navigation" title="Link to this heading"></a></h3>
+<p>For views with lists or trees (Hierarchy, Gaps, Hotspots):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">↑</span></code> or <code class="docutils literal notranslate"><span class="pre">k</span></code></p></td>
+<td><p>Move up one item</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">↓</span></code> or <code class="docutils literal notranslate"><span class="pre">j</span></code></p></td>
+<td><p>Move down one item</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">→</span></code> or <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+<td><p>Expand tree node (Hierarchy view)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">←</span></code> or <code class="docutils literal notranslate"><span class="pre">h</span></code></p></td>
+<td><p>Collapse tree node (Hierarchy view)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Enter</span></code> or <code class="docutils literal notranslate"><span class="pre">Space</span></code></p></td>
+<td><p>Toggle expansion (Hierarchy view)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Home</span></code></p></td>
+<td><p>Jump to first item</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">End</span></code></p></td>
+<td><p>Jump to last item</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PgUp</span></code></p></td>
+<td><p>Scroll up one page</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">PgDn</span></code></p></td>
+<td><p>Scroll down one page</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="tips-tricks">
+<h2>Tips &amp; Tricks<a class="headerlink" href="#tips-tricks" title="Link to this heading"></a></h2>
+<section id="efficient-workflows">
+<h3>Efficient Workflows<a class="headerlink" href="#efficient-workflows" title="Link to this heading"></a></h3>
+<p><strong>Quick Assessment (2-3 minutes):</strong></p>
+<ol class="arabic simple">
+<li><p>Launch with <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">view</span> <span class="pre">coverage.xml</span></code></p></li>
+<li><p>Check Dashboard (view 1) for overall status</p></li>
+<li><p>Jump to Gaps (view 3) to see what’s missing</p></li>
+<li><p>Review Hotspots (view 4) for prioritized actions</p></li>
+</ol>
+<p><strong>Deep Analysis (10-15 minutes):</strong></p>
+<ol class="arabic simple">
+<li><p>Start with Metrics (view 5) to understand quality</p></li>
+<li><p>Navigate Hierarchy (view 2) to explore structure</p></li>
+<li><p>Identify problem areas with Gaps (view 3)</p></li>
+<li><p>Plan next tests with Hotspots (view 4)</p></li>
+</ol>
+<p><strong>Daily Verification Loop:</strong></p>
+<ol class="arabic simple">
+<li><p>Run tests and update coverage database</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">view</span> <span class="pre">coverage.ucisdb</span></code> to check progress</p></li>
+<li><p>Check Gaps (view 3) - is the list shrinking?</p></li>
+<li><p>Focus on P0/P1 Hotspots (view 4) for next tests</p></li>
+</ol>
+</section>
+<section id="performance-tips">
+<h3>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Use SQLite</strong> - Faster loading than XML for large databases</p></li>
+<li><p><strong>Local Files</strong> - Avoid network-mounted databases when possible</p></li>
+<li><p><strong>Reasonable Size</strong> - TUI works best with databases up to ~100MB</p></li>
+<li><p><strong>SSH Optimization</strong> - Use compression: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-C</span> <span class="pre">user&#64;host</span></code></p></li>
+</ul>
+</section>
+<section id="remote-workflows">
+<h3>Remote Workflows<a class="headerlink" href="#remote-workflows" title="Link to this heading"></a></h3>
+<p>The TUI is ideal for remote development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># SSH into build server</span>
+ssh<span class="w"> </span>-C<span class="w"> </span>user@build-server
+
+<span class="c1"># Navigate to verification directory</span>
+<span class="nb">cd</span><span class="w"> </span>/path/to/verification
+
+<span class="c1"># Check latest coverage</span>
+ucis<span class="w"> </span>view<span class="w"> </span>regression_coverage.ucisdb
+
+<span class="c1"># Or view specific test</span>
+ucis<span class="w"> </span>view<span class="w"> </span>test_results/test_name.ucis
+</pre></div>
+</div>
+</section>
+</section>
+<section id="color-scheme">
+<h2>Color Scheme<a class="headerlink" href="#color-scheme" title="Link to this heading"></a></h2>
+<p>The TUI uses color coding throughout for quick visual assessment:</p>
+<p><strong>Coverage Levels:</strong></p>
+<ul class="simple">
+<li><p>🟢 <strong>Green</strong> - Good coverage (≥80%)</p></li>
+<li><p>🟡 <strong>Yellow</strong> - Needs attention (50-79%)</p></li>
+<li><p>🔴 <strong>Red</strong> - Critical gap (&lt;50%)</p></li>
+<li><p>⚪ <strong>White/Gray</strong> - Uncovered (0%)</p></li>
+</ul>
+<p><strong>Priority Levels:</strong></p>
+<ul class="simple">
+<li><p>🔴 <strong>Red</strong> - P0 Critical</p></li>
+<li><p>🟡 <strong>Yellow</strong> - P1 High Priority</p></li>
+<li><p>🔵 <strong>Blue</strong> - P2 Medium Priority</p></li>
+</ul>
+<p><strong>UI Elements:</strong></p>
+<ul class="simple">
+<li><p><strong>Bold</strong> - Selected/highlighted item</p></li>
+<li><p><strong>Dim</strong> - Secondary information</p></li>
+<li><p><strong>Underline</strong> - Active view/tab</p></li>
+</ul>
+</section>
+<section id="comparison-tui-vs-html-reports">
+<h2>Comparison: TUI vs. HTML Reports<a class="headerlink" href="#comparison-tui-vs-html-reports" title="Link to this heading"></a></h2>
+<p>Choose the right tool for your workflow:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>TUI (<code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">view</span></code>)</p></th>
+<th class="head"><p>HTML Reports</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Speed</strong></p></td>
+<td><p>✅ Instant startup</p></td>
+<td><p>⚠️ Generation + browser load</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Navigation</strong></p></td>
+<td><p>✅ Keyboard-driven</p></td>
+<td><p>🖱️ Mouse-driven</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Environment</strong></p></td>
+<td><p>✅ Terminal only</p></td>
+<td><p>🌐 Browser required</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Remote Access</strong></p></td>
+<td><p>✅ SSH-friendly</p></td>
+<td><p>⚠️ Needs port forwarding</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Visualizations</strong></p></td>
+<td><p>⚠️ Text-based</p></td>
+<td><p>✅ Charts and graphs</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Sharing</strong></p></td>
+<td><p>⚠️ Live access only</p></td>
+<td><p>✅ Self-contained file</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Filtering</strong></p></td>
+<td><p>🔍 Built-in views</p></td>
+<td><p>🔍 Interactive filters</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Large Data</strong></p></td>
+<td><p>✅ Handles well</p></td>
+<td><p>⚠️ Can be slow</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Offline Use</strong></p></td>
+<td><p>✅ Always works</p></td>
+<td><p>✅ Works after first load</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>When to Use TUI:</strong></p>
+<ul class="simple">
+<li><p>During active verification (quick checks)</p></li>
+<li><p>Remote terminal sessions</p></li>
+<li><p>CI/CD pipeline integration</p></li>
+<li><p>Performance-critical environments</p></li>
+<li><p>Keyboard-centric workflows</p></li>
+</ul>
+<p><strong>When to Use HTML:</strong></p>
+<ul class="simple">
+<li><p>Stakeholder presentations</p></li>
+<li><p>Detailed visual analysis</p></li>
+<li><p>Team sharing and collaboration</p></li>
+<li><p>Archival documentation</p></li>
+<li><p>Graphical trend analysis</p></li>
+</ul>
+</section>
+<section id="ci-cd-integration">
+<h2>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h2>
+<p>The TUI can be used in automated workflows:</p>
+<p><strong>GitLab CI Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">coverage_check</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">run_tests.sh</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ucis merge -o coverage.ucisdb test_*.ucis</span>
+<span class="w">    </span><span class="c1"># Check if coverage meets threshold</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">      </span><span class="no">coverage=$(ucis show summary coverage.ucisdb --output-format json | jq &#39;.total_coverage&#39;)</span>
+<span class="w">      </span><span class="no">if (( $(echo &quot;$coverage &lt; 80&quot; | bc -l) )); then</span>
+<span class="w">        </span><span class="no">echo &quot;❌ Coverage below 80% ($coverage%)&quot;</span>
+<span class="w">        </span><span class="no">ucis view coverage.ucisdb  # Show TUI output in logs</span>
+<span class="w">        </span><span class="no">exit 1</span>
+<span class="w">      </span><span class="no">fi</span>
+</pre></div>
+</div>
+<p><strong>GitHub Actions Example:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Coverage</span>
+<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">    </span><span class="no">ucis merge -o coverage.ucisdb test_*.ucis</span>
+<span class="w">    </span><span class="no"># Display TUI output in GitHub Actions logs</span>
+<span class="w">    </span><span class="no">ucis view coverage.ucisdb</span>
+<span class="w">    </span><span class="no"># Then check threshold</span>
+<span class="w">    </span><span class="no">ucis show summary coverage.ucisdb</span>
+</pre></div>
+</div>
+<p><strong>Jenkins Integration:</strong></p>
+<div class="highlight-groovy notranslate"><div class="highlight"><pre><span></span><span class="n">stage</span><span class="o">(</span><span class="s1">&#39;Coverage Analysis&#39;</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">steps</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;ucis merge -o coverage.ucisdb **/*.ucis&#39;</span>
+<span class="w">        </span><span class="c1">// Display TUI in console output</span>
+<span class="w">        </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;ucis view coverage.ucisdb&#39;</span>
+<span class="w">        </span><span class="c1">// Generate reports</span>
+<span class="w">        </span><span class="n">sh</span><span class="w"> </span><span class="s1">&#39;ucis report coverage.ucisdb -of html -o coverage.html&#39;</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>TUI doesn’t display correctly</strong></p>
+<ul class="simple">
+<li><p>Ensure terminal supports colors: <code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$TERM</span></code></p></li>
+<li><p>Use modern terminal emulator (iTerm2, Windows Terminal, GNOME Terminal)</p></li>
+<li><p>Check terminal size: <code class="docutils literal notranslate"><span class="pre">tput</span> <span class="pre">cols</span></code> and <code class="docutils literal notranslate"><span class="pre">tput</span> <span class="pre">lines</span></code> (minimum 80x24)</p></li>
+</ul>
+<p><strong>Slow performance</strong></p>
+<ul class="simple">
+<li><p>Convert XML to SQLite: <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">convert</span> <span class="pre">-if</span> <span class="pre">xml</span> <span class="pre">-of</span> <span class="pre">sqlite</span> <span class="pre">input.xml</span> <span class="pre">-o</span> <span class="pre">output.ucisdb</span></code></p></li>
+<li><p>Reduce database size by filtering or sampling</p></li>
+<li><p>Use local storage instead of network mounts</p></li>
+</ul>
+<p><strong>Database won’t load</strong></p>
+<ul class="simple">
+<li><p>Verify file format is supported: <code class="docutils literal notranslate"><span class="pre">.xml</span></code>, <code class="docutils literal notranslate"><span class="pre">.ucis</span></code>, <code class="docutils literal notranslate"><span class="pre">.ucisdb</span></code>, <code class="docutils literal notranslate"><span class="pre">.yaml</span></code></p></li>
+<li><p>Check file permissions: <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">coverage.xml</span></code></p></li>
+<li><p>Validate database integrity: <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">show</span> <span class="pre">summary</span> <span class="pre">coverage.xml</span></code></p></li>
+</ul>
+<p><strong>SSH rendering issues</strong></p>
+<ul class="simple">
+<li><p>Enable compression: <code class="docutils literal notranslate"><span class="pre">ssh</span> <span class="pre">-C</span> <span class="pre">user&#64;host</span></code></p></li>
+<li><p>Use screen/tmux for session persistence</p></li>
+<li><p>Check SSH client terminal settings</p></li>
+</ul>
+</section>
+<section id="getting-help">
+<h3>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading"></a></h3>
+<p><strong>In the TUI:</strong></p>
+<ul class="simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">?</span></code> for help overlay with all keyboard shortcuts</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">q</span></code> to quit and return to shell</p></li>
+</ul>
+<p><strong>Command Line:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View command help</span>
+ucis<span class="w"> </span>view<span class="w"> </span>--help
+
+<span class="c1"># Check database info without TUI</span>
+ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p><strong>Documentation:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="show_commands.html"><span class="doc">Show Commands Reference</span></a> - Command-line analysis tools</p></li>
+<li><p><a class="reference internal" href="reference/html_coverage_report.html"><span class="doc">HTML Coverage Report Format</span></a> - Alternative HTML reports</p></li>
+<li><p><a class="reference internal" href="commands.html"><span class="doc">Commands</span></a> - All PyUCIS commands</p></li>
+</ul>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="example-1-daily-verification-workflow">
+<h3>Example 1: Daily Verification Workflow<a class="headerlink" href="#example-1-daily-verification-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run regression tests</span>
+make<span class="w"> </span>regression
+
+<span class="c1"># Merge all test results</span>
+ucis<span class="w"> </span>merge<span class="w"> </span>-o<span class="w"> </span>daily_coverage.ucisdb<span class="w"> </span>test_results/*.ucis
+
+<span class="c1"># Quick TUI check</span>
+ucis<span class="w"> </span>view<span class="w"> </span>daily_coverage.ucisdb
+<span class="c1"># Press 3 to see gaps</span>
+<span class="c1"># Press 4 to see priorities</span>
+<span class="c1"># Press q to exit</span>
+
+<span class="c1"># If coverage looks good, generate HTML for team</span>
+ucis<span class="w"> </span>report<span class="w"> </span>daily_coverage.ucisdb<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>daily_report.html
+</pre></div>
+</div>
+</section>
+<section id="example-2-coverage-debugging">
+<h3>Example 2: Coverage Debugging<a class="headerlink" href="#example-2-coverage-debugging" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test failed but coverage seems wrong</span>
+ucis<span class="w"> </span>view<span class="w"> </span>test_output.ucis
+
+<span class="c1"># In TUI:</span>
+<span class="c1"># - Press 2 to navigate hierarchy</span>
+<span class="c1"># - Find the module in question</span>
+<span class="c1"># - Check if covergroups are present</span>
+<span class="c1"># - Verify bins have expected structure</span>
+
+<span class="c1"># Export details for investigation</span>
+ucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>test_output.ucis<span class="w"> </span>&gt;<span class="w"> </span>debug.txt
+</pre></div>
+</div>
+</section>
+<section id="example-3-remote-verification">
+<h3>Example 3: Remote Verification<a class="headerlink" href="#example-3-remote-verification" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># SSH to build server</span>
+ssh<span class="w"> </span>-C<span class="w"> </span>verification@server
+
+<span class="c1"># Check current status</span>
+<span class="nb">cd</span><span class="w"> </span>/project/verification
+ucis<span class="w"> </span>view<span class="w"> </span>latest_regression.ucisdb
+
+<span class="c1"># Review gaps and priorities</span>
+<span class="c1"># Exit TUI (q)</span>
+
+<span class="c1"># Start targeted tests for P0 items</span>
+make<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="nv">TEST</span><span class="o">=</span>high_priority_tests
+</pre></div>
+</div>
+</section>
+<section id="example-4-coverage-comparison">
+<h3>Example 4: Coverage Comparison<a class="headerlink" href="#example-4-coverage-comparison" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check yesterday&#39;s coverage</span>
+ucis<span class="w"> </span>view<span class="w"> </span>regression_2026-02-12.ucisdb
+<span class="c1"># Note gaps from view 3</span>
+
+<span class="c1"># Check today&#39;s coverage</span>
+ucis<span class="w"> </span>view<span class="w"> </span>regression_2026-02-13.ucisdb
+<span class="c1"># Compare - did gaps shrink?</span>
+
+<span class="c1"># Formal comparison</span>
+ucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> </span>regression_2026-02-12.ucisdb<span class="w"> </span>regression_2026-02-13.ucisdb
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="show_commands.html"><span class="doc">Show Commands Reference</span></a> - Command-line coverage analysis tools</p></li>
+<li><p><a class="reference internal" href="reference/html_coverage_report.html"><span class="doc">HTML Coverage Report Format</span></a> - Interactive HTML reports</p></li>
+<li><p><a class="reference internal" href="commands.html"><span class="doc">Commands</span></a> - Complete command reference</p></li>
+<li><p><a class="reference internal" href="mcp_server.html"><span class="doc">MCP Server</span></a> - AI agent integration for automated analysis</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="commands.html" class="btn btn-neutral float-left" title="Commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="show_commands.html" class="btn btn-neutral float-right" title="Show Commands Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

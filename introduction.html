@@ -54,6 +54,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
@@ -212,6 +213,16 @@ and accessing coverage data:</p>
 <p>PyUCIS includes comprehensive command-line tools for coverage analysis and reporting.
 The <code class="docutils literal notranslate"><span class="pre">ucis</span></code> command provides several operations:</p>
 <dl>
+<dt><strong>Interactive Terminal UI</strong> (New!)</dt><dd><p>Real-time coverage exploration with a keyboard-driven interface:</p>
+<ul class="simple">
+<li><p><strong>5 specialized views</strong>: Dashboard, Hierarchy, Gaps, Hotspots, Metrics</p></li>
+<li><p><strong>Color-coded indicators</strong>: Quick visual assessment of coverage levels</p></li>
+<li><p><strong>Smart prioritization</strong>: Built-in hotspot analysis for test planning</p></li>
+<li><p><strong>SSH-friendly</strong>: Works perfectly in remote terminal sessions</p></li>
+<li><p><strong>Fast navigation</strong>: Keyboard shortcuts for efficient browsing</p></li>
+</ul>
+<p>See <a class="reference internal" href="tui.html"><span class="doc">Interactive Terminal UI</span></a> for complete TUI documentation.</p>
+</dd>
 <dt><strong>Show Commands</strong> (New!)</dt><dd><p>Extract and analyze coverage data with support for multiple output formats:</p>
 <ul class="simple">
 <li><p><strong>12 analysis commands</strong>: summary, gaps, covergroups, bins, tests, hierarchy,
@@ -238,7 +249,10 @@ metrics, compare, hotspots, code-coverage, assertions, toggle</p></li>
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate interactive HTML report</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interactive Terminal UI - new!</span>
+ucis<span class="w"> </span>view<span class="w"> </span>coverage.ucis
+
+<span class="c1"># Generate interactive HTML report</span>
 ucis<span class="w"> </span>report<span class="w"> </span>coverage.ucis<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
 
 <span class="c1"># Analyze coverage</span>

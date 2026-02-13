@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Show Commands Reference" href="show_commands.html" />
+    <link rel="next" title="Interactive Terminal UI" href="tui.html" />
     <link rel="prev" title="Introduction" href="introduction.html" /> 
 </head>
 
@@ -69,10 +69,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#Sub-commands_repeat1">Sub-commands</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#view">view</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments_repeat16">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat15">Named Arguments</a></li>
 </ul>
 </li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
@@ -109,7 +115,8 @@ coverage data.</p>
 <p><p>Manipulate UCIS coverage data</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
-            <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">,</span><span class="n">show</span><span class="p">}</span> <span class="o">...</span>
+            <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">,</span><span class="n">show</span><span class="p">,</span><span class="n">view</span><span class="p">}</span>
+            <span class="o">...</span>
 </pre></div>
 </div>
 <section id="Sub-commands">
@@ -696,6 +703,29 @@ coverage data.</p>
 </section>
 </section>
 </section>
+<section id="view">
+<h3>view<a class="headerlink" href="#view" title="Link to this heading"></a></h3>
+<p>Launch interactive Terminal UI for exploring coverage data</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">view</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span> <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat16">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat16" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the coverage database</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat15">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat15" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input-format, -if</kbd></dt>
+<dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 </section>
 
@@ -704,7 +734,7 @@ coverage data.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="introduction.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="show_commands.html" class="btn btn-neutral float-right" title="Show Commands Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tui.html" class="btn btn-neutral float-right" title="Interactive Terminal UI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
