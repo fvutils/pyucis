@@ -154,7 +154,7 @@ coverage data.</p>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">merge</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">out</span> <span class="n">OUT</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
            <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">libucis</span> <span class="n">LIBUCIS</span><span class="p">]</span>
-           <span class="p">[</span><span class="o">--</span><span class="n">squash</span><span class="o">-</span><span class="n">history</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">fast</span><span class="p">]</span>
+           <span class="p">[</span><span class="o">--</span><span class="n">squash</span><span class="o">-</span><span class="n">history</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">fast</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">workers</span> <span class="n">WORKERS</span><span class="p">]</span>
            <span class="n">db</span> <span class="p">[</span><span class="n">db</span> <span class="o">...</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -187,6 +187,10 @@ coverage data.</p>
 <dt><kbd>--fast</kbd></dt>
 <dd><p>Use optimised merge path (SQLite-to-SQLite only)</p>
 <p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt><kbd>--workers, -j</kbd></dt>
+<dd><p>Number of parallel reader threads for merge_fast (default: 4)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">4</span></code></p>
 </dd>
 </dl>
 </section>
