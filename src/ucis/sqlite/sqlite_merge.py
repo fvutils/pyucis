@@ -19,6 +19,7 @@
 Coverage merge functionality for SQLite UCIS databases
 """
 
+import sqlite3
 from datetime import datetime
 from ucis.history_node_kind import HistoryNodeKind
 from ucis.scope_type_t import ScopeTypeT
@@ -237,6 +238,172 @@ class SqliteMerger:
             raise
 
         return total
+
+    def merge_fast(self, source_paths, squash_history=False):
+        """Merge multiple source databases using optimised read pattern.
+
+        Opens each source with raw sqlite3.connect, reads all coveritem
+        data in a single JOIN query, maps to target via cached dicts,
+        and writes via executemany.  Eliminates per-scope query overhead.
+
+        Args:
+            source_paths: List of file paths to source .cdb databases.
+            squash_history: If True, collapse history into summary node.
+
+        Returns:
+            MergeStats with accumulated statistics.
+        """
+        # 1. Build target lookup maps (once)
+        scope_map = {}     # (scope_name, scope_type) -> tgt_scope_id
+        for r in self.target.conn.execute(
+            "SELECT scope_id, scope_name, scope_type FROM scopes"
+        ):
+            scope_map[(r[0] if isinstance(r, (list, tuple)) else r['scope_name'],
+                        r[1] if isinstance(r, (list, tuple)) else r['scope_type'])] = (
+                r[0] if isinstance(r, (list, tuple)) else r['scope_id']
+            )
+        # Rebuild with proper indexing using raw cursor
+        scope_map = {}
+        raw_cur = self.target.conn.execute(
+            "SELECT scope_id, scope_name, scope_type FROM scopes"
+        )
+        for r in raw_cur:
+            sid = r[0] if isinstance(r, (list, tuple)) else r['scope_id']
+            sname = r[1] if isinstance(r, (list, tuple)) else r['scope_name']
+            stype = r[2] if isinstance(r, (list, tuple)) else r['scope_type']
+            scope_map[(sname, stype)] = sid
+
+        ci_map = {}        # (tgt_scope_id, cover_index) -> cover_id
+        raw_cur = self.target.conn.execute(
+            "SELECT cover_id, scope_id, cover_index FROM coveritems"
+        )
+        for r in raw_cur:
+            cid = r[0] if isinstance(r, (list, tuple)) else r['cover_id']
+            sid = r[1] if isinstance(r, (list, tuple)) else r['scope_id']
+            cidx = r[2] if isinstance(r, (list, tuple)) else r['cover_index']
+            ci_map[(sid, cidx)] = cid
+
+        # Check if source scope_ids match target (Step 3b optimisation)
+        source_ids_match = None
+
+        # Accumulate deltas across ALL sources (Step 3c)
+        all_deltas = {}    # cover_id -> total_delta
+        all_inserts = []   # rows needing insert
+
+        # 2. Process each source
+        self.target.begin_transaction()
+        try:
+            for src_path in source_paths:
+                # 2a. Read source data
+                sc = sqlite3.connect(src_path)
+
+                if source_ids_match is None:
+                    # First source: check if scope_ids match target
+                    src_scopes = {}
+                    for sr in sc.execute(
+                        "SELECT scope_id, scope_name, scope_type FROM scopes"
+                    ):
+                        src_scopes[(sr[1], sr[2])] = sr[0]
+                    source_ids_match = all(
+                        src_scopes.get(k) == v
+                        for k, v in scope_map.items()
+                        if k[0]  # skip root with empty name
+                    ) and len(src_scopes) == len(scope_map)
+
+                if source_ids_match:
+                    # Direct scope_id lookup — skip JOIN (Step 3b)
+                    rows = sc.execute(
+                        "SELECT scope_id, cover_index, cover_data FROM coveritems"
+                    ).fetchall()
+                    sc.close()
+
+                    for row in rows:
+                        src_sid, cidx, cdata = row[0], row[1], row[2]
+                        tgt_cid = ci_map.get((src_sid, cidx))
+                        if tgt_cid is not None:
+                            all_deltas[tgt_cid] = all_deltas.get(tgt_cid, 0) + cdata
+                            self.stats.coveritems_matched += 1
+                            self.stats.total_hits_added += cdata
+                else:
+                    # Use minimal 4-column read with JOIN (Step 3a)
+                    rows = sc.execute("""
+                        SELECT ss.scope_name, ss.scope_type,
+                               ci.cover_index, ci.cover_data
+                        FROM coveritems ci
+                        INNER JOIN scopes ss ON ci.scope_id = ss.scope_id
+                    """).fetchall()
+                    sc.close()
+
+                    for row in rows:
+                        sname, stype = row[0], row[1]
+                        cidx, cdata = row[2], row[3]
+                        tgt_sid = scope_map.get((sname, stype))
+                        if tgt_sid is None:
+                            continue
+
+                        tgt_cid = ci_map.get((tgt_sid, cidx))
+                        if tgt_cid is not None:
+                            all_deltas[tgt_cid] = all_deltas.get(tgt_cid, 0) + cdata
+                            self.stats.coveritems_matched += 1
+                            self.stats.total_hits_added += cdata
+
+                # 2b. Handle history
+                if not squash_history:
+                    self._create_test_history_from_path(src_path)
+
+                self.stats.tests_merged += 1
+
+            # 3. Single batch UPDATE for ALL sources (Step 3c)
+            if all_deltas:
+                self.target.conn.executemany(
+                    "UPDATE coveritems SET cover_data = cover_data + ? WHERE cover_id = ?",
+                    [(delta, cid) for cid, delta in all_deltas.items()]
+                )
+
+            # 4. Squash history summary if requested
+            if squash_history:
+                self._create_squash_summary(len(source_paths))
+
+            self.target.commit()
+        except:
+            self.target.rollback()
+            raise
+
+        return self.stats
+
+    def _create_test_history_from_path(self, src_path):
+        """Create a merge history node for a source file path."""
+        import os
+        merge_node = self.target.createHistoryNode(
+            None,
+            f"merge_{os.path.basename(src_path)}",
+            None,
+            HistoryNodeKind.MERGE
+        )
+        merge_node.setDate(int(datetime.now().timestamp()))
+
+    def _create_squash_summary(self, num_sources):
+        """Create or update a squashed summary history node."""
+        summary_node = None
+        for node in self.target.historyNodes(HistoryNodeKind.MERGE):
+            if node.getLogicalName() == "merged_summary":
+                summary_node = node
+                break
+
+        if summary_node is None:
+            summary_node = self.target.createHistoryNode(
+                None, "merged_summary", None, HistoryNodeKind.MERGE
+            )
+            summary_node.setDate(int(datetime.now().timestamp()))
+            self.target.conn.execute(
+                "INSERT INTO history_properties (history_id, property_key, property_type, int_value) VALUES (?, ?, ?, ?)",
+                (summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF, 0, 0)
+            )
+
+        self.target.conn.execute(
+            "UPDATE history_properties SET int_value = int_value + ? WHERE history_id = ? AND property_key = ?",
+            (num_sources, summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF)
+        )
 
     def _merge_one(self, source_ucis, create_history, squash_history,
                    reuse_src_tree=None):

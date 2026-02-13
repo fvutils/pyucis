@@ -73,6 +73,14 @@ class DbFormatIfSqlite(FormatIfDb):
             else:
                 raise ValueError("SQLite format requires file path, not file object")
     
+    def write(self, db, file_or_filename):
+        """Write database to file.
+
+        For SQLite, data is already on disk so this just commits.
+        """
+        if isinstance(file_or_filename, str):
+            db.write(file_or_filename)
+    
     @classmethod
     def register(cls, rgy):
         """Register SQLite format with format registry"""

@@ -49,6 +49,10 @@ def get_parser():
         action="store_true",
         default=False,
         help="Collapse per-test history into a single summary node")
+    merge.add_argument("--fast",
+        action="store_true",
+        default=False,
+        help="Use optimised merge path (SQLite-to-SQLite only)")
     merge.add_argument("db", nargs="+")
     merge.set_defaults(func=cmd_merge.merge)
     

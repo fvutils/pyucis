@@ -27,6 +27,17 @@ def merge(args):
 
     # Check if both formats are SQLite to use optimized merge
     squash_history = getattr(args, 'squash_history', False)
+    use_fast = getattr(args, 'fast', False)
+
+    if use_fast and args.input_format == "sqlite" and args.output_format == "sqlite":
+        # Use fast merge path (SQLite-to-SQLite only)
+        from ucis.sqlite import SqliteUCIS
+
+        out_db = SqliteUCIS(args.out)
+        out_db.merge_fast(args.db, squash_history=squash_history)
+        out_db.close()
+        return
+
     if args.input_format == "sqlite" and args.output_format == "sqlite" and squash_history:
         # Use SQLite-specific merge with squash_history
         from ucis.sqlite import SqliteUCIS

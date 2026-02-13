@@ -80,7 +80,7 @@ class DbFormatRgy(object):
         Returns:
             List of format name strings.
         """
-        return self._fmt_if_m.keys().copy()
+        return list(self._fmt_if_m.keys())
     
     def getFormatIf(self, name):
         """Get format interface for specified format.

@@ -391,3 +391,31 @@ class SqliteUCIS(SqliteScope, UCIS):
 
         merger = SqliteMerger(self)
         return merger.merge_many(sources, create_history, squash_history)
+
+    def merge_fast(self, source_paths, squash_history=False):
+        """Merge multiple source .cdb files using optimised read pattern.
+
+        Uses the first source via normal merge to establish structure,
+        then uses fast path for remaining sources.
+
+        Args:
+            source_paths: List of file paths to source .cdb databases.
+            squash_history: If True, collapse history into summary node.
+
+        Returns:
+            MergeStats object with statistics.
+        """
+        from ucis.sqlite.sqlite_merge import SqliteMerger
+
+        merger = SqliteMerger(self)
+
+        # Use normal merge for the first source to establish structure
+        first = SqliteUCIS.open_readonly(source_paths[0])
+        merger.merge(first, squash_history=squash_history)
+        first.close()
+
+        # Use fast path for remaining sources
+        if len(source_paths) > 1:
+            merger.merge_fast(source_paths[1:], squash_history=squash_history)
+
+        return merger.stats

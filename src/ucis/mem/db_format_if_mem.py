@@ -3,12 +3,12 @@ Created on Jun 11, 2022
 
 @author: mballance
 '''
-from ucis.db_format_if import DbFormatIf
+from ucis.rgy.format_if_db import FormatIfDb
 from ucis.ucis import UCIS
 from ucis.mem.mem_ucis import MemUCIS
 
 
-class DbFormatIfMem(DbFormatIf):
+class DbFormatIfMem(FormatIfDb):
     
     def init(self, options):
         raise Exception("Options %s not accepted by the Mem format" % str(options))
