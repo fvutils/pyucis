@@ -12,7 +12,7 @@ from ucis.tui.app import TUIApp
 def main():
     """Main entry point for TUI."""
     if len(sys.argv) < 2:
-        print("Usage: pyucis tui <database>")
+        print("Usage: pyucis view <database>")
         print("       python -m ucis.tui <database>")
         sys.exit(1)
     

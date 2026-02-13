@@ -62,25 +62,32 @@ class CoverageModel:
         # Walk through database to compute statistics
         def visit_scope(scope, depth=0):
             from ucis.scope_type_t import ScopeTypeT
+            from ucis.cover_type_t import CoverTypeT
             
             scope_type = scope.getScopeType()
             if scope_type in (ScopeTypeT.COVERGROUP,):
                 summary['covergroups'] += 1
+                # Covergroups have coverpoints
+                for cp in scope.scopes(ScopeTypeT.COVERPOINT):
+                    summary['coverpoints'] += 1
+                    # Coverpoints have bins
+                    try:
+                        for bin_idx in cp.coverItems(CoverTypeT.CVGBIN):
+                            summary['total_bins'] += 1
+                            cover_data = bin_idx.getCoverData()
+                            if cover_data:
+                                # Check if bin has been hit (data > 0 or data >= goal)
+                                if cover_data.data > 0:
+                                    summary['covered_bins'] += 1
+                    except Exception as e:
+                        pass
             
-            # Visit children
-            from ucis.scope_type_t import ScopeTypeT
-            for child in scope.scopes(ScopeTypeT.ALL):
-                visit_scope(child, depth + 1)
-            
-            # Count coveritems
+            # Visit children recursively
             try:
-                for item in scope.coverItems():
-                    summary['total_bins'] += 1
-                    count = item.getCount()
-                    if count > 0:
-                        summary['covered_bins'] += 1
+                for child in scope.scopes(ScopeTypeT.ALL):
+                    visit_scope(child, depth + 1)
             except:
-                pass  # Not all scopes have cover items
+                pass
         
         if self.db:
             from ucis.scope_type_t import ScopeTypeT

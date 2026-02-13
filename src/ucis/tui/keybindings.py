@@ -32,7 +32,7 @@ class KeyHandler:
         
         # Help
         if key in ('?', 'F1'):
-            self.app.status_bar.set_message("Help not yet implemented", "warning")
+            self.app.show_help = True
             return True
         
         # Refresh
@@ -44,6 +44,10 @@ class KeyHandler:
         # View switching (numbers)
         view_map = {
             '1': 'dashboard',
+            '2': 'hierarchy',
+            '3': 'gaps',
+            '4': 'hotspots',
+            '5': 'metrics',
         }
         
         if key in view_map:

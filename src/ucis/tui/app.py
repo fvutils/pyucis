@@ -13,6 +13,7 @@ from ucis.tui.models.coverage_model import CoverageModel
 from ucis.tui.views.base_view import BaseView
 from ucis.tui.views.dashboard_view import DashboardView
 from ucis.tui.components.status_bar import StatusBar
+from ucis.tui.components.help_overlay import HelpOverlay
 from ucis.tui.keybindings import KeyHandler
 
 
@@ -39,6 +40,8 @@ class TUIApp:
         self.running = False
         self.key_handler = KeyHandler(self)
         self.status_bar = StatusBar()
+        self.help_overlay = HelpOverlay()
+        self.show_help = False
         
     def run(self):
         """Main event loop."""
@@ -61,6 +64,12 @@ class TUIApp:
                     key = self._get_key_input()
                     
                     if key:
+                        # If help is shown, any key closes it
+                        if self.show_help:
+                            self.show_help = False
+                            live.update(self._render(), refresh=True)
+                            continue
+                        
                         # Handle global keys first
                         if self.key_handler.handle_global_key(key):
                             pass  # Handled globally
@@ -75,8 +84,16 @@ class TUIApp:
     
     def _initialize_views(self):
         """Initialize all available views."""
+        from ucis.tui.views.hierarchy_view import HierarchyView
+        from ucis.tui.views.gaps_view import GapsView
+        from ucis.tui.views.hotspots_view import HotspotsView
+        from ucis.tui.views.metrics_view import MetricsView
+        
         self.views["dashboard"] = DashboardView(self)
-        # More views will be added here
+        self.views["hierarchy"] = HierarchyView(self)
+        self.views["gaps"] = GapsView(self)
+        self.views["hotspots"] = HotspotsView(self)
+        self.views["metrics"] = MetricsView(self)
     
     def _render(self) -> Layout:
         """
@@ -85,6 +102,10 @@ class TUIApp:
         Returns:
             Rich Layout containing the view and status bar
         """
+        # If help is shown, render help overlay
+        if self.show_help:
+            return self.help_overlay.render()
+        
         layout = Layout()
         layout.split_column(
             Layout(name="main", ratio=1),

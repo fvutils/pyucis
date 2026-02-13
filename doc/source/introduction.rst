@@ -135,6 +135,17 @@ Command-Line Tools
 PyUCIS includes comprehensive command-line tools for coverage analysis and reporting.
 The ``ucis`` command provides several operations:
 
+**Interactive Terminal UI** (New!)
+  Real-time coverage exploration with a keyboard-driven interface:
+  
+  - **5 specialized views**: Dashboard, Hierarchy, Gaps, Hotspots, Metrics
+  - **Color-coded indicators**: Quick visual assessment of coverage levels
+  - **Smart prioritization**: Built-in hotspot analysis for test planning
+  - **SSH-friendly**: Works perfectly in remote terminal sessions
+  - **Fast navigation**: Keyboard shortcuts for efficient browsing
+  
+  See :doc:`tui` for complete TUI documentation.
+
 **Show Commands** (New!)
   Extract and analyze coverage data with support for multiple output formats:
   
@@ -167,6 +178,9 @@ Example:
 
 .. code-block:: bash
 
+    # Interactive Terminal UI - new!
+    ucis view coverage.ucis
+    
     # Generate interactive HTML report
     ucis report coverage.ucis -of html -o report.html
     

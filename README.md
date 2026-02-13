@@ -38,11 +38,65 @@ pyucis merge db1.xml db2.xml db3.xml -o merged.xml
 # Generate reports
 pyucis report coverage.xml -o report.txt
 
+# Interactive Terminal UI (NEW!)
+pyucis view coverage.xml
+
 # Query coverage information
 pyucis show summary coverage.xml
 pyucis show gaps coverage.xml --threshold 80
 pyucis show covergroups coverage.xml
 ```
+
+### Interactive Terminal UI
+
+PyUCIS now includes an interactive Terminal User Interface (TUI) for exploring coverage databases:
+
+```bash
+# Launch the TUI
+pyucis view coverage.xml
+```
+
+**Features:**
+- **Dashboard View** - High-level coverage overview with statistics
+- **Hierarchy View** - Navigate design structure with interactive tree
+- **Gaps View** - Identify uncovered items for test planning
+- **Hotspots View** - Priority-based improvement targets with P0/P1/P2 classification
+- **Metrics View** - Statistical analysis, distributions, and quality indicators
+- **Help System** - Comprehensive keyboard shortcuts (press `?`)
+- Color-coded coverage indicators (red <50%, yellow 50-80%, green 80%+)
+- Keyboard-driven navigation optimized for terminal workflows
+- Fast, responsive interface using Rich library
+
+**Keyboard Shortcuts:**
+- `1` - Dashboard view
+- `2` - Hierarchy view  
+- `3` - Gaps view
+- `4` - Hotspots view
+- `5` - Metrics view
+- `↑/↓` - Navigate items
+- `←/→` - Collapse/expand tree nodes
+- `?` - Help overlay
+- `q` - Quit
+
+**Hotspots Analysis:**
+The Hotspots view intelligently identifies high-priority coverage targets:
+- **P0/P1 (Critical/High):** Low coverage modules (<50%) requiring immediate attention
+- **P1/P2 (High/Medium):** Near-complete items (90%+) - low hanging fruit
+- **P1 (High):** Completely untested coverpoints
+
+**Metrics & Statistics:**
+The Metrics view provides in-depth analysis:
+- Coverage distribution by hit count (0, 1-10, 11-100, 100+)
+- Statistical measures (mean, median, min, max)
+- Quality indicators (complete, high, medium, low tiers)
+- Bin utilization and zero-hit ratios
+
+The TUI provides an efficient alternative to HTML reports for real-time coverage analysis, especially useful for:
+- Quick coverage assessment during verification
+- Identifying coverage gaps without generating static reports
+- Priority-driven test planning with hotspot analysis
+- Remote terminal sessions over SSH
+- CI/CD pipeline integration
 
 ### MCP Server for AI Agents
 

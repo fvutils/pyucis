@@ -279,13 +279,13 @@ def get_parser():
     
     show.set_defaults(func=cmd_show.show)
 
-    # TUI subcommand
-    tui = subparser.add_parser("tui",
+    # View subcommand (interactive TUI)
+    view = subparser.add_parser("view",
         help="Launch interactive Terminal UI for exploring coverage data")
-    tui.add_argument("--input-format", "-if",
+    view.add_argument("--input-format", "-if",
         help="Specifies the format of the input database. Defaults to 'xml'")
-    tui.add_argument("db", help="Path to the coverage database")
-    tui.set_defaults(func=lambda args: _launch_tui(args))
+    view.add_argument("db", help="Path to the coverage database")
+    view.set_defaults(func=lambda args: _launch_tui(args))
     
     return parser
 

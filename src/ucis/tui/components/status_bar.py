@@ -26,12 +26,28 @@ class StatusBar:
         """
         text = Text()
         
-        # Shortcuts
-        shortcuts = [
-            ("[1]", "Dashboard"),
-            ("[?]", "Help"),
-            ("[q]", "Quit"),
-        ]
+        # Shortcuts - context-sensitive
+        if current_view == "hierarchy":
+            shortcuts = [
+                ("[↑↓]", "Navigate"),
+                ("[Enter]", "Toggle"),
+                ("[E]", "Expand All"),
+                ("[C]", "Collapse All"),
+                ("[/]", "Search"),
+                ("[1-5]", "Views"),
+                ("[?]", "Help"),
+                ("[q]", "Quit"),
+            ]
+        else:
+            shortcuts = [
+                ("[1]", "Dashboard"),
+                ("[2]", "Hierarchy"),
+                ("[3]", "Gaps"),
+                ("[4]", "Hotspots"),
+                ("[5]", "Metrics"),
+                ("[?]", "Help"),
+                ("[q]", "Quit"),
+            ]
         
         for key, desc in shortcuts:
             text.append(key, style="bold cyan")
