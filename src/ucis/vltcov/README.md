@@ -76,15 +76,17 @@ This decodes to:
 - Bin: `low`
 - Hits: 42
 
-## Current Limitations
+## Current Status
 
-### Code Coverage Not Fully Mapped
+### Full Coverage Support ✅
 
-Line, branch, and toggle coverage are **parsed correctly** but not yet mapped to the UCIS database. This is due to a limitation in PyUCIS's MemUCIS implementation, which doesn't support creating code coverage scopes (BLOCK, BRANCH, TOGGLE) under design units or instances.
+All coverage types are now fully supported:
+- ✅ **Line Coverage**: Mapped to BLOCK scopes with coverage items
+- ✅ **Branch Coverage**: Mapped to BRANCH scopes with coverage items  
+- ✅ **Toggle Coverage**: Mapped to TOGGLE scopes with coverage items
+- ✅ **Functional Coverage**: Mapped to COVERGROUP/COVERPOINT/BIN hierarchy
 
-**Workaround**: The data is still parsed and available in intermediate structures. Future PyUCIS versions may add full support.
-
-**Status**: Functional coverage (covergroups, bins) works perfectly. This is typically the primary use case for merging and analyzing SystemVerilog functional coverage.
+**Recent Update**: As of 2026-02-13, MemUCIS has been extended to support code coverage scopes (BLOCK, BRANCH, TOGGLE), enabling full import of all Verilator coverage types.
 
 ## Implementation Details
 

@@ -198,10 +198,10 @@ class TestVltToUcisMapperFunctionalCoverage:
 
 
 class TestVltToUcisMapperCodeCoverage:
-    """Test code coverage mapping (currently skipped)."""
+    """Test code coverage mapping."""
     
-    def test_map_line_coverage_skipped(self):
-        """Test that line coverage is parsed but not mapped (current limitation)."""
+    def test_map_line_coverage(self):
+        """Test that line coverage is mapped to BLOCK scopes."""
         db = MemUCIS()
         mapper = VltToUcisMapper(db)
         
@@ -213,16 +213,32 @@ class TestVltToUcisMapperCodeCoverage:
                 hierarchy='top',
                 hit_count=5
             ),
+            VltCoverageItem(
+                filename='test.v',
+                lineno=20,
+                coverage_type='line',
+                hierarchy='top',
+                hit_count=3
+            ),
         ]
         
-        # Should not raise an exception
         mapper.map_items(items)
+        
+        # Verify BLOCK scope was created
+        assert mapper.du_scope is not None
+        assert 'top' in mapper.scope_cache
+        inst = mapper.scope_cache['top']
+        assert len(inst.m_children) > 0
+        # Find the BLOCK scope
+        block_scope = next((c for c in inst.m_children if c.getScopeType() == 64), None)
+        assert block_scope is not None
+        assert len(block_scope.m_cover_items) == 2
         
         # Design unit should still be created
         assert mapper.du_scope is not None
     
-    def test_map_branch_coverage_skipped(self):
-        """Test that branch coverage is handled gracefully."""
+    def test_map_branch_coverage(self):
+        """Test that branch coverage is mapped to BRANCH scopes."""
         db = MemUCIS()
         mapper = VltToUcisMapper(db)
         
@@ -230,17 +246,32 @@ class TestVltToUcisMapperCodeCoverage:
             VltCoverageItem(
                 filename='test.v',
                 lineno=20,
+                colno=1,
                 coverage_type='branch',
                 hierarchy='top',
                 hit_count=3
             ),
+            VltCoverageItem(
+                filename='test.v',
+                lineno=20,
+                colno=2,
+                coverage_type='branch',
+                hierarchy='top',
+                hit_count=1
+            ),
         ]
         
-        # Should not raise an exception
         mapper.map_items(items)
+        
+        # Verify BRANCH scope was created
+        assert 'top' in mapper.scope_cache
+        inst = mapper.scope_cache['top']
+        branch_scope = next((c for c in inst.m_children if c.getScopeType() == 2), None)
+        assert branch_scope is not None
+        assert len(branch_scope.m_cover_items) == 2
     
-    def test_map_toggle_coverage_skipped(self):
-        """Test that toggle coverage is handled gracefully."""
+    def test_map_toggle_coverage(self):
+        """Test that toggle coverage is mapped to TOGGLE scopes."""
         db = MemUCIS()
         mapper = VltToUcisMapper(db)
         
@@ -255,8 +286,14 @@ class TestVltToUcisMapperCodeCoverage:
             ),
         ]
         
-        # Should not raise an exception
         mapper.map_items(items)
+        
+        # Verify TOGGLE scope was created
+        assert 'top' in mapper.scope_cache
+        inst = mapper.scope_cache['top']
+        toggle_scope = next((c for c in inst.m_children if c.getScopeType() == 1), None)
+        assert toggle_scope is not None
+        assert len(toggle_scope.m_cover_items) == 1
 
 
 class TestVltToUcisMapperMixed:

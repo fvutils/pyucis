@@ -180,9 +180,8 @@ class VltToUcisMapper:
     def _map_line_coverage(self, items: List[VltCoverageItem]):
         """Map line coverage items to UCIS.
         
-        NOTE: Code coverage scopes (BLOCK, BRANCH, TOGGLE) are currently not
-        fully supported in the MemUCIS implementation. This is a PyUCIS limitation,
-        not a Verilator import issue. For now, code coverage items are skipped.
+        Line coverage is stored as BLOCK scopes under instances.
+        Each line creates a scope with coverage data.
         
         Args:
             items: Line coverage items
@@ -190,34 +189,137 @@ class VltToUcisMapper:
         if not items:
             return
         
-        # TODO: Implement code coverage mapping when PyUCIS adds support
-        # Code coverage needs to be under instances, but MemInstance doesn't
-        # support BLOCK/BRANCH/TOGGLE scope types yet.
-        pass
+        # Group by file
+        by_file = defaultdict(list)
+        for item in items:
+            key = item.filename if item.filename else "unknown"
+            by_file[key].append(item)
+        
+        for filename, file_items in by_file.items():
+            # Get or create instance scope (use hierarchy or default to 'top')
+            hier = file_items[0].hierarchy if file_items[0].hierarchy else "top"
+            inst_scope = self._get_or_create_instance_scope(hier)
+            
+            # Get file handle
+            file_handle = self._get_file_handle(filename) if filename else None
+            
+            # Create a BLOCK scope for this file
+            block_scope = inst_scope.createScope(
+                f"block_{filename.replace('/', '_').replace('.', '_')}",
+                SourceInfo(file_handle, 0, 0),
+                1,
+                UCIS_VLOG,
+                UCIS_BLOCK,
+                0
+            )
+            
+            # Add coverage items for each line
+            for item in file_items:
+                srcinfo = SourceInfo(file_handle, item.lineno, item.colno)
+                cover_data = CoverData(UCIS_STMTBIN, 0)
+                cover_data.data = item.hit_count
+                cover_data.goal = 1
+                block_scope.createNextCover(
+                    f"line_{item.lineno}",
+                    cover_data,
+                    srcinfo
+                )
     
     def _map_branch_coverage(self, items: List[VltCoverageItem]):
         """Map branch coverage items to UCIS.
         
-        NOTE: Code coverage scopes are currently not fully supported in MemUCIS.
-        Skipping branch coverage for now.
+        Branch coverage is stored as BRANCH scopes under instances.
+        Each branch point creates a scope with coverage data.
         
         Args:
             items: Branch coverage items
         """
-        # TODO: Implement when PyUCIS adds code coverage scope support
-        pass
+        if not items:
+            return
+        
+        # Group by file
+        by_file = defaultdict(list)
+        for item in items:
+            key = item.filename if item.filename else "unknown"
+            by_file[key].append(item)
+        
+        for filename, file_items in by_file.items():
+            # Get or create instance scope
+            hier = file_items[0].hierarchy if file_items[0].hierarchy else "top"
+            inst_scope = self._get_or_create_instance_scope(hier)
+            
+            # Get file handle
+            file_handle = self._get_file_handle(filename) if filename else None
+            
+            # Create a BRANCH scope for this file
+            branch_scope = inst_scope.createScope(
+                f"branch_{filename.replace('/', '_').replace('.', '_')}",
+                SourceInfo(file_handle, 0, 0),
+                1,
+                UCIS_VLOG,
+                UCIS_BRANCH,
+                0
+            )
+            
+            # Add coverage items for each branch
+            for item in file_items:
+                srcinfo = SourceInfo(file_handle, item.lineno, item.colno)
+                cover_data = CoverData(UCIS_BRANCHBIN, 0)
+                cover_data.data = item.hit_count
+                cover_data.goal = 1
+                branch_scope.createNextCover(
+                    f"branch_{item.lineno}_{item.colno}",
+                    cover_data,
+                    srcinfo
+                )
     
     def _map_toggle_coverage(self, items: List[VltCoverageItem]):
         """Map toggle coverage items to UCIS.
         
-        NOTE: Code coverage scopes are currently not fully supported in MemUCIS.
-        Skipping toggle coverage for now.
+        Toggle coverage is stored as TOGGLE scopes under instances.
+        Each signal creates a scope with coverage data.
         
         Args:
             items: Toggle coverage items
         """
-        # TODO: Implement when PyUCIS adds code coverage scope support
-        pass
+        if not items:
+            return
+        
+        # Group by file
+        by_file = defaultdict(list)
+        for item in items:
+            key = item.filename if item.filename else "unknown"
+            by_file[key].append(item)
+        
+        for filename, file_items in by_file.items():
+            # Get or create instance scope
+            hier = file_items[0].hierarchy if file_items[0].hierarchy else "top"
+            inst_scope = self._get_or_create_instance_scope(hier)
+            
+            # Get file handle
+            file_handle = self._get_file_handle(filename) if filename else None
+            
+            # Create a TOGGLE scope for this file
+            toggle_scope = inst_scope.createScope(
+                f"toggle_{filename.replace('/', '_').replace('.', '_')}",
+                SourceInfo(file_handle, 0, 0),
+                1,
+                UCIS_VLOG,
+                UCIS_TOGGLE,
+                0
+            )
+            
+            # Add coverage items for each toggle
+            for item in file_items:
+                srcinfo = SourceInfo(file_handle, item.lineno, item.colno)
+                cover_data = CoverData(UCIS_TOGGLEBIN, 0)
+                cover_data.data = item.hit_count
+                cover_data.goal = 1
+                toggle_scope.createNextCover(
+                    f"toggle_{item.lineno}_{item.colno}" if item.colno else f"toggle_{item.lineno}",
+                    cover_data,
+                    srcinfo
+                )
     
     def _map_functional_coverage(self, items: List[VltCoverageItem]):
         """Map functional coverage items to UCIS.
