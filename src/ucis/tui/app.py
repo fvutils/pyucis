@@ -24,14 +24,16 @@ class TUIApp:
     Manages views, handles navigation, processes keyboard input.
     """
     
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, input_format: Optional[str] = None):
         """
         Initialize the TUI application.
         
         Args:
             db_path: Path to the UCIS database file
+            input_format: Optional database format (auto-detect if None)
         """
         self.db_path = db_path
+        self.input_format = input_format
         self.console = Console()
         self.coverage_model = None
         self.current_view: Optional[BaseView] = None
@@ -49,7 +51,7 @@ class TUIApp:
         
         # Show loading message
         with self.console.status("[bold green]Loading coverage database...") as status:
-            self.coverage_model = CoverageModel(self.db_path)
+            self.coverage_model = CoverageModel(self.db_path, self.input_format)
             self._initialize_views()
         
         # Switch to dashboard view

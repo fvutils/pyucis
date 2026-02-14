@@ -40,7 +40,12 @@ class ShowBase(ABC):
         
         # Determine input format
         if self.args.input_format is None:
-            self.args.input_format = rgy.getDefaultDatabase()
+            # Try to detect format from file
+            detected_format = rgy.detectDatabaseFormat(self.args.db)
+            if detected_format is not None:
+                self.args.input_format = detected_format
+            else:
+                self.args.input_format = rgy.getDefaultDatabase()
             
         if not rgy.hasDatabaseFormat(self.args.input_format):
             raise Exception("Unknown input format %s ; supported=%s" % (

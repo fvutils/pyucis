@@ -292,7 +292,8 @@ def get_parser():
 def _launch_tui(args):
     """Launch the TUI application."""
     from ucis.tui.app import TUIApp
-    app = TUIApp(args.db)
+    input_format = getattr(args, 'input_format', None)
+    app = TUIApp(args.db, input_format=input_format)
     app.run()
 
 def main():

@@ -62,6 +62,51 @@ class FormatRgy(object):
     def getDefaultReport(self):
         return 'txt'
     
+    def detectDatabaseFormat(self, path):
+        """
+        Detect database format from file extension and content.
+        
+        Args:
+            path: Path to the database file
+            
+        Returns:
+            Format name (str) or None if cannot detect
+        """
+        import os
+        from pathlib import Path
+        
+        if not os.path.exists(path):
+            return None
+        
+        # Try extension-based detection first
+        ext = Path(path).suffix.lower()
+        if ext == '.xml':
+            return 'xml'
+        elif ext in ['.yaml', '.yml']:
+            return 'yaml'
+        elif ext in ['.cdb', '.db', '.sqlite', '.sqlite3']:
+            return 'sqlite'
+        elif ext == '.dat':
+            return 'vltcov'
+        
+        # Try content-based detection
+        try:
+            with open(path, 'rb') as f:
+                header = f.read(16)
+                if header.startswith(b'SQLite format 3'):
+                    return 'sqlite'
+                elif header.startswith(b'<?xml'):
+                    return 'xml'
+                # For YAML, read a bit more
+                f.seek(0)
+                header = f.read(1024)
+                if header.startswith(b'---') or b'ucis:' in header:
+                    return 'yaml'
+        except:
+            pass
+        
+        return None
+    
     def _init_rgy(self):
 #        self.addDatabaseFormat(FormatDescDb(
 #            fmt_if, name, flags, description))

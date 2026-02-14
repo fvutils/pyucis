@@ -30,7 +30,12 @@ class CoverageModel:
         rgy = FormatRgy.inst()
         
         if input_format is None:
-            input_format = rgy.getDefaultDatabase()
+            # Try to detect format from file
+            detected_format = rgy.detectDatabaseFormat(self.db_path)
+            if detected_format is not None:
+                input_format = detected_format
+            else:
+                input_format = rgy.getDefaultDatabase()
         
         if not rgy.hasDatabaseFormat(input_format):
             raise Exception(f"Unknown format: {input_format}")

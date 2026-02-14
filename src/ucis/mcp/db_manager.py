@@ -45,26 +45,12 @@ class DatabaseManager:
     
     def _detect_format(self, path: str) -> str:
         """Detect database format from file."""
-        ext = Path(path).suffix.lower()
-        if ext == '.xml':
-            return 'xml'
-        elif ext in ['.yaml', '.yml']:
-            return 'yaml'
-        elif ext == '.ucis':
-            return 'ucis'
+        from ucis.rgy.format_rgy import FormatRgy
         
-        # Try to detect from content
-        try:
-            with open(path, 'rb') as f:
-                header = f.read(1024)
-                if header.startswith(b'<?xml'):
-                    return 'xml'
-                elif header.startswith(b'---') or b'ucis:' in header:
-                    return 'yaml'
-        except:
-            pass
+        rgy = FormatRgy.inst()
+        detected = rgy.detectDatabaseFormat(path)
         
-        return 'xml'  # Default
+        return detected if detected else 'xml'  # Default to xml if detection fails
     
     def open_database(self, path: str, format_type: Optional[str] = None, mode: str = "r") -> DatabaseHandle:
         """
