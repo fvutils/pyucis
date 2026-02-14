@@ -26,7 +26,11 @@ def convert(args):
     except Exception as e:
         raise Exception("Failed to read file %s ; %s" % (args.input, str(e)))
 
-    out_db = output_if.create()
+    # For SQLite, pass filename to create() so database is created at target location
+    if args.output_format == "sqlite":
+        out_db = output_if.create(args.out)
+    else:
+        out_db = output_if.create()
 
     # For now, we treat a merge like a poor-man's copy
     merger = DbMerger()

@@ -18,6 +18,7 @@ from ucis.toggle_metric_t import ToggleMetricT
 from ucis.toggle_type_t import ToggleTypeT
 from ucis.unimpl_error import UnimplError
 from ucis.mem.mem_covergroup import MemCovergroup
+from ucis.mem.mem_code_scope import MemBlockScope, MemBranchScope, MemToggleScope
 
 
 class MemInstanceScope(MemScope,InstanceScope):
@@ -51,6 +52,12 @@ class MemInstanceScope(MemScope,InstanceScope):
         flags : FlagsT) -> 'Scope':
         if (type & ScopeTypeT.COVERGROUP) != 0:
             ret = MemCovergroup(self, name, srcinfo, weight, source)
+        elif (type & ScopeTypeT.BLOCK) != 0:
+            ret = MemBlockScope(self, name, srcinfo, weight, source, flags)
+        elif (type & ScopeTypeT.BRANCH) != 0:
+            ret = MemBranchScope(self, name, srcinfo, weight, source, flags)
+        elif (type & ScopeTypeT.TOGGLE) != 0:
+            ret = MemToggleScope(self, name, srcinfo, weight, source, flags)
         else:
             raise UnimplError()
 

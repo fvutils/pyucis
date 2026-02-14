@@ -73,6 +73,10 @@ class FormatRgy(object):
         from ucis.sqlite.db_format_if_sqlite import DbFormatIfSqlite
         DbFormatIfSqlite.register(self)
         
+        # Register Verilator format
+        from ucis.vltcov.db_format_if_vltcov import DbFormatIfVltCov
+        DbFormatIfVltCov.register(self)
+        
         FormatRptJson.register(self)
         FormatRptText.register(self)
         
