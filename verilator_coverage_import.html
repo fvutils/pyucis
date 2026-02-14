@@ -1,0 +1,441 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verilator Coverage Import &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MCP Server" href="mcp_server.html" />
+    <link rel="prev" title="Show Commands Reference" href="show_commands.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Verilator Coverage Import</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coverage-types-supported">Coverage Types Supported</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#functional-coverage-full-support">Functional Coverage (Full Support)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#code-coverage-full-support">Code Coverage (Full Support)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-usage">Command Line Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api">Python API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#verilator-coverage-format">Verilator Coverage Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-verilator-coverage">Generating Verilator Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-examples">Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-workflow">Basic Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression-testing">Regression Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#selective-import">Selective Import</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integration-with-pyucis-features">Integration with PyUCIS Features</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-details">Implementation Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#source-code">Source Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#current-limitations">Current Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Verilator Coverage Import</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/verilator_coverage_import.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="verilator-coverage-import">
+<h1>Verilator Coverage Import<a class="headerlink" href="#verilator-coverage-import" title="Link to this heading"></a></h1>
+<p>PyUCIS provides built-in support for importing coverage data from Verilator,
+enabling seamless integration of Verilator verification results into the UCIS
+ecosystem.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The Verilator coverage import feature (<code class="docutils literal notranslate"><span class="pre">vltcov</span></code> format) supports:</p>
+<ul class="simple">
+<li><p><strong>Functional Coverage</strong>: Covergroups, coverpoints, and bins with hit counts</p></li>
+<li><p><strong>Code Coverage</strong>: Line, branch, and toggle coverage</p></li>
+<li><p><strong>File Format</strong>: SystemC::Coverage-3 format (<code class="docutils literal notranslate"><span class="pre">.dat</span></code> files)</p></li>
+<li><p><strong>Output Formats</strong>: Convert to XML, SQLite, YAML, or any UCIS format</p></li>
+<li><p><strong>CLI Integration</strong>: Works with all PyUCIS commands (convert, merge, report)</p></li>
+</ul>
+</section>
+<section id="coverage-types-supported">
+<h2>Coverage Types Supported<a class="headerlink" href="#coverage-types-supported" title="Link to this heading"></a></h2>
+<section id="functional-coverage-full-support">
+<h3>Functional Coverage (Full Support)<a class="headerlink" href="#functional-coverage-full-support" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Covergroups</strong>: SystemVerilog covergroups with complete hierarchy</p></li>
+<li><p><strong>Coverpoints</strong>: Individual coverage points within covergroups</p></li>
+<li><p><strong>Bins</strong>: Coverage bins with hit counts and thresholds</p></li>
+<li><p><strong>Source Locations</strong>: File names and line numbers preserved</p></li>
+</ul>
+</section>
+<section id="code-coverage-full-support">
+<h3>Code Coverage (Full Support)<a class="headerlink" href="#code-coverage-full-support" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Line Coverage</strong>: Statement execution tracking</p></li>
+<li><p><strong>Branch Coverage</strong>: Conditional branch tracking</p></li>
+<li><p><strong>Toggle Coverage</strong>: Signal toggle tracking</p></li>
+</ul>
+</section>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="command-line-usage">
+<h3>Command Line Usage<a class="headerlink" href="#command-line-usage" title="Link to this heading"></a></h3>
+<p><strong>Convert Verilator coverage to UCIS XML:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>output.xml
+</pre></div>
+</div>
+<p><strong>Convert to SQLite database:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>--output-format<span class="w"> </span>sqlite<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>coverage.ucisdb
+</pre></div>
+</div>
+<p><strong>Merge multiple Verilator runs:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>run1.dat<span class="w"> </span>run2.dat<span class="w"> </span>run3.dat<span class="w"> </span>--out<span class="w"> </span>merged.xml
+</pre></div>
+</div>
+<p><strong>Generate HTML report:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>temp.xml
+pyucis<span class="w"> </span>report<span class="w"> </span>temp.xml<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+</pre></div>
+</div>
+</section>
+<section id="python-api">
+<h3>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
+<p>Import Verilator coverage using the format registry:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.rgy.format_rgy</span> <span class="kn">import</span> <span class="n">FormatRgy</span>
+
+<span class="c1"># Get format registry and vltcov interface</span>
+<span class="n">rgy</span> <span class="o">=</span> <span class="n">FormatRgy</span><span class="o">.</span><span class="n">inst</span><span class="p">()</span>
+<span class="n">desc</span> <span class="o">=</span> <span class="n">rgy</span><span class="o">.</span><span class="n">getDatabaseDesc</span><span class="p">(</span><span class="s1">&#39;vltcov&#39;</span><span class="p">)</span>
+<span class="n">fmt_if</span> <span class="o">=</span> <span class="n">desc</span><span class="o">.</span><span class="n">fmt_if</span><span class="p">()</span>
+
+<span class="c1"># Import Verilator coverage</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">fmt_if</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;coverage.dat&#39;</span><span class="p">)</span>
+
+<span class="c1"># Export to XML</span>
+<span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;output.xml&#39;</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="verilator-coverage-format">
+<h2>Verilator Coverage Format<a class="headerlink" href="#verilator-coverage-format" title="Link to this heading"></a></h2>
+<p>Verilator generates coverage data in the <strong>SystemC::Coverage-3</strong> text format:</p>
+<ul class="simple">
+<li><p><strong>File Extension</strong>: <code class="docutils literal notranslate"><span class="pre">.dat</span></code></p></li>
+<li><p><strong>Format</strong>: Text-based with compact key-value encoding</p></li>
+<li><p><strong>Delimiters</strong>: Uses ASCII control characters (<code class="docutils literal notranslate"><span class="pre">\001</span></code> and <code class="docutils literal notranslate"><span class="pre">\002</span></code>)</p></li>
+<li><p><strong>Location</strong>: Generated in simulation output directory</p></li>
+</ul>
+<p>Example Verilator coverage entry:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>C &#39;\001t\002funccov\001page\002v_funccov/cg1\001f\002test.v\001l\00219\001bin\002low\001h\002cg1.cp\001&#39; 42
+</pre></div>
+</div>
+<p>This decodes to:</p>
+<ul class="simple">
+<li><p>Type: Functional coverage</p></li>
+<li><p>Covergroup: <code class="docutils literal notranslate"><span class="pre">cg1</span></code></p></li>
+<li><p>File: <code class="docutils literal notranslate"><span class="pre">test.v</span></code>, line 19</p></li>
+<li><p>Bin: <code class="docutils literal notranslate"><span class="pre">low</span></code></p></li>
+<li><p>Hit count: 42</p></li>
+</ul>
+</section>
+<section id="generating-verilator-coverage">
+<h2>Generating Verilator Coverage<a class="headerlink" href="#generating-verilator-coverage" title="Link to this heading"></a></h2>
+<p>Enable coverage in your Verilator simulation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable functional coverage</span>
+verilator<span class="w"> </span>--coverage<span class="w"> </span>--coverage-func<span class="w"> </span>--coverage-line<span class="w"> </span>-cc<span class="w"> </span>design.v
+
+<span class="c1"># Run simulation (generates coverage.dat)</span>
+make<span class="w"> </span>-C<span class="w"> </span>obj_dir<span class="w"> </span>-f<span class="w"> </span>Vdesign.mk
+./obj_dir/Vdesign
+
+<span class="c1"># Import into PyUCIS</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+</section>
+<section id="workflow-examples">
+<h2>Workflow Examples<a class="headerlink" href="#workflow-examples" title="Link to this heading"></a></h2>
+<section id="basic-workflow">
+<h3>Basic Workflow<a class="headerlink" href="#basic-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Run Verilator simulation with coverage</span>
+verilator<span class="w"> </span>--coverage<span class="w"> </span>--coverage-func<span class="w"> </span>design.v<span class="w"> </span>testbench.cpp
+make<span class="w"> </span>-C<span class="w"> </span>obj_dir<span class="w"> </span>-f<span class="w"> </span>Vdesign.mk
+./obj_dir/Vdesign<span class="w">  </span><span class="c1"># Generates coverage.dat</span>
+
+<span class="c1"># 2. Convert to UCIS</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>coverage.xml
+
+<span class="c1"># 3. Generate report</span>
+pyucis<span class="w"> </span>report<span class="w"> </span>coverage.xml<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
+</pre></div>
+</div>
+</section>
+<section id="regression-testing">
+<h3>Regression Testing<a class="headerlink" href="#regression-testing" title="Link to this heading"></a></h3>
+<p>Merge coverage from multiple test runs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run multiple tests (each generates coverage.dat)</span>
+./run_test1.sh<span class="w">  </span><span class="c1"># → test1/coverage.dat</span>
+./run_test2.sh<span class="w">  </span><span class="c1"># → test2/coverage.dat</span>
+./run_test3.sh<span class="w">  </span><span class="c1"># → test3/coverage.dat</span>
+
+<span class="c1"># Merge all coverage</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>test1/coverage.dat<span class="w"> </span>test2/coverage.dat<span class="w"> </span>test3/coverage.dat<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--out<span class="w"> </span>merged.ucisdb<span class="w"> </span>--output-format<span class="w"> </span>sqlite
+
+<span class="c1"># Analyze merged results</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>merged.ucisdb
+pyucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>merged.ucisdb
+</pre></div>
+</div>
+</section>
+<section id="ci-cd-integration">
+<h3>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h3>
+<p>Export Verilator coverage to CI-friendly formats:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Convert to SQLite for querying</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--output-format<span class="w"> </span>sqlite<span class="w"> </span>--out<span class="w"> </span>coverage.ucisdb
+
+<span class="c1"># Export to LCOV for CI tools</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>coverage.ucisdb<span class="w"> </span>--output-format<span class="w"> </span>lcov<span class="w"> </span>&gt;<span class="w"> </span>coverage.info
+
+<span class="c1"># Export to Cobertura for Jenkins/GitLab</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>coverage.ucisdb<span class="w"> </span>--output-format<span class="w"> </span>cobertura<span class="w"> </span>&gt;<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<section id="selective-import">
+<h3>Selective Import<a class="headerlink" href="#selective-import" title="Link to this heading"></a></h3>
+<p>Filter coverage during import:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.rgy.format_rgy</span> <span class="kn">import</span> <span class="n">FormatRgy</span>
+<span class="kn">from</span> <span class="nn">ucis.vltcov</span> <span class="kn">import</span> <span class="n">VltParser</span>
+
+<span class="c1"># Parse Verilator file</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">VltParser</span><span class="p">()</span>
+<span class="n">items</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_file</span><span class="p">(</span><span class="s1">&#39;coverage.dat&#39;</span><span class="p">)</span>
+
+<span class="c1"># Filter to functional coverage only</span>
+<span class="n">func_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">is_functional_coverage</span><span class="p">()]</span>
+
+<span class="c1"># Build custom database</span>
+<span class="c1"># ... (map filtered items to UCIS)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-pyucis-features">
+<h3>Integration with PyUCIS Features<a class="headerlink" href="#integration-with-pyucis-features" title="Link to this heading"></a></h3>
+<p>Use all PyUCIS capabilities with imported Verilator coverage:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Analyze coverage</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.dat<span class="w"> </span>--input-format<span class="w"> </span>vltcov
+pyucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>coverage.dat<span class="w"> </span>--input-format<span class="w"> </span>vltcov
+pyucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>coverage.dat<span class="w"> </span>--input-format<span class="w"> </span>vltcov
+
+<span class="c1"># Compare runs</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> </span>baseline.dat<span class="w"> </span>current.dat<span class="w"> </span>--input-format<span class="w"> </span>vltcov
+
+<span class="c1"># Export to various formats</span>
+pyucis<span class="w"> </span>show<span class="w"> </span>code-coverage<span class="w"> </span>coverage.dat<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--output-format<span class="w"> </span>jacoco<span class="w"> </span>&gt;<span class="w"> </span>jacoco.xml
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h2>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<p>The Verilator import implementation consists of:</p>
+<ol class="arabic simple">
+<li><p><strong>VltParser</strong> - Parses SystemC::Coverage-3 format</p></li>
+<li><p><strong>VltCoverageItem</strong> - Data structure for coverage entries</p></li>
+<li><p><strong>VltToUcisMapper</strong> - Maps Verilator data to UCIS hierarchy</p></li>
+<li><p><strong>DbFormatIfVltcov</strong> - Format interface for PyUCIS registry</p></li>
+</ol>
+<p>The import process:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Verilator .dat file
+       ↓
+VltParser (parse format)
+       ↓
+VltCoverageItem list
+       ↓
+VltToUcisMapper (build UCIS)
+       ↓
+UCIS Database (MemUCIS)
+       ↓
+Export (XML, SQLite, etc.)
+</pre></div>
+</div>
+</section>
+<section id="source-code">
+<h3>Source Code<a class="headerlink" href="#source-code" title="Link to this heading"></a></h3>
+<p>The implementation is in <code class="docutils literal notranslate"><span class="pre">src/ucis/vltcov/</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vlt_parser.py</span></code> - Format parser</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vlt_coverage_item.py</span></code> - Data structures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vlt_to_ucis_mapper.py</span></code> - UCIS mapping</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">db_format_if_vltcov.py</span></code> - Format interface</p></li>
+</ul>
+</section>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<section id="current-limitations">
+<h3>Current Limitations<a class="headerlink" href="#current-limitations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Read-Only</strong>: Import only (no export to Verilator format)</p></li>
+<li><p><strong>Memory</strong>: Large coverage files loaded entirely into memory during parsing</p></li>
+</ul>
+<p>These limitations do not affect typical usage and may be addressed in future releases.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>“Unknown format: vltcov”</strong></dt><dd><p>Ensure PyUCIS is properly installed: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code></p>
+</dd>
+<dt><strong>Import fails with parsing error</strong></dt><dd><p>Verify the file is a valid Verilator coverage file (should start with <code class="docutils literal notranslate"><span class="pre">'SystemC::Coverage-3`</span></code>)</p>
+</dd>
+<dt><strong>Missing coverage data</strong></dt><dd><p>Check that Verilator was run with appropriate coverage flags (<code class="docutils literal notranslate"><span class="pre">--coverage</span></code>, <code class="docutils literal notranslate"><span class="pre">--coverage-func</span></code>)</p>
+</dd>
+<dt><strong>Empty output database</strong></dt><dd><p>Ensure the input <code class="docutils literal notranslate"><span class="pre">.dat</span></code> file contains coverage data (not just headers)</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="commands.html"><span class="doc">Commands</span></a> - PyUCIS command-line interface</p></li>
+<li><p><a class="reference internal" href="show_commands.html"><span class="doc">Show Commands Reference</span></a> - Coverage analysis commands</p></li>
+<li><p><a class="reference internal" href="reference/html_coverage_report.html"><span class="doc">HTML Coverage Report Format</span></a> - HTML report generation</p></li>
+<li><p><a class="reference external" href="https://verilator.org/guide/latest/">Verilator Documentation</a> - Verilator coverage guide</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Verilator</strong>: <a class="reference external" href="https://verilator.org/">https://verilator.org/</a></p></li>
+<li><p><strong>UCIS Specification</strong>: IEEE 1800.2</p></li>
+<li><p><strong>Format Registry</strong>: <a class="reference internal" href="reference/native_api.html"><span class="doc">Native C Library API</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="show_commands.html" class="btn btn-neutral float-left" title="Show Commands Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcp_server.html" class="btn btn-neutral float-right" title="MCP Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

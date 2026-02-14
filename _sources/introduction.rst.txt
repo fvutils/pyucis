@@ -19,6 +19,7 @@ and accessing coverage data:
 - **SQLite**: Persistent, queryable storage using SQLite3 databases  
 - **XML**: Read and write UCIS data in the Accellera-defined interchange format
 - **YAML**: Human-readable text format for coverage data
+- **Verilator**: Import coverage from Verilator (SystemC::Coverage-3 format)
 - **Library**: Call tool-provided implementations of the UCIS C API
 
 SQLite Backend
@@ -161,7 +162,7 @@ The ``ucis`` command provides several operations:
   Combine multiple coverage databases into a single unified database
 
 **Convert**
-  Convert between different UCIS database formats (XML, YAML, LibUCIS)
+  Convert between different UCIS database formats (XML, YAML, Verilator, LibUCIS)
 
 **Report**
   Generate coverage reports from UCIS databases in multiple formats:
@@ -180,6 +181,8 @@ Example:
 
     # Interactive Terminal UI - new!
     ucis view coverage.ucis
+    # Import Verilator coverage
+    ucis convert --input-format vltcov coverage.dat --out coverage.xml
     
     # Generate interactive HTML report
     ucis report coverage.ucis -of html -o report.html
@@ -195,6 +198,8 @@ Example:
     
     # Merge databases
     ucis merge -o merged.ucis test1.ucis test2.ucis
+
+See :doc:`verilator_coverage_import` for detailed Verilator import documentation.
 
 
 MCP Server for AI Integration

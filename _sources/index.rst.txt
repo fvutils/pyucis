@@ -24,6 +24,7 @@ Contents:
    commands
    tui
    show_commands
+   verilator_coverage_import
    mcp_server
    reference/reference
    

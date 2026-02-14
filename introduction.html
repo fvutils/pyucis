@@ -56,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
 <li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
 <li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
 </ul>
@@ -103,6 +104,7 @@ and accessing coverage data:</p>
 <li><p><strong>SQLite</strong>: Persistent, queryable storage using SQLite3 databases</p></li>
 <li><p><strong>XML</strong>: Read and write UCIS data in the Accellera-defined interchange format</p></li>
 <li><p><strong>YAML</strong>: Human-readable text format for coverage data</p></li>
+<li><p><strong>Verilator</strong>: Import coverage from Verilator (SystemC::Coverage-3 format)</p></li>
 <li><p><strong>Library</strong>: Call tool-provided implementations of the UCIS C API</p></li>
 </ul>
 </section>
@@ -235,7 +237,7 @@ metrics, compare, hotspots, code-coverage, assertions, toggle</p></li>
 </dd>
 <dt><strong>Merge</strong></dt><dd><p>Combine multiple coverage databases into a single unified database</p>
 </dd>
-<dt><strong>Convert</strong></dt><dd><p>Convert between different UCIS database formats (XML, YAML, LibUCIS)</p>
+<dt><strong>Convert</strong></dt><dd><p>Convert between different UCIS database formats (XML, YAML, Verilator, LibUCIS)</p>
 </dd>
 <dt><strong>Report</strong></dt><dd><p>Generate coverage reports from UCIS databases in multiple formats:</p>
 <ul class="simple">
@@ -251,6 +253,8 @@ metrics, compare, hotspots, code-coverage, assertions, toggle</p></li>
 <p>Example:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Interactive Terminal UI - new!</span>
 ucis<span class="w"> </span>view<span class="w"> </span>coverage.ucis
+<span class="c1"># Import Verilator coverage</span>
+ucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>vltcov<span class="w"> </span>coverage.dat<span class="w"> </span>--out<span class="w"> </span>coverage.xml
 
 <span class="c1"># Generate interactive HTML report</span>
 ucis<span class="w"> </span>report<span class="w"> </span>coverage.ucis<span class="w"> </span>-of<span class="w"> </span>html<span class="w"> </span>-o<span class="w"> </span>report.html
@@ -268,6 +272,7 @@ ucis<span class="w"> </span>show<span class="w"> </span>compare<span class="w"> 
 ucis<span class="w"> </span>merge<span class="w"> </span>-o<span class="w"> </span>merged.ucis<span class="w"> </span>test1.ucis<span class="w"> </span>test2.ucis
 </pre></div>
 </div>
+<p>See <a class="reference internal" href="verilator_coverage_import.html"><span class="doc">Verilator Coverage Import</span></a> for detailed Verilator import documentation.</p>
 </section>
 <section id="mcp-server-for-ai-integration">
 <h2>MCP Server for AI Integration<a class="headerlink" href="#mcp-server-for-ai-integration" title="Link to this heading"></a></h2>
