@@ -45,6 +45,24 @@ class DatabaseManager:
     
     def _detect_format(self, path: str) -> str:
         """Detect database format from file."""
+        from pathlib import Path
+        
+        # If file doesn't exist, try extension-only detection
+        if not os.path.exists(path):
+            ext = Path(path).suffix.lower()
+            if ext == '.xml':
+                return 'xml'
+            elif ext in ['.yaml', '.yml']:
+                return 'yaml'
+            elif ext in ['.cdb', '.db', '.sqlite', '.sqlite3']:
+                return 'sqlite'
+            elif ext == '.dat':
+                return 'vltcov'
+            elif ext == '.ucis':
+                return 'ucis'
+            return 'xml'  # Default
+        
+        # File exists - use full detection with content checking
         from ucis.rgy.format_rgy import FormatRgy
         
         rgy = FormatRgy.inst()

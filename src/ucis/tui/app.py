@@ -90,12 +90,14 @@ class TUIApp:
         from ucis.tui.views.gaps_view import GapsView
         from ucis.tui.views.hotspots_view import HotspotsView
         from ucis.tui.views.metrics_view import MetricsView
+        from ucis.tui.views.code_coverage_view import CodeCoverageView
         
         self.views["dashboard"] = DashboardView(self)
         self.views["hierarchy"] = HierarchyView(self)
         self.views["gaps"] = GapsView(self)
         self.views["hotspots"] = HotspotsView(self)
         self.views["metrics"] = MetricsView(self)
+        self.views["code_coverage"] = CodeCoverageView(self)
     
     def _render(self) -> Layout:
         """

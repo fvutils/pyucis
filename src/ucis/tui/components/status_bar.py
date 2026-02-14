@@ -45,6 +45,7 @@ class StatusBar:
                 ("[3]", "Gaps"),
                 ("[4]", "Hotspots"),
                 ("[5]", "Metrics"),
+                ("[6]", "Code Cov"),
                 ("[?]", "Help"),
                 ("[q]", "Quit"),
             ]

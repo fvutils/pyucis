@@ -9,6 +9,7 @@ from ucis import UCIS_OTHER, UCIS_INSTANCE, UCIS_DU_MODULE, UCIS_ENABLED_STMT, \
     UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, \
     UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, UCIS_SCOPE_UNDER_DU, UCIS_CVGBIN, \
     UCIS_IGNOREBIN, UCIS_ILLEGALBIN, coverpoint
+from ucis.cover_data import CoverData
 from ucis.cover_type_t import CoverTypeT
 from ucis.report.coverage_report import CoverageReport
 from ucis.report.coverage_report_builder import CoverageReportBuilder
@@ -75,6 +76,7 @@ class DbMerger(object):
                 UCIS_INST_ONCE)
         
             self._merge_covergroups(dst_iscope, src_scopes)
+            self._merge_code_coverage(dst_iscope, src_scopes)
             
     def _merge_covergroups(self, dst_scope, src_scopes):
         
@@ -248,5 +250,124 @@ class DbMerger(object):
                     bin_name_m[bin_n][0], # count
                     bin_n,
                     cvg_t)
+    
+    def _merge_code_coverage(self, dst_scope, src_scopes):
+        """Merge code coverage scopes (BLOCK, BRANCH, TOGGLE).
+        
+        Args:
+            dst_scope: Destination instance scope
+            src_scopes: List of source instance scopes
+        """
+        # Merge BLOCK scopes (line/statement coverage)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.BLOCK)
+        
+        # Merge BRANCH scopes (branch coverage)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.BRANCH)
+        
+        # Merge TOGGLE scopes (toggle coverage)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.TOGGLE)
+    
+    def _merge_scopes_by_type(self, dst_parent, src_scopes, scope_type):
+        """Merge scopes of a specific type.
+        
+        Args:
+            dst_parent: Destination parent scope
+            src_scopes: List of source parent scopes
+            scope_type: Type of scopes to merge (BLOCK, BRANCH, TOGGLE, etc.)
+        """
+        scope_name_m: Dict[str, List] = {}
+        scope_name_l = []
+        
+        # Collect scopes from all source databases
+        for i, src_scope in enumerate(src_scopes):
+            for src_sub_scope in src_scope.scopes(scope_type):
+                name = src_sub_scope.getScopeName()
+                
+                if name not in scope_name_m:
+                    scope_l = [None] * len(src_scopes)
+                    scope_name_m[name] = scope_l
+                    scope_name_l.append(name)
+                scope_name_m[name][i] = src_sub_scope
+        
+        # Merge each scope
+        for name in scope_name_l:
+            src_scope_l = list(filter(lambda s: s is not None, scope_name_m[name]))
+            
+            # Create destination scope using first source as template
+            src_template = src_scope_l[0]
+            dst_sub_scope = dst_parent.createScope(
+                src_template.getScopeName(),
+                src_template.getSourceInfo(),
+                src_template.getWeight(),
+                UCIS_OTHER,  # source language type
+                src_template.getScopeType(),
+                0  # flags - use default
+            )
+            
+            # Merge coverage items
+            self._merge_code_coverage_items(dst_sub_scope, src_scope_l)
+    
+    def _merge_code_coverage_items(self, dst_scope, src_scopes):
+        """Merge code coverage items from multiple source scopes.
+        
+        Handles STMTBIN, BRANCHBIN, TOGGLEBIN, etc.
+        
+        Args:
+            dst_scope: Destination scope
+            src_scopes: List of source scopes with same name
+        """
+        # Coverage types to merge
+        coverage_types = [
+            CoverTypeT.STMTBIN,     # Line/statement coverage
+            CoverTypeT.BRANCHBIN,   # Branch coverage
+            CoverTypeT.TOGGLEBIN,   # Toggle coverage
+            CoverTypeT.EXPRBIN,     # Expression coverage
+            CoverTypeT.CONDBIN,     # Condition coverage
+            CoverTypeT.FSMBIN,      # FSM coverage
+        ]
+        
+        for cvg_type in coverage_types:
+            item_name_m: Dict[str, List[int]] = {}
+            item_name_l = []
+            
+            # Collect items from all sources
+            for src_scope in src_scopes:
+                for ci in src_scope.coverItems(cvg_type):
+                    item_name = ci.getName()
+                    cvg_data = ci.getCoverData()
+                    
+                    if item_name not in item_name_m:
+                        # [accumulated_count, goal]
+                        item_name_m[item_name] = [0, cvg_data.goal]
+                        item_name_l.append(item_name)
+                    
+                    # Accumulate hit counts
+                    item_name_m[item_name][0] += cvg_data.data
+            
+            # Create merged items in destination
+            for item_name in item_name_l:
+                count, goal = item_name_m[item_name]
+                
+                # Get source info from first occurrence (they should be identical)
+                src_info = None
+                for src_scope in src_scopes:
+                    for ci in src_scope.coverItems(cvg_type):
+                        if ci.getName() == item_name:
+                            src_info = ci.getSourceInfo()
+                            break
+                    if src_info:
+                        break
+                
+                # Create cover data
+                cover_data = CoverData(cvg_type, 0)
+                cover_data.data = count
+                cover_data.goal = goal
+                
+                # Create cover item
+                dst_scope.createNextCover(
+                    item_name,
+                    cover_data,
+                    src_info
+                )
     
 

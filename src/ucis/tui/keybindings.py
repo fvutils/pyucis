@@ -48,6 +48,7 @@ class KeyHandler:
             '3': 'gaps',
             '4': 'hotspots',
             '5': 'metrics',
+            '6': 'code_coverage',
         }
         
         if key in view_map:

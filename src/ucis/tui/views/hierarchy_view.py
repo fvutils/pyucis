@@ -143,27 +143,85 @@ class HierarchyView(BaseView):
         return layout
     
     def _render_tree(self):
-        """Render the coverage hierarchy tree."""
-        # Add search indicator if active
-        if self.search_filter:
-            tree_label = f"📦 Coverage Database [filter: {self.search_filter}]"
-        else:
-            tree_label = "📦 Coverage Database"
+        """Render the coverage hierarchy tree with scrolling support."""
+        from rich.console import Console
+        from rich.text import Text
         
-        tree = Tree(tree_label)
+        # Get flattened list of visible nodes
+        flat_list = self._flatten_tree()
         
-        for node in self.root_nodes:
-            self._add_tree_node(tree, node, is_selected=(node == self.selected_node))
+        if not flat_list:
+            return Text("No items to display", style="dim italic")
         
-        return tree
+        # Calculate available height dynamically based on terminal size
+        # Get terminal height from app's console
+        terminal_height = self.app.console.height if hasattr(self.app, 'console') else 40
+        
+        # Account for overhead:
+        # - Header panel: ~3 lines
+        # - Status bar: ~1 line
+        # - Panel borders: ~4 lines (top and bottom for body panels)
+        # - Scroll indicators: ~2 lines
+        # - Status text: ~2 lines
+        overhead = 12
+        available_height = max(10, terminal_height - overhead)
+        
+        visible_rows = available_height  # Number of tree nodes to show at once
+        
+        # Update scroll offset to keep selected node visible
+        if self.selected_node in flat_list:
+            selected_idx = flat_list.index(self.selected_node)
+            
+            # Adjust scroll_offset to keep selection visible
+            if selected_idx < self.scroll_offset:
+                # Selected item is above visible area
+                self.scroll_offset = selected_idx
+            elif selected_idx >= self.scroll_offset + visible_rows:
+                # Selected item is below visible area
+                self.scroll_offset = selected_idx - visible_rows + 1
+        
+        # Clamp scroll offset
+        self.scroll_offset = max(0, min(self.scroll_offset, max(0, len(flat_list) - visible_rows)))
+        
+        # Build display text for visible window
+        lines = []
+        start_idx = self.scroll_offset
+        end_idx = min(start_idx + visible_rows, len(flat_list))
+        
+        for idx in range(start_idx, end_idx):
+            node = flat_list[idx]
+            line = self._format_tree_line(node, is_selected=(node == self.selected_node))
+            lines.append(line)
+        
+        # Add scroll indicators
+        if self.scroll_offset > 0:
+            lines.insert(0, Text("▲ More items above...", style="dim italic"))
+        if end_idx < len(flat_list):
+            lines.append(Text("▼ More items below...", style="dim italic"))
+        
+        # Add status line
+        if len(flat_list) > visible_rows:
+            status = Text(f"\n[Showing {start_idx+1}-{end_idx} of {len(flat_list)} items]", style="dim italic")
+            lines.append(status)
+        
+        # Combine all lines
+        result = Text()
+        for line in lines:
+            result.append(line)
+            result.append("\n")
+        
+        return result
     
-    def _add_tree_node(self, parent_tree, node, is_selected=False, depth=0):
-        """Recursively add nodes to the tree."""
+    def _format_tree_line(self, node, is_selected=False):
+        """Format a single tree line."""
         from ucis.scope_type_t import ScopeTypeT
         
-        # Apply search filter if active
-        if self.search_filter and not self._matches_filter(node):
-            return
+        # Calculate depth by walking up parent chain
+        depth = 0
+        current = node
+        while current.parent:
+            depth += 1
+            current = current.parent
         
         # Get icon based on scope type
         icons = {
@@ -186,27 +244,34 @@ class HierarchyView(BaseView):
         else:
             color = "red"
         
-        # Build label
-        label = Text()
-        if is_selected:
-            label.append("➤ ", style="bold cyan")
-        label.append(f"{icon} {node.name} ", style="bold" if is_selected else "")
-        label.append(f"({coverage_pct:.1f}%)", style=color)
+        # Build line with indentation
+        line = Text()
         
-        # Add expand/collapse indicator
+        # Indentation
+        line.append("  " * depth)
+        
+        # Selection indicator
+        if is_selected:
+            line.append("➤ ", style="bold cyan on blue")
+        else:
+            line.append("  ")
+        
+        # Icon and name
+        name_style = "bold white on blue" if is_selected else ""
+        line.append(f"{icon} {node.name} ", style=name_style)
+        
+        # Coverage percentage
+        coverage_style = f"{color} on blue" if is_selected else color
+        line.append(f"({coverage_pct:.1f}%)", style=coverage_style)
+        
+        # Expand/collapse indicator
         if node.children:
             if node.expanded:
-                label.append(" [-]", style="dim")
+                line.append(" [-]", style="dim on blue" if is_selected else "dim")
             else:
-                label.append(" [+]", style="dim")
+                line.append(" [+]", style="dim on blue" if is_selected else "dim")
         
-        # Add to tree - only expand if node.expanded is True
-        if node.children and node.expanded:
-            branch = parent_tree.add(label)
-            for child in node.children:
-                self._add_tree_node(branch, child, is_selected=(child == self.selected_node), depth=depth+1)
-        else:
-            parent_tree.add(label)
+        return line
     
     def _render_details(self):
         """Render details for the selected node."""
