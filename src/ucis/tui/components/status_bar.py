@@ -14,12 +14,13 @@ class StatusBar:
         self.message = ""
         self.message_type = "info"
     
-    def render(self, current_view=None) -> RenderableType:
+    def render(self, current_view=None, coverage_model=None) -> RenderableType:
         """
         Render the status bar.
         
         Args:
             current_view: Current active view
+            coverage_model: Coverage model to check for filter status
             
         Returns:
             Rich Text object
@@ -46,6 +47,7 @@ class StatusBar:
                 ("[4]", "Hotspots"),
                 ("[5]", "Metrics"),
                 ("[6]", "Code Cov"),
+                ("[7]", "Tests"),
                 ("[?]", "Help"),
                 ("[q]", "Quit"),
             ]
@@ -53,6 +55,13 @@ class StatusBar:
         for key, desc in shortcuts:
             text.append(key, style="bold cyan")
             text.append(f" {desc}  ", style="dim")
+        
+        # Show filter status
+        if coverage_model and coverage_model.get_test_filter():
+            test_filter = coverage_model.get_test_filter()
+            text.append(" | ", style="dim")
+            text.append("Filter: ", style="bold yellow")
+            text.append(test_filter, style="yellow")
         
         # Message (if any)
         if self.message:

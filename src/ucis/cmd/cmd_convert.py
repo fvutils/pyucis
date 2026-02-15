@@ -26,15 +26,20 @@ def convert(args):
     except Exception as e:
         raise Exception("Failed to read file %s ; %s" % (args.input, str(e)))
 
-    # For SQLite, pass filename to create() so database is created at target location
+    # For SQLite output, use SqliteMerger to preserve history/test associations
     if args.output_format == "sqlite":
-        out_db = output_if.create(args.out)
+        from ucis.sqlite import SqliteUCIS
+        from ucis.sqlite.sqlite_merge import SqliteMerger
+        
+        out_db = SqliteUCIS(args.out)
+        merger = SqliteMerger(out_db)
+        merger.merge(in_db, create_history=True, squash_history=False)
+        out_db.close()
     else:
+        # Generic merge for other formats
         out_db = output_if.create()
-
-    # For now, we treat a merge like a poor-man's copy
-    merger = DbMerger()
-    merger.merge(out_db, [in_db])
-
-    out_db.write(args.out)    
+        merger = DbMerger()
+        merger.merge(out_db, [in_db])
+        out_db.write(args.out)
+    
     in_db.close()

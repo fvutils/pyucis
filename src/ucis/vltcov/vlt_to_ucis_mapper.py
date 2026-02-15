@@ -2,6 +2,7 @@
 
 from typing import List, Dict, Optional
 from collections import defaultdict
+from datetime import datetime
 from ucis import (
     UCIS, 
     ucis_CreateScope,
@@ -28,6 +29,9 @@ from ucis import (
 from ucis.source_info import SourceInfo
 from ucis.cover_data import CoverData
 from ucis.scope import Scope
+from ucis.history_node_kind import HistoryNodeKind
+from ucis.test_status_t import TestStatusT
+from ucis.test_data import TestData
 
 from .vlt_coverage_item import VltCoverageItem
 
@@ -35,16 +39,20 @@ from .vlt_coverage_item import VltCoverageItem
 class VltToUcisMapper:
     """Maps Verilator coverage items to UCIS database structure."""
     
-    def __init__(self, db: UCIS):
+    def __init__(self, db: UCIS, source_file: str = "coverage.dat"):
         """Initialize mapper with target UCIS database.
         
         Args:
             db: Target UCIS database
+            source_file: Path to source coverage.dat file (for history tracking)
         """
         self.db = db
+        self.source_file = source_file
         self.scope_cache: Dict[str, Scope] = {}
         self.file_cache: Dict[str, int] = {}
         self.du_scope: Optional[Scope] = None
+        self.history_node = None
+        self.created_coveritems: List = []  # Track created coveritems for test association
         
     def map_items(self, items: List[VltCoverageItem]):
         """Map all coverage items to UCIS.
@@ -52,6 +60,9 @@ class VltToUcisMapper:
         Args:
             items: List of parsed Verilator coverage items
         """
+        # Create history node for this import
+        self._create_history_node()
+        
         # Group items for efficient processing
         groups = self._group_items(items)
         
@@ -71,6 +82,70 @@ class VltToUcisMapper:
                 self._map_branch_coverage(group_items)
             elif coverage_type == 'toggle':
                 self._map_toggle_coverage(group_items)
+        
+        # Record test associations for SQLite databases
+        self._record_test_associations()
+    
+    def _create_history_node(self):
+        """Create a history node for this Verilator coverage import."""
+        try:
+            # Extract test name from source file (e.g., "coverage.dat" -> "verilator_test")
+            import os
+            base_name = os.path.basename(self.source_file)
+            test_name = os.path.splitext(base_name)[0]
+            if test_name == "coverage":
+                test_name = "verilator_test"
+            
+            # Create history node
+            self.history_node = self.db.createHistoryNode(
+                parent=None,
+                logicalname=test_name,
+                physicalname=self.source_file,
+                kind=HistoryNodeKind.TEST
+            )
+            
+            # Set test data
+            test_data = TestData(
+                teststatus=TestStatusT.OK,
+                toolcategory="verilator",
+                date=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                simtime=0.0,
+                timeunit="ns",
+                seed="0"
+            )
+            self.history_node.setTestData(test_data)
+        except Exception as e:
+            # If history node creation fails (not all backends support it), continue
+            pass
+    
+    def _record_test_associations(self):
+        """Record test-coveritem associations for SQLite databases."""
+        if not self.history_node:
+            return
+        
+        # Only record for SQLite databases that have the test coverage API
+        try:
+            from ucis.sqlite.sqlite_ucis import SqliteUCIS
+            if isinstance(self.db, SqliteUCIS):
+                test_cov = self.db.get_test_coverage_api()
+                
+                # Record association for each created coveritem
+                for cover_idx in self.created_coveritems:
+                    if hasattr(cover_idx, 'coveritem_id'):
+                        # Get the hit count from the coveritem
+                        cover_data = cover_idx.getCoverData()
+                        contribution = cover_data.data if cover_data else 1
+                        
+                        test_cov.record_test_association(
+                            cover_idx.coveritem_id,
+                            self.history_node.history_id,
+                            contribution
+                        )
+                
+                self.db.conn.commit()
+        except Exception as e:
+            # If recording fails, continue (test associations are optional)
+            pass
     
     def _group_items(self, items: List[VltCoverageItem]) -> Dict[tuple, List[VltCoverageItem]]:
         """Group items by coverage type and hierarchy.
@@ -219,11 +294,13 @@ class VltToUcisMapper:
                 cover_data = CoverData(UCIS_STMTBIN, 0)
                 cover_data.data = item.hit_count
                 cover_data.goal = 1
-                block_scope.createNextCover(
+                cover_idx = block_scope.createNextCover(
                     f"line_{item.lineno}",
                     cover_data,
                     srcinfo
                 )
+                # Track for test association
+                self.created_coveritems.append(cover_idx)
     
     def _map_branch_coverage(self, items: List[VltCoverageItem]):
         """Map branch coverage items to UCIS.
@@ -267,11 +344,13 @@ class VltToUcisMapper:
                 cover_data = CoverData(UCIS_BRANCHBIN, 0)
                 cover_data.data = item.hit_count
                 cover_data.goal = 1
-                branch_scope.createNextCover(
+                cover_idx = branch_scope.createNextCover(
                     f"branch_{item.lineno}_{item.colno}",
                     cover_data,
                     srcinfo
                 )
+                # Track for test association
+                self.created_coveritems.append(cover_idx)
     
     def _map_toggle_coverage(self, items: List[VltCoverageItem]):
         """Map toggle coverage items to UCIS.
@@ -315,11 +394,13 @@ class VltToUcisMapper:
                 cover_data = CoverData(UCIS_TOGGLEBIN, 0)
                 cover_data.data = item.hit_count
                 cover_data.goal = 1
-                toggle_scope.createNextCover(
+                cover_idx = toggle_scope.createNextCover(
                     f"toggle_{item.lineno}_{item.colno}" if item.colno else f"toggle_{item.lineno}",
                     cover_data,
                     srcinfo
                 )
+                # Track for test association
+                self.created_coveritems.append(cover_idx)
     
     def _map_functional_coverage(self, items: List[VltCoverageItem]):
         """Map functional coverage items to UCIS.

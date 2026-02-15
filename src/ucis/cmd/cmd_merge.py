@@ -29,19 +29,21 @@ def merge(args):
     squash_history = getattr(args, 'squash_history', False)
     use_fast = getattr(args, 'fast', False)
 
-    if use_fast and args.input_format == "sqlite" and args.output_format == "sqlite":
-        # Use fast merge path (SQLite-to-SQLite only)
+    if args.input_format == "sqlite" and args.output_format == "sqlite":
+        # Use SQLite-specific merge (faster and preserves test associations)
         from ucis.sqlite import SqliteUCIS
-
-        out_db = SqliteUCIS(args.out)
-        workers = getattr(args, 'workers', 4)
-        out_db.merge_fast(args.db, squash_history=squash_history, workers=workers)
-        out_db.close()
-        return
-
-    if args.input_format == "sqlite" and args.output_format == "sqlite" and squash_history:
-        # Use SQLite-specific merge with squash_history
-        from ucis.sqlite import SqliteUCIS
+        
+        # Check for fast merge
+        use_fast = getattr(args, 'fast', False)
+        if use_fast:
+            # Use parallel fast merge
+            out_db = SqliteUCIS(args.out)
+            workers = getattr(args, 'workers', 4)
+            out_db.merge_fast(args.db, squash_history=squash_history, workers=workers)
+            out_db.close()
+            return
+        
+        # Use SqliteMerger for sequential merge
         from ucis.sqlite.sqlite_merge import SqliteMerger
         
         # Create output database
@@ -50,8 +52,8 @@ def merge(args):
         
         # Merge each input
         for input_path in args.db:
-            src_db = SqliteUCIS(input_path)
-            merger.merge(src_db, create_history=True, squash_history=True)
+            src_db = SqliteUCIS.open_readonly(input_path)
+            merger.merge(src_db, create_history=True, squash_history=squash_history)
             src_db.close()
         
         out_db.close()

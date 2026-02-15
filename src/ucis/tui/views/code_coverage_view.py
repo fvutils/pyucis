@@ -67,7 +67,19 @@ class CodeCoverageView(BaseView):
         self.view_mode = 'list'  # 'list' or 'detail'
         self.detail_scroll_offset = 0  # For scrolling in detail view
         self.source_lines: List[str] = []  # Cached source file lines
+        self._last_filter = None  # Track filter changes
         self._load_file_coverage()
+    
+    def on_enter(self):
+        """Reload data if filter has changed."""
+        super().on_enter()
+        current_filter = self.model.get_test_filter()
+        if current_filter != self._last_filter:
+            self._last_filter = current_filter
+            self.file_coverage = []
+            self.current_index = 0
+            self.scroll_offset = 0
+            self._load_file_coverage()
     
     def _load_file_coverage(self):
         """Load file coverage information from database."""
@@ -85,24 +97,57 @@ class CodeCoverageView(BaseView):
         conn = self.model.db.conn
         cursor = conn.cursor()
         
+        # Check if test filter is active
+        test_filter = self.model.get_test_filter()
+        filtered_ids = None
+        if test_filter:
+            filtered_ids = self.model.get_coveritems_for_test(test_filter)
+            if not filtered_ids:
+                # No items for this test, return empty
+                self.file_coverage = []
+                return
+        
         try:
-            # Query file coverage statistics
-            cursor.execute("""
-                SELECT 
-                    f.file_id,
-                    f.file_path,
-                    COUNT(CASE WHEN ci.cover_type = 32 THEN 1 END) as line_total,
-                    SUM(CASE WHEN ci.cover_type = 32 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as line_covered,
-                    COUNT(CASE WHEN ci.cover_type = 64 THEN 1 END) as branch_total,
-                    SUM(CASE WHEN ci.cover_type = 64 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as branch_covered,
-                    COUNT(CASE WHEN ci.cover_type = 512 THEN 1 END) as toggle_total,
-                    SUM(CASE WHEN ci.cover_type = 512 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as toggle_covered
-                FROM files f
-                JOIN coveritems ci ON f.file_id = ci.source_file_id
-                WHERE ci.cover_type IN (32, 64, 512)
-                GROUP BY f.file_id, f.file_path
-                ORDER BY f.file_path
-            """)
+            # Build query based on filter
+            if filtered_ids:
+                # Convert set to comma-separated string for SQL IN clause
+                id_list = ','.join(str(id) for id in filtered_ids)
+                
+                # Query file coverage statistics with filter
+                cursor.execute(f"""
+                    SELECT 
+                        f.file_id,
+                        f.file_path,
+                        COUNT(CASE WHEN ci.cover_type = 32 THEN 1 END) as line_total,
+                        SUM(CASE WHEN ci.cover_type = 32 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as line_covered,
+                        COUNT(CASE WHEN ci.cover_type = 64 THEN 1 END) as branch_total,
+                        SUM(CASE WHEN ci.cover_type = 64 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as branch_covered,
+                        COUNT(CASE WHEN ci.cover_type = 512 THEN 1 END) as toggle_total,
+                        SUM(CASE WHEN ci.cover_type = 512 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as toggle_covered
+                    FROM files f
+                    JOIN coveritems ci ON f.file_id = ci.source_file_id
+                    WHERE ci.cover_type IN (32, 64, 512) AND ci.cover_id IN ({id_list})
+                    GROUP BY f.file_id, f.file_path
+                    ORDER BY f.file_path
+                """)
+            else:
+                # Query without filter (original query)
+                cursor.execute("""
+                    SELECT 
+                        f.file_id,
+                        f.file_path,
+                        COUNT(CASE WHEN ci.cover_type = 32 THEN 1 END) as line_total,
+                        SUM(CASE WHEN ci.cover_type = 32 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as line_covered,
+                        COUNT(CASE WHEN ci.cover_type = 64 THEN 1 END) as branch_total,
+                        SUM(CASE WHEN ci.cover_type = 64 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as branch_covered,
+                        COUNT(CASE WHEN ci.cover_type = 512 THEN 1 END) as toggle_total,
+                        SUM(CASE WHEN ci.cover_type = 512 AND ci.cover_data > 0 THEN 1 ELSE 0 END) as toggle_covered
+                    FROM files f
+                    JOIN coveritems ci ON f.file_id = ci.source_file_id
+                    WHERE ci.cover_type IN (32, 64, 512)
+                    GROUP BY f.file_id, f.file_path
+                    ORDER BY f.file_path
+                """)
             
             for row in cursor.fetchall():
                 file_id, file_path, line_total, line_covered, branch_total, branch_covered, toggle_total, toggle_covered = row
@@ -115,13 +160,21 @@ class CodeCoverageView(BaseView):
                 file_info.toggle_total = toggle_total or 0
                 file_info.toggle_covered = toggle_covered or 0
                 
-                # Load line-level coverage
-                cursor.execute("""
-                    SELECT source_line, cover_data
-                    FROM coveritems
-                    WHERE source_file_id = ? AND cover_type = 32
-                    ORDER BY source_line
-                """, (file_id,))
+                # Load line-level coverage with filter
+                if filtered_ids:
+                    cursor.execute(f"""
+                        SELECT source_line, cover_data
+                        FROM coveritems
+                        WHERE source_file_id = ? AND cover_type = 32 AND coveritem_id IN ({id_list})
+                        ORDER BY source_line
+                    """, (file_id,))
+                else:
+                    cursor.execute("""
+                        SELECT source_line, cover_data
+                        FROM coveritems
+                        WHERE source_file_id = ? AND cover_type = 32
+                        ORDER BY source_line
+                    """, (file_id,))
                 
                 for line_row in cursor.fetchall():
                     line_no, hits = line_row

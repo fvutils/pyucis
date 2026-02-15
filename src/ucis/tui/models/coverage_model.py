@@ -25,6 +25,7 @@ class CoverageModel:
         self.db_path = db_path
         self.db = None
         self._cache: Dict[str, Any] = {}
+        self.test_filter: Optional[str] = None  # Current test filter
         self._load_database(input_format)
     
     def _load_database(self, input_format: Optional[str] = None):
@@ -124,8 +125,8 @@ class CoverageModel:
         # Get test data if available
         if self.db:
             try:
-                history = self.db.historyNodes()
-                info['test_count'] = len(list(history)) if history else 0
+                tests = self.get_all_tests()
+                info['test_count'] = len(tests)
             except:
                 pass
         
@@ -236,19 +237,30 @@ class CoverageModel:
         self._cache['code_coverage_summary'] = summary
         return summary
     
-    def get_coverage_by_type(self, cov_type: CoverTypeT) -> Dict[str, Any]:
+    def get_coverage_by_type(self, cov_type: CoverTypeT, filtered: bool = True) -> Dict[str, Any]:
         """
         Get coverage summary for a specific coverage type.
         
         Args:
             cov_type: Coverage type to query
+            filtered: If True and test_filter is set, only count items from that test
             
         Returns:
             Dictionary with total, covered, and percentage
         """
+        # Check if filtering is needed
+        filter_active = filtered and self.test_filter is not None
         cache_key = f'coverage_type_{int(cov_type)}'
+        if filter_active:
+            cache_key += f'_filter_{self.test_filter}'
+        
         if cache_key in self._cache:
             return self._cache[cache_key]
+        
+        # Get filtered coveritem IDs if needed
+        filtered_ids = None
+        if filter_active:
+            filtered_ids = self.get_coveritems_for_test(self.test_filter)
         
         result = {
             'type': cov_type,
@@ -260,6 +272,13 @@ class CoverageModel:
         def visit_scope(scope):
             try:
                 for item in scope.coverItems(cov_type):
+                    # If filtering, check if this item is in the filtered set
+                    if filter_active:
+                        # Get the coveritem ID
+                        item_id = item.cover_id if hasattr(item, 'cover_id') else item.getKey()
+                        if item_id not in filtered_ids:
+                            continue
+                    
                     result['total'] += 1
                     cover_data = item.getCoverData()
                     if cover_data and cover_data.data > 0:
@@ -284,3 +303,171 @@ class CoverageModel:
         
         self._cache[cache_key] = result
         return result
+    
+    def get_all_tests(self) -> List[Dict[str, Any]]:
+        """
+        Get all tests from the database with contribution data.
+        
+        Returns:
+            List of test dictionaries with name, status, date, and coverage metrics
+        """
+        if 'all_tests' in self._cache:
+            return self._cache['all_tests']
+        
+        tests = []
+        
+        if not self.db:
+            return tests
+        
+        # Try to get test coverage API if available
+        try:
+            from ucis.sqlite.sqlite_test_coverage import SqliteTestCoverage
+            
+            # Check if this is a SQLite database with test coverage support
+            if hasattr(self.db, 'conn'):
+                api = SqliteTestCoverage(self.db)  # Pass the SqliteUCIS object, not just conn
+                
+                # Get all tests and their contributions
+                all_contribs = api.get_all_test_contributions()
+                
+                # Create test dictionary for each test
+                # all_contribs is a list of TestCoverageInfo objects
+                for contrib in all_contribs:
+                    test_info = {
+                        'name': contrib.test_name,
+                        'status': 'PASSED',  # Default, will try to get from history
+                        'date': 'Unknown',
+                        'total_items': contrib.total_items,
+                        'unique_items': contrib.unique_items,
+                    }
+                    
+                    # Try to get additional info from history node
+                    try:
+                        for history_node in self.db.historyNodes():
+                            if history_node.getLogicalName() == contrib.test_name:
+                                # Get status (UCIS_TESTSTATUS_OK = 1, anything else is failure)
+                                try:
+                                    from ucis import UCIS_TESTSTATUS_OK
+                                    status = history_node.getTestStatus()
+                                    if status == UCIS_TESTSTATUS_OK:
+                                        test_info['status'] = 'PASSED'
+                                    else:
+                                        test_info['status'] = 'FAILED'
+                                except:
+                                    pass
+                                
+                                # Get date
+                                try:
+                                    date = history_node.getDate()
+                                    if date:
+                                        test_info['date'] = date
+                                except:
+                                    pass
+                                
+                                break
+                    except:
+                        pass
+                    
+                    tests.append(test_info)
+        except:
+            # Fallback: just enumerate history nodes without contribution data
+            try:
+                from ucis.history_node_kind import HistoryNodeKind
+                from ucis import UCIS_TESTSTATUS_OK
+                
+                for history_node in self.db.historyNodes(HistoryNodeKind.TEST):
+                    test_info = {
+                        'name': history_node.getLogicalName() or 'Unknown',
+                        'status': 'UNKNOWN',
+                        'date': 'Unknown',
+                        'total_items': 0,
+                        'unique_items': 0,
+                    }
+                    
+                    try:
+                        status = history_node.getTestStatus()
+                        if status == UCIS_TESTSTATUS_OK:
+                            test_info['status'] = 'PASSED'
+                        else:
+                            test_info['status'] = 'FAILED'
+                    except:
+                        pass
+                    
+                    try:
+                        date = history_node.getDate()
+                        if date:
+                            test_info['date'] = date
+                    except:
+                        pass
+                    
+                    tests.append(test_info)
+            except:
+                pass
+        
+        self._cache['all_tests'] = tests
+        return tests
+    
+    def set_test_filter(self, test_name: Optional[str]):
+        """
+        Set the current test filter.
+        
+        Args:
+            test_name: Name of test to filter by, or None to clear filter
+        """
+        self.test_filter = test_name
+        
+        # Clear relevant caches when filter changes
+        if 'code_coverage_summary' in self._cache:
+            del self._cache['code_coverage_summary']
+    
+    def get_test_filter(self) -> Optional[str]:
+        """
+        Get the current test filter.
+        
+        Returns:
+            Name of the filtered test, or None if no filter active
+        """
+        return self.test_filter
+    
+    def clear_test_filter(self):
+        """Clear the current test filter."""
+        self.set_test_filter(None)
+    
+    def get_coveritems_for_test(self, test_name: str) -> Set[int]:
+        """
+        Get set of coveritem IDs hit by a specific test.
+        
+        Args:
+            test_name: Name of the test
+            
+        Returns:
+            Set of coveritem IDs hit by this test
+        """
+        if not self.db or not hasattr(self.db, 'conn'):
+            return set()
+        
+        try:
+            from ucis.sqlite.sqlite_test_coverage import SqliteTestCoverage
+            api = SqliteTestCoverage(self.db)
+            
+            # Get test's history_id
+            history_id = None
+            cursor = self.db.conn.cursor()
+            cursor.execute("""
+                SELECT history_id FROM history_nodes 
+                WHERE logical_name = ?
+            """, (test_name,))
+            row = cursor.fetchone()
+            if row:
+                history_id = row[0]
+            
+            if history_id is None:
+                return set()
+            
+            # Get coveritems for this test
+            coveritems = api.get_coveritems_for_test(history_id)
+            return set(coveritems)  # Already a list of IDs
+        except:
+            import traceback
+            traceback.print_exc()
+            return set()

@@ -28,7 +28,16 @@ class DashboardView(BaseView):
         # Header
         title = Text("Coverage Dashboard", style="bold cyan", justify="center")
         db_info = self.model.get_database_info()
-        subtitle = Text(f"{db_info['path']}", style="dim", justify="center")
+        
+        # Check if filtering is active
+        test_filter = self.model.get_test_filter()
+        if test_filter:
+            subtitle = Text(f"{db_info['path']} | ", style="dim", justify="center")
+            subtitle.append(f"Filtering by: {test_filter}", style="bold yellow")
+            subtitle.append(" (Press C to clear)", style="dim italic")
+        else:
+            subtitle = Text(f"{db_info['path']}", style="dim", justify="center")
+        
         header_panel = Panel(
             Align.center(title + Text("\n") + subtitle),
             border_style="cyan"

@@ -39,8 +39,8 @@ class DbFormatIfVltCov(FormatIfDb):
         # Create UCIS database
         db = MemUCIS()
         
-        # Map to UCIS structure
-        mapper = VltToUcisMapper(db)
+        # Map to UCIS structure (pass filename for history tracking)
+        mapper = VltToUcisMapper(db, source_file=filename)
         mapper.map_items(items)
         
         return db

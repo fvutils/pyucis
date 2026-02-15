@@ -120,6 +120,9 @@ class SqliteUCIS(SqliteScope, UCIS):
         # File handle cache
         self._file_handle_cache: Dict[str, SqliteFileHandle] = {}
         
+        # Test coverage query API (lazy initialized)
+        self._test_coverage = None
+        
         self._modified = False
     
     @classmethod
@@ -160,6 +163,7 @@ class SqliteUCIS(SqliteScope, UCIS):
         obj._file_handle_cache = {}
         obj._modified = False
         obj._readonly = True
+        obj._test_coverage = None  # Test coverage query API
 
         return obj
     
@@ -420,3 +424,21 @@ class SqliteUCIS(SqliteScope, UCIS):
             merger.merge_fast(source_paths[1:], squash_history=squash_history, workers=workers)
 
         return merger.stats
+    
+    def get_test_coverage_api(self):
+        """Get test-coverage query API.
+        
+        Returns:
+            SqliteTestCoverage instance for querying test-coveritem associations
+            
+        Example:
+            >>> db = SqliteUCIS('coverage.cdb')
+            >>> test_api = db.get_test_coverage_api()
+            >>> contributions = test_api.get_all_test_contributions()
+            >>> for info in contributions:
+            ...     print(f"{info.test_name}: {info.coverage_percent:.1f}%")
+        """
+        if self._test_coverage is None:
+            from ucis.sqlite.sqlite_test_coverage import SqliteTestCoverage
+            self._test_coverage = SqliteTestCoverage(self)
+        return self._test_coverage

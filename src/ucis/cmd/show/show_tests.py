@@ -53,29 +53,49 @@ class ShowTests(ShowBase):
     
     def _get_test_info(self, node) -> Dict[str, Any]:
         """Extract information from a test history node."""
-        test_data = node.getTestData()
-        if not test_data:
+        # SqliteHistoryNode doesn't have getTestData(), use individual getters
+        try:
+            info = {
+                "name": node.getLogicalName(),
+                "physical_name": node.getPhysicalName() if hasattr(node, 'getPhysicalName') else None,
+                "status": node.getTestStatus() if hasattr(node, 'getTestStatus') else 0,
+                "passed": True,  # Default to True if we don't have status info
+            }
+            
+            # Get status
+            if hasattr(node, 'getTestStatus'):
+                from ucis import UCIS_TESTSTATUS_OK
+                test_status = node.getTestStatus()
+                info["status"] = test_status
+                info["passed"] = test_status == UCIS_TESTSTATUS_OK
+            
+            # Add optional fields if available
+            if hasattr(node, 'getDate'):
+                date = node.getDate()
+                if date:
+                    info["date"] = date
+            
+            if hasattr(node, 'getToolCategory'):
+                tool = node.getToolCategory()
+                if tool:
+                    info["tool"] = tool
+            
+            if hasattr(node, 'getSimTime'):
+                simtime = node.getSimTime()
+                if simtime:
+                    info["simtime"] = simtime
+            
+            if hasattr(node, 'getTimeUnit'):
+                timeunit = node.getTimeUnit()
+                if timeunit:
+                    info["timeunit"] = timeunit
+            
+            if hasattr(node, 'getCmd'):
+                cmd = node.getCmd()
+                if cmd:
+                    info["comment"] = cmd
+            
+            return info
+        except Exception as e:
+            # If we can't get test info, return None
             return None
-        
-        from ucis import UCIS_TESTSTATUS_OK
-        
-        info = {
-            "name": node.getLogicalName(),
-            "physical_name": node.getPhysicalName() if hasattr(node, 'getPhysicalName') else None,
-            "status": test_data.teststatus,
-            "passed": test_data.teststatus == UCIS_TESTSTATUS_OK,
-        }
-        
-        # Add optional fields if available
-        if hasattr(test_data, 'date') and test_data.date:
-            info["date"] = test_data.date
-        if hasattr(test_data, 'toolcategory') and test_data.toolcategory:
-            info["tool"] = test_data.toolcategory
-        if hasattr(test_data, 'simtime') and test_data.simtime:
-            info["simtime"] = test_data.simtime
-        if hasattr(test_data, 'timeunit') and test_data.timeunit:
-            info["timeunit"] = test_data.timeunit
-        if hasattr(test_data, 'comment') and test_data.comment:
-            info["comment"] = test_data.comment
-        
-        return info

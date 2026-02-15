@@ -50,7 +50,12 @@ class CoverageReportBuilder(object):
             div += cg.weight
             self.report.covergroups.append(cg)
             self.report.covergroup_m[cg.instname] = cg
-        self.report.coverage = coverage/div
+        
+        # Handle case when there are no covergroups
+        if div > 0:
+            self.report.coverage = coverage/div
+        else:
+            self.report.coverage = 0.0
             
     def build_covergroup(self, cg_n)->CoverageReport.Covergroup:
         cg_r = CoverageReport.Covergroup(

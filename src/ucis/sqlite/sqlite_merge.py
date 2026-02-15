@@ -109,8 +109,10 @@ class SqliteMerger:
         """
         Merge source database into target database
         
+        Supports both SqliteUCIS and MemUCIS sources.
+        
         Args:
-            source_ucis: Source SqliteUCIS to merge from
+            source_ucis: Source database to merge from (SqliteUCIS or MemUCIS)
             create_history: Whether to create merge history node
             squash_history: If True, collapse per-test history into a summary node
             
@@ -118,6 +120,9 @@ class SqliteMerger:
             MergeStats object with merge statistics
         """
         self.stats = MergeStats()
+        
+        # Detect source type
+        is_sqlite_source = hasattr(source_ucis, 'conn')
         
         # Start transaction for atomicity
         self.target.begin_transaction()
@@ -176,17 +181,26 @@ class SqliteMerger:
                         self._copy_history_node(src_test, merge_node)
                         self.stats.tests_merged += 1
             
-            # Pre-load scope trees for fast traversal (Fix 1)
-            self._src_tree, src_root = self._load_scope_tree(source_ucis)
-            if self._tgt_tree is None:
-                self._tgt_tree, tgt_root = self._load_scope_tree(self.target)
+            # Choose merge strategy based on source type
+            if is_sqlite_source:
+                # Fast path: SQL-based merge for SQLite sources
+                self._src_tree, src_root = self._load_scope_tree(source_ucis)
+                if self._tgt_tree is None:
+                    self._tgt_tree, tgt_root = self._load_scope_tree(self.target)
+                else:
+                    tgt_root = self._tgt_root
+
+                self._tgt_root = tgt_root
+
+                # Merge scopes recursively using cached trees
+                self._merge_scope_recursive_fast(source_ucis, src_root, tgt_root)
             else:
-                tgt_root = self._tgt_root
-
-            self._tgt_root = tgt_root
-
-            # Merge scopes recursively using cached trees
-            self._merge_scope_recursive_fast(source_ucis, src_root, tgt_root)
+                # Slow path: API-based merge for MemUCIS sources
+                self._merge_from_memucs(source_ucis)
+            
+            # Merge test-coveritem associations if both databases support it
+            if not squash_history:
+                self._merge_test_associations(source_ucis, create_history)
             
             # Commit transaction
             self.target.commit()
@@ -494,6 +508,10 @@ class SqliteMerger:
 
         tgt_root = self._tgt_root
         self._merge_scope_recursive_fast(source_ucis, src_root, tgt_root)
+        
+        # Merge test associations if not squashing history
+        if not squash_history:
+            self._merge_test_associations(source_ucis, create_history)
 
         return self.stats
 
@@ -528,9 +546,259 @@ class SqliteMerger:
         
         return new_node
     
+    def _merge_from_memucs(self, source_ucis):
+        """
+        Merge from MemUCIS using UCIS API (not SQL).
+        
+        This is slower than SQL-based merge but works with MemUCIS sources.
+        Uses the same approach as DbMerger but integrates into SqliteMerger.
+        """
+        from ucis.scope_type_t import ScopeTypeT
+        
+        # Iterate through instance scopes (top-level scopes)
+        for src_iscope in source_ucis.scopes(ScopeTypeT.INSTANCE):
+            # Find or create matching instance in target
+            tgt_iscope = self._find_or_create_instance(src_iscope)
+            
+            # Merge the instance and its children
+            self._merge_scope_recursive_api(src_iscope, tgt_iscope)
+    
+    def _find_or_create_instance(self, src_iscope):
+        """
+        Find or create an instance scope in the target database.
+        
+        Args:
+            src_iscope: Source instance scope
+            
+        Returns:
+            Target instance scope
+        """
+        from ucis.scope_type_t import ScopeTypeT
+        
+        # Look for matching instance in target
+        src_name = src_iscope.getScopeName()
+        for tgt_scope in self.target.scopes(ScopeTypeT.INSTANCE):
+            if tgt_scope.getScopeName() == src_name:
+                self.stats.scopes_matched += 1
+                return tgt_scope
+        
+        # Create new instance with its design unit
+        src_du = src_iscope.getInstanceDu()
+        
+        # Create design unit
+        from ucis import UCIS_OTHER, UCIS_DU_MODULE, UCIS_INSTANCE, UCIS_INST_ONCE, UCIS_SCOPE_UNDER_DU
+        from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_TOGGLE
+        
+        tgt_du = self.target.createScope(
+            src_du.getScopeName(),
+            src_du.getSourceInfo(),
+            src_du.getWeight(),
+            UCIS_OTHER,
+            UCIS_DU_MODULE,
+            UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH | UCIS_ENABLED_TOGGLE | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU
+        )
+        
+        # Create instance
+        tgt_iscope = self.target.createInstance(
+            src_iscope.getScopeName(),
+            src_iscope.getSourceInfo(),
+            1,  # weight
+            UCIS_OTHER,
+            UCIS_INSTANCE,
+            tgt_du,
+            UCIS_INST_ONCE
+        )
+        
+        self.stats.scopes_added += 2  # DU + Instance
+        return tgt_iscope
+    
+    def _merge_scope_recursive_api(self, src_scope, tgt_scope):
+        """
+        Recursively merge scopes using UCIS API instead of SQL.
+        
+        Args:
+            src_scope: Source scope (from MemUCIS)
+            tgt_scope: Target scope (in SqliteUCIS)
+        """
+        # Merge coveritems at this level
+        self._merge_coveritems_api(src_scope, tgt_scope)
+        
+        # Process child scopes - use scopes() method
+        child_scopes = []
+        if hasattr(src_scope, 'scopes'):
+            # MemUCIS uses scopes(mask) - use -1 to get all
+            child_scopes = list(src_scope.scopes(-1))
+        elif hasattr(src_scope, 'getScopes'):
+            child_scopes = list(src_scope.getScopes())
+        
+        for src_child in child_scopes:
+            src_name = src_child.getScopeName()
+            src_type = src_child.getScopeType()
+            
+            # Find or create matching child in target
+            tgt_child = None
+            tgt_children = []
+            if hasattr(tgt_scope, 'scopes'):
+                # SqliteUCIS also uses scopes(mask)
+                tgt_children = list(tgt_scope.scopes(-1))
+            elif hasattr(tgt_scope, 'getScopes'):
+                tgt_children = list(tgt_scope.getScopes())
+            
+            for tgt_c in tgt_children:
+                if tgt_c.getScopeName() == src_name and tgt_c.getScopeType() == src_type:
+                    tgt_child = tgt_c
+                    break
+            
+            if tgt_child is None:
+                # Create new scope in target
+                # Try to get flags, but default to 0 if not implemented
+                flags = 0
+                try:
+                    if hasattr(src_child, 'getFlags'):
+                        flags = src_child.getFlags()
+                except NotImplementedError:
+                    flags = 0
+                
+                # Try to get source type, default to 0 if not available
+                source_type = 0
+                try:
+                    if hasattr(src_child, 'getSourceType'):
+                        source_type = src_child.getSourceType()
+                except (NotImplementedError, AttributeError):
+                    source_type = 0
+                
+                # Create scope on parent (not passing parent as argument)
+                tgt_child = tgt_scope.createScope(
+                    src_name,
+                    src_child.getSourceInfo(),
+                    src_child.getWeight(),
+                    source_type,
+                    src_type,
+                    flags
+                )
+                tgt_child.setGoal(src_child.getGoal())
+                self.stats.scopes_added += 1
+            else:
+                self.stats.scopes_matched += 1
+            
+            # Recursively merge child scopes
+            self._merge_scope_recursive_api(src_child, tgt_child)
+    
+    def _merge_coveritems_api(self, src_scope, tgt_scope):
+        """
+        Merge coverage items using UCIS API instead of SQL.
+        
+        Args:
+            src_scope: Source scope (from MemUCIS)
+            tgt_scope: Target scope (in SqliteUCIS)
+        """
+        # Build map of target coveritems by index
+        tgt_map = {}  # cover_index -> (cover_id, cover_data)
+        
+        # For SqliteUCIS, we can use SQL for target lookup (it's always SQLite)
+        if hasattr(tgt_scope, 'scope_id'):
+            for row in self.target.conn.execute(
+                """SELECT cover_id, cover_index, cover_data
+                   FROM coveritems WHERE scope_id = ?""",
+                (tgt_scope.scope_id,)
+            ):
+                tgt_map[row[1]] = (row[0], row[2])
+        
+        # Process source coveritems using API
+        updates = []  # (new_count, cover_id)
+        inserts = []  # (scope_id, cover_index, ...)
+        next_index = max(tgt_map.keys(), default=-1) + 1
+        
+        # Get coveritems - try both methods
+        src_items = []
+        if hasattr(src_scope, 'coverItems'):
+            # MemUCIS uses coverItems(mask) - use -1 to get all
+            src_items = list(src_scope.coverItems(-1))
+        elif hasattr(src_scope, 'getCoverage'):
+            src_items = list(src_scope.getCoverage())
+        
+        for src_cover in src_items:
+            # Get cover index - try different methods
+            src_index = None
+            if hasattr(src_cover, 'cover_index'):
+                src_index = src_cover.cover_index
+            elif hasattr(src_cover, 'getCoverIndex'):
+                src_index = src_cover.getCoverIndex()
+            
+            # If no index, assign sequential
+            if src_index is None:
+                src_index = next_index
+                next_index += 1
+            
+            # Get hit count
+            cover_data = src_cover.getCoverData()
+            src_count = cover_data.data if cover_data else 1
+            
+            if src_index in tgt_map:
+                # Update existing
+                tgt_id, tgt_count = tgt_map[src_index]
+                updates.append((tgt_count + src_count, tgt_id))
+                self.stats.coveritems_matched += 1
+                self.stats.total_hits_added += src_count
+            else:
+                # Insert new - get attributes from CoverData when available
+                cover_type = cover_data.type if cover_data else 0
+                cover_flags = cover_data.flags if cover_data else 0
+                at_least = cover_data.goal if (cover_data and hasattr(cover_data, 'goal')) else 1
+                weight = cover_data.weight if (cover_data and hasattr(cover_data, 'weight')) else 1
+                goal = cover_data.goal if (cover_data and hasattr(cover_data, 'goal')) else 100
+                limit_val = cover_data.limit if (cover_data and hasattr(cover_data, 'limit')) else 0
+                
+                # Get source info if available
+                source_file_id = None
+                source_line = 0
+                source_token = None
+                if hasattr(src_cover, 'getSourceInfo'):
+                    src_info = src_cover.getSourceInfo()
+                    if src_info:
+                        # TODO: Handle source file mapping
+                        pass
+                
+                inserts.append((
+                    tgt_scope.scope_id,
+                    src_index,
+                    cover_type,
+                    src_cover.getName(),
+                    src_count,
+                    cover_flags,
+                    at_least,
+                    weight,
+                    goal,
+                    limit_val,
+                    source_file_id,
+                    source_line,
+                    source_token,
+                ))
+                self.stats.coveritems_added += 1
+                self.stats.total_hits_added += src_count
+        
+        # Execute SQL updates/inserts
+        if updates:
+            self.target.conn.executemany(
+                "UPDATE coveritems SET cover_data = ? WHERE cover_id = ?",
+                updates
+            )
+        
+        if inserts:
+            self.target.conn.executemany(
+                """INSERT INTO coveritems
+                   (scope_id, cover_index, cover_type, cover_name,
+                    cover_data, cover_flags, at_least, weight,
+                    goal, limit_val, source_file_id, source_line,
+                    source_token)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                inserts
+            )
+    
     def _get_scope_path(self, scope):
         """Get hierarchical path for a scope"""
-        if scope.scope_id in self._scope_path_cache:
+        # Check if it's a SQLite scope with scope_id (cacheable)
+        if hasattr(scope, 'scope_id') and scope.scope_id in self._scope_path_cache:
             return self._scope_path_cache[scope.scope_id]
         
         parts = []
@@ -544,17 +812,28 @@ class SqliteMerger:
             if name:  # Skip root with empty name
                 parts.append((name, scope_type))
             
-            # Get parent
-            current._ensure_loaded()
-            if current._parent_id is not None:
-                from ucis.sqlite.sqlite_scope import SqliteScope
-                current = SqliteScope(current.ucis_db, current._parent_id)
+            # Get parent - different for SQLite vs MemUCIS
+            if hasattr(current, '_ensure_loaded') and hasattr(current, '_parent_id'):
+                # SQLite scope
+                current._ensure_loaded()
+                if current._parent_id is not None:
+                    from ucis.sqlite.sqlite_scope import SqliteScope
+                    current = SqliteScope(current.ucis_db, current._parent_id)
+                else:
+                    current = None
+            elif hasattr(current, 'm_parent'):
+                # MemUCIS scope
+                current = current.m_parent
             else:
+                # Root scope
                 current = None
         
         # Reverse to get root-to-leaf path
         path = tuple(reversed(parts))
-        self._scope_path_cache[scope.scope_id] = path
+        
+        # Only cache if it has scope_id (SQLite scopes)
+        if hasattr(scope, 'scope_id'):
+            self._scope_path_cache[scope.scope_id] = path
         
         return path
     
@@ -875,6 +1154,300 @@ class SqliteMerger:
                 pass
 
         return True
+
+    def _merge_test_associations(self, source_ucis, create_history: bool):
+        """
+        Merge test-coveritem associations from source to target.
+        
+        For SQLite→SQLite: Copies associations from coveritem_tests table.
+        For MemUCIS→SQLite: Automatically associates all coveritems with all tests 
+                           (assumes each test covers everything it imports).
+        
+        Args:
+            source_ucis: Source database with test associations
+            create_history: Whether history nodes were created/copied during merge
+        """
+        # Only proceed if target is SQLite (has test coverage support)
+        if not hasattr(self.target, 'conn'):
+            return
+        
+        # Check if source is SQLite or MemUCIS
+        is_source_sqlite = hasattr(source_ucis, 'conn')
+        
+        if is_source_sqlite:
+            self._merge_test_associations_sqlite_to_sqlite(source_ucis, create_history)
+        else:
+            self._merge_test_associations_mem_to_sqlite(source_ucis, create_history)
+    
+    def _merge_test_associations_mem_to_sqlite(self, source_ucis, create_history: bool):
+        """
+        Create test associations when merging from MemUCIS to SQLite.
+        
+        Assumes all coveritems in the source were covered by all tests in the source,
+        which is the typical case when importing coverage data.
+        """
+        # Get all test history nodes from source
+        source_tests = list(source_ucis.historyNodes(HistoryNodeKind.TEST))
+        if not source_tests:
+            # No tests to associate
+            return
+        
+        # Find matching tests in target by logical name
+        target_tests = {}
+        for src_test in source_tests:
+            src_name = src_test.getLogicalName()
+            for tgt_test in self.target.historyNodes(HistoryNodeKind.TEST):
+                if tgt_test.getLogicalName() == src_name:
+                    target_tests[src_name] = tgt_test.history_id
+                    break
+        
+        if not target_tests:
+            # No matching tests found
+            return
+        
+        # Get all coveritems in target that were just merged
+        # We need to find coveritems that match the source structure
+        associations_to_insert = []
+        
+        # Iterate through source scopes and find matching target scopes
+        def process_scope(src_scope):
+            # Get scope path
+            src_path = self._get_scope_path(src_scope)
+            
+            # Find matching target scope
+            tgt_scope = self._find_scope_by_path(self.target, src_path)
+            if not tgt_scope:
+                return
+            
+            # Get coveritems from source - try both methods
+            src_coveritems = []
+            if hasattr(src_scope, 'coverItems'):
+                src_coveritems = list(src_scope.coverItems(-1))  # -1 = all types
+            elif hasattr(src_scope, 'getCoverage'):
+                src_coveritems = list(src_scope.getCoverage())
+            
+            # For each coveritem in source scope, find matching in target
+            for src_cover in src_coveritems:
+                # Get source item name
+                src_name = src_cover.getName()
+                
+                # Get target coveritems - try both methods
+                tgt_coveritems = []
+                if hasattr(tgt_scope, 'coverItems'):
+                    tgt_coveritems = list(tgt_scope.coverItems(-1))  # -1 = all types
+                elif hasattr(tgt_scope, 'getCoverage'):
+                    tgt_coveritems = list(tgt_scope.getCoverage())
+                
+                # Find target coveritem by name (more reliable than cover_index for MemUCIS)
+                tgt_cover = None
+                for tc in tgt_coveritems:
+                    if tc.getName() == src_name:
+                        tgt_cover = tc
+                        break
+                
+                if tgt_cover and hasattr(tgt_cover, 'cover_id'):
+                    # Get hit count as contribution
+                    cover_data = src_cover.getCoverData()
+                    contribution = cover_data.data if cover_data else 1
+                    
+                    # Associate with all tests
+                    for test_name, tgt_history_id in target_tests.items():
+                        associations_to_insert.append((
+                            tgt_cover.cover_id, 
+                            tgt_history_id, 
+                            contribution
+                        ))
+            
+            # Process child scopes - try both methods
+            child_scopes = []
+            if hasattr(src_scope, 'scopes'):
+                child_scopes = list(src_scope.scopes(-1))  # -1 = all types
+            elif hasattr(src_scope, 'getScopes'):
+                child_scopes = list(src_scope.getScopes())
+            
+            for child in child_scopes:
+                process_scope(child)
+        
+        # Start from root - MemUCIS IS the root scope
+        src_root = source_ucis
+        if hasattr(source_ucis, 'getRoot'):
+            src_root = source_ucis.getRoot()
+        
+        if src_root:
+            process_scope(src_root)
+        
+        # Batch insert associations
+        if associations_to_insert:
+            # Remove duplicates and handle existing associations
+            for cover_id, history_id, contribution in associations_to_insert:
+                existing = self.target.conn.execute("""
+                    SELECT count_contribution FROM coveritem_tests
+                    WHERE cover_id = ? AND history_id = ?
+                """, (cover_id, history_id)).fetchone()
+                
+                if existing:
+                    # Update existing
+                    new_count = existing[0] + contribution
+                    self.target.conn.execute("""
+                        UPDATE coveritem_tests
+                        SET count_contribution = ?
+                        WHERE cover_id = ? AND history_id = ?
+                    """, (new_count, cover_id, history_id))
+                else:
+                    # Insert new
+                    self.target.conn.execute("""
+                        INSERT INTO coveritem_tests (cover_id, history_id, count_contribution)
+                        VALUES (?, ?, ?)
+                    """, (cover_id, history_id, contribution))
+    
+    def _merge_test_associations_sqlite_to_sqlite(self, source_ucis, create_history: bool):
+        """
+        Copy test associations when merging from SQLite to SQLite.
+        """
+        # Check if source has any test associations to copy
+        src_assoc_count = source_ucis.conn.execute(
+            "SELECT COUNT(*) FROM coveritem_tests"
+        ).fetchone()[0]
+        
+        if src_assoc_count == 0:
+            return
+        
+        # Build mapping from source history nodes to target history nodes
+        # by matching on logical name (test name)
+        history_map = {}  # src_history_id -> tgt_history_id
+        
+        for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
+            src_name = src_test.getLogicalName()
+            # Find matching target test by name
+            for tgt_test in self.target.historyNodes(HistoryNodeKind.TEST):
+                if tgt_test.getLogicalName() == src_name:
+                    history_map[src_test.history_id] = tgt_test.history_id
+                    break
+        
+        if not history_map:
+            # No matching tests found
+            return
+        
+        # Build mapping from source coveritems to target coveritems
+        # Format: (src_scope_id, src_cover_index) -> tgt_cover_id
+        coveritem_map = {}
+        
+        # Get all source coveritems with their scope_id and cover_index
+        src_coveritems = source_ucis.conn.execute("""
+            SELECT cover_id, scope_id, cover_index
+            FROM coveritems
+        """).fetchall()
+        
+        for src_cover_id, src_scope_id, src_cover_index in src_coveritems:
+            # Find the target scope that corresponds to this source scope
+            # Create SqliteScope from scope_id
+            from ucis.sqlite.sqlite_scope import SqliteScope
+            src_scope = SqliteScope(source_ucis, src_scope_id)
+            
+            # Get the scope path
+            src_path = self._get_scope_path(src_scope)
+            
+            # Find matching target scope by path
+            tgt_scope = self._find_scope_by_path(self.target, src_path)
+            if not tgt_scope:
+                continue
+            
+            # Find target coveritem with same cover_index in target scope
+            tgt_result = self.target.conn.execute("""
+                SELECT cover_id FROM coveritems
+                WHERE scope_id = ? AND cover_index = ?
+            """, (tgt_scope.scope_id, src_cover_index)).fetchone()
+            
+            if tgt_result:
+                coveritem_map[(src_scope_id, src_cover_index)] = tgt_result[0]
+        
+        if not coveritem_map:
+            # No matching coveritems found
+            return
+        
+        # Now copy the test associations with mapped IDs
+        associations_to_insert = []
+        
+        src_associations = source_ucis.conn.execute("""
+            SELECT cover_id, history_id, count_contribution
+            FROM coveritem_tests
+        """).fetchall()
+        
+        for src_cover_id, src_history_id, count_contrib in src_associations:
+            # Map history ID
+            if src_history_id not in history_map:
+                continue
+            tgt_history_id = history_map[src_history_id]
+            
+            # Map coveritem ID - need to find scope_id and cover_index first
+            src_ci = source_ucis.conn.execute("""
+                SELECT scope_id, cover_index
+                FROM coveritems WHERE cover_id = ?
+            """, (src_cover_id,)).fetchone()
+            
+            if not src_ci:
+                continue
+            
+            src_scope_id, src_cover_index = src_ci
+            key = (src_scope_id, src_cover_index)
+            
+            if key not in coveritem_map:
+                continue
+            tgt_cover_id = coveritem_map[key]
+            
+            # Check if association already exists
+            existing = self.target.conn.execute("""
+                SELECT count_contribution FROM coveritem_tests
+                WHERE cover_id = ? AND history_id = ?
+            """, (tgt_cover_id, tgt_history_id)).fetchone()
+            
+            if existing:
+                # Update existing - add contribution counts
+                new_count = existing[0] + count_contrib
+                self.target.conn.execute("""
+                    UPDATE coveritem_tests
+                    SET count_contribution = ?
+                    WHERE cover_id = ? AND history_id = ?
+                """, (new_count, tgt_cover_id, tgt_history_id))
+            else:
+                # Insert new association
+                associations_to_insert.append((
+                    tgt_cover_id, tgt_history_id, count_contrib
+                ))
+        
+        # Batch insert new associations
+        if associations_to_insert:
+            self.target.conn.executemany("""
+                INSERT INTO coveritem_tests (cover_id, history_id, count_contribution)
+                VALUES (?, ?, ?)
+            """, associations_to_insert)
+    
+    def _find_scope_by_path(self, ucis, path):
+        """Find a scope in the database by its hierarchical path."""
+        if not path:
+            # Return root - in PyUCIS, the database IS the root scope
+            return ucis
+        
+        # Start from root - database IS the root
+        current = ucis
+        for name, scope_type in path:
+            found = False
+            # Get child scopes - use scopes() if available (SqliteUCIS)
+            children = []
+            if hasattr(current, 'scopes'):
+                children = list(current.scopes(-1))
+            elif hasattr(current, 'getScopes'):
+                children = list(current.getScopes())
+            
+            for child in children:
+                if child.getScopeName() == name and child.getScopeType() == scope_type:
+                    current = child
+                    found = True
+                    break
+            if not found:
+                return None
+        
+        return current
 
 
 def merge_databases(target_path: str, source_paths: list, 

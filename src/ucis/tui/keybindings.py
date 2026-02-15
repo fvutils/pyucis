@@ -49,11 +49,19 @@ class KeyHandler:
             '4': 'hotspots',
             '5': 'metrics',
             '6': 'code_coverage',
+            '7': 'test_history',
         }
         
         if key in view_map:
             self.app.switch_view(view_map[key])
             return True
+        
+        # Clear test filter
+        if key in ('c', 'C'):
+            if self.app.coverage_model.get_test_filter():
+                self.app.coverage_model.clear_test_filter()
+                self.app.status_bar.set_message("Test filter cleared", "info")
+                return True
         
         # Back/Escape
         if key in ('backspace', 'esc'):

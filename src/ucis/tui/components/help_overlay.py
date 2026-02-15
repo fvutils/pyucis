@@ -37,6 +37,7 @@ class HelpOverlay:
         global_table.add_row("q, Ctrl+C", "Quit application")
         global_table.add_row("?, F1", "Show this help")
         global_table.add_row("Ctrl+R", "Refresh database")
+        global_table.add_row("C", "Clear test filter")
         global_table.add_row("Ctrl+F", "Global search (coming soon)")
         global_table.add_row("Esc, Backspace", "Go back / Cancel")
         
@@ -50,6 +51,8 @@ class HelpOverlay:
         view_table.add_row("3", "Gaps - Uncovered items")
         view_table.add_row("4", "Hotspots - Priority analysis (coming soon)")
         view_table.add_row("5", "Metrics - Statistics (coming soon)")
+        view_table.add_row("6", "Code Coverage - File-level code coverage")
+        view_table.add_row("7", "Test History - Test contribution analysis")
         
         # Navigation
         nav_table = Table(show_header=True, header_style="bold yellow", box=None, padding=(0, 2))
@@ -74,6 +77,7 @@ class HelpOverlay:
         view_specific_table.add_row("Dashboard", "High-level coverage summary with statistics")
         view_specific_table.add_row("Hierarchy", "Navigate design structure (E=expand all, C=collapse all, /=search)")
         view_specific_table.add_row("Gaps", "Find uncovered bins, sort by coverage %")
+        view_specific_table.add_row("Test History", "View tests (N/D/C/U=sort, F=filter)")
         
         # Color coding
         color_table = Table(show_header=True, header_style="bold yellow", box=None, padding=(0, 2))

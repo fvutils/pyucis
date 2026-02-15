@@ -91,6 +91,7 @@ class TUIApp:
         from ucis.tui.views.hotspots_view import HotspotsView
         from ucis.tui.views.metrics_view import MetricsView
         from ucis.tui.views.code_coverage_view import CodeCoverageView
+        from ucis.tui.views.test_history_view import TestHistoryView
         
         self.views["dashboard"] = DashboardView(self)
         self.views["hierarchy"] = HierarchyView(self)
@@ -98,6 +99,7 @@ class TUIApp:
         self.views["hotspots"] = HotspotsView(self)
         self.views["metrics"] = MetricsView(self)
         self.views["code_coverage"] = CodeCoverageView(self)
+        self.views["test_history"] = TestHistoryView(self)
     
     def _render(self) -> Layout:
         """
@@ -123,7 +125,7 @@ class TUIApp:
             layout["main"].update(Panel("No view active"))
         
         # Render status bar
-        layout["status"].update(self.status_bar.render(self.current_view))
+        layout["status"].update(self.status_bar.render(self.current_view, self.coverage_model))
         
         return layout
     

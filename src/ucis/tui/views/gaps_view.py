@@ -33,7 +33,19 @@ class GapsView(BaseView):
         self.gaps = []
         self.selected_index = 0
         self.scroll_offset = 0
+        self._last_filter = None
         self._collect_gaps()
+    
+    def on_enter(self):
+        """Reload gaps if filter has changed."""
+        super().on_enter()
+        current_filter = self.model.get_test_filter()
+        if current_filter != self._last_filter:
+            self._last_filter = current_filter
+            self.gaps = []
+            self.selected_index = 0
+            self.scroll_offset = 0
+            self._collect_gaps()
     
     def _collect_gaps(self):
         """Collect all gaps from the database."""
