@@ -1,0 +1,778 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coverage Import (cocotb and AVL) &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="MCP Server" href="mcp_server.html" />
+    <link rel="prev" title="Verilator Coverage Import" href="verilator_coverage_import.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Coverage Import (cocotb and AVL)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#supported-frameworks">Supported Frameworks</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cocotb-coverage">cocotb-coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#avl-apheleia-verification-library">AVL (Apheleia Verification Library)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#coverage-types-supported">Coverage Types Supported</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#functional-coverage-full-support">Functional Coverage (Full Support)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-cli">Command Line (CLI)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automatic-import-recommended">Automatic Import (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#import-specific-formats">Import Specific Formats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-to-other-formats">Export to Other Formats</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cocotb-coverage-integration">cocotb-coverage Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generating-cocotb-coverage">Generating cocotb Coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#importing-into-pyucis">Importing into PyUCIS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-format-details">File Format Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#avl-integration">AVL Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#generating-avl-coverage">Generating AVL Coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Importing into PyUCIS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">File Format Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#format-detection">Format Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#detection-criteria">Detection Criteria</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-examples">Workflow Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-workflows">Command Line Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-api-workflows">Python API Workflows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-workflow">Basic Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#merging-multiple-runs">Merging Multiple Runs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mixed-format-import">Mixed Format Import</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#coverage-hierarchy">Coverage Hierarchy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-coverage-data">Accessing Coverage Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#custom-import-processing">Custom Import Processing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtering-coverage">Filtering Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-details">Implementation Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#current-limitations">Current Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Coverage Import (cocotb and AVL)</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/cocotb_avl_coverage_import.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="coverage-import-cocotb-and-avl">
+<h1>Coverage Import (cocotb and AVL)<a class="headerlink" href="#coverage-import-cocotb-and-avl" title="Link to this heading"></a></h1>
+<p>PyUCIS provides built-in support for importing functional coverage data from
+<strong>cocotb-coverage</strong> and <strong>AVL (Apheleia Verification Library)</strong> frameworks,
+enabling seamless integration of Python-based verification results into the UCIS
+ecosystem.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The coverage import features support:</p>
+<ul class="simple">
+<li><p><strong>cocotb-coverage</strong>: XML and YAML export formats</p></li>
+<li><p><strong>AVL (Apheleia Verification Library)</strong>: JSON export formats (3 variations)</p></li>
+<li><p><strong>Automatic Format Detection</strong>: Intelligently detects input format</p></li>
+<li><p><strong>Full Coverage Hierarchy</strong>: Covergroups, coverpoints, crosses, and bins</p></li>
+<li><p><strong>Output Formats</strong>: Convert to XML, SQLite, YAML, or any UCIS format</p></li>
+<li><p><strong>Hit Count Preservation</strong>: Maintains bin hit counts from source data</p></li>
+</ul>
+</section>
+<section id="supported-frameworks">
+<h2>Supported Frameworks<a class="headerlink" href="#supported-frameworks" title="Link to this heading"></a></h2>
+<section id="cocotb-coverage">
+<h3>cocotb-coverage<a class="headerlink" href="#cocotb-coverage" title="Link to this heading"></a></h3>
+<p>cocotb-coverage is a functional coverage library for cocotb (Python-based testbenches).</p>
+<p><strong>Formats Supported:</strong></p>
+<ul class="simple">
+<li><p><strong>XML Format</strong>: Hierarchical tree structure with nested elements</p></li>
+<li><p><strong>YAML Format</strong>: Flat dictionary with dot-separated keys</p></li>
+</ul>
+<p>Both formats produce identical UCIS databases (validated by equivalence tests).</p>
+<p><strong>Website</strong>: <a class="reference external" href="https://github.com/mciepluc/cocotb-coverage">https://github.com/mciepluc/cocotb-coverage</a></p>
+</section>
+<section id="avl-apheleia-verification-library">
+<h3>AVL (Apheleia Verification Library)<a class="headerlink" href="#avl-apheleia-verification-library" title="Link to this heading"></a></h3>
+<p>AVL is a Python verification framework focused on functional coverage.</p>
+<p><strong>Formats Supported:</strong></p>
+<ul class="simple">
+<li><p><strong>Hierarchical JSON</strong>: Nested covergroups/coverpoints structure</p></li>
+<li><p><strong>DataFrame Records</strong>: List of coverage records (pandas export)</p></li>
+<li><p><strong>DataFrame Table</strong>: Indexed coverage table (pandas export)</p></li>
+</ul>
+<p>All three JSON variations are automatically detected and imported.</p>
+<p><strong>Website</strong>: <a class="reference external" href="https://github.com/projectapheleia/avl">https://github.com/projectapheleia/avl</a></p>
+</section>
+</section>
+<section id="coverage-types-supported">
+<h2>Coverage Types Supported<a class="headerlink" href="#coverage-types-supported" title="Link to this heading"></a></h2>
+<section id="functional-coverage-full-support">
+<h3>Functional Coverage (Full Support)<a class="headerlink" href="#functional-coverage-full-support" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Covergroups</strong>: Coverage groups with complete hierarchy</p></li>
+<li><p><strong>Coverpoints</strong>: Individual coverage points within groups</p></li>
+<li><p><strong>Cross Coverage</strong>: Cross product of multiple coverpoints</p></li>
+<li><p><strong>Bins</strong>: Coverage bins with hit counts and thresholds</p></li>
+</ul>
+</section>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="command-line-cli">
+<h3>Command Line (CLI)<a class="headerlink" href="#command-line-cli" title="Link to this heading"></a></h3>
+<p>The fastest way to import coverage using the CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import cocotb XML and convert to UCIS XML</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>cocotb-xml<span class="w"> </span>coverage.xml<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>output.xml
+
+<span class="c1"># Import cocotb YAML and convert to UCIS YAML</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>cocotb-yaml<span class="w"> </span>coverage.yml<span class="w"> </span>--output-format<span class="w"> </span>yaml<span class="w"> </span>--out<span class="w"> </span>output.yml
+
+<span class="c1"># Import AVL JSON and convert to UCIS XML</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>avl-json<span class="w"> </span>coverage.json<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>output.xml
+
+<span class="c1"># Merge multiple cocotb files</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span class="w"> </span>cocotb-xml<span class="w"> </span>run1.xml<span class="w"> </span>run2.xml<span class="w"> </span>run3.xml<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>merged.xml
+</pre></div>
+</div>
+</section>
+<section id="automatic-import-recommended">
+<h3>Automatic Import (Recommended)<a class="headerlink" href="#automatic-import-recommended" title="Link to this heading"></a></h3>
+<p>The simplest way to import coverage is using automatic format detection:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+
+<span class="c1"># Automatically detects and imports any supported format</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>    <span class="c1"># cocotb XML</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.yml&#39;</span><span class="p">)</span>    <span class="c1"># cocotb YAML</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.json&#39;</span><span class="p">)</span>   <span class="c1"># AVL JSON</span>
+</pre></div>
+</div>
+</section>
+<section id="import-specific-formats">
+<h3>Import Specific Formats<a class="headerlink" href="#import-specific-formats" title="Link to this heading"></a></h3>
+<p>You can also import specific formats explicitly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.cocotb</span> <span class="kn">import</span> <span class="n">read_cocotb_xml</span><span class="p">,</span> <span class="n">read_cocotb_yaml</span>
+<span class="kn">from</span> <span class="nn">ucis.avl</span> <span class="kn">import</span> <span class="n">read_avl_json</span>
+
+<span class="c1"># Import cocotb XML</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_cocotb_xml</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Import cocotb YAML</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_cocotb_yaml</span><span class="p">(</span><span class="s1">&#39;coverage.yml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Import AVL JSON (any variation)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_avl_json</span><span class="p">(</span><span class="s1">&#39;coverage.json&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="export-to-other-formats">
+<h3>Export to Other Formats<a class="headerlink" href="#export-to-other-formats" title="Link to this heading"></a></h3>
+<p>Once imported, you can export to any UCIS format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+
+<span class="c1"># Import cocotb coverage</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;cocotb_coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Export to SQLite</span>
+<span class="n">db_sqlite</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s1">&#39;coverage.ucisdb&#39;</span><span class="p">)</span>
+<span class="c1"># (Note: Full import/export workflow depends on PyUCIS backend capabilities)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cocotb-coverage-integration">
+<h2>cocotb-coverage Integration<a class="headerlink" href="#cocotb-coverage-integration" title="Link to this heading"></a></h2>
+<section id="generating-cocotb-coverage">
+<h3>Generating cocotb Coverage<a class="headerlink" href="#generating-cocotb-coverage" title="Link to this heading"></a></h3>
+<p>Use cocotb-coverage in your testbench:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cocotb_coverage.coverage</span> <span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
+<span class="kn">import</span> <span class="nn">cocotb</span>
+
+<span class="c1"># Define coverage</span>
+<span class="nd">@CoverGroup</span>
+<span class="k">class</span> <span class="nc">MyCoverage</span><span class="p">:</span>
+    <span class="nd">@CoverPoint</span><span class="p">(</span><span class="s2">&quot;addr&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">127</span><span class="p">)])</span>
+    <span class="k">def</span> <span class="nf">addr_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<span class="nd">@cocotb</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">my_test</span><span class="p">(</span><span class="n">dut</span><span class="p">):</span>
+    <span class="n">cov</span> <span class="o">=</span> <span class="n">MyCoverage</span><span class="p">()</span>
+    <span class="c1"># ... run test and sample coverage</span>
+    <span class="n">cov</span><span class="o">.</span><span class="n">addr_range</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">dut</span><span class="o">.</span><span class="n">addr</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+<span class="c1"># At end of simulation, export coverage</span>
+<span class="kn">from</span> <span class="nn">cocotb_coverage.coverage</span> <span class="kn">import</span> <span class="n">coverage_db</span>
+<span class="n">coverage_db</span><span class="o">.</span><span class="n">export_to_xml</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
+<span class="n">coverage_db</span><span class="o">.</span><span class="n">export_to_yaml</span><span class="p">(</span><span class="s2">&quot;coverage.yml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="importing-into-pyucis">
+<h3>Importing into PyUCIS<a class="headerlink" href="#importing-into-pyucis" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+
+<span class="c1"># Import cocotb XML</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Analyze coverage</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+
+<span class="k">def</span> <span class="nf">count_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">count_coverpoints</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">count</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total coverpoints: </span><span class="si">{</span><span class="n">count_coverpoints</span><span class="p">(</span><span class="n">db</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="file-format-details">
+<h3>File Format Details<a class="headerlink" href="#file-format-details" title="Link to this heading"></a></h3>
+<p><strong>cocotb XML Format:</strong></p>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;top</span><span class="w"> </span><span class="na">abs_name=</span><span class="s">&quot;top&quot;</span><span class="w"> </span><span class="na">coverage=</span><span class="s">&quot;35&quot;</span><span class="w"> </span><span class="na">cover_percentage=</span><span class="s">&quot;8.16&quot;</span><span class="nt">&gt;</span>
+<span class="w">  </span><span class="nt">&lt;test</span><span class="w"> </span><span class="na">abs_name=</span><span class="s">&quot;top.test&quot;</span><span class="nt">&gt;</span>
+<span class="w">    </span><span class="nt">&lt;covergroup</span><span class="w"> </span><span class="na">abs_name=</span><span class="s">&quot;top.test.my_cg&quot;</span><span class="nt">&gt;</span>
+<span class="w">      </span><span class="nt">&lt;coverpoint</span><span class="w"> </span><span class="na">abs_name=</span><span class="s">&quot;top.test.my_cg.addr_cp&quot;</span><span class="w"> </span><span class="na">weight=</span><span class="s">&quot;1&quot;</span><span class="w"> </span><span class="na">at_least=</span><span class="s">&quot;1&quot;</span><span class="nt">&gt;</span>
+<span class="w">        </span><span class="nt">&lt;bin0</span><span class="w"> </span><span class="na">bin=</span><span class="s">&quot;low&quot;</span><span class="w"> </span><span class="na">hits=</span><span class="s">&quot;13&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">        </span><span class="nt">&lt;bin1</span><span class="w"> </span><span class="na">bin=</span><span class="s">&quot;mid&quot;</span><span class="w"> </span><span class="na">hits=</span><span class="s">&quot;8&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/coverpoint&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/covergroup&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/test&gt;</span>
+<span class="nt">&lt;/top&gt;</span>
+</pre></div>
+</div>
+<p><strong>cocotb YAML Format:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">top.test.my_cg.addr_cp</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">at_least</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="w">  </span><span class="nt">bins:_hits</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">low</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">13</span>
+<span class="w">    </span><span class="nt">mid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="w">  </span><span class="nt">cover_percentage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100.0</span>
+<span class="w">  </span><span class="nt">weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="avl-integration">
+<h2>AVL Integration<a class="headerlink" href="#avl-integration" title="Link to this heading"></a></h2>
+<section id="generating-avl-coverage">
+<h3>Generating AVL Coverage<a class="headerlink" href="#generating-avl-coverage" title="Link to this heading"></a></h3>
+<p>Use AVL in your Python testbench:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">avl.coverage</span> <span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># Define coverage</span>
+<span class="n">cg</span> <span class="o">=</span> <span class="n">CoverGroup</span><span class="p">(</span><span class="s2">&quot;address_coverage&quot;</span><span class="p">)</span>
+<span class="n">cp</span> <span class="o">=</span> <span class="n">CoverPoint</span><span class="p">(</span><span class="s2">&quot;addr_range&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;low&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="s2">&quot;high&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">63</span><span class="p">)})</span>
+<span class="n">cg</span><span class="o">.</span><span class="n">add_coverpoint</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+
+<span class="c1"># Sample coverage</span>
+<span class="k">for</span> <span class="n">addr</span> <span class="ow">in</span> <span class="n">test_addresses</span><span class="p">:</span>
+    <span class="n">cp</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
+
+<span class="c1"># Export coverage</span>
+<span class="n">cg</span><span class="o">.</span><span class="n">export_json</span><span class="p">(</span><span class="s2">&quot;coverage.json&quot;</span><span class="p">)</span>  <span class="c1"># Hierarchical format</span>
+<span class="n">cg</span><span class="o">.</span><span class="n">export_dataframe</span><span class="p">(</span><span class="s2">&quot;coverage_df.json&quot;</span><span class="p">)</span>  <span class="c1"># DataFrame format</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Importing into PyUCIS<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.avl</span> <span class="kn">import</span> <span class="n">read_avl_json</span>
+
+<span class="c1"># Import AVL JSON (any variation)</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_avl_json</span><span class="p">(</span><span class="s1">&#39;coverage.json&#39;</span><span class="p">)</span>
+
+<span class="c1"># Access coverage data</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+
+<span class="k">def</span> <span class="nf">print_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">scope_type</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">scope_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">CROSS</span><span class="p">]:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">scope</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="n">indent</span><span class="si">}{</span><span class="n">scope</span><span class="o">.</span><span class="n">getScopeName</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="si">}</span><span class="s2"> bins&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bin_item</span> <span class="ow">in</span> <span class="n">bins</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getCoverData</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">*</span><span class="p">(</span><span class="n">indent</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s2">- </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">hits</span><span class="si">}</span><span class="s2"> hits&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">print_bins</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">print_bins</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>File Format Details<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p><strong>AVL Hierarchical JSON:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;generator&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AVL&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0.5.0&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;functional_coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;covergroups&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;address_coverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;coverpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;addr_range&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;bins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;low&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;hits&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;high&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;hits&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>AVL DataFrame Format:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;coverpoint_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;addr_range.low&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;bin_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;low&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hits&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;goal&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;covered&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;coverpoint_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;addr_range.high&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;bin_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;high&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;hits&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">22</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;goal&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;covered&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="format-detection">
+<h2>Format Detection<a class="headerlink" href="#format-detection" title="Link to this heading"></a></h2>
+<p>PyUCIS automatically detects the input format based on file content:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">detect_format</span><span class="p">,</span> <span class="n">CoverageFormat</span>
+
+<span class="c1"># Detect format</span>
+<span class="n">fmt</span> <span class="o">=</span> <span class="n">detect_format</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">CoverageFormat</span><span class="o">.</span><span class="n">COCOTB_XML</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cocotb XML format detected&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">CoverageFormat</span><span class="o">.</span><span class="n">COCOTB_YAML</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cocotb YAML format detected&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">CoverageFormat</span><span class="o">.</span><span class="n">AVL_JSON</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;AVL JSON format detected&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Unknown format&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="detection-criteria">
+<h3>Detection Criteria<a class="headerlink" href="#detection-criteria" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>cocotb XML</strong>:</dt><dd><ul class="simple">
+<li><p>File extension: <code class="docutils literal notranslate"><span class="pre">.xml</span></code> or <code class="docutils literal notranslate"><span class="pre">.cov</span></code></p></li>
+<li><p>Contains <code class="docutils literal notranslate"><span class="pre">abs_name</span></code> and <code class="docutils literal notranslate"><span class="pre">cover_percentage</span></code> attributes</p></li>
+</ul>
+</dd>
+<dt><strong>cocotb YAML</strong>:</dt><dd><ul class="simple">
+<li><p>File extension: <code class="docutils literal notranslate"><span class="pre">.yml</span></code> or <code class="docutils literal notranslate"><span class="pre">.yaml</span></code></p></li>
+<li><p>Contains <code class="docutils literal notranslate"><span class="pre">bins:_hits</span></code> and <code class="docutils literal notranslate"><span class="pre">cover_percentage</span></code> keys</p></li>
+</ul>
+</dd>
+<dt><strong>AVL JSON</strong>:</dt><dd><ul class="simple">
+<li><p>File extension: <code class="docutils literal notranslate"><span class="pre">.json</span></code></p></li>
+<li><p>Contains <code class="docutils literal notranslate"><span class="pre">metadata.generator</span> <span class="pre">==</span> <span class="pre">&quot;AVL&quot;</span></code> or hierarchical coverage structure</p></li>
+<li><p>Or contains <code class="docutils literal notranslate"><span class="pre">coverpoint_name</span></code>/<code class="docutils literal notranslate"><span class="pre">bin_name</span></code> fields (DataFrame format)</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+</section>
+<section id="workflow-examples">
+<h2>Workflow Examples<a class="headerlink" href="#workflow-examples" title="Link to this heading"></a></h2>
+<section id="command-line-workflows">
+<h3>Command Line Workflows<a class="headerlink" href="#command-line-workflows" title="Link to this heading"></a></h3>
+<p><strong>Basic Conversion:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import and convert to standard UCIS</span>
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>cocotb-xml<span class="w"> </span>coverage.xml<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>ucis.xml
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>cocotb-yaml<span class="w"> </span>coverage.yml<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>ucis.xml
+pyucis<span class="w"> </span>convert<span class="w"> </span>--input-format<span class="w"> </span>avl-json<span class="w"> </span>coverage.json<span class="w"> </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>ucis.xml
+</pre></div>
+</div>
+<p><strong>Merge Multiple Runs:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Merge coverage from multiple test runs</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span class="w"> </span>cocotb-xml<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>test1_coverage.xml<span class="w"> </span>test2_coverage.xml<span class="w"> </span>test3_coverage.xml<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--output-format<span class="w"> </span>xml<span class="w"> </span>--out<span class="w"> </span>merged.xml
+</pre></div>
+</div>
+<p><strong>List Available Formats:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<span class="s2">from ucis.rgy.format_rgy import FormatRgy</span>
+<span class="s2">rgy = FormatRgy.inst()</span>
+<span class="s2">for fmt in sorted(rgy.getDatabaseFormats()):</span>
+<span class="s2">    desc = rgy.getDatabaseDesc(fmt)</span>
+<span class="s2">    print(f&#39;{fmt}: {desc._description}&#39;)</span>
+<span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="python-api-workflows">
+<h3>Python API Workflows<a class="headerlink" href="#python-api-workflows" title="Link to this heading"></a></h3>
+</section>
+<section id="basic-workflow">
+<h3>Basic Workflow<a class="headerlink" href="#basic-workflow" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+
+<span class="c1"># 1. Run your Python testbench (generates coverage file)</span>
+<span class="c1"># 2. Import coverage</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># 3. Analyze</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+
+<span class="n">covergroups</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+               <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERGROUP</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">covergroups</span><span class="p">)</span><span class="si">}</span><span class="s2"> covergroups&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="merging-multiple-runs">
+<h3>Merging Multiple Runs<a class="headerlink" href="#merging-multiple-runs" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+
+<span class="c1"># Import multiple coverage files</span>
+<span class="n">db1</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;test1_coverage.xml&#39;</span><span class="p">)</span>
+<span class="n">db2</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;test2_coverage.yml&#39;</span><span class="p">)</span>
+<span class="n">db3</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;test3_coverage.json&#39;</span><span class="p">)</span>
+
+<span class="c1"># (Merging would use PyUCIS merge capabilities)</span>
+<span class="c1"># Note: Full merge workflow depends on PyUCIS backend</span>
+</pre></div>
+</div>
+</section>
+<section id="mixed-format-import">
+<h3>Mixed Format Import<a class="headerlink" href="#mixed-format-import" title="Link to this heading"></a></h3>
+<p>Import from multiple frameworks in the same workflow:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+
+<span class="c1"># Import cocotb coverage</span>
+<span class="n">cocotb_db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;cocotb_coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Import AVL coverage</span>
+<span class="n">avl_db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;avl_coverage.json&#39;</span><span class="p">)</span>
+
+<span class="c1"># Both are now in UCIS format and can be analyzed uniformly</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="coverage-hierarchy">
+<h2>Coverage Hierarchy<a class="headerlink" href="#coverage-hierarchy" title="Link to this heading"></a></h2>
+<p>All importers create standard UCIS hierarchy:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>UCIS Database (root)
+└── DU_MODULE (design unit)
+    └── INSTANCE
+        └── COVERGROUP
+            ├── COVERPOINT
+            │   └── Bins (via coverItems())
+            └── CROSS (cross coverage)
+                └── Bins (via coverItems())
+</pre></div>
+</div>
+<section id="accessing-coverage-data">
+<h3>Accessing Coverage Data<a class="headerlink" href="#accessing-coverage-data" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Find all coverpoints</span>
+<span class="k">def</span> <span class="nf">find_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">found</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">:</span>
+        <span class="n">found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scope</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">find_coverpoints</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">found</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">found</span>
+
+<span class="c1"># Access bins</span>
+<span class="n">coverpoints</span> <span class="o">=</span> <span class="n">find_coverpoints</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">cp</span> <span class="ow">in</span> <span class="n">coverpoints</span><span class="p">:</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># Get bins</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Coverpoint </span><span class="si">{</span><span class="n">cp</span><span class="o">.</span><span class="n">getScopeName</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="si">}</span><span class="s2"> bins&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">bin_item</span> <span class="ow">in</span> <span class="n">bins</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getCoverData</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># Hit count</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> hits&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<section id="custom-import-processing">
+<h3>Custom Import Processing<a class="headerlink" href="#custom-import-processing" title="Link to this heading"></a></h3>
+<p>Process coverage data during import:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.cocotb</span> <span class="kn">import</span> <span class="n">CocotbXmlReader</span>
+<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+
+<span class="c1"># Create custom database</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s1">&#39;custom.ucisdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># Import with custom processing</span>
+<span class="n">reader</span> <span class="o">=</span> <span class="n">CocotbXmlReader</span><span class="p">()</span>
+<span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+
+<span class="c1"># Database now contains imported coverage</span>
+</pre></div>
+</div>
+</section>
+<section id="filtering-coverage">
+<h3>Filtering Coverage<a class="headerlink" href="#filtering-coverage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
+
+<span class="c1"># Find uncovered bins</span>
+<span class="k">def</span> <span class="nf">find_uncovered_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+    <span class="n">uncovered</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">CROSS</span><span class="p">]:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">scope</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">bin_item</span> <span class="ow">in</span> <span class="n">bins</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getCoverData</span><span class="p">()</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">uncovered</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">scope</span><span class="o">.</span><span class="n">getScopeName</span><span class="p">(),</span> <span class="n">bin_item</span><span class="o">.</span><span class="n">getName</span><span class="p">()))</span>
+
+    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">uncovered</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">find_uncovered_bins</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">uncovered</span>
+
+<span class="n">uncovered</span> <span class="o">=</span> <span class="n">find_uncovered_bins</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uncovered bins: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">uncovered</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">cp_name</span><span class="p">,</span> <span class="n">bin_name</span> <span class="ow">in</span> <span class="n">uncovered</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">cp_name</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">bin_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-details">
+<h2>Implementation Details<a class="headerlink" href="#implementation-details" title="Link to this heading"></a></h2>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<p>The import implementation consists of:</p>
+<dl class="simple">
+<dt><strong>cocotb Module</strong> (<code class="docutils literal notranslate"><span class="pre">src/ucis/cocotb/</span></code>):</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cocotb_xml_reader.py</span></code> - XML parser (326 lines)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cocotb_yaml_reader.py</span></code> - YAML parser (309 lines)</p></li>
+</ul>
+</dd>
+<dt><strong>AVL Module</strong> (<code class="docutils literal notranslate"><span class="pre">src/ucis/avl/</span></code>):</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">avl_json_reader.py</span></code> - JSON parser with DataFrame support (315 lines)</p></li>
+</ul>
+</dd>
+<dt><strong>Format Detection</strong> (<code class="docutils literal notranslate"><span class="pre">src/ucis/format_detection.py</span></code>):</dt><dd><ul class="simple">
+<li><p>Automatic format detection (257 lines)</p></li>
+<li><p>Unified import interface</p></li>
+</ul>
+</dd>
+</dl>
+<p>The import process:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Coverage file (XML/YAML/JSON)
+       ↓
+Format Detection (identify type)
+       ↓
+Appropriate Reader (parse format)
+       ↓
+UCIS Database (in-memory)
+       ↓
+Export (XML, SQLite, etc.)
+</pre></div>
+</div>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<p>The implementation includes comprehensive tests:</p>
+<ul class="simple">
+<li><p><strong>34 unit tests</strong> covering all format variations</p></li>
+<li><p><strong>XML/YAML equivalence validation</strong></p></li>
+<li><p><strong>DataFrame format variations</strong></p></li>
+<li><p><strong>End-to-end integration tests</strong></p></li>
+</ul>
+<p><strong>Test Coverage</strong>: 100% (34/34 tests passing)</p>
+</section>
+</section>
+<section id="limitations">
+<h2>Limitations<a class="headerlink" href="#limitations" title="Link to this heading"></a></h2>
+<section id="current-limitations">
+<h3>Current Limitations<a class="headerlink" href="#current-limitations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Read-Only</strong>: Import only (no export to cocotb/AVL formats)</p></li>
+<li><p><strong>In-Memory</strong>: Coverage data loaded into memory during parsing</p></li>
+<li><p><strong>Source Locations</strong>: Not preserved (cocotb/AVL don’t provide detailed source info)</p></li>
+</ul>
+<p>These limitations do not affect typical usage scenarios.</p>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Format not detected automatically</strong></dt><dd><p>Ensure file has correct extension (<code class="docutils literal notranslate"><span class="pre">.xml</span></code>, <code class="docutils literal notranslate"><span class="pre">.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code>) and valid content</p>
+</dd>
+<dt><strong>Import fails with parsing error</strong></dt><dd><p>Verify the file was generated by cocotb-coverage or AVL</p>
+</dd>
+<dt><strong>Empty coverage database</strong></dt><dd><p>Check that the input file contains coverage data, not just metadata</p>
+</dd>
+<dt><strong>Missing bins</strong></dt><dd><p>Use <code class="docutils literal notranslate"><span class="pre">coverItems(-1)</span></code> not <code class="docutils literal notranslate"><span class="pre">scopes(-1)</span></code> to access bins from coverpoints</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="commands.html"><span class="doc">Commands</span></a> - PyUCIS command-line interface</p></li>
+<li><p><a class="reference internal" href="verilator_coverage_import.html"><span class="doc">Verilator Coverage Import</span></a> - Verilator coverage import</p></li>
+<li><p><a class="reference internal" href="reference/html_coverage_report.html"><span class="doc">HTML Coverage Report Format</span></a> - HTML report generation</p></li>
+<li><p><a class="reference external" href="https://github.com/mciepluc/cocotb-coverage">cocotb-coverage</a> - cocotb coverage library</p></li>
+<li><p><a class="reference external" href="https://github.com/projectapheleia/avl">AVL</a> - Apheleia Verification Library</p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>cocotb</strong>: <a class="reference external" href="https://github.com/cocotb/cocotb">https://github.com/cocotb/cocotb</a></p></li>
+<li><p><strong>cocotb-coverage</strong>: <a class="reference external" href="https://github.com/mciepluc/cocotb-coverage">https://github.com/mciepluc/cocotb-coverage</a></p></li>
+<li><p><strong>AVL</strong>: <a class="reference external" href="https://github.com/projectapheleia/avl">https://github.com/projectapheleia/avl</a></p></li>
+<li><p><strong>UCIS Specification</strong>: IEEE 1800.2</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="verilator_coverage_import.html" class="btn btn-neutral float-left" title="Verilator Coverage Import" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="mcp_server.html" class="btn btn-neutral float-right" title="MCP Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

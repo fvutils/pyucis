@@ -20,6 +20,8 @@ and accessing coverage data:
 - **XML**: Read and write UCIS data in the Accellera-defined interchange format
 - **YAML**: Human-readable text format for coverage data
 - **Verilator**: Import coverage from Verilator (SystemC::Coverage-3 format)
+- **cocotb-coverage**: Import functional coverage from cocotb-coverage (XML/YAML)
+- **AVL**: Import functional coverage from AVL - Apheleia Verification Library (JSON)
 - **Library**: Call tool-provided implementations of the UCIS C API
 
 SQLite Backend
@@ -181,8 +183,13 @@ Example:
 
     # Interactive Terminal UI - new!
     ucis view coverage.ucis
-    # Import Verilator coverage
+    
+    # Import coverage from various sources
     ucis convert --input-format vltcov coverage.dat --out coverage.xml
+    
+    # Import cocotb or AVL coverage (auto-detected)
+    python -c "from ucis.format_detection import read_coverage_file; \
+               db = read_coverage_file('coverage.xml')"
     
     # Generate interactive HTML report
     ucis report coverage.ucis -of html -o report.html
@@ -199,7 +206,9 @@ Example:
     # Merge databases
     ucis merge -o merged.ucis test1.ucis test2.ucis
 
-See :doc:`verilator_coverage_import` for detailed Verilator import documentation.
+See :doc:`verilator_coverage_import` for Verilator import documentation.
+
+See :doc:`cocotb_avl_coverage_import` for cocotb-coverage and AVL import documentation.
 
 
 MCP Server for AI Integration
