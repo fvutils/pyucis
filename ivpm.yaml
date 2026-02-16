@@ -1,16 +1,6 @@
 package:
   name: pyucis
   dep-sets:
-  - name: default
-    deps:
-    - name: lxml
-      src: pypi
-    - name: pyyaml
-      src: pypi
-    - name: jsonschema
-      src: pypi
-    - name: python-jsonschema-objects
-      src: pypi
   - name: default-dev
     deps:
     - name: jsonschema
@@ -57,4 +47,18 @@ package:
     - name: sqlite
       url: https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip
       cache: true
+    - name: avl-core
+      src: pypi
+    - name: cocotb-coverage
+      src: pypi
+  - name: default
+    deps:
+    - name: lxml
+      src: pypi
+    - name: pyyaml
+      src: pypi
+    - name: jsonschema
+      src: pypi
+    - name: python-jsonschema-objects
+      src: pypi
 

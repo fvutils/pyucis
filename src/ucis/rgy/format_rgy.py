@@ -122,6 +122,15 @@ class FormatRgy(object):
         from ucis.vltcov.db_format_if_vltcov import DbFormatIfVltCov
         DbFormatIfVltCov.register(self)
         
+        # Register cocotb-coverage formats
+        from ucis.cocotb.db_format_if_cocotb import DbFormatIfCocotbXml, DbFormatIfCocotbYaml
+        DbFormatIfCocotbXml.register(self)
+        DbFormatIfCocotbYaml.register(self)
+        
+        # Register AVL format
+        from ucis.avl.db_format_if_avl import DbFormatIfAvlJson
+        DbFormatIfAvlJson.register(self)
+        
         FormatRptJson.register(self)
         FormatRptText.register(self)
         

@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "generator": "AVL",
+    "version": "0.5.0",
+    "timestamp": "2026-02-16T17:26:20.664057",
+    "test_name": "sample_avl_test"
+  },
+  "functional_coverage": {
+    "covergroups": {
+      "address_coverage": {
+        "type": "covergroup",
+        "coverpoints": {
+          "addr_range": {
+            "bins": {
+              "low": {
+                "range": [
+                  0,
+                  31
+                ],
+                "hits": 45
+              },
+              "mid": {
+                "range": [
+                  32,
+                  63
+                ],
+                "hits": 38
+              },
+              "high": {
+                "range": [
+                  64,
+                  127
+                ],
+                "hits": 22
+              },
+              "very_high": {
+                "range": [
+                  128,
+                  255
+                ],
+                "hits": 0
+              }
+            },
+            "total_bins": 4,
+            "covered_bins": 3,
+            "coverage_pct": 75.0
+          },
+          "addr_parity": {
+            "bins": {
+              "even": {
+                "hits": 56
+              },
+              "odd": {
+                "hits": 49
+              }
+            },
+            "total_bins": 2,
+            "covered_bins": 2,
+            "coverage_pct": 100.0
+          }
+        }
+      },
+      "transaction_coverage": {
+        "type": "covergroup",
+        "coverpoints": {
+          "trans_type": {
+            "bins": {
+              "read": {
+                "hits": 67
+              },
+              "write": {
+                "hits": 54
+              },
+              "read_modify_write": {
+                "hits": 12
+              },
+              "atomic": {
+                "hits": 0
+              }
+            },
+            "total_bins": 4,
+            "covered_bins": 3,
+            "coverage_pct": 75.0
+          },
+          "burst_length": {
+            "bins": {
+              "single": {
+                "hits": 80
+              },
+              "burst_2": {
+                "hits": 25
+              },
+              "burst_4": {
+                "hits": 15
+              },
+              "burst_8": {
+                "hits": 8
+              },
+              "burst_16": {
+                "hits": 5
+              }
+            },
+            "total_bins": 5,
+            "covered_bins": 5,
+            "coverage_pct": 100.0
+          }
+        },
+        "crosses": {
+          "type_x_length": {
+            "bins": {
+              "(read, single)": {
+                "hits": 45
+              },
+              "(read, burst_2)": {
+                "hits": 12
+              },
+              "(read, burst_4)": {
+                "hits": 8
+              },
+              "(write, single)": {
+                "hits": 35
+              },
+              "(write, burst_2)": {
+                "hits": 13
+              },
+              "(write, burst_4)": {
+                "hits": 6
+              }
+            },
+            "total_bins": 20,
+            "covered_bins": 6,
+            "coverage_pct": 30.0
+          }
+        }
+      }
+    },
+    "summary": {
+      "total_bins": 53,
+      "covered_bins": 39,
+      "coverage_pct": 73.58
+    }
+  }
+}

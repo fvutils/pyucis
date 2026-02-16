@@ -29,7 +29,8 @@ setup(
     'lxml',
     'python-jsonschema-objects',
     'jsonschema',
-    'pyyaml'
+    'pyyaml',
+    'rich'
   ],
 )
 

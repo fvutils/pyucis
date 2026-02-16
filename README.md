@@ -9,6 +9,7 @@ Python API to Unified Coverage Interoperability Standard (UCIS) Data Model
 
 - **Python API** for manipulating UCIS coverage databases
 - **CLI Tools** for database conversion, merging, and reporting
+- **Coverage Import** - Import from Verilator, cocotb-coverage, and AVL frameworks
 - **MCP Server** for AI agent integration (see [MCP_SERVER.md](MCP_SERVER.md))
 - **AgentSkills Support** for enhanced AI agent understanding (see https://agentskills.io)
 - Support for XML, YAML, and UCIS binary formats
@@ -136,6 +137,50 @@ for scope in db.scopes():
     for coveritem in scope.coveritems():
         print(f"  {coveritem.name}: {coveritem.count} hits")
 ```
+
+### Coverage Import
+
+Import coverage from various verification frameworks:
+
+**Command Line (CLI):**
+```bash
+# cocotb-coverage (XML/YAML)
+pyucis convert --input-format cocotb-xml coverage.xml --output-format xml --out output.xml
+pyucis convert --input-format cocotb-yaml coverage.yml --output-format xml --out output.xml
+
+# AVL (JSON)
+pyucis convert --input-format avl-json coverage.json --output-format xml --out output.xml
+
+# Merge multiple runs
+pyucis merge --input-format cocotb-xml run1.xml run2.xml --output-format xml --out merged.xml
+```
+
+**Python API:**
+
+cocotb-coverage (Python testbenches):
+```python
+from ucis.format_detection import read_coverage_file
+
+# Automatically detects cocotb XML or YAML format
+db = read_coverage_file('cocotb_coverage.xml')
+db = read_coverage_file('cocotb_coverage.yml')
+```
+
+AVL - Apheleia Verification Library:
+```python
+from ucis.avl import read_avl_json
+
+# Import AVL JSON coverage (all variations supported)
+db = read_avl_json('avl_coverage.json')
+```
+
+Verilator:
+```bash
+# Import Verilator coverage via CLI
+pyucis convert --input-format vltcov coverage.dat --out coverage.xml
+```
+
+See documentation for complete import examples and supported formats.
 
 ## Documentation
 
