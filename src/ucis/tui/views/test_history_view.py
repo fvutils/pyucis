@@ -314,4 +314,4 @@ class TestHistoryView(BaseView):
         self.app.status_bar.set_message(f"Filtering by test: {test_name}", "info")
         
         # Switch to dashboard to see filtered results
-        self.app.switch_view("dashboard")
+        self.app.controller.switch_view("dashboard")

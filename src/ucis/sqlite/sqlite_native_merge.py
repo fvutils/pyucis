@@ -121,11 +121,14 @@ class SqliteNativeMerger:
             # Attach source database
             self._attach_source(source_ucis.db_path)
             
+            # Phase 0: Merge files and build file mapping
+            file_mapping = self._merge_files()
+            
             # Phase 1: Build scope mapping (src_scope_id -> tgt_scope_id)
             scope_mapping = self._build_scope_mapping()
             
             # Phase 2: Merge coveritems (bulk operations)
-            self._merge_coveritems(scope_mapping)
+            self._merge_coveritems(scope_mapping, file_mapping)
             
             # Phase 3: Merge history nodes
             if create_history:
@@ -271,7 +274,63 @@ class SqliteNativeMerger:
         )
         return cursor.fetchall()
     
-    def _merge_coveritems(self, scope_mapping: List[Tuple[int, int]]):
+    def _merge_files(self) -> Dict[int, int]:
+        """
+        Merge files table from source to target database.
+        
+        Returns:
+            Dictionary mapping src_file_id -> tgt_file_id
+        """
+        file_mapping = {}
+        
+        # Get all files from source database
+        cursor = self.conn.execute("""
+            SELECT file_id, file_path, file_hash
+            FROM src.files
+        """)
+        
+        for src_file_id, file_path, file_hash in cursor.fetchall():
+            # Check if file already exists in target
+            tgt_cursor = self.conn.execute(
+                "SELECT file_id FROM files WHERE file_path = ?",
+                (file_path,)
+            )
+            row = tgt_cursor.fetchone()
+            
+            if row:
+                # File exists, use existing ID
+                file_mapping[src_file_id] = row[0]
+            else:
+                # File doesn't exist, insert it
+                insert_cursor = self.conn.execute(
+                    "INSERT INTO files (file_path, file_hash) VALUES (?, ?)",
+                    (file_path, file_hash)
+                )
+                file_mapping[src_file_id] = insert_cursor.lastrowid
+        
+        # Create a temporary mapping table for use in SQL queries
+        self.conn.execute("""
+            CREATE TEMPORARY TABLE IF NOT EXISTS file_mapping (
+                src_file_id INTEGER,
+                tgt_file_id INTEGER,
+                PRIMARY KEY (src_file_id)
+            )
+        """)
+        
+        # Clear any existing data
+        self.conn.execute("DELETE FROM file_mapping")
+        
+        # Insert mappings
+        if file_mapping:
+            self.conn.executemany(
+                "INSERT INTO file_mapping (src_file_id, tgt_file_id) VALUES (?, ?)",
+                list(file_mapping.items())
+            )
+        
+        return file_mapping
+    
+    def _merge_coveritems(self, scope_mapping: List[Tuple[int, int]], 
+                         file_mapping: Dict[int, int]):
         """
         Merge coveritems using bulk SQL operations
         
@@ -330,6 +389,7 @@ class SqliteNativeMerger:
         
         # Phase 2: Insert new coveritems that don't exist in target
         # Need to assign new cover_index values to avoid conflicts
+        # Also remap source_file_id using the file mapping
         result = self.conn.execute("""
             INSERT INTO coveritems (
                 scope_id, cover_index, cover_type, cover_name, 
@@ -353,11 +413,12 @@ class SqliteNativeMerger:
                 src_ci.weight,
                 src_ci.goal,
                 src_ci.limit_val,
-                src_ci.source_file_id,
+                COALESCE(fm.tgt_file_id, src_ci.source_file_id),
                 src_ci.source_line,
                 src_ci.source_token
             FROM src.coveritems src_ci
             INNER JOIN scope_mapping sm ON src_ci.scope_id = sm.src_scope_id
+            LEFT JOIN file_mapping fm ON src_ci.source_file_id = fm.src_file_id
             WHERE NOT EXISTS (
                 SELECT 1 FROM coveritems tgt_ci
                 WHERE tgt_ci.scope_id = sm.tgt_scope_id

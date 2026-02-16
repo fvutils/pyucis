@@ -63,6 +63,7 @@ class SqliteMerger:
         self._src_tree = None  # Cached source scope tree
         self._tgt_tree = None  # Cached target scope tree
         self._tgt_coveritems = {}  # scope_id -> {cover_index -> [cover_id, count]}
+        self._file_mapping = {}  # Cache of src_file_id -> tgt_file_id mapping
     
     def _load_scope_tree(self, db):
         """Load entire scope tree into memory in a single query."""
@@ -104,6 +105,47 @@ class SqliteMerger:
                 m[row[1]] = [row[0], row[2]]  # mutable list for in-place update
             self._tgt_coveritems[scope_id] = m
         return self._tgt_coveritems[scope_id]
+    
+    def _merge_files(self, source_ucis):
+        """
+        Merge files from source database into target.
+        Builds a mapping of src_file_id -> tgt_file_id for remapping coveritem references.
+        
+        Args:
+            source_ucis: Source database
+            
+        Returns:
+            Dictionary mapping src_file_id -> tgt_file_id
+        """
+        # Only applies to SQLite sources
+        if not hasattr(source_ucis, 'conn'):
+            return {}
+        
+        file_mapping = {}
+        
+        # Query all files from source
+        for row in source_ucis.conn.execute("SELECT file_id, file_path, file_hash FROM files"):
+            src_file_id, file_path, file_hash = row
+            
+            # Check if file already exists in target
+            tgt_cursor = self.target.conn.execute(
+                "SELECT file_id FROM files WHERE file_path = ?",
+                (file_path,)
+            )
+            tgt_row = tgt_cursor.fetchone()
+            
+            if tgt_row:
+                # File exists, map to existing ID
+                file_mapping[src_file_id] = tgt_row[0]
+            else:
+                # File doesn't exist, insert it
+                insert_cursor = self.target.conn.execute(
+                    "INSERT INTO files (file_path, file_hash) VALUES (?, ?)",
+                    (file_path, file_hash)
+                )
+                file_mapping[src_file_id] = insert_cursor.lastrowid
+        
+        return file_mapping
 
     def merge(self, source_ucis, create_history: bool = True, squash_history: bool = False):
         """
@@ -180,6 +222,12 @@ class SqliteMerger:
                     for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
                         self._copy_history_node(src_test, merge_node)
                         self.stats.tests_merged += 1
+            
+            # Merge files and build mapping (for SQLite sources)
+            if is_sqlite_source:
+                self._file_mapping = self._merge_files(source_ucis)
+            else:
+                self._file_mapping = {}
             
             # Choose merge strategy based on source type
             if is_sqlite_source:
@@ -755,9 +803,27 @@ class SqliteMerger:
                 source_token = None
                 if hasattr(src_cover, 'getSourceInfo'):
                     src_info = src_cover.getSourceInfo()
-                    if src_info:
-                        # TODO: Handle source file mapping
-                        pass
+                    if src_info and src_info.file:
+                        # Get file path and find/create in target
+                        file_path = src_info.file.getFileName()
+                        if file_path:
+                            # Check if file exists in target
+                            cursor = self.target.conn.execute(
+                                "SELECT file_id FROM files WHERE file_path = ?",
+                                (file_path,)
+                            )
+                            row = cursor.fetchone()
+                            if row:
+                                source_file_id = row[0]
+                            else:
+                                # Create file in target
+                                cursor = self.target.conn.execute(
+                                    "INSERT INTO files (file_path) VALUES (?)",
+                                    (file_path,)
+                                )
+                                source_file_id = cursor.lastrowid
+                        source_line = src_info.line if hasattr(src_info, 'line') else 0
+                        source_token = src_info.token if hasattr(src_info, 'token') else 0
                 
                 inserts.append((
                     tgt_scope.scope_id,
@@ -961,6 +1027,12 @@ class SqliteMerger:
                 self.stats.coveritems_matched += 1
                 self.stats.total_hits_added += src_count
             else:
+                # Remap source_file_id if file mapping exists
+                src_file_id = row[9]
+                mapped_file_id = None
+                if src_file_id is not None and src_file_id in self._file_mapping:
+                    mapped_file_id = self._file_mapping[src_file_id]
+                
                 inserts.append((
                     tgt_scope.scope_id, next_index,
                     row[1],   # cover_type
@@ -971,7 +1043,7 @@ class SqliteMerger:
                     row[6],   # weight
                     row[7],   # goal
                     row[8],   # limit_val
-                    None,     # source_file_id (skip cross-DB file refs)
+                    mapped_file_id,  # source_file_id (remapped via file_mapping)
                     row[10],  # source_line
                     row[11],  # source_token
                 ))
@@ -1029,11 +1101,17 @@ class SqliteMerger:
                 self.stats.coveritems_matched += 1
                 self.stats.total_hits_added += src_count
             else:
+                # Remap source_file_id using file mapping
+                src_file_id = row[9]
+                mapped_file_id = None
+                if src_file_id is not None and src_file_id in self._file_mapping:
+                    mapped_file_id = self._file_mapping[src_file_id]
+                
                 inserts.append((
                     tgt_scope_id, next_index,
                     row[1], row[2], src_count,
                     row[4], row[5], row[6], row[7], row[8],
-                    None, row[10], row[11],
+                    mapped_file_id, row[10], row[11],
                 ))
                 next_index += 1
                 self.stats.coveritems_added += 1
