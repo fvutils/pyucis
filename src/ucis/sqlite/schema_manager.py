@@ -88,7 +88,6 @@ def create_schema(conn: sqlite3.Connection):
         )
     """)
     
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_parent ON scopes(parent_id)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_scopes_parent_type_name ON scopes(parent_id, scope_type, scope_name)")
     
     # 4. Cover Items
@@ -116,7 +115,6 @@ def create_schema(conn: sqlite3.Connection):
         )
     """)
     
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritems_scope_index ON coveritems(scope_id, cover_index)")
     
     # 5. History Nodes
     cursor.execute("""
@@ -162,7 +160,6 @@ def create_schema(conn: sqlite3.Connection):
         )
     """)
     
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritem_tests_cover ON coveritem_tests(cover_id)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_coveritem_tests_history ON coveritem_tests(history_id)")
     
     # 7. Properties Tables
@@ -512,3 +509,10 @@ def ensure_schema_current(conn: sqlite3.Connection):
             f"Database schema version mismatch: found {version}, expected {SCHEMA_VERSION}. "
             f"Please recreate the database with the current schema version."
         )
+
+    # Remove known redundant indexes to reduce DB size and write overhead
+    cursor = conn.cursor()
+    cursor.execute("DROP INDEX IF EXISTS idx_coveritems_scope_index")
+    cursor.execute("DROP INDEX IF EXISTS idx_scopes_parent")
+    cursor.execute("DROP INDEX IF EXISTS idx_coveritem_tests_cover")
+    conn.commit()

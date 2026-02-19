@@ -41,6 +41,86 @@ class MetricsView(BaseView):
                 '100+': 0
             }
         }
+
+        # Fast/accurate SQL path for SQLite backends
+        if hasattr(self.model.db, "conn"):
+            try:
+                conn = self.model.db.conn
+                cvgbin_t = int(CoverTypeT.CVGBIN)
+                cg_t = int(ScopeTypeT.COVERGROUP)
+                cp_t = int(ScopeTypeT.COVERPOINT)
+
+                self.metrics['total_covergroups'] = conn.execute(
+                    "SELECT COUNT(*) FROM scopes WHERE (scope_type & ?) != 0",
+                    (cg_t,)
+                ).fetchone()[0]
+                self.metrics['total_coverpoints'] = conn.execute(
+                    "SELECT COUNT(*) FROM scopes WHERE (scope_type & ?) != 0",
+                    (cp_t,)
+                ).fetchone()[0]
+
+                row = conn.execute(
+                    """SELECT COUNT(*),
+                              SUM(CASE WHEN cover_data > 0 THEN 1 ELSE 0 END),
+                              SUM(CASE WHEN cover_data = 0 THEN 1 ELSE 0 END),
+                              SUM(CASE WHEN cover_data > 0 AND cover_data <= 10 THEN 1 ELSE 0 END),
+                              SUM(CASE WHEN cover_data > 10 AND cover_data <= 100 THEN 1 ELSE 0 END),
+                              SUM(CASE WHEN cover_data > 100 THEN 1 ELSE 0 END)
+                       FROM coveritems
+                       WHERE (cover_type & ?) != 0""",
+                    (cvgbin_t,)
+                ).fetchone()
+
+                self.metrics['total_bins'] = row[0] or 0
+                self.metrics['covered_bins'] = row[1] or 0
+                self.metrics['zero_hit_bins'] = row[2] or 0
+                self.metrics['bin_hit_distribution']['0'] = row[2] or 0
+                self.metrics['bin_hit_distribution']['1-10'] = row[3] or 0
+                self.metrics['bin_hit_distribution']['11-100'] = row[4] or 0
+                self.metrics['bin_hit_distribution']['100+'] = row[5] or 0
+
+                # Coverpoint coverage distribution
+                for total, covered in conn.execute(
+                    """SELECT COUNT(ci.cover_id) AS total,
+                              SUM(CASE WHEN ci.cover_data > 0 THEN 1 ELSE 0 END) AS covered
+                       FROM scopes s
+                       LEFT JOIN coveritems ci
+                         ON ci.scope_id = s.scope_id
+                        AND (ci.cover_type & ?) != 0
+                       WHERE (s.scope_type & ?) != 0
+                       GROUP BY s.scope_id""",
+                    (cvgbin_t, cp_t)
+                ).fetchall():
+                    if total and total > 0:
+                        self.metrics['coverpoint_coverage'].append((covered or 0) * 100.0 / total)
+
+                # Covergroup coverage distribution (bins under descendants)
+                for total, covered in conn.execute(
+                    """WITH RECURSIVE cg_desc(cg_id, scope_id) AS (
+                           SELECT scope_id, scope_id
+                           FROM scopes
+                           WHERE (scope_type & ?) != 0
+                           UNION ALL
+                           SELECT d.cg_id, s.scope_id
+                           FROM cg_desc d
+                           JOIN scopes s ON s.parent_id = d.scope_id
+                       )
+                       SELECT COUNT(ci.cover_id) AS total,
+                              SUM(CASE WHEN ci.cover_data > 0 THEN 1 ELSE 0 END) AS covered
+                       FROM cg_desc d
+                       LEFT JOIN coveritems ci
+                         ON ci.scope_id = d.scope_id
+                        AND (ci.cover_type & ?) != 0
+                       GROUP BY d.cg_id""",
+                    (cg_t, cvgbin_t)
+                ).fetchall():
+                    if total and total > 0:
+                        self.metrics['covergroup_coverage'].append((covered or 0) * 100.0 / total)
+
+                return
+            except Exception:
+                # Fall back to API traversal below
+                pass
         
         def visit_scope(scope):
             scope_type = scope.getScopeType()

@@ -67,7 +67,37 @@ class CoverageModel:
             'by_type': {}
         }
         
-        # Walk through database to compute statistics
+        # Fast path for SQLite backends
+        if self.db and hasattr(self.db, 'conn'):
+            from ucis.cover_type_t import CoverTypeT
+            from ucis.scope_type_t import ScopeTypeT
+            try:
+                conn = self.db.conn
+                summary['covergroups'] = conn.execute(
+                    "SELECT COUNT(*) FROM scopes WHERE (scope_type & ?) != 0",
+                    (int(ScopeTypeT.COVERGROUP),)
+                ).fetchone()[0]
+                summary['coverpoints'] = conn.execute(
+                    "SELECT COUNT(*) FROM scopes WHERE (scope_type & ?) != 0",
+                    (int(ScopeTypeT.COVERPOINT),)
+                ).fetchone()[0]
+                row = conn.execute(
+                    """SELECT COUNT(*),
+                              SUM(CASE WHEN cover_data > 0 THEN 1 ELSE 0 END)
+                       FROM coveritems
+                       WHERE (cover_type & ?) != 0""",
+                    (int(CoverTypeT.CVGBIN),)
+                ).fetchone()
+                summary['total_bins'] = row[0] or 0
+                summary['covered_bins'] = row[1] or 0
+                if summary['total_bins'] > 0:
+                    summary['overall_coverage'] = (summary['covered_bins'] / summary['total_bins']) * 100
+                self._cache['summary'] = summary
+                return summary
+            except Exception:
+                pass
+
+        # Walk through database to compute statistics (fallback)
         def visit_scope(scope, depth=0):
             from ucis.scope_type_t import ScopeTypeT
             from ucis.cover_type_t import CoverTypeT
@@ -125,8 +155,15 @@ class CoverageModel:
         # Get test data if available
         if self.db:
             try:
-                tests = self.get_all_tests()
-                info['test_count'] = len(tests)
+                if hasattr(self.db, 'conn'):
+                    from ucis.history_node_kind import HistoryNodeKind
+                    info['test_count'] = self.db.conn.execute(
+                        "SELECT COUNT(*) FROM history_nodes WHERE history_kind = ?",
+                        (int(HistoryNodeKind.TEST),)
+                    ).fetchone()[0]
+                else:
+                    tests = self.get_all_tests()
+                    info['test_count'] = len(tests)
             except:
                 pass
         
@@ -147,6 +184,25 @@ class CoverageModel:
         """
         if 'coverage_types' in self._cache:
             return self._cache['coverage_types']
+
+        # Fast path for SQLite backend
+        if self.db and hasattr(self.db, 'conn'):
+            try:
+                rows = self.db.conn.execute(
+                    "SELECT DISTINCT cover_type FROM coveritems ORDER BY cover_type"
+                ).fetchall()
+                types_list = []
+                for r in rows:
+                    if r[0] is None:
+                        continue
+                    try:
+                        types_list.append(CoverTypeT(r[0]))
+                    except Exception:
+                        pass
+                self._cache['coverage_types'] = types_list
+                return types_list
+            except Exception:
+                pass
         
         types_found: Set[CoverTypeT] = set()
         
@@ -206,6 +262,30 @@ class CoverageModel:
             CoverTypeT.FSMBIN: 'fsm',
             CoverTypeT.BLOCKBIN: 'block',
         }
+
+        # Fast path for SQLite backend
+        if self.db and hasattr(self.db, 'conn'):
+            try:
+                rows = self.db.conn.execute(
+                    """SELECT cover_type,
+                              COUNT(*) AS total,
+                              SUM(CASE WHEN cover_data > 0 THEN 1 ELSE 0 END) AS covered
+                       FROM coveritems
+                       GROUP BY cover_type"""
+                ).fetchall()
+                int_type_map = {int(k): v for k, v in type_map.items()}
+                for row in rows:
+                    key = int_type_map.get(row[0])
+                    if key is not None:
+                        summary[key]['total'] = row[1] or 0
+                        summary[key]['covered'] = row[2] or 0
+                for key in summary:
+                    if summary[key]['total'] > 0:
+                        summary[key]['coverage'] = (summary[key]['covered'] / summary[key]['total']) * 100
+                self._cache['code_coverage_summary'] = summary
+                return summary
+            except Exception:
+                pass
         
         def visit_scope(scope):
             for cov_type, key in type_map.items():
@@ -268,6 +348,37 @@ class CoverageModel:
             'covered': 0,
             'coverage': 0.0
         }
+
+        # Fast path for SQLite backend
+        if self.db and hasattr(self.db, 'conn'):
+            try:
+                if filter_active:
+                    row = self.db.conn.execute(
+                        """SELECT COUNT(*),
+                                  SUM(CASE WHEN ci.cover_data > 0 THEN 1 ELSE 0 END)
+                           FROM coveritems ci
+                           JOIN coveritem_tests ct ON ct.cover_id = ci.cover_id
+                           JOIN history_nodes hn ON hn.history_id = ct.history_id
+                           WHERE (ci.cover_type & ?) != 0
+                             AND hn.logical_name = ?""",
+                        (int(cov_type), self.test_filter)
+                    ).fetchone()
+                else:
+                    row = self.db.conn.execute(
+                        """SELECT COUNT(*),
+                                  SUM(CASE WHEN cover_data > 0 THEN 1 ELSE 0 END)
+                           FROM coveritems
+                           WHERE (cover_type & ?) != 0""",
+                        (int(cov_type),)
+                    ).fetchone()
+                result['total'] = row[0] or 0
+                result['covered'] = row[1] or 0
+                if result['total'] > 0:
+                    result['coverage'] = (result['covered'] / result['total']) * 100
+                self._cache[cache_key] = result
+                return result
+            except Exception:
+                pass
         
         def visit_scope(scope):
             try:

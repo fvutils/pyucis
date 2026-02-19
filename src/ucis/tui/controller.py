@@ -39,6 +39,15 @@ class TUIController:
         # Status messages
         self.status_message = ""
         self.status_type = "info"  # "info", "error", "success"
+        self._view_order = [
+            "dashboard",
+            "hierarchy",
+            "gaps",
+            "hotspots",
+            "metrics",
+            "code_coverage",
+            "test_history",
+        ]
     
     def register_view(self, name: str, view):
         """Register a view with the controller."""
@@ -115,6 +124,11 @@ class TUIController:
         if self.show_help:
             self.show_help = False
             return True
+
+        # Global page navigation with arrows
+        if key in ("left", "right") and self.current_view_name:
+            if self._switch_adjacent_view(-1 if key == "left" else 1):
+                return True
         
         # Give view first chance to handle key
         current_view = self.get_current_view()
@@ -124,6 +138,19 @@ class TUIController:
         
         # If view didn't handle it, try global keys
         return self._handle_global_key(key)
+
+    def _switch_adjacent_view(self, direction: int) -> bool:
+        """Switch to previous/next registered top-level view."""
+        if self.current_view_name not in self._view_order:
+            return False
+
+        available = [v for v in self._view_order if v in self.views]
+        if len(available) < 2:
+            return False
+
+        idx = available.index(self.current_view_name)
+        new_idx = (idx + direction) % len(available)
+        return self.switch_view(available[new_idx])
     
     def _handle_global_key(self, key: str) -> bool:
         """

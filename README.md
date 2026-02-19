@@ -185,6 +185,7 @@ See documentation for complete import examples and supported formats.
 ## Documentation
 
 - [MCP Server Documentation](MCP_SERVER.md)
+- [Python SQLite Performance Report](PYTHON_SQLITE_PERFORMANCE_REPORT.md)
 - [UCIS Standard](https://www.accellera.org/activities/committees/ucis)
 
 ## License
@@ -196,4 +197,3 @@ Apache 2.0
 - [PyPI](https://pypi.org/project/pyucis/)
 - [GitHub](https://github.com/fvutils/pyucis)
 - [Issue Tracker](https://github.com/fvutils/pyucis/issues)
-
