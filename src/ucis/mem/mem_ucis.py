@@ -97,6 +97,47 @@ class MemUCIS(MemScope,UCIS):
         if len(separator) != 1:
             raise ValueError("Path separator must be a single character")
         self._path_separator = separator
+
+    def removeScope(self, scope) -> None:
+        """Remove a scope (and its subtree) from the database."""
+        def _remove_from(parent, target):
+            if target in parent.m_children:
+                parent.m_children.remove(target)
+                return True
+            for child in parent.m_children:
+                if hasattr(child, 'm_children') and _remove_from(child, target):
+                    return True
+            return False
+        _remove_from(self, scope)
+
+    def matchScopeByUniqueId(self, uid: str):
+        """Find a scope by its UNIQUE_ID string property (depth-first walk)."""
+        from ucis.str_property import StrProperty
+        def _walk(scope):
+            if hasattr(scope, '_str_properties'):
+                if scope._str_properties.get(StrProperty.UNIQUE_ID) == uid:
+                    return scope
+            for child in getattr(scope, 'm_children', []):
+                result = _walk(child)
+                if result is not None:
+                    return result
+            return None
+        return _walk(self)
+
+    def matchCoverByUniqueId(self, uid: str):
+        """Find (scope, coverindex) by UNIQUE_ID on a cover item."""
+        def _walk(scope):
+            for i, item in enumerate(getattr(scope, 'm_cover_items', [])):
+                if hasattr(item, '_str_properties'):
+                    from ucis.str_property import StrProperty
+                    if item._str_properties.get(StrProperty.UNIQUE_ID) == uid:
+                        return (scope, i)
+            for child in getattr(scope, 'm_children', []):
+                result = _walk(child)
+                if result is not None:
+                    return result
+            return (None, -1)
+        return _walk(self)
     
 
     

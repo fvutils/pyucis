@@ -242,6 +242,53 @@ class SqliteUCIS(SqliteScope, UCIS):
     def modifiedSinceSim(self) -> bool:
         """Check if modified since simulation"""
         return self._modified
+
+    def removeScope(self, scope) -> None:
+        """Remove a scope and its entire subtree from the database."""
+        scope_id = scope.scope_id
+        # Recursively collect all descendant scope_ids
+        def _collect_ids(sid):
+            ids = [sid]
+            cursor = self.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id = ?", (sid,)
+            )
+            for row in cursor.fetchall():
+                ids.extend(_collect_ids(row[0]))
+            return ids
+        all_ids = _collect_ids(scope_id)
+        for sid in reversed(all_ids):
+            self.conn.execute("DELETE FROM coveritems WHERE scope_id = ?", (sid,))
+            self.conn.execute("DELETE FROM scope_properties WHERE scope_id = ?", (sid,))
+            self.conn.execute("DELETE FROM scopes WHERE scope_id = ?", (sid,))
+
+    def matchScopeByUniqueId(self, uid: str):
+        """Find a scope by its UNIQUE_ID string property."""
+        from ucis.str_property import StrProperty
+        cursor = self.conn.execute(
+            """SELECT scope_id FROM scope_properties
+               WHERE property_key = ? AND string_value = ?""",
+            (int(StrProperty.UNIQUE_ID), uid)
+        )
+        row = cursor.fetchone()
+        if row:
+            from ucis.sqlite.sqlite_scope import SqliteScope
+            return SqliteScope(self, row[0])
+        return None
+
+    def matchCoverByUniqueId(self, uid: str):
+        """Find (scope, coverindex) by UNIQUE_ID on a cover item."""
+        from ucis.str_property import StrProperty
+        cursor = self.conn.execute(
+            """SELECT cp.scope_id, cp.cover_index
+               FROM coveritem_properties cp
+               WHERE cp.property_key = ? AND cp.string_value = ?""",
+            (int(StrProperty.UNIQUE_ID), uid)
+        )
+        row = cursor.fetchone()
+        if row:
+            from ucis.sqlite.sqlite_scope import SqliteScope
+            return (SqliteScope(self, row[0]), row[1])
+        return (None, -1)
     
     def getNumTests(self) -> int:
         """Get number of test history nodes"""

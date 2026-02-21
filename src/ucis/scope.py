@@ -386,6 +386,17 @@ class Scope(Obj):
         """
         raise UnimplError()
 
+    def removeCover(self, coverindex: int) -> None:
+        """Remove a cover item from this scope by index.
+
+        Args:
+            coverindex: Zero-based index of the cover item to remove.
+
+        See Also:
+            UCIS LRM Section 8.11.3 "ucis_RemoveCover"
+        """
+        raise UnimplError()
+
     def getWeight(self):
         """Get the weight of this scope.
         

@@ -364,6 +364,19 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         for row in cursor:
             yield SqliteCoverIndex(self.ucis_db, row[0])
     
+    def removeCover(self, coverindex: int) -> None:
+        """Remove cover item at the given index from this scope."""
+        cursor = self.ucis_db.conn.execute(
+            "SELECT cover_id FROM coveritems WHERE scope_id = ? ORDER BY cover_index",
+            (self.scope_id,)
+        )
+        rows = cursor.fetchall()
+        if 0 <= coverindex < len(rows):
+            cover_id = rows[coverindex][0]
+            self.ucis_db.conn.execute(
+                "DELETE FROM coveritems WHERE cover_id = ?", (cover_id,)
+            )
+
     def getIntProperty(self, coverindex: int, property: IntProperty) -> int:
         """Get integer property with scope-specific handling"""
         if property == IntProperty.SCOPE_WEIGHT:

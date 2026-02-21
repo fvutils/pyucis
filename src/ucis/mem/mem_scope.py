@@ -268,4 +268,13 @@ class MemScope(MemObj,Scope):
         if not hasattr(self, '_tags'):
             return set()
         return set(self._tags)
+
+    def removeCover(self, coverindex: int) -> None:
+        """Remove cover item at the given index from this scope."""
+        # Remove from both cover item lists
+        if 0 <= coverindex < len(self.m_cover_items):
+            self.m_cover_items.pop(coverindex)
+        # Also remove from m_cover_item_l if present (MemInstanceScope)
+        if hasattr(self, 'm_cover_item_l') and 0 <= coverindex < len(self.m_cover_item_l):
+            self.m_cover_item_l.pop(coverindex)
     
