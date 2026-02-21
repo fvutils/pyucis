@@ -63,6 +63,7 @@ class MemUCIS(MemScope,UCIS):
         self.file_handle_m : Dict[str,MemFileHandle] = {}
         self.m_history_node_l = []
         self.m_instance_coverage_l = []
+        self._path_separator = '/'
         
         self.m_du_scope_l = []
         self.m_inst_scope_l = []
@@ -86,6 +87,16 @@ class MemUCIS(MemScope,UCIS):
         if filename not in self.file_handle_m.keys():
             self.file_handle_m[filename] = MemFileHandle(filename)
         return self.file_handle_m[filename]
+
+    def getPathSeparator(self) -> str:
+        """Get the hierarchical path separator (default '/')."""
+        return self._path_separator
+
+    def setPathSeparator(self, separator: str):
+        """Set the hierarchical path separator."""
+        if len(separator) != 1:
+            raise ValueError("Path separator must be a single character")
+        self._path_separator = separator
     
 
     

@@ -227,6 +227,8 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def setPathSeparator(self, sep: str):
         """Set path separator"""
+        if len(sep) != 1:
+            raise ValueError("Path separator must be a single character")
         self.conn.execute(
             "INSERT OR REPLACE INTO db_metadata (key, value) VALUES ('PATH_SEPARATOR', ?)",
             (sep,)
