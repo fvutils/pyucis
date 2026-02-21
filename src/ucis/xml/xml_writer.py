@@ -185,12 +185,78 @@ class XmlWriter():
         self.addId(inst, s.getSourceInfo())
         
         self.write_covergroups(inst, s)
+        self.write_toggle_coverage(inst, s)
+        self.write_block_coverage(inst, s)
+        self.write_branch_coverage(inst, s)
         
         # Recursively write child instances
         for child in s.scopes(ScopeTypeT.INSTANCE):
             self.write_instance_coverages(child, instance_id)
         
         
+    def write_toggle_coverage(self, inst_elem, scope):
+        toggle_scopes = list(scope.scopes(ScopeTypeT.TOGGLE))
+        if not toggle_scopes:
+            return
+        tc_elem = self.mkElem(inst_elem, "toggleCoverage")
+        for i, toggle_scope in enumerate(toggle_scopes):
+            to_elem = self.mkElem(tc_elem, "toggleObject")
+            to_elem.set("name", toggle_scope.getScopeName())
+            to_elem.set("key", str(i))
+            self.addId(to_elem, toggle_scope.getSourceInfo())
+            bins = list(toggle_scope.coverItems(CoverTypeT.TOGGLEBIN))
+            if bins:
+                tb_elem = self.mkElem(to_elem, "toggleBit")
+                tb_elem.set("name", "bit0")
+                tb_elem.set("key", "0")
+                for bin_item in bins:
+                    name = bin_item.getName()
+                    if "to" in name.lower():
+                        parts = name.lower().split("to", 1)
+                        from_val, to_val = parts[0], parts[1]
+                    else:
+                        from_val, to_val = "0", "1"
+                    toggle_elem = self.mkElem(tb_elem, "toggle")
+                    toggle_elem.set("from", from_val)
+                    toggle_elem.set("to", to_val)
+                    bin_elem = self.mkElem(toggle_elem, "bin")
+                    contents_elem = self.mkElem(bin_elem, "contents")
+                    contents_elem.set("coverageCount", str(bin_item.getCoverData().data))
+
+    def write_block_coverage(self, inst_elem, scope):
+        block_scopes = list(scope.scopes(ScopeTypeT.BLOCK))
+        if not block_scopes:
+            return
+        bc_elem = self.mkElem(inst_elem, "blockCoverage")
+        for block_scope in block_scopes:
+            stmts = list(block_scope.coverItems(CoverTypeT.STMTBIN))
+            for stmt in stmts:
+                stmt_elem = self.mkElem(bc_elem, "statement")
+                stmt_elem.set("alias", stmt.getName())  # use alias to preserve name
+                self.addId(stmt_elem, stmt.getSourceInfo())
+                bin_elem = self.mkElem(stmt_elem, "bin")
+                contents_elem = self.mkElem(bin_elem, "contents")
+                contents_elem.set("coverageCount", str(stmt.getCoverData().data))
+
+    def write_branch_coverage(self, inst_elem, scope):
+        branch_scopes = list(scope.scopes(ScopeTypeT.BRANCH))
+        if not branch_scopes:
+            return
+        bc_elem = self.mkElem(inst_elem, "branchCoverage")
+        for i, branch_scope in enumerate(branch_scopes):
+            stmt_elem = self.mkElem(bc_elem, "statement")
+            stmt_elem.set("statementType", "if")
+            stmt_elem.set("branchExpr", branch_scope.getScopeName())
+            self.addId(stmt_elem, branch_scope.getSourceInfo())
+            arms = list(branch_scope.coverItems(CoverTypeT.BRANCHBIN))
+            for j, arm in enumerate(arms):
+                branch_elem = self.mkElem(stmt_elem, "branch")
+                self.addId(branch_elem, arm.getSourceInfo())
+                bb_elem = self.mkElem(branch_elem, "branchBin")
+                bb_elem.set("alias", arm.getName())  # use alias to preserve name
+                contents_elem = self.mkElem(bb_elem, "contents")
+                contents_elem.set("coverageCount", str(arm.getCoverData().data))
+
     def write_covergroups(self, inst, scope):
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):
             cgElem = self.mkElem(inst, "covergroupCoverage")

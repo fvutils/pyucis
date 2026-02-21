@@ -11,9 +11,6 @@ from tests.conversion.builders.ucis_builders import ALL_BUILDERS
 
 # Builders whose features are NOT yet round-trippable through XML (writer gap)
 _XML_WRITER_UNIMPLEMENTED = {
-    "cc1_statement_coverage",
-    "cc2_branch_coverage",
-    "cc5_toggle_coverage",
 }
 
 @pytest.fixture
