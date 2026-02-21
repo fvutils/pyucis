@@ -55,71 +55,45 @@ def test_view_navigation_with_arrow_keys():
     4. Expected: Still on hierarchy view, DOWN handled by view
     5. Bug: Goes back to dashboard
     """
+    from ucis.tui.controller import TUIController
+
     print("\n" + "="*60)
     print("Test: Navigation from Dashboard -> Hierarchy -> DOWN arrow")
     print("="*60)
     
-    # Create app (don't call run(), we'll test manually)
+    # Create app and controller (don't call run())
     app = TUIApp("test.db")
     app.coverage_model = MockCoverageModel()
-    app.running = True
-    
+    controller = TUIController(app.coverage_model)
+    controller.running = True
+
     # Create mock views
     dashboard = MockView("Dashboard", handles_keys=[])
     hierarchy = MockView("Hierarchy", handles_keys=['up', 'down', 'enter'])
-    
-    app.views = {
-        'dashboard': dashboard,
-        'hierarchy': hierarchy,
-    }
-    
-    # Set initial view to dashboard
-    app.current_view = dashboard
-    dashboard.focused = True
-    
-    print(f"\n1. Initial state: current_view = {app.current_view.name}")
-    assert app.current_view == dashboard
-    
+
+    controller.register_view('dashboard', dashboard)
+    controller.register_view('hierarchy', hierarchy)
+    controller.switch_view('dashboard')
+
+    print(f"\n1. Initial state: current_view = {controller.get_current_view().name}")
+    assert controller.get_current_view() == dashboard
+
     # Simulate pressing '2' to go to hierarchy
     print("\n2. User presses '2' (switch to hierarchy)...")
-    handled = app.key_handler.handle_global_key('2')
-    
-    print(f"   Global handler handled '2': {handled}")
-    print(f"   Current view after '2': {app.current_view.name if app.current_view else 'None'}")
-    
-    # View should now be hierarchy
-    assert app.current_view == hierarchy, f"Expected hierarchy, got {app.current_view.name}"
+    handled = controller.handle_key('2')
+    print(f"   Handled: {handled}")
+    assert controller.get_current_view() == hierarchy, \
+        f"Expected hierarchy, got {controller.get_current_view().name}"
     print("   ✓ Successfully switched to hierarchy view")
-    
+
     # Simulate pressing DOWN arrow
     print("\n3. User presses DOWN arrow...")
-    
-    # First, let view try to handle it
-    view_handled = app.current_view.handle_key('down')
+    view_handled = controller.handle_key('down')
     print(f"   View handled 'down': {view_handled}")
-    print(f"   Keys received by hierarchy: {hierarchy.keys_received}")
-    
-    if not view_handled:
-        # If view didn't handle it, global handler tries
-        global_handled = app.key_handler.handle_global_key('down')
-        print(f"   Global handler handled 'down': {global_handled}")
-    
-    print(f"   Current view after DOWN: {app.current_view.name if app.current_view else 'None'}")
-    
-    # Check final state
-    print("\n4. Final state check:")
-    print(f"   Current view: {app.current_view.name}")
-    print(f"   Expected: Hierarchy")
-    
-    if app.current_view == hierarchy:
-        print("   ✓ PASS - Still on hierarchy view")
-    else:
-        print(f"   ✗ FAIL - Unexpectedly on {app.current_view.name} view")
-        print("\n   This reproduces the bug! DOWN arrow caused navigation away from hierarchy.")
-    
-    assert app.current_view == hierarchy, \
-        f"BUG: After DOWN arrow, should be on hierarchy but on {app.current_view.name}"
-    
+    print(f"   Current view after DOWN: {controller.get_current_view().name}")
+
+    assert controller.get_current_view() == hierarchy, \
+        f"BUG: After DOWN arrow, should be on hierarchy but on {controller.get_current_view().name}"
     print("\n" + "="*60)
 
 
@@ -168,53 +142,40 @@ def test_complete_navigation_flow():
     - User presses '2' -> hierarchy shows
     - User presses DOWN arrow -> hierarchy should handle it
     """
+    from ucis.tui.controller import TUIController
+
     print("\n" + "="*60)
     print("Test: Complete navigation flow with KeyParser")
     print("="*60)
-    
-    # Create app
+
     app = TUIApp("test.db")
     app.coverage_model = MockCoverageModel()
-    
-    # Create mock views
+    controller = TUIController(app.coverage_model)
+    controller.running = True
+
     dashboard = MockView("Dashboard")
     hierarchy = MockView("Hierarchy", handles_keys=['up', 'down', 'enter'])
-    
-    app.views = {
-        'dashboard': dashboard,
-        'hierarchy': hierarchy,
-    }
-    app.current_view = dashboard
-    
-    # Test sequence
+
+    controller.register_view('dashboard', dashboard)
+    controller.register_view('hierarchy', hierarchy)
+    controller.switch_view('dashboard')
+
     keys = ['2', 'down']
-    
     for i, key in enumerate(keys):
         print(f"\n{i+1}. Processing key: '{key}'")
-        print(f"   Current view before: {app.current_view.name}")
-        
-        # This is what the main loop does
-        handled = False
-        if app.current_view:
-            handled = app.current_view.handle_key(key)
-            print(f"   View handled: {handled}")
-        
-        if not handled:
-            app.key_handler.handle_global_key(key)
-            print(f"   Global handler processed key")
-        
-        print(f"   Current view after: {app.current_view.name}")
-    
+        print(f"   Current view before: {controller.get_current_view().name}")
+        controller.handle_key(key)
+        print(f"   Current view after: {controller.get_current_view().name}")
+
     print(f"\n3. Final check:")
-    print(f"   Current view: {app.current_view.name}")
-    print(f"   Expected: Hierarchy")
+    print(f"   Current view: {controller.get_current_view().name}")
     print(f"   Hierarchy received keys: {hierarchy.keys_received}")
-    
-    assert app.current_view == hierarchy, \
-        f"Should still be on hierarchy, but on {app.current_view.name}"
+
+    assert controller.get_current_view() == hierarchy, \
+        f"Should still be on hierarchy, but on {controller.get_current_view().name}"
     assert 'down' in hierarchy.keys_received, \
         "Hierarchy should have received 'down' key"
-    
+
     print("\n✓ PASS - Navigation flow works correctly")
     print("="*60)
 
