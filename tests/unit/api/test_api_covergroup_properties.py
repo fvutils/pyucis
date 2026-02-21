@@ -95,8 +95,8 @@ class TestApiCovergroupProperties:
     def test_covergroup_comment(self, backend):
         """Test setComment/getComment on covergroup"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name in ("xml", "sqlite"):
-            pytest.skip("This backend doesn't persist comment via setComment/getComment roundtrip")
+        if backend_name == "xml":
+            pytest.skip("XML backend does not support covergroup comment persistence")
 
         db = create_db()
         cg, cgi, cp = self._make_cg_cp(db)

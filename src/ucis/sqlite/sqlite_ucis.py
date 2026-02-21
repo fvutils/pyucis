@@ -166,7 +166,39 @@ class SqliteUCIS(SqliteScope, UCIS):
         obj._test_coverage = None  # Test coverage query API
 
         return obj
-    
+
+    def clone(self) -> 'SqliteUCIS':
+        """Return a new SqliteUCIS that is an independent copy of this database."""
+        self.conn.commit()  # ensure all changes are committed before backup
+        new_conn = sqlite3.connect(":memory:")
+        new_conn.row_factory = sqlite3.Row
+        self.conn.backup(new_conn)
+
+        obj = object.__new__(SqliteUCIS)
+        obj.db_path = ":memory:"
+        obj.conn = new_conn
+        obj.ucis_db = obj
+
+        row = new_conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id IS NULL LIMIT 1"
+        ).fetchone()
+        obj.scope_id = row[0] if row else 1
+        obj._loaded = False
+        obj._scope_name = None
+        obj._scope_type = None
+        obj._scope_flags = None
+        obj._weight = None
+        obj._goal = 100
+        obj._parent_id = None
+        obj._source_info = None
+        obj._initializing = False
+        obj._property_cache = {}
+        obj._file_handle_cache = {}
+        obj._modified = False
+        obj._readonly = False
+        obj._test_coverage = None
+        return obj
+
     def getAPIVersion(self) -> str:
         """Get API version"""
         cursor = self.conn.execute(

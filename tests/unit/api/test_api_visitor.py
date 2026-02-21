@@ -164,10 +164,10 @@ class TestApiVisitor:
         assert v.count == 3
 
     def test_clone_database(self, backend):
-        """Test cloning a Mem database"""
+        """Test cloning a database"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name != "memory":
-            pytest.skip("clone() only implemented for memory backend")
+        if backend_name == "xml":
+            pytest.skip("clone() not applicable for XML backend")
 
         from ucis.mem.mem_factory import MemFactory
 

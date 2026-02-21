@@ -55,8 +55,8 @@ class TestApiStrProperties:
     def test_comment_round_trip(self, backend):
         """COMMENT can be set and retrieved on a scope"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "sqlite":
-            pytest.skip("SQLite comment not yet persisted to DB")
+        if backend_name == "xml":
+            pytest.skip("XML backend does not support COMMENT string property")
         db = create_db()
         inst = self._make_db_with_inst(db)
         inst.setStringProperty(-1, StrProperty.COMMENT, "my comment")
