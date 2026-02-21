@@ -80,14 +80,33 @@ class DbMerger(object):
             self._merge_code_coverage(dst_iscope, src_scopes)
 
         # Copy history nodes from all source databases
+        def _node_key(n):
+            """Stable key for a history node regardless of backend."""
+            return getattr(n, 'history_id', id(n))
+
         for db in src_db_l:
-            for src_hn in db.historyNodes(HistoryNodeKind.ALL):
+            src_nodes = list(db.historyNodes(HistoryNodeKind.ALL))
+            src_to_dst = {}  # maps _node_key(src_node) → dst_node
+
+            # Sort so parents are created before children
+            def _sort_key(n):
+                depth = 0
+                p = n.getParent()
+                while p is not None:
+                    depth += 1
+                    p = p.getParent()
+                return depth
+
+            for src_hn in sorted(src_nodes, key=_sort_key):
+                src_parent = src_hn.getParent()
+                dst_parent = src_to_dst.get(_node_key(src_parent)) if src_parent is not None else None
                 dst_hn = dst_db.createHistoryNode(
-                    None,
+                    dst_parent,
                     src_hn.getLogicalName(),
                     src_hn.getPhysicalName(),
                     src_hn.getKind()
                 )
+                src_to_dst[_node_key(src_hn)] = dst_hn
                 dst_hn.setTestStatus(src_hn.getTestStatus())
                 if src_hn.getSimTime() is not None:
                     dst_hn.setSimTime(src_hn.getSimTime())
@@ -304,6 +323,13 @@ class DbMerger(object):
         
         # Merge TOGGLE scopes (toggle coverage)
         self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.TOGGLE)
+
+        # Merge FSM scopes (FSM state/transition coverage)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.FSM)
+
+        # Merge assertion scopes (assert/cover directives)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.ASSERT)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.COVER)
     
     def _merge_scopes_by_type(self, dst_parent, src_scopes, scope_type):
         """Merge scopes of a specific type.
@@ -362,6 +388,15 @@ class DbMerger(object):
             CoverTypeT.EXPRBIN,     # Expression coverage
             CoverTypeT.CONDBIN,     # Condition coverage
             CoverTypeT.FSMBIN,      # FSM coverage
+            CoverTypeT.ASSERTBIN,   # Assertion directive bins
+            CoverTypeT.COVERBIN,
+            CoverTypeT.PASSBIN,
+            CoverTypeT.FAILBIN,
+            CoverTypeT.VACUOUSBIN,
+            CoverTypeT.DISABLEDBIN,
+            CoverTypeT.ATTEMPTBIN,
+            CoverTypeT.ACTIVEBIN,
+            CoverTypeT.PEAKACTIVEBIN,
         ]
         
         for cvg_type in coverage_types:

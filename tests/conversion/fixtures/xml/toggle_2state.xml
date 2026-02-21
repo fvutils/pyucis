@@ -1,0 +1,25 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="mballance" writtenTime="1771-07-09T02:03:05" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <sourceFiles fileName="sig.sv" id="2"/>
+  <historyNodes historyNodeId="0" logicalName="test_basic" physicalName="./run.sh" kind="1" testStatus="true" seed="42" date="2024-01-01T12:00:00" toolCategory="simulator" ucisVersion="1.0" vendorId="unknown" vendorTool="unknown" vendorToolVersion="unknown"/>
+  <instanceCoverages name="sig_inst" key="0" instanceId="0" moduleName="work.sig">
+    <id file="2" line="1" inlineCount="1"/>
+    <toggleCoverage>
+      <toggleObject name="clk" key="0">
+        <id file="2" line="5" inlineCount="1"/>
+        <toggleBit name="bit0" key="0">
+          <toggle from="0" to="1">
+            <bin>
+              <contents coverageCount="100"/>
+            </bin>
+          </toggle>
+          <toggle from="1" to="0">
+            <bin>
+              <contents coverageCount="99"/>
+            </bin>
+          </toggle>
+        </toggleBit>
+      </toggleObject>
+    </toggleCoverage>
+  </instanceCoverages>
+</UCIS>

@@ -1,0 +1,25 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="mballance" writtenTime="1771-07-09T02:03:05" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <sourceFiles fileName="ctrl.sv" id="2"/>
+  <historyNodes historyNodeId="0" logicalName="test_basic" physicalName="./run.sh" kind="1" testStatus="true" seed="42" date="2024-01-01T12:00:00" toolCategory="simulator" ucisVersion="1.0" vendorId="unknown" vendorTool="unknown" vendorToolVersion="unknown"/>
+  <instanceCoverages name="ctrl_inst" key="0" instanceId="0" moduleName="work.ctrl">
+    <id file="2" line="1" inlineCount="1"/>
+    <branchCoverage>
+      <statement statementType="if" branchExpr="if_20">
+        <id file="2" line="20" inlineCount="1"/>
+        <branch>
+          <id file="2" line="20" inlineCount="1"/>
+          <branchBin alias="true_arm">
+            <contents coverageCount="5"/>
+          </branchBin>
+        </branch>
+        <branch>
+          <id file="2" line="21" inlineCount="1"/>
+          <branchBin alias="false_arm">
+            <contents coverageCount="3"/>
+          </branchBin>
+        </branch>
+      </statement>
+    </branchCoverage>
+  </instanceCoverages>
+</UCIS>

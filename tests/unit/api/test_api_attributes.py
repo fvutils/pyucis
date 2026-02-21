@@ -45,8 +45,6 @@ class TestApiAttributes:
     def test_set_get_attribute(self, backend):
         """Test setting and getting a string attribute"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "xml":
-            pytest.skip("XML backend does not support user attributes")
 
         db = create_db()
         inst = self._make_inst(db)
@@ -57,8 +55,6 @@ class TestApiAttributes:
     def test_get_nonexistent_attribute(self, backend):
         """Test getting a non-existent attribute returns None"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "xml":
-            pytest.skip("XML backend does not support user attributes")
 
         db = create_db()
         inst = self._make_inst(db)
@@ -69,8 +65,6 @@ class TestApiAttributes:
     def test_multiple_attributes(self, backend):
         """Test setting multiple attributes"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "xml":
-            pytest.skip("XML backend does not support user attributes")
 
         db = create_db()
         inst = self._make_inst(db)
@@ -86,8 +80,6 @@ class TestApiAttributes:
     def test_get_all_attributes(self, backend):
         """Test getting all attributes as a dict"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "xml":
-            pytest.skip("XML backend does not support user attributes")
 
         db = create_db()
         inst = self._make_inst(db)
@@ -102,8 +94,6 @@ class TestApiAttributes:
     def test_delete_attribute(self, backend):
         """Test deleting an attribute"""
         backend_name, create_db, write_db, read_db, temp_file = backend
-        if backend_name == "xml":
-            pytest.skip("XML backend does not support user attributes")
 
         db = create_db()
         inst = self._make_inst(db)

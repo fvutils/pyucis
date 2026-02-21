@@ -66,11 +66,14 @@ class XmlWriter():
             "ucis" : XmlWriter.UCIS
             })
         # TODO: these aren't really UCIS properties
-        self.setAttr(self.root, "writtenBy", getpass.getuser())
-        self.setAttrDateTime(self.root, "writtenTime", date.today().strftime("%Y%m%d%H%M%S"))
-        
-#        self.setAttr(self.root, "writtenBy", db.getWrittenBy())
-#        self.setAttrDateTime(self.root, "writtenTime", db.getWrittenTime())
+        wb = db.getWrittenBy()
+        self.setAttr(self.root, "writtenBy", wb if wb else getpass.getuser())
+        wt = db.getWrittenTime()
+        if wt:
+            self.setAttrDateTime(self.root, "writtenTime", str(wt))
+        else:
+            self.setAttrDateTime(self.root, "writtenTime",
+                                 date.today().strftime("%Y%m%d%H%M%S"))
         
         self.setAttr(self.root, "ucisVersion", db.getAPIVersion())
         
@@ -102,12 +105,17 @@ class XmlWriter():
 #        histNodes = self.root.SubElement(self.root, "historyNodes")
 
         have_hist_nodes = False
+        node_id_m = {}  # maps history node object → assigned id
         for i,h in enumerate(self.db.getHistoryNodes(HistoryNodeKind.ALL)):
+            node_id_m[id(h)] = i
             histN = self.mkElem(self.root, "historyNodes")
             histN.set("historyNodeId", str(i))
             have_hist_nodes = True
-            
-            # TODO: parent
+
+            parent = h.getParent()
+            if parent is not None and id(parent) in node_id_m:
+                histN.set("parentId", str(node_id_m[id(parent)]))
+
             histN.set("logicalName", h.getLogicalName())
             self.setIfNonNull(histN, "physicalName", h.getPhysicalName())
             self.setIfNonNull(histN, "kind", h.getKind())
@@ -162,6 +170,16 @@ class XmlWriter():
             
             # TODO: userAttr
             
+    def write_user_attrs(self, elem, scope):
+        """Emit <userAttr> children for any attributes on the scope."""
+        if not hasattr(scope, 'getAttributes'):
+            return
+        for key, val in scope.getAttributes().items():
+            attrN = self.mkElem(elem, "userAttr")
+            attrN.set("key", key)
+            attrN.set("type", "str")
+            attrN.text = str(val)
+
     def write_instance_coverages(self, s, parent_instance_id=None):
         # Assign instance ID
         instance_id = self.next_instance_id
@@ -188,6 +206,18 @@ class XmlWriter():
         self.write_toggle_coverage(inst, s)
         self.write_block_coverage(inst, s)
         self.write_branch_coverage(inst, s)
+        self.write_fsm_coverage(inst, s)
+        self.write_assertion_coverage(inst, s)
+        # Warn once per instance if condition/expression scopes are present
+        warned = False
+        for _ in s.scopes(ScopeTypeT.COND):
+            if not warned and self.ctx is not None:
+                self.ctx.warn(
+                    "xml: condition/expression coverage is not supported "
+                    "— scopes skipped")
+            warned = True
+            break
+        self.write_user_attrs(inst, s)
         
         # Recursively write child instances
         for child in s.scopes(ScopeTypeT.INSTANCE):
@@ -222,6 +252,7 @@ class XmlWriter():
                     bin_elem = self.mkElem(toggle_elem, "bin")
                     contents_elem = self.mkElem(bin_elem, "contents")
                     contents_elem.set("coverageCount", str(bin_item.getCoverData().data))
+        self.write_user_attrs(tc_elem, scope)
 
     def write_block_coverage(self, inst_elem, scope):
         block_scopes = list(scope.scopes(ScopeTypeT.BLOCK))
@@ -237,6 +268,7 @@ class XmlWriter():
                 bin_elem = self.mkElem(stmt_elem, "bin")
                 contents_elem = self.mkElem(bin_elem, "contents")
                 contents_elem.set("coverageCount", str(stmt.getCoverData().data))
+        self.write_user_attrs(bc_elem, scope)
 
     def write_branch_coverage(self, inst_elem, scope):
         branch_scopes = list(scope.scopes(ScopeTypeT.BRANCH))
@@ -256,6 +288,77 @@ class XmlWriter():
                 bb_elem.set("alias", arm.getName())  # use alias to preserve name
                 contents_elem = self.mkElem(bb_elem, "contents")
                 contents_elem.set("coverageCount", str(arm.getCoverData().data))
+        self.write_user_attrs(bc_elem, scope)
+
+    def write_fsm_coverage(self, inst_elem, scope):
+        fsm_scopes = list(scope.scopes(ScopeTypeT.FSM))
+        if not fsm_scopes:
+            return
+        fc_elem = self.mkElem(inst_elem, "fsmCoverage")
+        for fsm_scope in fsm_scopes:
+            fsm_elem = self.mkElem(fc_elem, "fsm")
+            fsm_elem.set("name", fsm_scope.getScopeName())
+            fsm_elem.set("type", "reg")
+            fsm_elem.set("width", "1")
+            bins = list(fsm_scope.coverItems(CoverTypeT.FSMBIN))
+            # States must come before transitions in XML (schema order)
+            for bin_item in bins:
+                if "->" not in bin_item.getName():
+                    state_elem = self.mkElem(fsm_elem, "state")
+                    state_elem.set("stateName", bin_item.getName())
+                    state_elem.set("stateValue", str(bins.index(bin_item)))
+                    sb_elem = self.mkElem(state_elem, "stateBin")
+                    contents = self.mkElem(sb_elem, "contents")
+                    contents.set("coverageCount", str(bin_item.getCoverData().data))
+            for bin_item in bins:
+                if "->" in bin_item.getName():
+                    parts = bin_item.getName().split("->", 1)
+                    trans_elem = self.mkElem(fsm_elem, "stateTransition")
+                    from_elem = self.mkElem(trans_elem, "state")
+                    from_elem.text = parts[0]
+                    to_elem = self.mkElem(trans_elem, "state")
+                    to_elem.text = parts[1]
+                    tb_elem = self.mkElem(trans_elem, "transitionBin")
+                    contents = self.mkElem(tb_elem, "contents")
+                    contents.set("coverageCount", str(bin_item.getCoverData().data))
+        self.write_user_attrs(fc_elem, scope)
+
+    def write_assertion_coverage(self, inst_elem, scope):
+        assert_scopes = (list(scope.scopes(ScopeTypeT.ASSERT))
+                         + list(scope.scopes(ScopeTypeT.COVER)))
+        if not assert_scopes:
+            return
+        ac_elem = self.mkElem(inst_elem, "assertionCoverage")
+        # XML schema requires bins in this fixed order
+        _ASSERT_BIN_ORDER = [
+            (CoverTypeT.COVERBIN,      "coverBin"),
+            (CoverTypeT.PASSBIN,       "passBin"),
+            (CoverTypeT.ASSERTBIN,     "failBin"),   # assert fail → failBin
+            (CoverTypeT.FAILBIN,       "failBin"),   # cover fail → failBin
+            (CoverTypeT.VACUOUSBIN,    "vacuousBin"),
+            (CoverTypeT.DISABLEDBIN,   "disabledBin"),
+            (CoverTypeT.ATTEMPTBIN,    "attemptBin"),
+            (CoverTypeT.ACTIVEBIN,     "activeBin"),
+            (CoverTypeT.PEAKACTIVEBIN, "peakActiveBin"),
+        ]
+        for assert_scope in assert_scopes:
+            kind = ("assert" if assert_scope.getScopeType() & ScopeTypeT.ASSERT
+                    else "cover")
+            asrt_elem = self.mkElem(ac_elem, "assertion")
+            asrt_elem.set("name", assert_scope.getScopeName())
+            asrt_elem.set("assertionKind", kind)
+            emitted = set()
+            for cover_type, xml_name in _ASSERT_BIN_ORDER:
+                if xml_name in emitted:
+                    continue  # don't emit failBin twice
+                bins = list(assert_scope.coverItems(cover_type))
+                if bins:
+                    emitted.add(xml_name)
+                    bin_elem = self.mkElem(asrt_elem, xml_name)
+                    contents = self.mkElem(bin_elem, "contents")
+                    contents.set("coverageCount",
+                                 str(sum(b.getCoverData().data for b in bins)))
+        self.write_user_attrs(ac_elem, scope)
 
     def write_covergroups(self, inst, scope):
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):

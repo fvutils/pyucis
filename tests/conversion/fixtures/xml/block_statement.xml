@@ -1,0 +1,16 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="mballance" writtenTime="1771-07-09T02:03:05" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <sourceFiles fileName="alu.sv" id="2"/>
+  <historyNodes historyNodeId="0" logicalName="test_basic" physicalName="./run.sh" kind="1" testStatus="true" seed="42" date="2024-01-01T12:00:00" toolCategory="simulator" ucisVersion="1.0" vendorId="unknown" vendorTool="unknown" vendorToolVersion="unknown"/>
+  <instanceCoverages name="alu_inst" key="0" instanceId="0" moduleName="work.alu">
+    <id file="2" line="1" inlineCount="1"/>
+    <blockCoverage>
+      <statement alias="stmt_10">
+        <id file="2" line="10" inlineCount="1"/>
+        <bin>
+          <contents coverageCount="7"/>
+        </bin>
+      </statement>
+    </blockCoverage>
+  </instanceCoverages>
+</UCIS>

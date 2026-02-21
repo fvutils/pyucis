@@ -15,6 +15,7 @@ from ucis import (
     UCIS_SCOPE_UNDER_DU, UCIS_INST_ONCE, UCIS_HISTORYNODE_TEST,
     UCIS_TESTSTATUS_OK, UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN,
     UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_TOGGLE,
+    UCIS_ENABLED_FSM,
     UCIS_STMTBIN, UCIS_BRANCHBIN, UCIS_TOGGLEBIN,
 )
 from ucis.cover_data import CoverData
@@ -299,6 +300,40 @@ def verify_sm5_multiple_history_nodes(db: UCIS):
 
 
 # ---------------------------------------------------------------------------
+# SM-6: Parent/child history node (parentId round-trip)
+# ---------------------------------------------------------------------------
+
+def build_sm6_parent_child_history(db: UCIS) -> UCIS:
+    """SM-6: One merge node with one child test node (parentId relationship)."""
+    merge_node = db.createHistoryNode(None, "merge_session", None, UCIS_HISTORYNODE_TEST)
+    merge_node.setTestStatus(UCIS_TESTSTATUS_OK)
+    merge_node.setToolCategory("simulator")
+    merge_node.setDate("20240101120000")
+
+    child_node = db.createHistoryNode(merge_node, "test_child", "./test_child.sh", UCIS_HISTORYNODE_TEST)
+    child_node.setTestStatus(UCIS_TESTSTATUS_OK)
+    child_node.setToolCategory("simulator")
+    child_node.setDate("20240101130000")
+
+    fh, du, inst = _make_du_inst(db)
+    cg = inst.createCovergroup("cg_sm6", SourceInfo(fh, 1, 0), 1, UCIS_VLOG)
+    cp = cg.createCoverpoint("cp_sm6", SourceInfo(fh, 2, 0), 1, UCIS_VLOG)
+    cp.createBin("b", SourceInfo(fh, 3, 0), 1, 1, "0", UCIS_CVGBIN)
+    return db
+
+
+def verify_sm6_parent_child_history(db: UCIS):
+    nodes = db.getHistoryNodes(HistoryNodeKind.ALL)
+    parent_nodes = [n for n in nodes if n.getParent() is None]
+    child_nodes  = [n for n in nodes if n.getParent() is not None]
+    assert len(parent_nodes) >= 1
+    assert len(child_nodes) >= 1
+    parent = next(n for n in parent_nodes if n.getLogicalName() == "merge_session")
+    child  = next(n for n in child_nodes  if n.getLogicalName() == "test_child")
+    assert child.getParent().getLogicalName() == parent.getLogicalName()
+
+
+# ---------------------------------------------------------------------------
 # CC-1: Statement coverage
 # ---------------------------------------------------------------------------
 
@@ -415,6 +450,147 @@ def verify_cc5_toggle_coverage(db: UCIS):
 
 
 # ---------------------------------------------------------------------------
+# CC-7: FSM state and transition coverage
+# ---------------------------------------------------------------------------
+
+def build_cc7_fsm_coverage(db: UCIS) -> UCIS:
+    """CC-7: FSM scope with state and transition coverage bins."""
+    _add_test_history(db)
+    fh = db.createFileHandle("fsm.sv", "/project/rtl")
+    du = db.createScope(
+        "work.fsm", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_DU_MODULE,
+        UCIS_SCOPE_UNDER_DU | UCIS_INST_ONCE | UCIS_ENABLED_FSM
+    )
+    inst = db.createInstance(
+        "fsm_inst", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_INSTANCE,
+        du, UCIS_INST_ONCE
+    )
+    fsm = inst.createScope(
+        "state_reg", SourceInfo(fh, 5, 0), 1, UCIS_VLOG,
+        ScopeTypeT.FSM, UCIS_ENABLED_FSM
+    )
+    # States (FSMBIN items without "->")
+    for name, count in [("IDLE", 5), ("ACTIVE", 3), ("DONE", 0)]:
+        cd = CoverData(CoverTypeT.FSMBIN, 0)
+        cd.data = count
+        fsm.createNextCover(name, cd, SourceInfo(fh, 5, 0))
+    # Transitions (FSMBIN items with "from->to")
+    cd_t = CoverData(CoverTypeT.FSMBIN, 0)
+    cd_t.data = 3
+    fsm.createNextCover("IDLE->ACTIVE", cd_t, SourceInfo(fh, 5, 0))
+    cd_t2 = CoverData(CoverTypeT.FSMBIN, 0)
+    cd_t2.data = 0
+    fsm.createNextCover("ACTIVE->DONE", cd_t2, SourceInfo(fh, 5, 0))
+    return db
+
+
+def verify_cc7_fsm_coverage(db: UCIS):
+    insts = list(db.scopes(ScopeTypeT.INSTANCE))
+    inst = next(i for i in insts if i.getScopeName() == "fsm_inst")
+    fsm_scopes = list(inst.scopes(ScopeTypeT.FSM))
+    assert len(fsm_scopes) >= 1
+    bins = {b.getName(): b.getCoverData().data
+            for b in fsm_scopes[0].coverItems(CoverTypeT.FSMBIN)}
+    assert bins.get("IDLE") == 5
+    assert bins.get("ACTIVE") == 3
+    assert bins.get("DONE") == 0
+    assert bins.get("IDLE->ACTIVE") == 3
+    assert bins.get("ACTIVE->DONE") == 0
+
+
+# ---------------------------------------------------------------------------
+# AS-1: Cover directive (COVER scope)
+# ---------------------------------------------------------------------------
+
+def build_as1_cover_assertion(db: UCIS) -> UCIS:
+    """AS-1: Cover directive with cover/fail/attempt bins."""
+    _add_test_history(db)
+    fh = db.createFileHandle("prop.sv", "/project/rtl")
+    du = db.createScope(
+        "work.prop", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_DU_MODULE,
+        UCIS_SCOPE_UNDER_DU | UCIS_INST_ONCE
+    )
+    inst = db.createInstance(
+        "prop_inst", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_INSTANCE,
+        du, UCIS_INST_ONCE
+    )
+    cover_scope = inst.createScope(
+        "prop_valid", SourceInfo(fh, 10, 0), 1, UCIS_VLOG,
+        ScopeTypeT.COVER, 0
+    )
+    for ct, count in [
+        (CoverTypeT.COVERBIN, 8),
+        (CoverTypeT.FAILBIN, 0),
+        (CoverTypeT.ATTEMPTBIN, 8),
+    ]:
+        cd = CoverData(ct, 0)
+        cd.data = count
+        cover_scope.createNextCover(ct.name.lower(), cd, None)
+    return db
+
+
+def verify_as1_cover_assertion(db: UCIS):
+    insts = list(db.scopes(ScopeTypeT.INSTANCE))
+    inst = next(i for i in insts if i.getScopeName() == "prop_inst")
+    cover_scopes = list(inst.scopes(ScopeTypeT.COVER))
+    assert len(cover_scopes) >= 1
+    s = cover_scopes[0]
+    assert s.getScopeName() == "prop_valid"
+    cover_bins = list(s.coverItems(CoverTypeT.COVERBIN))
+    fail_bins   = list(s.coverItems(CoverTypeT.FAILBIN))
+    attempt_bins = list(s.coverItems(CoverTypeT.ATTEMPTBIN))
+    assert sum(b.getCoverData().data for b in cover_bins) == 8
+    assert sum(b.getCoverData().data for b in fail_bins) == 0
+    assert sum(b.getCoverData().data for b in attempt_bins) == 8
+
+
+# ---------------------------------------------------------------------------
+# AS-2: Assert property (ASSERT scope)
+# ---------------------------------------------------------------------------
+
+def build_as2_assert_property(db: UCIS) -> UCIS:
+    """AS-2: Assert property with fail/pass/attempt bins."""
+    _add_test_history(db)
+    fh = db.createFileHandle("chk.sv", "/project/rtl")
+    du = db.createScope(
+        "work.chk", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_DU_MODULE,
+        UCIS_SCOPE_UNDER_DU | UCIS_INST_ONCE
+    )
+    inst = db.createInstance(
+        "chk_inst", SourceInfo(fh, 1, 0), 1, UCIS_VLOG, UCIS_INSTANCE,
+        du, UCIS_INST_ONCE
+    )
+    assert_scope = inst.createScope(
+        "assert_no_overflow", SourceInfo(fh, 20, 0), 1, UCIS_VLOG,
+        ScopeTypeT.ASSERT, 0
+    )
+    for ct, count in [
+        (CoverTypeT.ASSERTBIN, 2),   # fail count
+        (CoverTypeT.PASSBIN, 8),
+        (CoverTypeT.ATTEMPTBIN, 10),
+    ]:
+        cd = CoverData(ct, 0)
+        cd.data = count
+        assert_scope.createNextCover(ct.name.lower(), cd, None)
+    return db
+
+
+def verify_as2_assert_property(db: UCIS):
+    insts = list(db.scopes(ScopeTypeT.INSTANCE))
+    inst = next(i for i in insts if i.getScopeName() == "chk_inst")
+    assert_scopes = list(inst.scopes(ScopeTypeT.ASSERT))
+    assert len(assert_scopes) >= 1
+    s = assert_scopes[0]
+    assert s.getScopeName() == "assert_no_overflow"
+    fail_bins    = list(s.coverItems(CoverTypeT.ASSERTBIN))
+    pass_bins    = list(s.coverItems(CoverTypeT.PASSBIN))
+    attempt_bins = list(s.coverItems(CoverTypeT.ATTEMPTBIN))
+    assert sum(b.getCoverData().data for b in fail_bins) == 2
+    assert sum(b.getCoverData().data for b in pass_bins) == 8
+    assert sum(b.getCoverData().data for b in attempt_bins) == 10
+
+
+# ---------------------------------------------------------------------------
 # Master list
 # ---------------------------------------------------------------------------
 
@@ -427,7 +603,11 @@ ALL_BUILDERS: List[Tuple[Callable, Callable]] = [
     (build_sm1_design_hierarchy,    verify_sm1_design_hierarchy),
     (build_sm4_history_node,        verify_sm4_history_node),
     (build_sm5_multiple_history_nodes, verify_sm5_multiple_history_nodes),
+    (build_sm6_parent_child_history,   verify_sm6_parent_child_history),
     (build_cc1_statement_coverage,  verify_cc1_statement_coverage),
     (build_cc2_branch_coverage,     verify_cc2_branch_coverage),
     (build_cc5_toggle_coverage,     verify_cc5_toggle_coverage),
+    (build_cc7_fsm_coverage,        verify_cc7_fsm_coverage),
+    (build_as1_cover_assertion,     verify_as1_cover_assertion),
+    (build_as2_assert_property,     verify_as2_assert_property),
 ]
