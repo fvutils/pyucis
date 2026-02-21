@@ -317,13 +317,15 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def getSourceFiles(self):
         """Get list of source files"""
-        # Not fully implemented yet
-        return []
+        cursor = self.conn.execute("SELECT file_id, file_path FROM files ORDER BY file_id")
+        return [SqliteFileHandle(self, row[0], row[1]) for row in cursor]
     
     def getCoverInstances(self):
-        """Get list of coverage instances"""
-        # Not fully implemented yet
-        return []
+        """Get list of top-level coverage instances (scopes with no parent)"""
+        cursor = self.conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id IS NULL ORDER BY scope_id"
+        )
+        return [SqliteScope.create_specialized_scope(self, row[0]) for row in cursor]
     
     def write(self, file, scope=None, recurse=True, covertype=-1):
         """Write database (no-op for SQLite, already persistent)"""

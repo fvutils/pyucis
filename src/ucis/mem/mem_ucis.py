@@ -103,7 +103,18 @@ class MemUCIS(MemScope,UCIS):
         return MemHistoryNodeIterator(self.m_history_node_l, kind)
     
     def getCoverInstances(self)->[InstanceCoverage]:
-        return self.m_instance_coverage_l
+        """Get top-level coverage instances (includes both InstanceCoverage and INSTANCE scopes)."""
+        # Include instances added via createCoverInstance() as well as direct INSTANCE children
+        from ucis.scope_type_t import ScopeTypeT
+        result = list(self.m_instance_coverage_l)
+        for child in self.m_children:
+            if child.getScopeType() == ScopeTypeT.INSTANCE:
+                result.append(child)
+        return result
+
+    def getSourceFiles(self):
+        """Get list of all registered source file handles"""
+        return list(self.file_handle_m.values())
     
     def close(self):
         # NOP

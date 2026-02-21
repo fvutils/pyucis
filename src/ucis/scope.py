@@ -17,6 +17,7 @@
 from typing import Iterator
 from ucis.cover_index import CoverIndex
 from ucis.cover_type_t import CoverTypeT
+from ucis.unimpl_error import UnimplError
 
 '''
 Created on Dec 22, 2019
@@ -358,6 +359,32 @@ class Scope(Obj):
             UCIS LRM Section 8.11.1 "ucis_CreateNextCover"
         """
         raise NotImplementedError()
+
+    def createNextTransition(self, from_state_name: str, to_state_name: str,
+                             data: 'CoverData' = None,
+                             srcinfo: 'SourceInfo' = None) -> CoverIndex:
+        """Create an FSM transition cover item between two named states.
+
+        This is the standard API for creating FSM transitions, analogous to
+        ucis_CreateNextTransition in the UCIS C API. If the named states do
+        not yet exist in this FSM scope they are created automatically.
+
+        Args:
+            from_state_name: Name of the source state.
+            to_state_name:   Name of the destination state.
+            data:            Initial CoverData (FSMBIN type), or None.
+            srcinfo:         Source location, or None.
+
+        Returns:
+            CoverIndex for the new transition cover item.
+
+        Raises:
+            UnimplError: If the scope type does not support FSM transitions.
+
+        See Also:
+            UCIS LRM ucis_CreateNextTransition
+        """
+        raise UnimplError()
 
     def getWeight(self):
         """Get the weight of this scope.

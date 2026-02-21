@@ -38,7 +38,8 @@ class MemFactory():
     @staticmethod
     def clone(db : UCIS):
         """Clones an existing database and creates a new in-memory database"""
-        pass
+        import copy
+        return copy.deepcopy(db)
 
         
     

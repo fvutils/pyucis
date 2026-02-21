@@ -28,19 +28,26 @@ class MemObj(Obj):
     
     def __init__(self):
         Obj.__init__(self)
-        
+        self._str_properties = {}
+
     def getStringProperty(
             self,
             coverindex : int,
             property : StrProperty) -> str:
-        # Ignore for now
-        pass
+        if property == StrProperty.SCOPE_NAME:
+            return getattr(self, 'm_name', None)
+        if property == StrProperty.COMMENT:
+            return getattr(self, 'm_comment', self._str_properties.get(property))
+        return self._str_properties.get(property)
     
     def setStringProperty(
             self,
             coverindex : int,
             property : StrProperty,
             value : str):
-        return ""
+        if property == StrProperty.COMMENT and hasattr(self, 'm_comment'):
+            self.m_comment = value
+        else:
+            self._str_properties[property] = value
         
     

@@ -200,5 +200,58 @@ class MemHistoryNode(HistoryNode):
     
     def setComment(self, comment):
         self.m_comment = comment
+
+    def getRealProperty(self, property):
+        """Get a real-valued property by RealProperty enum."""
+        from ucis.real_property import RealProperty
+        if property == RealProperty.SIMTIME:
+            return self.m_sim_time
+        elif property == RealProperty.CPUTIME:
+            return self.m_cpu_time
+        elif property == RealProperty.COST:
+            return float(self.m_cost) if self.m_cost is not None else 0.0
+        return None
+
+    def setRealProperty(self, property, value: float):
+        """Set a real-valued property by RealProperty enum."""
+        from ucis.real_property import RealProperty
+        if property == RealProperty.SIMTIME:
+            self.m_sim_time = value
+        elif property == RealProperty.CPUTIME:
+            self.m_cpu_time = value
+        elif property == RealProperty.COST:
+            self.m_cost = value
+
+    def getStringProperty(self, coverindex: int, property) -> str:
+        """Get a string property by StrProperty enum."""
+        from ucis.str_property import StrProperty
+        _map = {
+            StrProperty.HIST_CMDLINE: 'm_cmd',
+            StrProperty.TEST_USERNAME: 'm_user_name',
+            StrProperty.HIST_RUNCWD: 'm_run_cwd',
+            StrProperty.COMMENT: 'm_comment',
+            StrProperty.VER_VENDOR_ID: 'm_vendor_id',
+            StrProperty.VER_VENDOR_TOOL: 'm_vendor_tool',
+            StrProperty.VER_VENDOR_VERSION: 'm_vendor_tool_version',
+        }
+        if property in _map:
+            attr = _map[property]
+            return getattr(self, attr, None)
+        return None
+
+    def setStringProperty(self, coverindex: int, property, value: str):
+        """Set a string property by StrProperty enum."""
+        from ucis.str_property import StrProperty
+        _map = {
+            StrProperty.HIST_CMDLINE: 'm_cmd',
+            StrProperty.TEST_USERNAME: 'm_user_name',
+            StrProperty.HIST_RUNCWD: 'm_run_cwd',
+            StrProperty.COMMENT: 'm_comment',
+            StrProperty.VER_VENDOR_ID: 'm_vendor_id',
+            StrProperty.VER_VENDOR_TOOL: 'm_vendor_tool',
+            StrProperty.VER_VENDOR_VERSION: 'm_vendor_tool_version',
+        }
+        if property in _map:
+            setattr(self, _map[property], value)
     
     
