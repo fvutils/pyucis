@@ -298,6 +298,27 @@ class SqliteUCIS(SqliteScope, UCIS):
         )
         row = cursor.fetchone()
         return row[0] if row else 0
+
+    def createInstanceByName(self, name: str, du_name: str,
+                             fileinfo, weight: int, source, flags: int):
+        """Create an instance scope by DU name string lookup."""
+        from ucis.du_name import parseDUName
+        from ucis.scope_type_t import ScopeTypeT
+        lib, mod = parseDUName(du_name)
+        qualified = f"{lib}.{mod}"
+        # Search DU scopes by name (they may be nested under root scope)
+        cursor = self.conn.execute(
+            """SELECT scope_id FROM scopes
+               WHERE scope_name = ? OR scope_name = ?""",
+            (qualified, mod)
+        )
+        row = cursor.fetchone()
+        if not row:
+            raise KeyError(f"No DU scope found for '{du_name}'")
+        from ucis.sqlite.sqlite_scope import SqliteScope
+        du_scope = SqliteScope.create_specialized_scope(self, row[0])
+        return self.createInstance(name, fileinfo, weight, source,
+                                   ScopeTypeT.INSTANCE, du_scope, flags)
     
     def createFileHandle(self, filename: str, workdir: str = None) -> FileHandle:
         """Create or get file handle"""

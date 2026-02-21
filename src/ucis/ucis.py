@@ -410,6 +410,36 @@ class UCIS(Scope):
             UCIS LRM ucis_MatchCoverByUniqueID
         """
         raise UnimplError()
+
+    def createInstanceByName(self, name: str, du_name: str,
+                             fileinfo, weight: int, source,
+                             flags: int) -> 'Scope':
+        """Create an instance scope referenced by DU name string rather than object.
+
+        Looks up the named design unit (``du_name``) in the database and calls
+        ``createInstance`` with the resolved scope.  ``du_name`` may be qualified
+        (``"work.counter"``) or unqualified (``"counter"``).
+
+        Args:
+            name: Local instance name.
+            du_name: Fully- or partially-qualified DU name to look up.
+            fileinfo: Source location or None.
+            weight: Coverage weight (typically 1).
+            source: SourceT language constant.
+            flags: Scope flags (FlagsT / int bitmask).
+
+        Returns:
+            Newly created instance Scope.
+
+        Raises:
+            KeyError: If no DU with the given name is found.
+            UnimplError: If not supported by this backend.
+
+        See Also:
+            createInstance: Low-level variant taking a DU scope object
+            UCIS LRM ucis_CreateInstanceByName
+        """
+        raise UnimplError()
     
     def createFileHandle(self, filename : str, workdir : str)->FileHandle:
         """Create a file handle for source file references.

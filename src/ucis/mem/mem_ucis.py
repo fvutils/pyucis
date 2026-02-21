@@ -172,5 +172,25 @@ class MemUCIS(MemScope,UCIS):
         # NOP
         pass
 
+    def createInstanceByName(self, name: str, du_name: str,
+                             fileinfo, weight: int, source, flags: int):
+        """Create an instance scope by DU name string lookup."""
+        from ucis.du_name import parseDUName
+        from ucis.scope_type_t import ScopeTypeT
+        # Normalize to qualified form for comparison
+        lib, mod = parseDUName(du_name)
+        qualified = f"{lib}.{mod}"
+        # Search top-level DU scopes
+        du_scope = None
+        for child in self.m_children:
+            if ScopeTypeT.DU_ANY(child.getScopeType()):
+                if child.m_name == qualified or child.m_name == mod:
+                    du_scope = child
+                    break
+        if du_scope is None:
+            raise KeyError(f"No DU scope found for '{du_name}'")
+        return self.createInstance(name, fileinfo, weight, source,
+                                   ScopeTypeT.INSTANCE, du_scope, flags)
+
     
     
