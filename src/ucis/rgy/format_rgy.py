@@ -130,6 +130,10 @@ class FormatRgy(object):
         # Register AVL format
         from ucis.avl.db_format_if_avl import DbFormatIfAvlJson
         DbFormatIfAvlJson.register(self)
+
+        # Register LCOV format
+        from ucis.formatters.db_format_if_lcov import DbFormatIfLcov
+        DbFormatIfLcov.register(self)
         
         FormatRptJson.register(self)
         FormatRptText.register(self)

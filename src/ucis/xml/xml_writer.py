@@ -52,8 +52,9 @@ class XmlWriter():
         self.next_instance_id = 0
         pass
     
-    def write(self, file, db : UCIS):
+    def write(self, file, db : UCIS, ctx=None):
         self.db = db
+        self.ctx = ctx
 
         # Map each of the source files to a unique identifier
         self.file_id_m = {
@@ -378,8 +379,18 @@ class XmlWriter():
             e.set(name, "false")
 
     def setAttrDateTime(self, e, name, val):
-        val_i = time.mktime(datetime.strptime(val, "%Y%m%d%H%M%S").timetuple())
-        self.setAttr(e, name, datetime.fromtimestamp(val_i).isoformat())
+        if val is None:
+            return
+        # Try the standard UCIS format first, then common ISO variants
+        for fmt in ("%Y%m%d%H%M%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                val_i = time.mktime(datetime.strptime(val, fmt).timetuple())
+                self.setAttr(e, name, datetime.fromtimestamp(val_i).isoformat())
+                return
+            except ValueError:
+                pass
+        # If no format matched, store the raw value to avoid data loss
+        self.setAttr(e, name, val)
             
     def setIfNonNull(self, n, attr, val):
         if val is not None:

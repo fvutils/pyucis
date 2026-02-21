@@ -11,6 +11,7 @@ from ucis import UCIS_OTHER, UCIS_INSTANCE, UCIS_DU_MODULE, UCIS_ENABLED_STMT, \
     UCIS_IGNOREBIN, UCIS_ILLEGALBIN, coverpoint
 from ucis.cover_data import CoverData
 from ucis.cover_type_t import CoverTypeT
+from ucis.history_node_kind import HistoryNodeKind
 from ucis.report.coverage_report import CoverageReport
 from ucis.report.coverage_report_builder import CoverageReportBuilder
 from ucis.scope_type_t import ScopeTypeT
@@ -77,6 +78,43 @@ class DbMerger(object):
         
             self._merge_covergroups(dst_iscope, src_scopes)
             self._merge_code_coverage(dst_iscope, src_scopes)
+
+        # Copy history nodes from all source databases
+        for db in src_db_l:
+            for src_hn in db.historyNodes(HistoryNodeKind.ALL):
+                dst_hn = dst_db.createHistoryNode(
+                    None,
+                    src_hn.getLogicalName(),
+                    src_hn.getPhysicalName(),
+                    src_hn.getKind()
+                )
+                dst_hn.setTestStatus(src_hn.getTestStatus())
+                if src_hn.getSimTime() is not None:
+                    dst_hn.setSimTime(src_hn.getSimTime())
+                if src_hn.getTimeUnit() is not None:
+                    dst_hn.setTimeUnit(src_hn.getTimeUnit())
+                if src_hn.getRunCwd() is not None:
+                    dst_hn.setRunCwd(src_hn.getRunCwd())
+                if src_hn.getCpuTime() is not None:
+                    dst_hn.setCpuTime(src_hn.getCpuTime())
+                if src_hn.getSeed() is not None:
+                    dst_hn.setSeed(src_hn.getSeed())
+                if src_hn.getCmd() is not None:
+                    dst_hn.setCmd(src_hn.getCmd())
+                if src_hn.getDate() is not None:
+                    dst_hn.setDate(src_hn.getDate())
+                if src_hn.getUserName() is not None:
+                    dst_hn.setUserName(src_hn.getUserName())
+                if src_hn.getToolCategory() is not None:
+                    dst_hn.setToolCategory(src_hn.getToolCategory())
+                if src_hn.getVendorId() is not None:
+                    dst_hn.setVendorId(src_hn.getVendorId())
+                if src_hn.getVendorTool() is not None:
+                    dst_hn.setVendorTool(src_hn.getVendorTool())
+                if src_hn.getVendorToolVersion() is not None:
+                    dst_hn.setVendorToolVersion(src_hn.getVendorToolVersion())
+                if src_hn.getComment() is not None:
+                    dst_hn.setComment(src_hn.getComment())
             
     def _merge_covergroups(self, dst_scope, src_scopes):
         

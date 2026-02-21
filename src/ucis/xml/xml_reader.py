@@ -98,7 +98,16 @@ class XmlReader():
         parent = None
         logicalname = histN.get("logicalName")
         physicalname = self.getAttr(histN, "physicalName", None)
-        kind = self.getAttr(histN, "kind", None)
+        kind_str = self.getAttr(histN, "kind", None)
+        # Convert string kind to HistoryNodeKind enum
+        from ucis.history_node_kind import HistoryNodeKind
+        if kind_str is not None:
+            try:
+                kind = HistoryNodeKind(int(kind_str))
+            except (ValueError, KeyError):
+                kind = HistoryNodeKind.TEST
+        else:
+            kind = HistoryNodeKind.TEST
         
         ret = self.db.createHistoryNode(parent, logicalname, physicalname, kind)
         ret.setTestStatus(self.getAttrBool(histN, "testStatus"))

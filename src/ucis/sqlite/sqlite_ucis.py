@@ -304,7 +304,7 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def historyNodes(self, kind: HistoryNodeKind = None) -> Iterator[HistoryNode]:
         """Iterate history nodes"""
-        if kind is None or kind == -1:
+        if kind is None or kind == -1 or kind == HistoryNodeKind.ALL:
             cursor = self.conn.execute("SELECT history_id FROM history_nodes")
         else:
             cursor = self.conn.execute(

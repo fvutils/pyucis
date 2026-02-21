@@ -2,6 +2,8 @@
 from ucis.rgy import FormatRgy
 from ucis.rgy import FormatDescDb, FormatIfDb
 from ucis.merge import DbMerger
+from ucis.conversion import ConversionContext, ConversionListener
+
 
 def convert(args):
     if args.input_format is None:
@@ -20,6 +22,12 @@ def convert(args):
 
     input_if = input_desc.fmt_if()
     output_if = output_desc.fmt_if()
+
+    strict = getattr(args, 'strict', False)
+    ctx = ConversionContext(
+        strict=strict,
+        listener=ConversionListener()
+    )
 
     try:
         in_db = input_if.read(args.input)
@@ -40,6 +48,16 @@ def convert(args):
         out_db = output_if.create()
         merger = DbMerger()
         merger.merge(out_db, [in_db])
-        out_db.write(args.out)
-    
+        try:
+            output_if.write(out_db, args.out, ctx)
+        except TypeError:
+            # Older format interfaces may not accept ctx
+            output_if.write(out_db, args.out)
+
+    ctx.complete()
+
+    if getattr(args, 'warn_summary', False) and ctx.warnings:
+        import sys
+        print(ctx.summarize(), file=sys.stderr)
+
     in_db.close()

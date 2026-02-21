@@ -266,6 +266,34 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         self._ensure_loaded()
         return self._scope_type
     
+    def getInstanceDu(self) -> 'SqliteScope':
+        """Get the design-unit scope associated with this instance.
+
+        Searches sibling scopes (same parent) for the first DU_MODULE (or any
+        DU_ANY) scope and returns it.  This mirrors how MemInstanceScope works.
+        """
+        self._ensure_loaded()
+        du_mask = (ScopeTypeT.DU_MODULE | ScopeTypeT.DU_ARCH |
+                   ScopeTypeT.DU_PACKAGE | ScopeTypeT.DU_PROGRAM |
+                   ScopeTypeT.DU_INTERFACE)
+        # Look in parent's children for a DU scope
+        parent_id = self._parent_id
+        if parent_id is None:
+            # Top-level: search root-level scopes in db
+            cursor = self.ucis_db.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id IS NULL AND (scope_type & ?) != 0",
+                (int(du_mask),)
+            )
+        else:
+            cursor = self.ucis_db.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id = ? AND (scope_type & ?) != 0",
+                (parent_id, int(du_mask))
+            )
+        row = cursor.fetchone()
+        if row:
+            return SqliteScope(self.ucis_db, row[0])
+        return None
+
     def getScopeName(self) -> str:
         """Get scope name"""
         self._ensure_loaded()

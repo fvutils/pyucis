@@ -19,7 +19,7 @@
 SQLite format interface for UCIS database format registry
 """
 
-from ucis.rgy.format_if_db import FormatIfDb, FormatDescDb, FormatDbFlags
+from ucis.rgy.format_if_db import FormatIfDb, FormatDescDb, FormatDbFlags, FormatCapabilities
 from ucis.ucis import UCIS
 from ucis.sqlite.sqlite_ucis import SqliteUCIS
 
@@ -88,5 +88,12 @@ class DbFormatIfSqlite(FormatIfDb):
             fmt_if=cls,
             name='sqlite',
             flags=FormatDbFlags.Create | FormatDbFlags.Read | FormatDbFlags.Write,
-            description='SQLite database format - persistent, queryable storage'
-        ))
+            description='SQLite database format - persistent, queryable storage',
+            capabilities=FormatCapabilities(
+                can_read=True, can_write=True,
+                functional_coverage=True, cross_coverage=True,
+                ignore_illegal_bins=True, code_coverage=True,
+                toggle_coverage=True, fsm_coverage=True,
+                assertions=True, history_nodes=True,
+                design_hierarchy=True, lossless=True,
+            )))
