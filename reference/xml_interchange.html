@@ -74,6 +74,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#optional-elements">Optional Elements</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#code-coverage">Code Coverage</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#statement-coverage">Statement Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#branch-coverage">Branch Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#toggle-coverage">Toggle Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fsm-coverage">FSM Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#assertion-coverage">Assertion Coverage</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#user-attributes">User Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#history-nodes">History Nodes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#known-format-limitations">Known Format Limitations</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#structural-limitations">Structural Limitations</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#feature-support-matrix">Feature Support Matrix</a></li>
@@ -295,6 +305,134 @@ improves interoperability with some tools.</p>
 </ul>
 </section>
 </section>
+<section id="code-coverage">
+<h2>Code Coverage<a class="headerlink" href="#code-coverage" title="Link to this heading"></a></h2>
+<p>PyUCIS supports reading and writing all major UCIS code coverage types within
+<code class="docutils literal notranslate"><span class="pre">instanceCoverages</span></code> elements.</p>
+<section id="statement-coverage">
+<h3>Statement Coverage<a class="headerlink" href="#statement-coverage" title="Link to this heading"></a></h3>
+<p>Statement coverage is stored as <code class="docutils literal notranslate"><span class="pre">blockCoverage</span></code> → flat <code class="docutils literal notranslate"><span class="pre">statement</span></code> elements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">blockCoverage</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">statement</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">file</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;5&quot;</span> <span class="n">inlineCount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;3&quot;</span><span class="o">/&gt;</span>
+  <span class="o">&lt;/</span><span class="n">statement</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">blockCoverage</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Each <code class="docutils literal notranslate"><span class="pre">statement</span></code> records one source location with its hit count.</p>
+</section>
+<section id="branch-coverage">
+<h3>Branch Coverage<a class="headerlink" href="#branch-coverage" title="Link to this heading"></a></h3>
+<p>Branch coverage is stored as <code class="docutils literal notranslate"><span class="pre">branchCoverage</span></code> → <code class="docutils literal notranslate"><span class="pre">branch</span></code> elements, one per
+branching statement (<code class="docutils literal notranslate"><span class="pre">if</span></code>, <code class="docutils literal notranslate"><span class="pre">case</span></code>, etc.). Each branch has one or more
+<code class="docutils literal notranslate"><span class="pre">branchBin</span></code> arms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">branchCoverage</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">branch</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">branchType</span><span class="o">=</span><span class="s2">&quot;if&quot;</span> <span class="n">file</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">line</span><span class="o">=</span><span class="s2">&quot;10&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">branchBin</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;taken&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">branchBin</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">branchBin</span> <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;not_taken&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">branchBin</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">branch</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">branchCoverage</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="toggle-coverage">
+<h3>Toggle Coverage<a class="headerlink" href="#toggle-coverage" title="Link to this heading"></a></h3>
+<p>Toggle coverage is stored as <code class="docutils literal notranslate"><span class="pre">toggleCoverage</span></code> → <code class="docutils literal notranslate"><span class="pre">toggleObject</span></code> → <code class="docutils literal notranslate"><span class="pre">toggleBit</span></code>
+elements. Each bit records a 0→1 and a 1→0 transition bin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">toggleCoverage</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">toggleObject</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sig&quot;</span> <span class="n">canonical</span><span class="o">=</span><span class="s2">&quot;sig&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">toggleBit</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sig[0]&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">toggle01Bin</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;/</span><span class="n">toggle01Bin</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">toggle10Bin</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;/</span><span class="n">toggle10Bin</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">toggleBit</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">toggleObject</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">toggleCoverage</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="fsm-coverage">
+<h3>FSM Coverage<a class="headerlink" href="#fsm-coverage" title="Link to this heading"></a></h3>
+<p>FSM coverage is stored as <code class="docutils literal notranslate"><span class="pre">fsmCoverage</span></code> → <code class="docutils literal notranslate"><span class="pre">fsm</span></code> elements. State coverage uses
+<code class="docutils literal notranslate"><span class="pre">stateBin</span></code> and transition coverage uses <code class="docutils literal notranslate"><span class="pre">transitionBin</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">fsmCoverage</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">fsm</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;state_machine&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">state</span> <span class="n">stateName</span><span class="o">=</span><span class="s2">&quot;IDLE&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">stateBin</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;IDLE&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;5&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;/</span><span class="n">stateBin</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">state</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">stateTransition</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">state</span><span class="o">&gt;</span><span class="n">IDLE</span><span class="o">&lt;/</span><span class="n">state</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">state</span><span class="o">&gt;</span><span class="n">ACTIVE</span><span class="o">&lt;/</span><span class="n">state</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">transitionBin</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;IDLE-&gt;ACTIVE&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">/&gt;</span>
+      <span class="o">&lt;/</span><span class="n">transitionBin</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="n">stateTransition</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">fsm</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">fsmCoverage</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="assertion-coverage">
+<h3>Assertion Coverage<a class="headerlink" href="#assertion-coverage" title="Link to this heading"></a></h3>
+<p>Assertion coverage is stored as <code class="docutils literal notranslate"><span class="pre">assertionCoverage</span></code> → <code class="docutils literal notranslate"><span class="pre">assertion</span></code> elements.
+The <code class="docutils literal notranslate"><span class="pre">assertionKind</span></code> attribute is either <code class="docutils literal notranslate"><span class="pre">assert</span></code> or <code class="docutils literal notranslate"><span class="pre">cover</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">assertionCoverage</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">assertion</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_property&quot;</span> <span class="n">assertionKind</span><span class="o">=</span><span class="s2">&quot;assert&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">passBin</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;10&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">passBin</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">failBin</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">failBin</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">attemptBin</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">contents</span> <span class="n">coverageCount</span><span class="o">=</span><span class="s2">&quot;10&quot;</span><span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">attemptBin</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">assertion</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">assertionCoverage</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Supported bin kinds for <code class="docutils literal notranslate"><span class="pre">assert</span></code>: <code class="docutils literal notranslate"><span class="pre">failBin</span></code>, <code class="docutils literal notranslate"><span class="pre">passBin</span></code>, <code class="docutils literal notranslate"><span class="pre">vacuousBin</span></code>,
+<code class="docutils literal notranslate"><span class="pre">disabledBin</span></code>, <code class="docutils literal notranslate"><span class="pre">attemptBin</span></code>, <code class="docutils literal notranslate"><span class="pre">activeBin</span></code>, <code class="docutils literal notranslate"><span class="pre">peakActiveBin</span></code>.</p>
+<p>Supported bin kinds for <code class="docutils literal notranslate"><span class="pre">cover</span></code>: <code class="docutils literal notranslate"><span class="pre">coverBin</span></code>, <code class="docutils literal notranslate"><span class="pre">failBin</span></code>, <code class="docutils literal notranslate"><span class="pre">passBin</span></code>,
+<code class="docutils literal notranslate"><span class="pre">vacuousBin</span></code>, <code class="docutils literal notranslate"><span class="pre">disabledBin</span></code>, <code class="docutils literal notranslate"><span class="pre">attemptBin</span></code>, <code class="docutils literal notranslate"><span class="pre">activeBin</span></code>, <code class="docutils literal notranslate"><span class="pre">peakActiveBin</span></code>.</p>
+</section>
+</section>
+<section id="user-attributes">
+<h2>User Attributes<a class="headerlink" href="#user-attributes" title="Link to this heading"></a></h2>
+<p>PyUCIS supports round-tripping user attributes (set via <code class="docutils literal notranslate"><span class="pre">setAttribute</span></code> /
+<code class="docutils literal notranslate"><span class="pre">getAttribute</span></code>) through XML <code class="docutils literal notranslate"><span class="pre">userAttr</span></code> child elements. These are written as
+the last children of each coverage container element:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;toggleCoverage&gt;
+  &lt;!-- ... toggle data ... --&gt;
+  &lt;userAttr key=&quot;tool_name&quot; type=&quot;str&quot;&gt;my_simulator&lt;/userAttr&gt;
+  &lt;userAttr key=&quot;version&quot; type=&quot;str&quot;&gt;2024.1&lt;/userAttr&gt;
+&lt;/toggleCoverage&gt;
+</pre></div>
+</div>
+<p>User attributes attached to instance scopes are preserved across XML write/read
+round-trips. Tags (set via <code class="docutils literal notranslate"><span class="pre">addTag</span></code>) are not currently serialized to XML.</p>
+</section>
+<section id="history-nodes">
+<h2>History Nodes<a class="headerlink" href="#history-nodes" title="Link to this heading"></a></h2>
+<p>History nodes record the provenance of coverage data (test runs, merges). PyUCIS
+preserves the parent/child relationships between history nodes using the <code class="docutils literal notranslate"><span class="pre">id</span></code>
+and <code class="docutils literal notranslate"><span class="pre">parentId</span></code> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">historyNodes</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">historyNode</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">logicalName</span><span class="o">=</span><span class="s2">&quot;test_run_1&quot;</span> <span class="o">.../&gt;</span>
+  <span class="o">&lt;</span><span class="n">historyNode</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;2&quot;</span> <span class="n">logicalName</span><span class="o">=</span><span class="s2">&quot;merge_result&quot;</span> <span class="n">parentId</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="o">.../&gt;</span>
+<span class="o">&lt;/</span><span class="n">historyNodes</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
 <section id="known-format-limitations">
 <h2>Known Format Limitations<a class="headerlink" href="#known-format-limitations" title="Link to this heading"></a></h2>
 <p>The following limitations are inherent to the UCIS XML interchange format specification:</p>
@@ -351,6 +489,38 @@ Empty coverpoints cannot be serialized to XML.</p>
 <td><p>✅ Yes</p></td>
 <td><p>With index reconstruction</p></td>
 </tr>
+<tr class="row-even"><td><p>Statement Coverage</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Flat statement mode</p></td>
+</tr>
+<tr class="row-odd"><td><p>Branch Coverage</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>if/case branching statements</p></td>
+</tr>
+<tr class="row-even"><td><p>Toggle Coverage</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Per-bit 0→1 and 1→0 bins</p></td>
+</tr>
+<tr class="row-odd"><td><p>FSM Coverage</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>State and transition coverage</p></td>
+</tr>
+<tr class="row-even"><td><p>Assertion Coverage</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>cover and assert kinds, all bin types</p></td>
+</tr>
+<tr class="row-odd"><td><p>User Attributes</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Via <code class="docutils literal notranslate"><span class="pre">userAttr</span></code> child elements</p></td>
+</tr>
+<tr class="row-even"><td><p>History Node Hierarchy</p></td>
+<td><p>✅ Yes</p></td>
+<td><p>Parent/child via <code class="docutils literal notranslate"><span class="pre">parentId</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Condition/Expression Coverage</p></td>
+<td><p>❌ No</p></td>
+<td><p>Not in Python DM; writer emits ctx.warn</p></td>
+</tr>
 <tr class="row-even"><td><p>Instance Weights</p></td>
 <td><p>❌ No</p></td>
 <td><p>Not in XML schema</p></td>
@@ -366,6 +536,10 @@ Empty coverpoints cannot be serialized to XML.</p>
 <tr class="row-odd"><td><p>Standalone File Handles</p></td>
 <td><p>❌ No</p></td>
 <td><p>Requires instanceCoverages</p></td>
+</tr>
+<tr class="row-even"><td><p>Tags</p></td>
+<td><p>❌ No</p></td>
+<td><p>No direct XML representation</p></td>
 </tr>
 </tbody>
 </table>

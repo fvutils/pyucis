@@ -69,6 +69,17 @@
 <li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getHandleProperty"><code class="docutils literal notranslate"><span class="pre">Obj.getHandleProperty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setHandleProperty"><code class="docutils literal notranslate"><span class="pre">Obj.setHandleProperty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.accept"><code class="docutils literal notranslate"><span class="pre">Obj.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.setAttribute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.getAttribute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getAttributes"><code class="docutils literal notranslate"><span class="pre">Obj.getAttributes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.deleteAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.deleteAttribute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.addTag"><code class="docutils literal notranslate"><span class="pre">Obj.addTag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.hasTag"><code class="docutils literal notranslate"><span class="pre">Obj.hasTag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.removeTag"><code class="docutils literal notranslate"><span class="pre">Obj.removeTag()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getTags"><code class="docutils literal notranslate"><span class="pre">Obj.getTags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getCoverFlags"><code class="docutils literal notranslate"><span class="pre">Obj.getCoverFlags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setCoverFlags"><code class="docutils literal notranslate"><span class="pre">Obj.setCoverFlags()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setCoverData"><code class="docutils literal notranslate"><span class="pre">Obj.setCoverData()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -423,6 +434,72 @@ core classes.</p>
 <dt>See Also:</dt><dd><p>Visitor design pattern documentation</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.setAttribute">
+<span class="sig-name descname"><span class="pre">setAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setAttribute" title="Link to this definition"></a></dt>
+<dd><p>Set a user-defined string attribute on this object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.getAttribute">
+<span class="sig-name descname"><span class="pre">getAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.Obj.getAttribute" title="Link to this definition"></a></dt>
+<dd><p>Get a user-defined attribute by key. Returns None if not found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.getAttributes">
+<span class="sig-name descname"><span class="pre">getAttributes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#ucis.Obj.getAttributes" title="Link to this definition"></a></dt>
+<dd><p>Get all user-defined attributes as a {key: value} dict.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.deleteAttribute">
+<span class="sig-name descname"><span class="pre">deleteAttribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.deleteAttribute" title="Link to this definition"></a></dt>
+<dd><p>Delete a user-defined attribute by key.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.addTag">
+<span class="sig-name descname"><span class="pre">addTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.addTag" title="Link to this definition"></a></dt>
+<dd><p>Add a tag to this object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.hasTag">
+<span class="sig-name descname"><span class="pre">hasTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#ucis.Obj.hasTag" title="Link to this definition"></a></dt>
+<dd><p>Return True if this object has the given tag.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.removeTag">
+<span class="sig-name descname"><span class="pre">removeTag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.removeTag" title="Link to this definition"></a></dt>
+<dd><p>Remove a tag from this object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.getTags">
+<span class="sig-name descname"><span class="pre">getTags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.14)"><span class="pre">set</span></a></span></span><a class="headerlink" href="#ucis.Obj.getTags" title="Link to this definition"></a></dt>
+<dd><p>Return the set of all tags on this object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.getCoverFlags">
+<span class="sig-name descname"><span class="pre">getCoverFlags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.Obj.getCoverFlags" title="Link to this definition"></a></dt>
+<dd><p>Get the flags bitmask for this cover item.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.setCoverFlags">
+<span class="sig-name descname"><span class="pre">setCoverFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setCoverFlags" title="Link to this definition"></a></dt>
+<dd><p>Set the flags bitmask for this cover item.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.Obj.setCoverData">
+<span class="sig-name descname"><span class="pre">setCoverData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setCoverData" title="Link to this definition"></a></dt>
+<dd><p>Replace cover data for this item.</p>
 </dd></dl>
 
 </dd></dl>

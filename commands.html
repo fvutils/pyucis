@@ -129,7 +129,7 @@ coverage data.</p>
 <div><p>Converts coverage data from one format to another</p>
 </div></blockquote>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">convert</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">out</span> <span class="n">OUT</span> <span class="p">[</span><span class="o">--</span><span class="nb">input</span><span class="o">-</span><span class="nb">format</span> <span class="n">INPUT_FORMAT</span><span class="p">]</span>
-             <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span>
+             <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="n">OUTPUT_FORMAT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">strict</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">warn</span><span class="o">-</span><span class="n">summary</span><span class="p">]</span>
              <span class="nb">input</span>
 </pre></div>
 </div>
@@ -152,6 +152,14 @@ coverage data.</p>
 </dd>
 <dt><kbd>--output-format, -of</kbd></dt>
 <dd><p>Specifies the format of the output database. Defaults to ‘xml’</p>
+</dd>
+<dt><kbd>--strict</kbd></dt>
+<dd><p>Treat any lossy conversion as an error (raises ConversionError)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+<dt><kbd>--warn-summary</kbd></dt>
+<dd><p>Print a summary of conversion warnings at the end</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p>
 </dd>
 </dl>
 </section>
