@@ -63,6 +63,7 @@ class MemUCIS(MemScope,UCIS):
         self.file_handle_m : Dict[str,MemFileHandle] = {}
         self.m_history_node_l = []
         self.m_instance_coverage_l = []
+        self._path_separator = '/'
         
         self.m_du_scope_l = []
         self.m_inst_scope_l = []
@@ -86,6 +87,57 @@ class MemUCIS(MemScope,UCIS):
         if filename not in self.file_handle_m.keys():
             self.file_handle_m[filename] = MemFileHandle(filename)
         return self.file_handle_m[filename]
+
+    def getPathSeparator(self) -> str:
+        """Get the hierarchical path separator (default '/')."""
+        return self._path_separator
+
+    def setPathSeparator(self, separator: str):
+        """Set the hierarchical path separator."""
+        if len(separator) != 1:
+            raise ValueError("Path separator must be a single character")
+        self._path_separator = separator
+
+    def removeScope(self, scope) -> None:
+        """Remove a scope (and its subtree) from the database."""
+        def _remove_from(parent, target):
+            if target in parent.m_children:
+                parent.m_children.remove(target)
+                return True
+            for child in parent.m_children:
+                if hasattr(child, 'm_children') and _remove_from(child, target):
+                    return True
+            return False
+        _remove_from(self, scope)
+
+    def matchScopeByUniqueId(self, uid: str):
+        """Find a scope by its UNIQUE_ID string property (depth-first walk)."""
+        from ucis.str_property import StrProperty
+        def _walk(scope):
+            if hasattr(scope, '_str_properties'):
+                if scope._str_properties.get(StrProperty.UNIQUE_ID) == uid:
+                    return scope
+            for child in getattr(scope, 'm_children', []):
+                result = _walk(child)
+                if result is not None:
+                    return result
+            return None
+        return _walk(self)
+
+    def matchCoverByUniqueId(self, uid: str):
+        """Find (scope, coverindex) by UNIQUE_ID on a cover item."""
+        def _walk(scope):
+            for i, item in enumerate(getattr(scope, 'm_cover_items', [])):
+                if hasattr(item, '_str_properties'):
+                    from ucis.str_property import StrProperty
+                    if item._str_properties.get(StrProperty.UNIQUE_ID) == uid:
+                        return (scope, i)
+            for child in getattr(scope, 'm_children', []):
+                result = _walk(child)
+                if result is not None:
+                    return result
+            return (None, -1)
+        return _walk(self)
     
 
     
@@ -103,11 +155,42 @@ class MemUCIS(MemScope,UCIS):
         return MemHistoryNodeIterator(self.m_history_node_l, kind)
     
     def getCoverInstances(self)->[InstanceCoverage]:
-        return self.m_instance_coverage_l
+        """Get top-level coverage instances (includes both InstanceCoverage and INSTANCE scopes)."""
+        # Include instances added via createCoverInstance() as well as direct INSTANCE children
+        from ucis.scope_type_t import ScopeTypeT
+        result = list(self.m_instance_coverage_l)
+        for child in self.m_children:
+            if child.getScopeType() == ScopeTypeT.INSTANCE:
+                result.append(child)
+        return result
+
+    def getSourceFiles(self):
+        """Get list of all registered source file handles"""
+        return list(self.file_handle_m.values())
     
     def close(self):
         # NOP
         pass
+
+    def createInstanceByName(self, name: str, du_name: str,
+                             fileinfo, weight: int, source, flags: int):
+        """Create an instance scope by DU name string lookup."""
+        from ucis.du_name import parseDUName
+        from ucis.scope_type_t import ScopeTypeT
+        # Normalize to qualified form for comparison
+        lib, mod = parseDUName(du_name)
+        qualified = f"{lib}.{mod}"
+        # Search top-level DU scopes
+        du_scope = None
+        for child in self.m_children:
+            if ScopeTypeT.DU_ANY(child.getScopeType()):
+                if child.m_name == qualified or child.m_name == mod:
+                    du_scope = child
+                    break
+        if du_scope is None:
+            raise KeyError(f"No DU scope found for '{du_name}'")
+        return self.createInstance(name, fileinfo, weight, source,
+                                   ScopeTypeT.INSTANCE, du_scope, flags)
 
     
     

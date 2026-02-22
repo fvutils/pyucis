@@ -32,7 +32,10 @@ from lxml import etree
 from ucis import UCIS_ENABLED_STMT, UCIS_ENABLED_BRANCH, UCIS_ENABLED_COND, \
     UCIS_ENABLED_EXPR, UCIS_ENABLED_FSM, UCIS_ENABLED_TOGGLE, UCIS_INST_ONCE, \
     UCIS_SCOPE_UNDER_DU, UCIS_DU_MODULE, UCIS_OTHER, du_scope, UCIS_INSTANCE,\
-    UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN
+    UCIS_CVGBIN, UCIS_IGNOREBIN, UCIS_ILLEGALBIN, UCIS_VLOG
+from ucis.cover_data import CoverData
+from ucis.cover_type_t import CoverTypeT
+from ucis.scope_type_t import ScopeTypeT
 from ucis.mem.mem_file_handle import MemFileHandle
 from ucis.mem.mem_scope import MemScope
 from ucis.mem.mem_ucis import MemUCIS
@@ -49,7 +52,16 @@ class XmlReader():
         self.module_scope_m : Dict[str, MemScope] = {}
         self.inst_scope_m : Dict[str, MemScope] = {}
         self.inst_id_m : Dict[int, MemScope] = {}  # Map instanceId to scope
-        pass
+
+    @staticmethod
+    def read_user_attrs(elem, scope):
+        """Read <userAttr> children from elem and set them on scope."""
+        for child in elem:
+            tag = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+            if tag == "userAttr":
+                key = child.get("key")
+                if key and hasattr(scope, 'setAttribute'):
+                    scope.setAttribute(key, child.text or "")
 
     def loads(self, s) -> UCIS:
         fp = StringIO(s)
@@ -73,8 +85,20 @@ class XmlReader():
         for srcFileN in tree.iter("sourceFiles"):
             self.readSourceFile(srcFileN)
             
+        hist_id_m = {}  # maps historyNodeId → node object
         for histN in tree.iter("historyNodes"):
-            self.readHistoryNode(histN)
+            node_id = int(histN.get("historyNodeId", 0))
+            node = self.readHistoryNode(histN)
+            hist_id_m[node_id] = node
+
+        # Wire parent relationships now that all nodes are created
+        for histN in tree.iter("historyNodes"):
+            parent_id_str = histN.get("parentId")
+            if parent_id_str is not None:
+                node_id = int(histN.get("historyNodeId", 0))
+                parent_node = hist_id_m.get(int(parent_id_str))
+                if parent_node is not None:
+                    hist_id_m[node_id].m_parent = parent_node
 
         for instN in tree.iter("instanceCoverages"):
             self.readInstanceCoverage(instN)
@@ -98,7 +122,16 @@ class XmlReader():
         parent = None
         logicalname = histN.get("logicalName")
         physicalname = self.getAttr(histN, "physicalName", None)
-        kind = self.getAttr(histN, "kind", None)
+        kind_str = self.getAttr(histN, "kind", None)
+        # Convert string kind to HistoryNodeKind enum
+        from ucis.history_node_kind import HistoryNodeKind
+        if kind_str is not None:
+            try:
+                kind = HistoryNodeKind(int(kind_str))
+            except (ValueError, KeyError):
+                kind = HistoryNodeKind.TEST
+        else:
+            kind = HistoryNodeKind.TEST
         
         ret = self.db.createHistoryNode(parent, logicalname, physicalname, kind)
         ret.setTestStatus(self.getAttrBool(histN, "testStatus"))
@@ -176,6 +209,218 @@ class XmlReader():
         # Read coverage content
         for cg in instN.iter("covergroupCoverage"):
             self.readCovergroups(cg, inst_scope, module_scope_name)
+        for tc in instN.iter("toggleCoverage"):
+            self.readToggleCoverage(tc, inst_scope)
+        for bc in instN.iter("blockCoverage"):
+            self.readBlockCoverage(bc, inst_scope)
+        for br in instN.iter("branchCoverage"):
+            self.readBranchCoverage(br, inst_scope)
+        for fc in instN.iter("fsmCoverage"):
+            self.readFsmCoverage(fc, inst_scope)
+        for ac in instN.iter("assertionCoverage"):
+            self.readAssertionCoverage(ac, inst_scope)
+        self.read_user_attrs(instN, inst_scope)
+
+    def readToggleCoverage(self, tc_elem, inst_scope):
+        for to_elem in tc_elem:
+            local_tag = to_elem.tag.split("}")[-1] if "}" in to_elem.tag else to_elem.tag
+            if local_tag != "toggleObject":
+                continue
+            name = to_elem.get("name", "toggle")
+            srcinfo = None
+            for id_elem in to_elem:
+                id_local = id_elem.tag.split("}")[-1] if "}" in id_elem.tag else id_elem.tag
+                if id_local == "id":
+                    file_id = int(id_elem.get("file", "1"))
+                    line = int(id_elem.get("line", "1"))
+                    token = int(id_elem.get("inlineCount", "1"))
+                    srcinfo = SourceInfo(self.file_m.get(file_id), line, token)
+                    break
+            toggle_scope = inst_scope.createScope(
+                name, srcinfo, 1, UCIS_VLOG, ScopeTypeT.TOGGLE, UCIS_ENABLED_TOGGLE)
+            for tb_elem in to_elem:
+                tb_local = tb_elem.tag.split("}")[-1] if "}" in tb_elem.tag else tb_elem.tag
+                if tb_local != "toggleBit":
+                    continue
+                for toggle_elem in tb_elem:
+                    tg_local = toggle_elem.tag.split("}")[-1] if "}" in toggle_elem.tag else toggle_elem.tag
+                    if tg_local != "toggle":
+                        continue
+                    from_val = toggle_elem.get("from", "0")
+                    to_val = toggle_elem.get("to", "1")
+                    bin_name = from_val + "to" + to_val
+                    count = 0
+                    for bin_elem in toggle_elem:
+                        b_local = bin_elem.tag.split("}")[-1] if "}" in bin_elem.tag else bin_elem.tag
+                        if b_local == "bin":
+                            for c_elem in bin_elem:
+                                c_local = c_elem.tag.split("}")[-1] if "}" in c_elem.tag else c_elem.tag
+                                if c_local == "contents":
+                                    count = int(c_elem.get("coverageCount", "0"))
+                    cd = CoverData(CoverTypeT.TOGGLEBIN, 0)
+                    cd.data = count
+                    toggle_scope.createNextCover(bin_name, cd, srcinfo)
+        self.read_user_attrs(tc_elem, inst_scope)
+
+    def readBlockCoverage(self, bc_elem, inst_scope):
+        block_scope = inst_scope.createScope(
+            "block", None, 1, UCIS_VLOG, ScopeTypeT.BLOCK, UCIS_ENABLED_STMT)
+        for stmt_elem in bc_elem:
+            local_tag = stmt_elem.tag.split("}")[-1] if "}" in stmt_elem.tag else stmt_elem.tag
+            if local_tag != "statement":
+                continue
+            stmt_name = stmt_elem.get("alias", "stmt")
+            srcinfo = None
+            count = 0
+            for child in stmt_elem:
+                child_local = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+                if child_local == "id":
+                    file_id = int(child.get("file", "1"))
+                    line = int(child.get("line", "1"))
+                    token = int(child.get("inlineCount", "1"))
+                    srcinfo = SourceInfo(self.file_m.get(file_id), line, token)
+                elif child_local == "bin":
+                    for c_elem in child:
+                        c_local = c_elem.tag.split("}")[-1] if "}" in c_elem.tag else c_elem.tag
+                        if c_local == "contents":
+                            count = int(c_elem.get("coverageCount", "0"))
+            cd = CoverData(CoverTypeT.STMTBIN, 0)
+            cd.data = count
+            block_scope.createNextCover(stmt_name, cd, srcinfo)
+        self.read_user_attrs(bc_elem, inst_scope)
+
+    def readBranchCoverage(self, bc_elem, inst_scope):
+        for stmt_elem in bc_elem:
+            local_tag = stmt_elem.tag.split("}")[-1] if "}" in stmt_elem.tag else stmt_elem.tag
+            if local_tag != "statement":
+                continue
+            srcinfo = None
+            for id_elem in stmt_elem:
+                id_local = id_elem.tag.split("}")[-1] if "}" in id_elem.tag else id_elem.tag
+                if id_local == "id":
+                    file_id = int(id_elem.get("file", "1"))
+                    line = int(id_elem.get("line", "1"))
+                    token = int(id_elem.get("inlineCount", "1"))
+                    srcinfo = SourceInfo(self.file_m.get(file_id), line, token)
+                    break
+            branch_name = stmt_elem.get("branchExpr", "branch")
+            branch_scope = inst_scope.createScope(
+                branch_name, srcinfo, 1, UCIS_VLOG, ScopeTypeT.BRANCH, UCIS_ENABLED_BRANCH)
+            for branch_elem in stmt_elem:
+                b_local = branch_elem.tag.split("}")[-1] if "}" in branch_elem.tag else branch_elem.tag
+                if b_local != "branch":
+                    continue
+                arm_srcinfo = None
+                count = 0
+                arm_name = "arm"
+                for child in branch_elem:
+                    c_local = child.tag.split("}")[-1] if "}" in child.tag else child.tag
+                    if c_local == "id":
+                        file_id = int(child.get("file", "1"))
+                        line = int(child.get("line", "1"))
+                        token = int(child.get("inlineCount", "1"))
+                        arm_srcinfo = SourceInfo(self.file_m.get(file_id), line, token)
+                    elif c_local == "branchBin":
+                        arm_name = child.get("alias", "arm")
+                        for cc in child:
+                            cc_local = cc.tag.split("}")[-1] if "}" in cc.tag else cc.tag
+                            if cc_local == "contents":
+                                count = int(cc.get("coverageCount", "0"))
+                cd = CoverData(CoverTypeT.BRANCHBIN, 0)
+                cd.data = count
+                branch_scope.createNextCover(arm_name, cd, arm_srcinfo or srcinfo)
+        self.read_user_attrs(bc_elem, inst_scope)
+
+    def readFsmCoverage(self, fc_elem, inst_scope):
+        for fsm_elem in fc_elem:
+            local = fsm_elem.tag.split("}")[-1] if "}" in fsm_elem.tag else fsm_elem.tag
+            if local != "fsm":
+                continue
+            name = fsm_elem.get("name", "fsm")
+            fsm_scope = inst_scope.createScope(
+                name, None, 1, UCIS_VLOG, ScopeTypeT.FSM, UCIS_ENABLED_FSM)
+            for child in fsm_elem:
+                child_local = (child.tag.split("}")[-1]
+                               if "}" in child.tag else child.tag)
+                if child_local == "state":
+                    state_name = child.get("stateName", "state")
+                    count = 0
+                    for sb in child:
+                        sb_l = sb.tag.split("}")[-1] if "}" in sb.tag else sb.tag
+                        if sb_l == "stateBin":
+                            for c in sb:
+                                c_l = c.tag.split("}")[-1] if "}" in c.tag else c.tag
+                                if c_l == "contents":
+                                    count = int(c.get("coverageCount", "0"))
+                    cd = CoverData(CoverTypeT.FSMBIN, 0)
+                    cd.data = count
+                    fsm_scope.createNextCover(state_name, cd, None)
+                elif child_local == "stateTransition":
+                    states, count = [], 0
+                    for t in child:
+                        t_l = t.tag.split("}")[-1] if "}" in t.tag else t.tag
+                        if t_l == "state":
+                            states.append(t.text.strip() if t.text else "")
+                        elif t_l == "transitionBin":
+                            for c in t:
+                                c_l = c.tag.split("}")[-1] if "}" in c.tag else c.tag
+                                if c_l == "contents":
+                                    count = int(c.get("coverageCount", "0"))
+                    if len(states) >= 2:
+                        cd = CoverData(CoverTypeT.FSMBIN, 0)
+                        cd.data = count
+                        fsm_scope.createNextCover("->".join(states), cd, None)
+        self.read_user_attrs(fc_elem, inst_scope)
+
+    def readAssertionCoverage(self, ac_elem, inst_scope):
+        _XML_TO_BIN = {
+            "assert": {
+                "failBin":      CoverTypeT.ASSERTBIN,
+                "passBin":      CoverTypeT.PASSBIN,
+                "vacuousBin":   CoverTypeT.VACUOUSBIN,
+                "disabledBin":  CoverTypeT.DISABLEDBIN,
+                "attemptBin":   CoverTypeT.ATTEMPTBIN,
+                "activeBin":    CoverTypeT.ACTIVEBIN,
+                "peakActiveBin": CoverTypeT.PEAKACTIVEBIN,
+            },
+            "cover": {
+                "coverBin":     CoverTypeT.COVERBIN,
+                "failBin":      CoverTypeT.FAILBIN,
+                "passBin":      CoverTypeT.PASSBIN,
+                "vacuousBin":   CoverTypeT.VACUOUSBIN,
+                "disabledBin":  CoverTypeT.DISABLEDBIN,
+                "attemptBin":   CoverTypeT.ATTEMPTBIN,
+                "activeBin":    CoverTypeT.ACTIVEBIN,
+                "peakActiveBin": CoverTypeT.PEAKACTIVEBIN,
+            },
+        }
+        for asrt_elem in ac_elem:
+            local = (asrt_elem.tag.split("}")[-1]
+                     if "}" in asrt_elem.tag else asrt_elem.tag)
+            if local != "assertion":
+                continue
+            name = asrt_elem.get("name", "assertion")
+            kind = asrt_elem.get("assertionKind", "assert")
+            scope_type = (ScopeTypeT.ASSERT if kind == "assert"
+                          else ScopeTypeT.COVER)
+            assert_scope = inst_scope.createScope(
+                name, None, 1, UCIS_VLOG, scope_type, 0)
+            bin_map = _XML_TO_BIN.get(kind, _XML_TO_BIN["assert"])
+            for bin_elem in asrt_elem:
+                bin_local = (bin_elem.tag.split("}")[-1]
+                             if "}" in bin_elem.tag else bin_elem.tag)
+                cover_type = bin_map.get(bin_local)
+                if cover_type is None:
+                    continue
+                count = 0
+                for c in bin_elem:
+                    c_l = c.tag.split("}")[-1] if "}" in c.tag else c.tag
+                    if c_l == "contents":
+                        count = int(c.get("coverageCount", "0"))
+                cd = CoverData(cover_type, 0)
+                cd.data = count
+                assert_scope.createNextCover(bin_local, cd, None)
+        self.read_user_attrs(ac_elem, inst_scope)
 
     def readCovergroups(self, cg, inst_scope, module_scope_name):
         # This entry is for a given covergroup type

@@ -72,7 +72,7 @@ class HierarchyView(BaseView):
         self._all_nodes = []
         self._nodes_by_id = {}
         try:
-            if hasattr(self.model.db, "conn"):
+            if getattr(self.model.db, "conn", None) is not None:
                 self._build_hierarchy_sql()
             else:
                 self._build_hierarchy_api()

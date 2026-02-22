@@ -32,24 +32,28 @@ class MockApp:
         
         # Mock db for HierarchyView
         mock_scope1 = Mock()
-        mock_scope1.name = 'scope1'
-        mock_scope1.get_type.return_value = 1  # Module type
-        mock_scope1.get_coverage.return_value = 50.0
-        mock_scope1.children.return_value = []
+        mock_scope1.getScopeName = Mock(return_value='scope1')
+        mock_scope1.getScopeType = Mock(return_value=1)
+        mock_scope1.get_coverage = Mock(return_value=50.0)
+        mock_scope1.scopes = Mock(return_value=[])
+        mock_scope1.scope_id = 1
         
         mock_scope2 = Mock()
-        mock_scope2.name = 'scope2'
-        mock_scope2.get_type.return_value = 1
-        mock_scope2.get_coverage.return_value = 75.0
-        mock_scope2.children.return_value = []
+        mock_scope2.getScopeName = Mock(return_value='scope2')
+        mock_scope2.getScopeType = Mock(return_value=1)
+        mock_scope2.get_coverage = Mock(return_value=75.0)
+        mock_scope2.scopes = Mock(return_value=[])
+        mock_scope2.scope_id = 2
         
         mock_scope3 = Mock()
-        mock_scope3.name = 'scope3'
-        mock_scope3.get_type.return_value = 1
-        mock_scope3.get_coverage.return_value = 25.0
-        mock_scope3.children.return_value = []
+        mock_scope3.getScopeName = Mock(return_value='scope3')
+        mock_scope3.getScopeType = Mock(return_value=1)
+        mock_scope3.get_coverage = Mock(return_value=25.0)
+        mock_scope3.scopes = Mock(return_value=[])
+        mock_scope3.scope_id = 3
         
         mock_db = Mock()
+        mock_db.conn = None  # ensure _build_hierarchy_api() is used (not SQL path)
         mock_db.scopes.return_value = [mock_scope1, mock_scope2, mock_scope3]
         self.coverage_model.db = mock_db
 
@@ -310,70 +314,68 @@ def test_user_reported_bug_with_fragmented_keys():
     print("\n" + "=" * 70)
     print("TEST: Reproducing ACTUAL bug with fragmented arrow key")
     print("=" * 70)
-    
-    # Use real app
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'test_vlt.cdb')
-    app = TUIApp(db_path)
-    
-    # Initialize without running event loop
-    from ucis.tui.models.coverage_model import CoverageModel
-    app.coverage_model = CoverageModel(db_path, None)
-    app.controller = TUIController(app.coverage_model, on_quit=app._on_quit)
-    app.controller.running = True
-    app._initialize_views()
-    
-    controller = app.controller
-    
+
+    # Use mock app (no real DB needed to test controller behavior)
+    app = MockApp()
+    controller = TUIController(app.coverage_model, on_quit=lambda: None)
+    app.controller = controller
+
+    hierarchy_view = HierarchyView(app)
+    dashboard_view = Mock()
+    dashboard_view.handle_key = Mock(return_value=False)
+    dashboard_view.on_enter = Mock()
+    dashboard_view.on_exit = Mock()
+    controller.register_view("dashboard", dashboard_view)
+    controller.register_view("hierarchy", hierarchy_view)
+
     # Start on dashboard
     print("\n1. Starting on dashboard")
     controller.switch_view("dashboard")
     state = controller.get_state_debug()
     print(f"   Current view: {state['current_view']}")
-    
+
     # Press '2'
     print("\n2. Pressing '2'")
     controller.handle_key('2')
     state = controller.get_state_debug()
     print(f"   Current view: {state['current_view']}")
     assert state['current_view'] == 'hierarchy'
-    
+
     # Now simulate what ACTUALLY happens - fragmented arrow key
     print("\n3. User presses DOWN arrow, but KeyParser fragments it...")
-    
+
     # First fragment: 'esc'
     print("   Fragment 1: 'esc' (KeyParser returns this first)")
     controller.handle_key('esc')
     state = controller.get_state_debug()
     print(f"   After 'esc': current_view = {state['current_view']}")
-    
+
     # This is the bug!
     if state['current_view'] == 'dashboard':
         print("   ✓ BUG REPRODUCED!")
         print("   'esc' triggered go_back() and switched to dashboard")
-        print("   User sees dashboard (wrong!)")
     else:
         print(f"   Current view is {state['current_view']}")
-    
+
     # Second fragment: '['
     print("   Fragment 2: '[' (processed as separate key)")
     controller.handle_key('[')
     state = controller.get_state_debug()
     print(f"   After '[': current_view = {state['current_view']}")
-    
+
     # Third fragment: 'B'
     print("   Fragment 3: 'B' (processed as separate key)")
     controller.handle_key('B')
     state = controller.get_state_debug()
     print(f"   After 'B': current_view = {state['current_view']}")
-    
+
     print("\n" + "=" * 70)
     print("CONCLUSION:")
-    print("  The bug is in KeyParser - it's fragmenting escape sequences")
-    print("  instead of recognizing them as a single key.")
+    print("  The bug is in KeyParser - it's fragmenting escape sequences.")
     print("  'esc' alone triggers controller.go_back() → dashboard")
     print("=" * 70)
-    
-    # Assert the bug
+
+    # Assert the bug (esc triggers go_back which goes to dashboard)
     assert state['current_view'] == 'dashboard', \
         "Bug confirmed: fragmented arrow key causes dashboard switch"
 

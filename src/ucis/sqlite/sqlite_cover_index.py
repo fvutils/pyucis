@@ -113,3 +113,24 @@ class SqliteCoverIndex(CoverIndex):
         
         new_count = self._cover_data.data + amt
         self.setCount(new_count)
+
+    def setCoverData(self, data):
+        """Replace cover data for this item."""
+        self._ensure_loaded()
+        self.setCount(data.data)
+
+    def getCoverFlags(self) -> int:
+        """Get cover flags from the coveritems table."""
+        cursor = self.ucis_db.conn.execute(
+            "SELECT cover_flags FROM coveritems WHERE cover_id = ?",
+            (self.cover_id,)
+        )
+        row = cursor.fetchone()
+        return row[0] if row else 0
+
+    def setCoverFlags(self, flags: int):
+        """Set cover flags in the coveritems table."""
+        self.ucis_db.conn.execute(
+            "UPDATE coveritems SET cover_flags = ? WHERE cover_id = ?",
+            (flags, self.cover_id)
+        )

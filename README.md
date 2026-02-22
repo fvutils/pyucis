@@ -182,6 +182,34 @@ pyucis convert --input-format vltcov coverage.dat --out coverage.xml
 
 See documentation for complete import examples and supported formats.
 
+## Supported Formats
+
+PyUCIS supports bi-directional conversion between formats using the UCIS data model as the common representation.  Conversion is lossy for formats that do not support all UCIS features; a warning is emitted for each unsupported construct (use `--strict` to turn warnings into errors).
+
+| Format | Key | Read | Write | Functional Cov | Code Cov | Toggle Cov | Lossless |
+|--------|-----|:----:|:-----:|:--------------:|:--------:|:----------:|:--------:|
+| UCIS XML | `xml` | ✓ | ✓ | ✓ | ✓ | - | near |
+| UCIS YAML | `yaml` | ✓ | ✓ | ✓ | - | - | - |
+| SQLite | `sqlite` | ✓ | ✓ | ✓ | ✓ | ✓ | **✓** |
+| LCOV | `lcov` | - | ✓ | - | ✓ | - | - |
+| cocotb YAML | `cocotb-yaml` | ✓ | ✓ | ✓ | - | - | - |
+| cocotb XML | `cocotb-xml` | ✓ | ✓ | ✓ | - | - | - |
+| AVL JSON | `avl-json` | ✓ | ✓ | ✓ | - | - | - |
+| Verilator | `vltcov` | ✓ | ✓ | - | ✓ | ✓ | - |
+
+**Conversion CLI:**
+
+```bash
+# Convert with warnings on unsupported constructs (default)
+pyucis convert --input-format xml --output-format yaml input.xml -o output.yaml
+
+# Strict mode: fail on any unsupported construct
+pyucis convert --input-format xml --output-format lcov --strict input.xml -o output.lcov
+
+# Show a summary of warnings after conversion
+pyucis convert --input-format xml --output-format cocotb-yaml --warn-summary input.xml -o out.yml
+```
+
 ## Documentation
 
 - [MCP Server Documentation](MCP_SERVER.md)

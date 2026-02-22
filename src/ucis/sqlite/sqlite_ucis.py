@@ -166,7 +166,39 @@ class SqliteUCIS(SqliteScope, UCIS):
         obj._test_coverage = None  # Test coverage query API
 
         return obj
-    
+
+    def clone(self) -> 'SqliteUCIS':
+        """Return a new SqliteUCIS that is an independent copy of this database."""
+        self.conn.commit()  # ensure all changes are committed before backup
+        new_conn = sqlite3.connect(":memory:")
+        new_conn.row_factory = sqlite3.Row
+        self.conn.backup(new_conn)
+
+        obj = object.__new__(SqliteUCIS)
+        obj.db_path = ":memory:"
+        obj.conn = new_conn
+        obj.ucis_db = obj
+
+        row = new_conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id IS NULL LIMIT 1"
+        ).fetchone()
+        obj.scope_id = row[0] if row else 1
+        obj._loaded = False
+        obj._scope_name = None
+        obj._scope_type = None
+        obj._scope_flags = None
+        obj._weight = None
+        obj._goal = 100
+        obj._parent_id = None
+        obj._source_info = None
+        obj._initializing = False
+        obj._property_cache = {}
+        obj._file_handle_cache = {}
+        obj._modified = False
+        obj._readonly = False
+        obj._test_coverage = None
+        return obj
+
     def getAPIVersion(self) -> str:
         """Get API version"""
         cursor = self.conn.execute(
@@ -227,6 +259,8 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def setPathSeparator(self, sep: str):
         """Set path separator"""
+        if len(sep) != 1:
+            raise ValueError("Path separator must be a single character")
         self.conn.execute(
             "INSERT OR REPLACE INTO db_metadata (key, value) VALUES ('PATH_SEPARATOR', ?)",
             (sep,)
@@ -240,6 +274,53 @@ class SqliteUCIS(SqliteScope, UCIS):
     def modifiedSinceSim(self) -> bool:
         """Check if modified since simulation"""
         return self._modified
+
+    def removeScope(self, scope) -> None:
+        """Remove a scope and its entire subtree from the database."""
+        scope_id = scope.scope_id
+        # Recursively collect all descendant scope_ids
+        def _collect_ids(sid):
+            ids = [sid]
+            cursor = self.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id = ?", (sid,)
+            )
+            for row in cursor.fetchall():
+                ids.extend(_collect_ids(row[0]))
+            return ids
+        all_ids = _collect_ids(scope_id)
+        for sid in reversed(all_ids):
+            self.conn.execute("DELETE FROM coveritems WHERE scope_id = ?", (sid,))
+            self.conn.execute("DELETE FROM scope_properties WHERE scope_id = ?", (sid,))
+            self.conn.execute("DELETE FROM scopes WHERE scope_id = ?", (sid,))
+
+    def matchScopeByUniqueId(self, uid: str):
+        """Find a scope by its UNIQUE_ID string property."""
+        from ucis.str_property import StrProperty
+        cursor = self.conn.execute(
+            """SELECT scope_id FROM scope_properties
+               WHERE property_key = ? AND string_value = ?""",
+            (int(StrProperty.UNIQUE_ID), uid)
+        )
+        row = cursor.fetchone()
+        if row:
+            from ucis.sqlite.sqlite_scope import SqliteScope
+            return SqliteScope(self, row[0])
+        return None
+
+    def matchCoverByUniqueId(self, uid: str):
+        """Find (scope, coverindex) by UNIQUE_ID on a cover item."""
+        from ucis.str_property import StrProperty
+        cursor = self.conn.execute(
+            """SELECT cp.scope_id, cp.cover_index
+               FROM coveritem_properties cp
+               WHERE cp.property_key = ? AND cp.string_value = ?""",
+            (int(StrProperty.UNIQUE_ID), uid)
+        )
+        row = cursor.fetchone()
+        if row:
+            from ucis.sqlite.sqlite_scope import SqliteScope
+            return (SqliteScope(self, row[0]), row[1])
+        return (None, -1)
     
     def getNumTests(self) -> int:
         """Get number of test history nodes"""
@@ -249,6 +330,27 @@ class SqliteUCIS(SqliteScope, UCIS):
         )
         row = cursor.fetchone()
         return row[0] if row else 0
+
+    def createInstanceByName(self, name: str, du_name: str,
+                             fileinfo, weight: int, source, flags: int):
+        """Create an instance scope by DU name string lookup."""
+        from ucis.du_name import parseDUName
+        from ucis.scope_type_t import ScopeTypeT
+        lib, mod = parseDUName(du_name)
+        qualified = f"{lib}.{mod}"
+        # Search DU scopes by name (they may be nested under root scope)
+        cursor = self.conn.execute(
+            """SELECT scope_id FROM scopes
+               WHERE scope_name = ? OR scope_name = ?""",
+            (qualified, mod)
+        )
+        row = cursor.fetchone()
+        if not row:
+            raise KeyError(f"No DU scope found for '{du_name}'")
+        from ucis.sqlite.sqlite_scope import SqliteScope
+        du_scope = SqliteScope.create_specialized_scope(self, row[0])
+        return self.createInstance(name, fileinfo, weight, source,
+                                   ScopeTypeT.INSTANCE, du_scope, flags)
     
     def createFileHandle(self, filename: str, workdir: str = None) -> FileHandle:
         """Create or get file handle"""
@@ -304,7 +406,7 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def historyNodes(self, kind: HistoryNodeKind = None) -> Iterator[HistoryNode]:
         """Iterate history nodes"""
-        if kind is None or kind == -1:
+        if kind is None or kind == -1 or kind == HistoryNodeKind.ALL:
             cursor = self.conn.execute("SELECT history_id FROM history_nodes")
         else:
             cursor = self.conn.execute(
@@ -317,13 +419,15 @@ class SqliteUCIS(SqliteScope, UCIS):
     
     def getSourceFiles(self):
         """Get list of source files"""
-        # Not fully implemented yet
-        return []
+        cursor = self.conn.execute("SELECT file_id, file_path FROM files ORDER BY file_id")
+        return [SqliteFileHandle(self, row[0], row[1]) for row in cursor]
     
     def getCoverInstances(self):
-        """Get list of coverage instances"""
-        # Not fully implemented yet
-        return []
+        """Get list of top-level coverage instances (scopes with no parent)"""
+        cursor = self.conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id IS NULL ORDER BY scope_id"
+        )
+        return [SqliteScope.create_specialized_scope(self, row[0]) for row in cursor]
     
     def write(self, file, scope=None, recurse=True, covertype=-1):
         """Write database (no-op for SQLite, already persistent)"""

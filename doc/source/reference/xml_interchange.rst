@@ -192,6 +192,153 @@ Optional Elements
 - **cross** (minOccurs="0") - Cross coverage is optional
 - **crossBin** (minOccurs="0") - Crosses may have no bins
 
+Code Coverage
+=============
+
+PyUCIS supports reading and writing all major UCIS code coverage types within
+``instanceCoverages`` elements.
+
+Statement Coverage
+------------------
+
+Statement coverage is stored as ``blockCoverage`` → flat ``statement`` elements:
+
+.. code::
+
+  <blockCoverage>
+    <statement id="1" file="1" line="5" inlineCount="1">
+      <contents coverageCount="3"/>
+    </statement>
+  </blockCoverage>
+
+Each ``statement`` records one source location with its hit count.
+
+Branch Coverage
+---------------
+
+Branch coverage is stored as ``branchCoverage`` → ``branch`` elements, one per
+branching statement (``if``, ``case``, etc.). Each branch has one or more
+``branchBin`` arms:
+
+.. code::
+
+  <branchCoverage>
+    <branch id="1" branchType="if" file="1" line="10">
+      <branchBin alias="taken">
+        <contents coverageCount="2"/>
+      </branchBin>
+      <branchBin alias="not_taken">
+        <contents coverageCount="0"/>
+      </branchBin>
+    </branch>
+  </branchCoverage>
+
+Toggle Coverage
+---------------
+
+Toggle coverage is stored as ``toggleCoverage`` → ``toggleObject`` → ``toggleBit``
+elements. Each bit records a 0→1 and a 1→0 transition bin:
+
+.. code::
+
+  <toggleCoverage>
+    <toggleObject name="sig" canonical="sig">
+      <toggleBit name="sig[0]">
+        <toggle01Bin>
+          <contents coverageCount="1"/>
+        </toggle01Bin>
+        <toggle10Bin>
+          <contents coverageCount="1"/>
+        </toggle10Bin>
+      </toggleBit>
+    </toggleObject>
+  </toggleCoverage>
+
+FSM Coverage
+------------
+
+FSM coverage is stored as ``fsmCoverage`` → ``fsm`` elements. State coverage uses
+``stateBin`` and transition coverage uses ``transitionBin``:
+
+.. code::
+
+  <fsmCoverage>
+    <fsm name="state_machine">
+      <state stateName="IDLE">
+        <stateBin name="IDLE">
+          <contents coverageCount="5"/>
+        </stateBin>
+      </state>
+      <stateTransition>
+        <state>IDLE</state>
+        <state>ACTIVE</state>
+        <transitionBin name="IDLE->ACTIVE">
+          <contents coverageCount="2"/>
+        </transitionBin>
+      </stateTransition>
+    </fsm>
+  </fsmCoverage>
+
+Assertion Coverage
+------------------
+
+Assertion coverage is stored as ``assertionCoverage`` → ``assertion`` elements.
+The ``assertionKind`` attribute is either ``assert`` or ``cover``:
+
+.. code::
+
+  <assertionCoverage>
+    <assertion name="my_property" assertionKind="assert">
+      <passBin>
+        <contents coverageCount="10"/>
+      </passBin>
+      <failBin>
+        <contents coverageCount="0"/>
+      </failBin>
+      <attemptBin>
+        <contents coverageCount="10"/>
+      </attemptBin>
+    </assertion>
+  </assertionCoverage>
+
+Supported bin kinds for ``assert``: ``failBin``, ``passBin``, ``vacuousBin``,
+``disabledBin``, ``attemptBin``, ``activeBin``, ``peakActiveBin``.
+
+Supported bin kinds for ``cover``: ``coverBin``, ``failBin``, ``passBin``,
+``vacuousBin``, ``disabledBin``, ``attemptBin``, ``activeBin``, ``peakActiveBin``.
+
+User Attributes
+===============
+
+PyUCIS supports round-tripping user attributes (set via ``setAttribute`` /
+``getAttribute``) through XML ``userAttr`` child elements. These are written as
+the last children of each coverage container element:
+
+.. code::
+
+  <toggleCoverage>
+    <!-- ... toggle data ... -->
+    <userAttr key="tool_name" type="str">my_simulator</userAttr>
+    <userAttr key="version" type="str">2024.1</userAttr>
+  </toggleCoverage>
+
+User attributes attached to instance scopes are preserved across XML write/read
+round-trips. Tags (set via ``addTag``) are not currently serialized to XML.
+
+History Nodes
+=============
+
+History nodes record the provenance of coverage data (test runs, merges). PyUCIS
+preserves the parent/child relationships between history nodes using the ``id``
+and ``parentId`` attributes:
+
+.. code::
+
+  <historyNodes>
+    <historyNode id="1" logicalName="test_run_1" .../>
+    <historyNode id="2" logicalName="merge_result" parentId="1" .../>
+  </historyNodes>
+
 Known Format Limitations
 =========================
 
@@ -243,6 +390,30 @@ Feature Support Matrix
    * - Cross Bins
      - ✅ Yes
      - With index reconstruction
+   * - Statement Coverage
+     - ✅ Yes
+     - Flat statement mode
+   * - Branch Coverage
+     - ✅ Yes
+     - if/case branching statements
+   * - Toggle Coverage
+     - ✅ Yes
+     - Per-bit 0→1 and 1→0 bins
+   * - FSM Coverage
+     - ✅ Yes
+     - State and transition coverage
+   * - Assertion Coverage
+     - ✅ Yes
+     - cover and assert kinds, all bin types
+   * - User Attributes
+     - ✅ Yes
+     - Via ``userAttr`` child elements
+   * - History Node Hierarchy
+     - ✅ Yes
+     - Parent/child via ``parentId``
+   * - Condition/Expression Coverage
+     - ❌ No
+     - Not in Python DM; writer emits ctx.warn
    * - Instance Weights
      - ❌ No
      - Not in XML schema
@@ -255,6 +426,9 @@ Feature Support Matrix
    * - Standalone File Handles
      - ❌ No
      - Requires instanceCoverages
+   * - Tags
+     - ❌ No
+     - No direct XML representation
 
 Workarounds
 -----------

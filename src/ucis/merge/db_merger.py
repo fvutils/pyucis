@@ -11,6 +11,7 @@ from ucis import UCIS_OTHER, UCIS_INSTANCE, UCIS_DU_MODULE, UCIS_ENABLED_STMT, \
     UCIS_IGNOREBIN, UCIS_ILLEGALBIN, coverpoint
 from ucis.cover_data import CoverData
 from ucis.cover_type_t import CoverTypeT
+from ucis.history_node_kind import HistoryNodeKind
 from ucis.report.coverage_report import CoverageReport
 from ucis.report.coverage_report_builder import CoverageReportBuilder
 from ucis.scope_type_t import ScopeTypeT
@@ -77,6 +78,62 @@ class DbMerger(object):
         
             self._merge_covergroups(dst_iscope, src_scopes)
             self._merge_code_coverage(dst_iscope, src_scopes)
+
+        # Copy history nodes from all source databases
+        def _node_key(n):
+            """Stable key for a history node regardless of backend."""
+            return getattr(n, 'history_id', id(n))
+
+        for db in src_db_l:
+            src_nodes = list(db.historyNodes(HistoryNodeKind.ALL))
+            src_to_dst = {}  # maps _node_key(src_node) → dst_node
+
+            # Sort so parents are created before children
+            def _sort_key(n):
+                depth = 0
+                p = n.getParent()
+                while p is not None:
+                    depth += 1
+                    p = p.getParent()
+                return depth
+
+            for src_hn in sorted(src_nodes, key=_sort_key):
+                src_parent = src_hn.getParent()
+                dst_parent = src_to_dst.get(_node_key(src_parent)) if src_parent is not None else None
+                dst_hn = dst_db.createHistoryNode(
+                    dst_parent,
+                    src_hn.getLogicalName(),
+                    src_hn.getPhysicalName(),
+                    src_hn.getKind()
+                )
+                src_to_dst[_node_key(src_hn)] = dst_hn
+                dst_hn.setTestStatus(src_hn.getTestStatus())
+                if src_hn.getSimTime() is not None:
+                    dst_hn.setSimTime(src_hn.getSimTime())
+                if src_hn.getTimeUnit() is not None:
+                    dst_hn.setTimeUnit(src_hn.getTimeUnit())
+                if src_hn.getRunCwd() is not None:
+                    dst_hn.setRunCwd(src_hn.getRunCwd())
+                if src_hn.getCpuTime() is not None:
+                    dst_hn.setCpuTime(src_hn.getCpuTime())
+                if src_hn.getSeed() is not None:
+                    dst_hn.setSeed(src_hn.getSeed())
+                if src_hn.getCmd() is not None:
+                    dst_hn.setCmd(src_hn.getCmd())
+                if src_hn.getDate() is not None:
+                    dst_hn.setDate(src_hn.getDate())
+                if src_hn.getUserName() is not None:
+                    dst_hn.setUserName(src_hn.getUserName())
+                if src_hn.getToolCategory() is not None:
+                    dst_hn.setToolCategory(src_hn.getToolCategory())
+                if src_hn.getVendorId() is not None:
+                    dst_hn.setVendorId(src_hn.getVendorId())
+                if src_hn.getVendorTool() is not None:
+                    dst_hn.setVendorTool(src_hn.getVendorTool())
+                if src_hn.getVendorToolVersion() is not None:
+                    dst_hn.setVendorToolVersion(src_hn.getVendorToolVersion())
+                if src_hn.getComment() is not None:
+                    dst_hn.setComment(src_hn.getComment())
             
     def _merge_covergroups(self, dst_scope, src_scopes):
         
@@ -266,6 +323,13 @@ class DbMerger(object):
         
         # Merge TOGGLE scopes (toggle coverage)
         self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.TOGGLE)
+
+        # Merge FSM scopes (FSM state/transition coverage)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.FSM)
+
+        # Merge assertion scopes (assert/cover directives)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.ASSERT)
+        self._merge_scopes_by_type(dst_scope, src_scopes, ScopeTypeT.COVER)
     
     def _merge_scopes_by_type(self, dst_parent, src_scopes, scope_type):
         """Merge scopes of a specific type.
@@ -324,6 +388,15 @@ class DbMerger(object):
             CoverTypeT.EXPRBIN,     # Expression coverage
             CoverTypeT.CONDBIN,     # Condition coverage
             CoverTypeT.FSMBIN,      # FSM coverage
+            CoverTypeT.ASSERTBIN,   # Assertion directive bins
+            CoverTypeT.COVERBIN,
+            CoverTypeT.PASSBIN,
+            CoverTypeT.FAILBIN,
+            CoverTypeT.VACUOUSBIN,
+            CoverTypeT.DISABLEDBIN,
+            CoverTypeT.ATTEMPTBIN,
+            CoverTypeT.ACTIVEBIN,
+            CoverTypeT.PEAKACTIVEBIN,
         ]
         
         for cvg_type in coverage_types:

@@ -204,3 +204,34 @@ The XML backend is now **fully functional** with all fixable issues resolved. Al
 - ✅ Documented all legitimate format limitations
 
 **Impact**: Unlocked 6 additional passing tests, bringing XML from 51% to 80% pass rate.
+
+---
+
+## Known Remaining Limitations (Deferred to Future Project)
+
+The following XML backend gaps are known and intentionally deferred. The Mem and SQLite backends fully support all these features.
+
+### Coverage Types Not Yet XML-Serializable
+
+| Coverage Type | XSD Element | Status |
+|---|---|---|
+| FSM (states/transitions) | `fsmCoverage` > `fsmScope` | Not implemented |
+| Assertion (pass/fail) | `assertionCoverage` > `scope` | Not implemented |
+| Condition | `conditionCoverage` | Not implemented |
+| Expression | `expressionCoverage` | Not implemented |
+
+### Property/Metadata APIs Not Preserved Through XML
+
+| Feature | Notes |
+|---|---|
+| User attributes (`setAttribute`/`getAttribute`) | XSD has `userAttr` elements but writer/reader don't use them |
+| Tags (`addTag`/`hasTag`/etc.) | Not serialized |
+| Cover flags (`getCoverFlags`/`setCoverFlags`) | Not serialized |
+| String properties (COMMENT, etc.) | Not serialized (SCOPE_NAME is preserved) |
+| Real/Int properties (SIMTIME, CPUTIME, COST) | Not serialized |
+| File handle API (`getSourceFiles()`) | XML reader doesn't maintain accessible file handle list |
+| Delete ops (`removeScope`/`removeCover`) | Not applicable to read-only XML |
+| HDL scope types beyond block/branch/toggle | PROCESS, GENERATE, FORKJOIN, EXPR not preserved |
+| `MemFactory.clone()` | Not applicable for XML |
+
+All of the above cause test variants `[xml]` to be skipped in the API test suite.

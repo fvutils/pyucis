@@ -146,7 +146,7 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         )
         
         new_scope_id = cursor.lastrowid
-        return SqliteScope(self.ucis_db, new_scope_id)
+        return SqliteScope.create_specialized_scope(self.ucis_db, new_scope_id)
     
     def createInstance(self, name: str, fileinfo: SourceInfo, weight: int,
                       source: SourceT, type: ScopeTypeT, du_scope: 'Scope',
@@ -157,7 +157,18 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     def createToggle(self, name: str, canonical_name: str, flags: FlagsT,
                     toggle_metric, toggle_type, toggle_dir) -> 'Scope':
         """Create a toggle scope"""
-        return self.createScope(name, None, 1, SourceT.NONE, ScopeTypeT.TOGGLE, flags)
+        scope = self.createScope(name, None, 1, SourceT.NONE, ScopeTypeT.TOGGLE, flags)
+        # Store toggle metadata if specialized scope was returned
+        from ucis.sqlite.sqlite_toggle_scope import SqliteToggleScope
+        if isinstance(scope, SqliteToggleScope):
+            scope.setCanonicalName(canonical_name if canonical_name else name)
+            if toggle_metric is not None:
+                scope.setToggleMetric(toggle_metric)
+            if toggle_type is not None:
+                scope.setToggleType(toggle_type)
+            if toggle_dir is not None:
+                scope.setToggleDir(toggle_dir)
+        return scope
     
     def createCovergroup(self, name: str, srcinfo: SourceInfo, weight: int,
                         source: SourceT) -> 'Scope':
@@ -205,12 +216,13 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         # Insert coveritem
         cover_type = data.type if data else 0x01  # Default to CVGBIN
         cover_count = data.data if data else 0
+        at_least = data.goal if data else 1
         
         cursor = self.ucis_db.conn.execute(
             """INSERT INTO coveritems (scope_id, cover_index, cover_type, cover_name, 
-                                       cover_data, source_file_id, source_line, source_token)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-            (self.scope_id, next_index, cover_type, name, cover_count,
+                                       cover_data, at_least, source_file_id, source_line, source_token)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (self.scope_id, next_index, cover_type, name, cover_count, at_least,
              source_file_id, source_line, source_token)
         )
         
@@ -266,10 +278,46 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         self._ensure_loaded()
         return self._scope_type
     
+    def getInstanceDu(self) -> 'SqliteScope':
+        """Get the design-unit scope associated with this instance.
+
+        Searches sibling scopes (same parent) for the first DU_MODULE (or any
+        DU_ANY) scope and returns it.  This mirrors how MemInstanceScope works.
+        """
+        self._ensure_loaded()
+        du_mask = (ScopeTypeT.DU_MODULE | ScopeTypeT.DU_ARCH |
+                   ScopeTypeT.DU_PACKAGE | ScopeTypeT.DU_PROGRAM |
+                   ScopeTypeT.DU_INTERFACE)
+        # Look in parent's children for a DU scope
+        parent_id = self._parent_id
+        if parent_id is None:
+            # Top-level: search root-level scopes in db
+            cursor = self.ucis_db.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id IS NULL AND (scope_type & ?) != 0",
+                (int(du_mask),)
+            )
+        else:
+            cursor = self.ucis_db.conn.execute(
+                "SELECT scope_id FROM scopes WHERE parent_id = ? AND (scope_type & ?) != 0",
+                (parent_id, int(du_mask))
+            )
+        row = cursor.fetchone()
+        if row:
+            return SqliteScope(self.ucis_db, row[0])
+        return None
+
     def getScopeName(self) -> str:
         """Get scope name"""
         self._ensure_loaded()
         return self._scope_name
+
+    def getStringProperty(self, coverindex: int, property) -> str:
+        """Get string property, handling SCOPE_NAME specially."""
+        from ucis.str_property import StrProperty
+        if property == StrProperty.SCOPE_NAME:
+            self._ensure_loaded()
+            return self._scope_name
+        return super().getStringProperty(coverindex, property)
     
     def getSourceInfo(self) -> SourceInfo:
         """Get source information"""
@@ -297,23 +345,38 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     def coverItems(self, mask: CoverTypeT) -> Iterator['CoverIndex']:
         """Iterate coverage items matching type mask"""
         from ucis.sqlite.sqlite_cover_index import SqliteCoverIndex
-        
-        if mask == -1:
-            # All coverage items
+        from ucis.cover_type_t import CoverTypeT as CType
+
+        # Handle "all" masks (-1 or very large ALL value)
+        if mask == -1 or mask == CType.ALL:
             cursor = self.ucis_db.conn.execute(
                 "SELECT cover_id FROM coveritems WHERE scope_id = ? ORDER BY cover_index",
                 (self.scope_id,)
             )
         else:
-            # Filter by type mask
+            # Filter by type mask (SQLite INTEGER max is 2^63-1, signed)
+            mask_int = int(mask) & 0x7FFFFFFFFFFFFFFF
             cursor = self.ucis_db.conn.execute(
                 "SELECT cover_id FROM coveritems WHERE scope_id = ? AND (cover_type & ?) != 0 ORDER BY cover_index",
-                (self.scope_id, mask)
+                (self.scope_id, mask_int)
             )
         
         for row in cursor:
             yield SqliteCoverIndex(self.ucis_db, row[0])
     
+    def removeCover(self, coverindex: int) -> None:
+        """Remove cover item at the given index from this scope."""
+        cursor = self.ucis_db.conn.execute(
+            "SELECT cover_id FROM coveritems WHERE scope_id = ? ORDER BY cover_index",
+            (self.scope_id,)
+        )
+        rows = cursor.fetchall()
+        if 0 <= coverindex < len(rows):
+            cover_id = rows[coverindex][0]
+            self.ucis_db.conn.execute(
+                "DELETE FROM coveritems WHERE cover_id = ?", (cover_id,)
+            )
+
     def getIntProperty(self, coverindex: int, property: IntProperty) -> int:
         """Get integer property with scope-specific handling"""
         if property == IntProperty.SCOPE_WEIGHT:
@@ -361,6 +424,12 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         elif scope_type & ScopeTypeT.COVERPOINT:
             from ucis.sqlite.sqlite_coverpoint import SqliteCoverpoint
             return SqliteCoverpoint(ucis_db, scope_id)
+        elif scope_type & ScopeTypeT.TOGGLE:
+            from ucis.sqlite.sqlite_toggle_scope import SqliteToggleScope
+            return SqliteToggleScope(ucis_db, scope_id)
+        elif scope_type & ScopeTypeT.FSM:
+            from ucis.sqlite.sqlite_fsm_scope import SqliteFSMScope
+            return SqliteFSMScope(ucis_db, scope_id)
         else:
             # Generic scope
             return SqliteScope(ucis_db, scope_id)

@@ -50,6 +50,9 @@ class IntProperty(IntEnum):
     MODIFIED_SINCE_SIM = auto()  # Modified since end of simulation run (In-memory and read only)
     """Database has been modified since simulation. Read-only."""
     
+    SUPPRESS_MODIFIED = auto()  # Suppress the modification flag
+    """Suppress modification tracking. See UCIS_INT_SUPPRESS_MODIFIED."""
+    
     NUM_TESTS = auto()  # Number of test history nodes (UCIS_HISTORYNODE_TEST) in UCISDB
     """Number of test history nodes in the database. Read-only."""
     
@@ -87,6 +90,9 @@ class IntProperty(IntEnum):
     
     TOGGLE_COVERED = auto()  # Toggle object is covered
     """True (1) if toggle is covered."""
+    
+    TOGGLE_METRIC = auto()  # Toggle metric type (ToggleMetricT)
+    """Toggle metric type. See UCIS_INT_TOGGLE_METRIC and ToggleMetricT."""
     
     # Branch coverage properties
     BRANCH_HAS_ELSE = auto()  # Branch has an 'else' coveritem

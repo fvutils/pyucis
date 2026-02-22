@@ -87,5 +87,38 @@ class MemCovergroup(MemCvgScope,Covergroup):
             0)
         return ci_obj
 
+    def getRealProperty(self, property):
+        """Get a real-valued property. CVG_INST_AVERAGE computes average coverage."""
+        from ucis.real_property import RealProperty
+        if property == RealProperty.CVG_INST_AVERAGE:
+            return self._compute_instance_average()
+        return None
+
+    def _compute_instance_average(self) -> float:
+        """Compute average coverage percentage across all COVERINSTANCE children."""
+        instances = [c for c in self.m_children
+                     if c.getScopeType() == ScopeTypeT.COVERINSTANCE]
+        if not instances:
+            return 0.0
+        total = 0.0
+        for inst in instances:
+            total += self._instance_coverage(inst)
+        return total / len(instances)
+
+    def _instance_coverage(self, inst) -> float:
+        """Rough per-instance coverage: fraction of coverpoints with all bins hit."""
+        from ucis.scope_type_t import ScopeTypeT as ST
+        from ucis.cover_type_t import CoverTypeT
+        coverpoints = [c for c in inst.m_children
+                       if c.getScopeType() == ST.COVERPOINT]
+        if not coverpoints:
+            return 0.0
+        covered = 0
+        for cp in coverpoints:
+            bins = list(cp.coverItems(CoverTypeT.CVGBIN))
+            if bins and all(b.getCoverData().data >= max(1, cp.getAtLeast()) for b in bins):
+                covered += 1
+        return 100.0 * covered / len(coverpoints)
+
     
     

@@ -320,3 +320,22 @@ class SqliteHistoryNode(SqliteObj, HistoryNode):
     
     def setComment(self, comment):
         pass
+
+    def getRealProperty(self, property):
+        """Get a real-valued property by RealProperty enum."""
+        from ucis.real_property import RealProperty
+        if property == RealProperty.SIMTIME:
+            return self.getSimTime()
+        elif property == RealProperty.CPUTIME:
+            return self.getCpuTime()
+        elif property == RealProperty.COST:
+            return 0.0
+        return None
+
+    def setRealProperty(self, property, value: float):
+        """Set a real-valued property by RealProperty enum."""
+        from ucis.real_property import RealProperty
+        if property == RealProperty.SIMTIME:
+            self.setSimTime(value)
+        elif property == RealProperty.CPUTIME:
+            self.setCpuTime(value)
