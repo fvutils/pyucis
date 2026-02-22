@@ -7,7 +7,8 @@ from ucis.conversion import ConversionContext, ConversionListener
 
 def convert(args):
     if args.input_format is None:
-        args.input_format = "xml"
+        rgy_tmp = FormatRgy.inst()
+        args.input_format = rgy_tmp.detectDatabaseFormat(args.input) or "xml"
     if args.output_format is None:
         args.output_format = "xml"
 

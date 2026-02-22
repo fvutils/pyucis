@@ -70,7 +70,7 @@ class XmlWriter():
         self.setAttr(self.root, "writtenBy", wb if wb else getpass.getuser())
         wt = db.getWrittenTime()
         if wt:
-            self.setAttrDateTime(self.root, "writtenTime", str(wt))
+            self.setAttrDateTime(self.root, "writtenTime", wt)
         else:
             self.setAttrDateTime(self.root, "writtenTime",
                                  date.today().strftime("%Y%m%d%H%M%S"))
@@ -208,15 +208,7 @@ class XmlWriter():
         self.write_branch_coverage(inst, s)
         self.write_fsm_coverage(inst, s)
         self.write_assertion_coverage(inst, s)
-        # Warn once per instance if condition/expression scopes are present
-        warned = False
-        for _ in s.scopes(ScopeTypeT.COND):
-            if not warned and self.ctx is not None:
-                self.ctx.warn(
-                    "xml: condition/expression coverage is not supported "
-                    "— scopes skipped")
-            warned = True
-            break
+        self.write_condition_coverage(inst, s)
         self.write_user_attrs(inst, s)
         
         # Recursively write child instances
@@ -241,7 +233,10 @@ class XmlWriter():
                 tb_elem.set("key", "0")
                 for bin_item in bins:
                     name = bin_item.getName()
-                    if "to" in name.lower():
+                    if "->" in name:
+                        parts = name.split("->", 1)
+                        from_val, to_val = parts[0].strip(), parts[1].strip()
+                    elif "to" in name.lower():
                         parts = name.lower().split("to", 1)
                         from_val, to_val = parts[0], parts[1]
                     else:
@@ -300,27 +295,31 @@ class XmlWriter():
             fsm_elem.set("name", fsm_scope.getScopeName())
             fsm_elem.set("type", "reg")
             fsm_elem.set("width", "1")
-            bins = list(fsm_scope.coverItems(CoverTypeT.FSMBIN))
+            # FSMBIN items live in FSM_STATES and FSM_TRANS child scopes (LRM 6.5.6)
+            state_bins = []
+            for ss in fsm_scope.scopes(ScopeTypeT.FSM_STATES):
+                state_bins.extend(ss.coverItems(CoverTypeT.FSMBIN))
+            trans_bins = []
+            for ts in fsm_scope.scopes(ScopeTypeT.FSM_TRANS):
+                trans_bins.extend(ts.coverItems(CoverTypeT.FSMBIN))
             # States must come before transitions in XML (schema order)
-            for bin_item in bins:
-                if "->" not in bin_item.getName():
-                    state_elem = self.mkElem(fsm_elem, "state")
-                    state_elem.set("stateName", bin_item.getName())
-                    state_elem.set("stateValue", str(bins.index(bin_item)))
-                    sb_elem = self.mkElem(state_elem, "stateBin")
-                    contents = self.mkElem(sb_elem, "contents")
-                    contents.set("coverageCount", str(bin_item.getCoverData().data))
-            for bin_item in bins:
-                if "->" in bin_item.getName():
-                    parts = bin_item.getName().split("->", 1)
-                    trans_elem = self.mkElem(fsm_elem, "stateTransition")
-                    from_elem = self.mkElem(trans_elem, "state")
-                    from_elem.text = parts[0]
-                    to_elem = self.mkElem(trans_elem, "state")
-                    to_elem.text = parts[1]
-                    tb_elem = self.mkElem(trans_elem, "transitionBin")
-                    contents = self.mkElem(tb_elem, "contents")
-                    contents.set("coverageCount", str(bin_item.getCoverData().data))
+            for i, bin_item in enumerate(state_bins):
+                state_elem = self.mkElem(fsm_elem, "state")
+                state_elem.set("stateName", bin_item.getName())
+                state_elem.set("stateValue", str(i))
+                sb_elem = self.mkElem(state_elem, "stateBin")
+                contents = self.mkElem(sb_elem, "contents")
+                contents.set("coverageCount", str(bin_item.getCoverData().data))
+            for bin_item in trans_bins:
+                parts = bin_item.getName().split("->", 1)
+                trans_elem = self.mkElem(fsm_elem, "stateTransition")
+                from_elem = self.mkElem(trans_elem, "state")
+                from_elem.text = parts[0].strip() if len(parts) > 1 else bin_item.getName()
+                to_elem = self.mkElem(trans_elem, "state")
+                to_elem.text = parts[1].strip() if len(parts) > 1 else ""
+                tb_elem = self.mkElem(trans_elem, "transitionBin")
+                contents = self.mkElem(tb_elem, "contents")
+                contents.set("coverageCount", str(bin_item.getCoverData().data))
         self.write_user_attrs(fc_elem, scope)
 
     def write_assertion_coverage(self, inst_elem, scope):
@@ -359,6 +358,44 @@ class XmlWriter():
                     contents.set("coverageCount",
                                  str(sum(b.getCoverData().data for b in bins)))
         self.write_user_attrs(ac_elem, scope)
+
+    def write_condition_coverage(self, inst_elem, scope):
+        cond_scopes = list(scope.scopes(ScopeTypeT.COND))
+        if not cond_scopes:
+            return
+        cc_elem = self.mkElem(inst_elem, "conditionCoverage")
+        cc_elem.set("metricMode", "UCIS:STD")
+        for key, cond_scope in enumerate(cond_scopes):
+            src = cond_scope.getSourceInfo()
+            if src and src.file:
+                file_id = self.file_id_m.get(src.file.getFileName(), 1)
+                line = src.line if src.line >= 1 else 1
+            else:
+                file_id = 1
+                line = 1
+            uid = f"#cond#{file_id}#{line}#{key}#"
+            expr_elem = self.mkElem(cc_elem, "expr")
+            expr_elem.set("name", uid)
+            expr_elem.set("key", str(key))
+            expr_elem.set("exprString", cond_scope.getScopeName())
+            expr_elem.set("index", "0")
+            expr_elem.set("width", "1")
+            self.addId(expr_elem, src)
+            bins = list(cond_scope.coverItems(CoverTypeT.CONDBIN))
+            # Infer input count from max length of binary-vector bin names
+            binary_names = [b.getName() for b in bins
+                            if all(c in '01-' for c in b.getName())]
+            n_inputs = max((len(n) for n in binary_names), default=1) if binary_names else 1
+            # Emit placeholder subExpr names (signal names not available in DM)
+            for i in range(n_inputs):
+                sub_elem = self.mkElem(expr_elem, "subExpr")
+                sub_elem.text = f"_input_{i}"
+            for bin_item in bins:
+                bin_elem = self.mkElem(expr_elem, "bin")
+                bin_elem.set("alias", bin_item.getName())
+                contents_elem = self.mkElem(bin_elem, "contents")
+                contents_elem.set("coverageCount", str(bin_item.getCoverData().data))
+        self.write_user_attrs(cc_elem, scope)
 
     def write_covergroups(self, inst, scope):
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):
@@ -425,14 +462,15 @@ class XmlWriter():
             cpBinElem = self.mkElem(cpElem, "coverpointBin")
             self.setAttr(cpBinElem, "name", cp_bin.getName())
 
-            if cp_bin.data.type == CoverTypeT.CVGBIN:
+            bin_type = cp_bin.getCoverData().type
+            if bin_type == CoverTypeT.CVGBIN:
                 self.setAttr(cpBinElem, "type", "bins")
-            elif cp_bin.data.type == CoverTypeT.IGNOREBIN:
+            elif bin_type == CoverTypeT.IGNOREBIN:
                 self.setAttr(cpBinElem, "type", "ignore")
-            elif cp_bin.data.type == CoverTypeT.ILLEGALBIN:
+            elif bin_type == CoverTypeT.ILLEGALBIN:
                 self.setAttr(cpBinElem, "type", "illegal")
             else:
-                raise Exception("Unknown bin type %s" % str(cp_bin.type))
+                raise Exception("Unknown bin type %s" % str(bin_type))
             self.setAttr(cpBinElem, "key", "0")
             
             # Now, add the coverage data

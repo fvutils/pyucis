@@ -368,8 +368,29 @@ class DbMerger(object):
                 0  # flags - use default
             )
             
-            # Merge coverage items
-            self._merge_code_coverage_items(dst_sub_scope, src_scope_l)
+            if scope_type == ScopeTypeT.FSM:
+                # Per LRM: FSMBIN items live in FSM_STATES/FSM_TRANS sub-scopes.
+                # Collect from src sub-scopes; dst.createNextCover() routes correctly.
+                item_name_m: Dict[str, List] = {}
+                item_name_l = []
+                for src_fsm in src_scope_l:
+                    for sub_type in (ScopeTypeT.FSM_STATES, ScopeTypeT.FSM_TRANS):
+                        for sub_scope in src_fsm.scopes(sub_type):
+                            for ci in sub_scope.coverItems(CoverTypeT.FSMBIN):
+                                nm = ci.getName()
+                                cvg = ci.getCoverData()
+                                if nm not in item_name_m:
+                                    item_name_m[nm] = [0, cvg.goal]
+                                    item_name_l.append(nm)
+                                item_name_m[nm][0] += cvg.data
+                for nm in item_name_l:
+                    count, goal = item_name_m[nm]
+                    cd = CoverData(CoverTypeT.FSMBIN, goal)
+                    cd.data = count
+                    dst_sub_scope.createNextCover(nm, cd, None)
+            else:
+                # Merge coverage items
+                self._merge_code_coverage_items(dst_sub_scope, src_scope_l)
     
     def _merge_code_coverage_items(self, dst_scope, src_scopes):
         """Merge code coverage items from multiple source scopes.

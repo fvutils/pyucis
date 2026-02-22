@@ -489,13 +489,21 @@ def verify_cc7_fsm_coverage(db: UCIS):
     inst = next(i for i in insts if i.getScopeName() == "fsm_inst")
     fsm_scopes = list(inst.scopes(ScopeTypeT.FSM))
     assert len(fsm_scopes) >= 1
-    bins = {b.getName(): b.getCoverData().data
-            for b in fsm_scopes[0].coverItems(CoverTypeT.FSMBIN)}
-    assert bins.get("IDLE") == 5
-    assert bins.get("ACTIVE") == 3
-    assert bins.get("DONE") == 0
-    assert bins.get("IDLE->ACTIVE") == 3
-    assert bins.get("ACTIVE->DONE") == 0
+    fsm = fsm_scopes[0]
+    # Per LRM: FSMBIN items live in FSM_STATES and FSM_TRANS sub-scopes
+    state_bins = {}
+    for ss in fsm.scopes(ScopeTypeT.FSM_STATES):
+        for b in ss.coverItems(CoverTypeT.FSMBIN):
+            state_bins[b.getName()] = b.getCoverData().data
+    trans_bins = {}
+    for ts in fsm.scopes(ScopeTypeT.FSM_TRANS):
+        for b in ts.coverItems(CoverTypeT.FSMBIN):
+            trans_bins[b.getName()] = b.getCoverData().data
+    assert state_bins.get("IDLE") == 5
+    assert state_bins.get("ACTIVE") == 3
+    assert state_bins.get("DONE") == 0
+    assert trans_bins.get("IDLE->ACTIVE") == 3
+    assert trans_bins.get("ACTIVE->DONE") == 0
 
 
 # ---------------------------------------------------------------------------

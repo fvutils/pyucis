@@ -79,9 +79,9 @@ class MemFSMTransition:
 class MemFSMScope(MemScope):
     """In-memory FSM coverage scope.
 
-    Stores FSM states and transitions in memory. States and transitions
-    are also reflected as FSMBIN cover items for compatibility with
-    generic coverage iteration.
+    Per UCIS LRM section 6.5.6: a UCIS_FSM scope shall have exactly one
+    UCIS_FSM_STATES child scope and one UCIS_FSM_TRANS child scope.
+    FSMBIN coveritems live in those sub-scopes, not directly on the FSM scope.
     """
 
     def __init__(self, parent, name, srcinfo, weight, source, flags=0):
@@ -89,6 +89,20 @@ class MemFSMScope(MemScope):
                          ScopeTypeT.FSM, flags)
         self._states = {}         # name -> MemFSMState
         self._transitions = {}    # (from_name, to_name) -> MemFSMTransition
+        # Mandatory sub-scopes (LRM 6.5.6, Figure 36)
+        self._states_scope = MemScope(self, "UCIS:STATE", srcinfo, weight,
+                                      source, ScopeTypeT.FSM_STATES, flags)
+        self.m_children.append(self._states_scope)
+        self._trans_scope = MemScope(self, "UCIS:TRANSITION", srcinfo, weight,
+                                     source, ScopeTypeT.FSM_TRANS, flags)
+        self.m_children.append(self._trans_scope)
+
+    def createNextCover(self, name, data, sourceinfo):
+        """Route FSMBIN coveritems to the correct mandatory sub-scope."""
+        if "->" in name:
+            return self._trans_scope.createNextCover(name, data, sourceinfo)
+        else:
+            return self._states_scope.createNextCover(name, data, sourceinfo)
 
     # --- State API ---
 
@@ -178,8 +192,7 @@ class MemFSMScope(MemScope):
 
     def getIntProperty(self, coverindex, property):
         if property == IntProperty.FSM_STATEVAL:
-            # Return index of state at coverindex if it is a state bin
-            items = list(self.m_cover_items)
+            items = list(self._states_scope.m_cover_items)
             if 0 <= coverindex < len(items):
                 name = items[coverindex].m_name
                 state = self._states.get(name)

@@ -26,11 +26,14 @@ from ucis.cover_data import CoverData
 class FSMState:
     """Represents an FSM state"""
     
-    def __init__(self, fsm_scope, state_id: int, state_name: str, state_index: int):
+    def __init__(self, fsm_scope, state_id: int, state_name: str, state_index: int,
+                 cover_scope_id: int = None):
         self.fsm_scope = fsm_scope
         self.state_id = state_id
         self.state_name = state_name
         self.state_index = state_index
+        # scope_id where the FSMBIN coveritem lives (FSM_STATES sub-scope per LRM)
+        self._cover_scope_id = cover_scope_id if cover_scope_id is not None else fsm_scope.scope_id
     
     def getName(self) -> str:
         """Get state name"""
@@ -42,11 +45,10 @@ class FSMState:
     
     def getVisitCount(self) -> int:
         """Get number of times this state was visited"""
-        # Find coveritem for this state
         cursor = self.fsm_scope.ucis_db.conn.execute(
             """SELECT cover_data FROM coveritems 
                WHERE scope_id = ? AND cover_name = ? AND cover_type & 0x800 != 0""",
-            (self.fsm_scope.scope_id, self.state_name)
+            (self._cover_scope_id, self.state_name)
         )
         row = cursor.fetchone()
         return row[0] if row else 0
@@ -61,7 +63,7 @@ class FSMState:
         self.fsm_scope.ucis_db.conn.execute(
             """UPDATE coveritems SET cover_data = ?
                WHERE scope_id = ? AND cover_name = ? AND cover_type & 0x800 != 0""",
-            (current + amt, self.fsm_scope.scope_id, self.state_name)
+            (current + amt, self._cover_scope_id, self.state_name)
         )
 
     def incrementVisitCount(self, amt: int = 1):
@@ -109,12 +111,59 @@ class FSMTransition:
 
 
 class SqliteFSMScope(SqliteScope):
-    """FSM coverage scope with state and transition tracking"""
+    """FSM coverage scope with state and transition tracking.
+
+    Per UCIS LRM section 6.5.6: a UCIS_FSM scope shall have exactly one
+    UCIS_FSM_STATES child scope and one UCIS_FSM_TRANS child scope.
+    FSMBIN coveritems are routed to those sub-scopes, not the FSM scope itself.
+    """
     
     def __init__(self, ucis_db, scope_id: int):
         super().__init__(ucis_db, scope_id)
         self._states_cache = {}
         self._transitions_cache = {}
+        self._states_scope_cache = None
+        self._trans_scope_cache = None
+
+    def _get_or_create_sub_scope(self, scope_type, scope_name):
+        """Find existing or create the mandatory FSM sub-scope in the DB."""
+        cursor = self.ucis_db.conn.execute(
+            "SELECT scope_id FROM scopes WHERE parent_id = ? AND scope_type = ?",
+            (self.scope_id, scope_type)
+        )
+        row = cursor.fetchone()
+        if row:
+            return SqliteScope(self.ucis_db, row[0])
+        cursor = self.ucis_db.conn.execute(
+            """INSERT INTO scopes (parent_id, scope_type, scope_name, scope_flags,
+                                   weight, goal, source_file_id, source_line, source_token)
+               VALUES (?, ?, ?, 0, 1, 100, NULL, -1, -1)""",
+            (self.scope_id, scope_type, scope_name)
+        )
+        return SqliteScope(self.ucis_db, cursor.lastrowid)
+
+    def _get_states_scope(self):
+        """Return (and lazy-create) the FSM_STATES child scope."""
+        from ucis.scope_type_t import ScopeTypeT
+        if self._states_scope_cache is None:
+            self._states_scope_cache = self._get_or_create_sub_scope(
+                ScopeTypeT.FSM_STATES, "UCIS:STATE")
+        return self._states_scope_cache
+
+    def _get_trans_scope(self):
+        """Return (and lazy-create) the FSM_TRANS child scope."""
+        from ucis.scope_type_t import ScopeTypeT
+        if self._trans_scope_cache is None:
+            self._trans_scope_cache = self._get_or_create_sub_scope(
+                ScopeTypeT.FSM_TRANS, "UCIS:TRANSITION")
+        return self._trans_scope_cache
+
+    def createNextCover(self, name, data, sourceinfo):
+        """Route FSMBIN coveritems to the correct mandatory sub-scope."""
+        if "->" in name:
+            return self._get_trans_scope().createNextCover(name, data, sourceinfo)
+        else:
+            return self._get_states_scope().createNextCover(name, data, sourceinfo)
     
     def createState(self, state_name: str, state_index: int = None) -> FSMState:
         """Create a new FSM state"""
@@ -135,13 +184,14 @@ class SqliteFSMScope(SqliteScope):
         )
         state_id = cursor.lastrowid
         
-        # Create a coveritem for state visits
+        # Create a coveritem for state visits (routes to FSM_STATES sub-scope)
         cover_data = CoverData(0x800, 0)  # FSMBIN type
         cover_data.data = 0
         state_cover = self.createNextCover(state_name, cover_data, None)
         
-        # Create state object
-        state = FSMState(self, state_id, state_name, state_index)
+        # Create state object; coveritem lives in FSM_STATES sub-scope
+        state = FSMState(self, state_id, state_name, state_index,
+                         cover_scope_id=self._get_states_scope().scope_id)
         self._states_cache[state_name] = state
         
         return state
@@ -161,7 +211,8 @@ class SqliteFSMScope(SqliteScope):
         if not row:
             return None
         
-        state = FSMState(self, row[0], state_name, row[1])
+        state = FSMState(self, row[0], state_name, row[1],
+                         cover_scope_id=self._get_states_scope().scope_id)
         self._states_cache[state_name] = state
         return state
     
@@ -177,7 +228,9 @@ class SqliteFSMScope(SqliteScope):
         for row in cursor:
             state_name = row[1]
             if state_name not in self._states_cache:
-                self._states_cache[state_name] = FSMState(self, row[0], state_name, row[2])
+                self._states_cache[state_name] = FSMState(
+                    self, row[0], state_name, row[2],
+                    cover_scope_id=self._get_states_scope().scope_id)
             yield self._states_cache[state_name]
     
     def getNumStates(self) -> int:
@@ -275,12 +328,13 @@ class SqliteFSMScope(SqliteScope):
         if total == 0:
             return 0.0
         
-        # Count states with visits > 0
+        # Coveritems live in FSM_STATES sub-scope per LRM
+        states_scope_id = self._get_states_scope().scope_id
         cursor = self.ucis_db.conn.execute(
             """SELECT COUNT(*) FROM fsm_states fs
-               JOIN coveritems c ON c.scope_id = fs.scope_id AND c.cover_name = fs.state_name
+               JOIN coveritems c ON c.scope_id = ? AND c.cover_name = fs.state_name
                WHERE fs.scope_id = ? AND c.cover_data > 0""",
-            (self.scope_id,)
+            (states_scope_id, self.scope_id)
         )
         row = cursor.fetchone()
         visited = row[0] if row else 0
