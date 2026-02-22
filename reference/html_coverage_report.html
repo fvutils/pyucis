@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -17,11 +18,10 @@
       <script src="../_static/documentation_options.js?v=d45e8c67"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="XML Interchange Format" href="xml_interchange.html" />
-    <link rel="prev" title="JSON Coverage Report" href="coverage_report_json.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,86 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">HTML Coverage Report Format</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#generating-html-reports">Generating HTML Reports</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#command-line">Command Line</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#python-api">Python API</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#report-features">Report Features</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#summary-dashboard">Summary Dashboard</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hierarchical-navigation">Hierarchical Navigation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coverpoint-bin-details">Coverpoint Bin Details</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#interactive-visualizations">Interactive Visualizations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coverage-gaps-view">Coverage Gaps View</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#by-type-view">By Type View</a></li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#technical-details">Technical Details</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#file-structure">File Structure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-format">Data Format</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#technologies-used">Technologies Used</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-size">File Size</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#performance">Performance</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#use-cases">Use Cases</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#gap-analysis">Gap Analysis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#bin-coverage-analysis">Bin Coverage Analysis</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#subsystem-comparison">Subsystem Comparison</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#management-reporting">Management Reporting</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#advantages">Advantages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#over-text-reports">Over Text Reports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#over-database-tools">Over Database Tools</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#over-commercial-tools">Over Commercial Tools</a></li>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#advanced-options">Advanced Options</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#compression">Compression</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#theming">Theming</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#customization">Customization</a></li>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#python-script">Python Script</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.formatters.format_html.HtmlFormatter"><code class="docutils literal notranslate"><span class="pre">HtmlFormatter</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#constructor-parameters">Constructor Parameters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#format-method">Format Method</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="yaml_coverage.html">YAML Coverage Data Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html">Best Practices for Recording Coverage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_api.html">Native C Library API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference.html#back-end-apis">Back-End APIs</a></li>
-</ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -139,7 +86,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
       <li class="breadcrumb-item active">HTML Coverage Report Format</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/html_coverage_report.rst.txt" rel="nofollow"> View page source</a>
@@ -679,20 +625,26 @@ scp<span class="w"> </span>coverage_report.html<span class="w"> </span>user@serv
 - Visualizations (D3.js)
 - Source code viewer (Prism.js)</p>
 <p>Initialize HTML formatter.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>include_source: Embed source file contents in report
-compress: Compress JSON data with gzip
-theme: Default theme (‘light’ or ‘dark’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_source</strong> – Embed source file contents in report</p></li>
+<li><p><strong>compress</strong> – Compress JSON data with gzip</p></li>
+<li><p><strong>theme</strong> – Default theme (‘light’ or ‘dark’)</p></li>
+</ul>
 </dd>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.formatters.format_html.HtmlFormatter.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'light'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.formatters.format_html.HtmlFormatter.__init__" title="Link to this definition"></a></dt>
 <dd><p>Initialize HTML formatter.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>include_source: Embed source file contents in report
-compress: Compress JSON data with gzip
-theme: Default theme (‘light’ or ‘dark’)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_source</strong> – Embed source file contents in report</p></li>
+<li><p><strong>compress</strong> – Compress JSON data with gzip</p></li>
+<li><p><strong>theme</strong> – Default theme (‘light’ or ‘dark’)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -701,9 +653,12 @@ theme: Default theme (‘light’ or ‘dark’)</p>
 <dt class="sig sig-object py" id="ucis.formatters.format_html.HtmlFormatter.format">
 <span class="sig-name descname"><span class="pre">format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.TextIO" title="(in Python v3.14)"><span class="pre">TextIO</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.formatters.format_html.HtmlFormatter.format" title="Link to this definition"></a></dt>
 <dd><p>Generate single-file HTML report.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>db: UCIS database
-output: Output file/stream</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – UCIS database</p></li>
+<li><p><strong>output</strong> – Output file/stream</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -774,10 +729,7 @@ output: Output file/stream</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="coverage_report_json.html" class="btn btn-neutral float-left" title="JSON Coverage Report" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="xml_interchange.html" class="btn btn-neutral float-right" title="XML Interchange Format" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

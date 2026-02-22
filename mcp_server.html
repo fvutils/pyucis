@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -17,11 +18,10 @@
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="PyUCIS Reference" href="reference/reference.html" />
-    <link rel="prev" title="Coverage Import (cocotb and AVL)" href="cocotb_avl_coverage_import.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,90 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">MCP Server</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#features">Features</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database-operations">Database Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#coverage-analysis-tools">Coverage Analysis Tools</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#from-source">From Source</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#from-pypi">From PyPI</a></li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#starting-the-server">Starting the Server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#configuration-for-claude-desktop">Configuration for Claude Desktop</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#available-tools">Available Tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database-management">Database Management</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#open-database">open_database</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#close-database">close_database</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#list-databases">list_databases</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-database-info">get_database_info</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reporting/index.html">Reporting</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#coverage-queries">Coverage Queries</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#get-coverage-summary">get_coverage_summary</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-coverage-gaps">get_coverage_gaps</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-covergroups">get_covergroups</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-bins">get_bins</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-tests">get_tests</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-hierarchy">get_hierarchy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-metrics">get_metrics</a></li>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cicd/index.html">CI/CD Integration</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#advanced-analysis">Advanced Analysis</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#compare-databases">compare_databases</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-hotspots">get_hotspots</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-code-coverage">get_code_coverage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-assertions">get_assertions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#get-toggle-coverage">get_toggle_coverage</a></li>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ai-integration/mcp-server.html">MCP Server</a></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#export-formats">Export Formats</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#lcov-format">LCOV Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cobertura-format">Cobertura Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jacoco-format">JaCoCo Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#clover-format">Clover Format</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#ci-cd-integration-examples">CI/CD Integration Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gitlab-ci">GitLab CI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#jenkins-pipeline">Jenkins Pipeline</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#development">Development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-tests">Running Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#project-structure">Project Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#server-not-starting">Server Not Starting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#connection-issues">Connection Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#database-loading-errors">Database Loading Errors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -684,10 +627,7 @@ tests/
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cocotb_avl_coverage_import.html" class="btn btn-neutral float-left" title="Coverage Import (cocotb and AVL)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reference/reference.html" class="btn btn-neutral float-right" title="PyUCIS Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

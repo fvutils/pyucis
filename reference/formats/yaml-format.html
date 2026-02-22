@@ -1,0 +1,180 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YAML Coverage Data Format &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="SQLite Schema Reference" href="sqlite-schema.html" />
+    <link rel="prev" title="XML Interchange Format" href="xml-interchange.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">CLI Command Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sqlite-api.html">SQLite Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native-c-library.html">Native C Library API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best-practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python-api/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">File Formats</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="xml-interchange.html">XML Interchange Format</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">YAML Coverage Data Format</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#format-reference">Format Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sqlite-schema.html">SQLite Schema Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../report-formats/index.html">Report Formats</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">File Formats</a></li>
+      <li class="breadcrumb-item active">YAML Coverage Data Format</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/reference/formats/yaml-format.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="yaml-coverage-data-format">
+<h1>YAML Coverage Data Format<a class="headerlink" href="#yaml-coverage-data-format" title="Link to this heading"></a></h1>
+<p>The YAML coverage-data format is used to represent functional coverage
+data in a manner that is accurate and relatively easy for humans and
+tools to create and process.</p>
+<section id="format-reference">
+<h2>Format Reference<a class="headerlink" href="#format-reference" title="Link to this heading"></a></h2>
+<p>Every coverage-data document has a <cite>coverage</cite> element as its root. Currently,
+the only sub-elements is a list of covergroup types.</p>
+<p>A type covergroup provides data about a covergroup type. All instances
+of a covergroup type have the same coverpoints and crosses. All
+coverpoints in instances of a covergroup type have the same bins.
+Merged type coverage (the union of coverage achieved by all instances)
+is derived by PyUCIS from the instance coverage, and is not specified
+in the coverage file.</p>
+<p>An instance covergroup provides data about a covergroup instance.</p>
+<p>A coverpoint lists a set of bins that it is monitoring. Each
+coverpoint can specify an <cite>atleast</cite> count to specify that a
+bin must contain <cite>atleast</cite> hits in order to count as being covered.
+By default, <cite>atleast</cite> is 1.</p>
+<p>A cross lists the set of coverpoints from which it is composed,
+and lists its cross bins.  Each cross can specify an <cite>atleast</cite>
+count to specify that a bin must contain <cite>atleast</cite> hits in
+order to count as being covered. By default, <cite>atleast</cite> is 1.</p>
+<p>A coverbin associates a bin name with the number of hits
+in that bin.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="xml-interchange.html" class="btn btn-neutral float-left" title="XML Interchange Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sqlite-schema.html" class="btn btn-neutral float-right" title="SQLite Schema Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

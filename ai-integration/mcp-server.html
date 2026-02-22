@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MCP Server &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reference" href="../reference/index.html" />
+    <link rel="prev" title="Jenkins" href="../cicd/jenkins.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MCP Server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuring-claude-desktop">Configuring Claude Desktop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-session">Example Session</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#available-operations">Available Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starting-the-server-manually">Starting the Server Manually</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">MCP Server</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ai-integration/mcp-server.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mcp-server">
+<h1>MCP Server<a class="headerlink" href="#mcp-server" title="Link to this heading"></a></h1>
+<p>The PyUCIS MCP server lets AI assistants (such as Claude) query your coverage
+databases using natural language. Instead of memorizing command syntax, you
+can ask questions like:</p>
+<ul class="simple">
+<li><p><em>“What is the overall coverage of my regression?”</em></p></li>
+<li><p><em>“Which covergroups have the lowest coverage?”</em></p></li>
+<li><p><em>“Show me all bins that were never hit.”</em></p></li>
+<li><p><em>“Compare today’s run to yesterday’s baseline and report any regressions.”</em></p></li>
+<li><p><em>“Export coverage as LCOV and tell me what genhtml command to run.”</em></p></li>
+</ul>
+<p>The server uses the <a class="reference external" href="https://modelcontextprotocol.io/">Model Context Protocol (MCP)</a>,
+a standard interface for connecting AI tools to external data sources.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pyucis<span class="o">[</span>dev<span class="o">]</span>
+</pre></div>
+</div>
+<p>This installs the <code class="docutils literal notranslate"><span class="pre">pyucis-mcp-server</span></code> command and its dependencies.</p>
+</section>
+<section id="configuring-claude-desktop">
+<h2>Configuring Claude Desktop<a class="headerlink" href="#configuring-claude-desktop" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Find your Claude Desktop config file:</p>
+<ul class="simple">
+<li><p><strong>macOS</strong>: <code class="docutils literal notranslate"><span class="pre">~/Library/Application</span> <span class="pre">Support/Claude/claude_desktop_config.json</span></code></p></li>
+<li><p><strong>Linux</strong>: <code class="docutils literal notranslate"><span class="pre">~/.config/Claude/claude_desktop_config.json</span></code></p></li>
+<li><p><strong>Windows</strong>: <code class="docutils literal notranslate"><span class="pre">%APPDATA%\Claude\claude_desktop_config.json</span></code></p></li>
+</ul>
+</li>
+<li><p>Add the PyUCIS server entry:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pyucis&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;pyucis-mcp-server&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Restart Claude Desktop.</p></li>
+</ol>
+<p>The PyUCIS tools are now available in your conversations.</p>
+</section>
+<section id="example-session">
+<h2>Example Session<a class="headerlink" href="#example-session" title="Link to this heading"></a></h2>
+<p>Once connected, open a coverage database by telling Claude the file path, then ask
+questions in plain English:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>You: Open /path/to/regression.xml and give me a coverage summary.
+
+Claude: The database has 78.4% overall coverage across 142 covergroups.
+        Functional coverage is 81.2%; code coverage is 74.6%.
+        There are 23 covergroups below 50%.
+
+You: Which covergroups have zero coverage?
+
+Claude: The following 8 covergroups have 0% coverage: ...
+
+You: Compare this to /path/to/baseline.xml and report regressions.
+
+Claude: Compared to baseline, 3 items regressed: ...
+</pre></div>
+</div>
+</section>
+<section id="available-operations">
+<h2>Available Operations<a class="headerlink" href="#available-operations" title="Link to this heading"></a></h2>
+<p>The MCP server provides tools for:</p>
+<ul class="simple">
+<li><p>Opening, listing, and closing databases</p></li>
+<li><p>Coverage summary, gaps, and metrics</p></li>
+<li><p>Covergroup, coverpoint, and bin details</p></li>
+<li><p>Design hierarchy navigation</p></li>
+<li><p>Test execution history</p></li>
+<li><p>Database comparison (regression detection)</p></li>
+<li><p>Hotspot analysis</p></li>
+<li><p>Code coverage export (LCOV, Cobertura, JaCoCo, Clover)</p></li>
+<li><p>Assertion and toggle coverage</p></li>
+</ul>
+</section>
+<section id="starting-the-server-manually">
+<h2>Starting the Server Manually<a class="headerlink" href="#starting-the-server-manually" title="Link to this heading"></a></h2>
+<p>The server communicates via stdin/stdout and is normally started by the MCP
+client automatically. To start it manually for testing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pyucis-mcp-server
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://modelcontextprotocol.io/">MCP specification</a> for client
+integration details beyond Claude Desktop.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../cicd/jenkins.html" class="btn btn-neutral float-left" title="Jenkins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/index.html" class="btn btn-neutral float-right" title="Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

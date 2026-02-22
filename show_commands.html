@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -17,11 +18,10 @@
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Verilator Coverage Import" href="verilator_coverage_import.html" />
-    <link rel="prev" title="Interactive Terminal UI" href="tui.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,65 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Show Commands Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#available-commands">Available Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#core-analysis-commands">Core Analysis Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#show-summary">show summary</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-gaps">show gaps</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-covergroups">show covergroups</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-bins">show bins</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#design-structure-commands">Design Structure Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#show-hierarchy">show hierarchy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-tests">show tests</a></li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#advanced-analysis-commands">Advanced Analysis Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#show-metrics">show metrics</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-compare">show compare</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-hotspots">show hotspots</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#coverage-type-commands">Coverage Type Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#show-code-coverage">show code-coverage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-assertions">show assertions</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#show-toggle">show toggle</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reporting/index.html">Reporting</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cicd/index.html">CI/CD Integration</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#ci-cd-integration-examples">CI/CD Integration Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#jenkins">Jenkins</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gitlab-ci">GitLab CI</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sonarqube">SonarQube</a></li>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ai-integration/mcp-server.html">MCP Server</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#output-formats">Output Formats</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#json-format">JSON Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#text-format">Text Format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#standard-coverage-formats">Standard Coverage Formats</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#common-options">Common Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#coverage-analysis-workflow">Coverage Analysis Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#automation">Automation</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -531,10 +499,7 @@ sonar-scanner<span class="w"> </span>-Dsonar.coverageReportPaths<span class="o">
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tui.html" class="btn btn-neutral float-left" title="Interactive Terminal UI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="verilator_coverage_import.html" class="btn btn-neutral float-right" title="Verilator Coverage Import" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exploring Coverage with TUI &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analyzing Coverage" href="analyzing.html" />
+    <link rel="prev" title="Merging Coverage" href="merging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging Coverage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Exploring Coverage with TUI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-assessment-23-minutes">Quick Assessment (2–3 minutes)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-five-views">The Five Views</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-keys">Global Keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tui-vs-html-reports">TUI vs. HTML Reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remote-use">Remote Use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tips">Tips</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="analyzing.html">Analyzing Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Working with Coverage</a></li>
+      <li class="breadcrumb-item active">Exploring Coverage with TUI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/working-with-coverage/exploring-tui.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="exploring-coverage-with-tui">
+<h1>Exploring Coverage with TUI<a class="headerlink" href="#exploring-coverage-with-tui" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">view</span></code> command launches an interactive Terminal UI (TUI) for browsing
+coverage data without generating a report file. It works over SSH, requires no
+browser, and starts instantly.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>view<span class="w"> </span>coverage.xml
+ucis<span class="w"> </span>view<span class="w"> </span>coverage.ucisdb<span class="w">   </span><span class="c1"># SQLite loads faster for large databases</span>
+</pre></div>
+</div>
+<section id="quick-assessment-23-minutes">
+<h2>Quick Assessment (2–3 minutes)<a class="headerlink" href="#quick-assessment-23-minutes" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Launch the TUI and check the <strong>Dashboard</strong> (press <strong>1</strong>) — overall percentage
+and per-type breakdown.</p></li>
+<li><p>Press <strong>3</strong> (Gaps) to see every item below 100% coverage, sorted by priority.</p></li>
+<li><p>Press <strong>4</strong> (Hotspots) for algorithmic recommendations on where to focus next.</p></li>
+<li><p>Press <strong>q</strong> to quit.</p></li>
+</ol>
+</section>
+<section id="the-five-views">
+<h2>The Five Views<a class="headerlink" href="#the-five-views" title="Link to this heading"></a></h2>
+<p>Press the number key at any time to switch views.</p>
+<dl class="simple">
+<dt><strong>1 — Dashboard</strong></dt><dd><p>Overall coverage percentage, counts by type (covergroups, coverpoints, bins,
+assertions, toggles, branches, statements), and color-coded status indicators.</p>
+</dd>
+<dt><strong>2 — Hierarchy</strong></dt><dd><p>Expandable tree of the design hierarchy. Use arrow keys to navigate.
+Each node shows its coverage percentage and color.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">→</span></code> / <code class="docutils literal notranslate"><span class="pre">Enter</span></code> — expand node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">←</span></code> — collapse node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">↑</span></code> / <code class="docutils literal notranslate"><span class="pre">↓</span></code> (or <code class="docutils literal notranslate"><span class="pre">k</span></code> / <code class="docutils literal notranslate"><span class="pre">j</span></code>) — move up/down</p></li>
+</ul>
+</dd>
+<dt><strong>3 — Gaps</strong></dt><dd><p>Filtered list of all items below 100% coverage, lowest first.
+Shows item name, type, percentage, and full path.</p>
+</dd>
+<dt><strong>4 — Hotspots</strong></dt><dd><p>Priority-ordered recommendations:</p>
+<ul class="simple">
+<li><p><strong>P0</strong> (red) — modules below 50%, needs immediate attention</p></li>
+<li><p><strong>P1</strong> (yellow) — completely untested coverpoints (0%) or near-complete
+items (≥90%, easy wins)</p></li>
+<li><p><strong>P2</strong> (blue) — other partially covered items</p></li>
+</ul>
+</dd>
+<dt><strong>5 — Metrics</strong></dt><dd><p>Statistical analysis: hit-count distribution histogram, mean/median/stddev,
+coverage tier breakdown (complete / high / medium / low), bin utilization rate.</p>
+</dd>
+</dl>
+</section>
+<section id="global-keys">
+<h2>Global Keys<a class="headerlink" href="#global-keys" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">1</span></code> – <code class="docutils literal notranslate"><span class="pre">5</span></code></p></td>
+<td><p>Switch view</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">?</span></code></p></td>
+<td><p>Help overlay</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">q</span></code> / <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code></p></td>
+<td><p>Quit</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tui-vs-html-reports">
+<h2>TUI vs. HTML Reports<a class="headerlink" href="#tui-vs-html-reports" title="Link to this heading"></a></h2>
+<p>Use the TUI for quick interactive checks during active verification.
+Use <a class="reference internal" href="../reporting/html-report.html"><span class="doc">Interactive HTML Report</span></a> when you need a shareable artifact.</p>
+</section>
+<section id="remote-use">
+<h2>Remote Use<a class="headerlink" href="#remote-use" title="Link to this heading"></a></h2>
+<p>The TUI works well over SSH. Enable compression for better responsiveness:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ssh<span class="w"> </span>-C<span class="w"> </span>user@build-server
+ucis<span class="w"> </span>view<span class="w"> </span>/path/to/regression.ucisdb
+</pre></div>
+</div>
+</section>
+<section id="tips">
+<h2>Tips<a class="headerlink" href="#tips" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Use SQLite</strong> — convert XML to SQLite first for large databases:
+<code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">convert</span> <span class="pre">--input-format</span> <span class="pre">xml</span> <span class="pre">--output-format</span> <span class="pre">sqlite</span> <span class="pre">coverage.xml</span> <span class="pre">-o</span> <span class="pre">coverage.ucisdb</span></code></p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">?</span></code> inside the TUI for a full keyboard reference overlay.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="merging.html" class="btn btn-neutral float-left" title="Merging Coverage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="analyzing.html" class="btn btn-neutral float-right" title="Analyzing Coverage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -17,10 +18,10 @@
       <script src="../_static/documentation_options.js?v=d45e8c67"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="SQLite Schema Reference" href="sqlite_schema_reference.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,73 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="html_coverage_report.html">HTML Coverage Report Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="yaml_coverage.html">YAML Coverage Data Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html">Best Practices for Recording Coverage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ucis_oo_api.html">UCIS Object-Oriented API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Native C Library API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#features">Features</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#building">Building</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#build-steps">Build Steps</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#build-outputs">Build Outputs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#testing">Testing</a></li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#database-lifecycle">Database Lifecycle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#scope-operations">Scope Operations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coverage-operations">Coverage Operations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#history-operations">History Operations</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#type-definitions">Type Definitions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#opaque-handle-types">Opaque Handle Types</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#scope-types">Scope Types</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coverage-types">Coverage Types</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#coverage-data">Coverage Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#source-information">Source Information</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#source-types">Source Types</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#test-status">Test Status</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#history-node-kinds">History Node Kinds</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#complete-examples">Complete Examples</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#iterating-scopes">Iterating Scopes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#using-from-python">Using from Python</a></li>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#optimization-tips">Optimization Tips</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#typical-performance">Typical Performance</a></li>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
 </ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="reference.html#back-end-apis">Back-End APIs</a></li>
-</ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -125,7 +86,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
       <li class="breadcrumb-item active">Native C Library API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/native_api.rst.txt" rel="nofollow"> View page source</a>
@@ -228,7 +188,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_Open<a class="headerlink" href="#ucis-open" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_Open">
-<span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Open" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Open or create a UCIS database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -255,7 +215,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_Close<a class="headerlink" href="#ucis-close" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_Close">
-<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Close</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Close" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Close</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Close a UCIS database and free all resources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -275,7 +235,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_Write<a class="headerlink" href="#ucis-write" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_Write">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Write</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Write" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Write</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Write database to a file (useful for in-memory databases).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -301,7 +261,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetAPIVersion<a class="headerlink" href="#ucis-getapiversion" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetAPIVersion">
-<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetAPIVersion</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetAPIVersion" title="Link to this definition"></a><br /></dt>
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetAPIVersion</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get UCIS API version string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -319,7 +279,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetLastError<a class="headerlink" href="#ucis-getlasterror" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetLastError">
-<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetLastError</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetLastError" title="Link to this definition"></a><br /></dt>
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetLastError</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get the last error message from any UCIS operation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -342,7 +302,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_CreateScope<a class="headerlink" href="#ucis-createscope" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_CreateScope">
-<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateScope</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateScope" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateScope</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a new scope in the hierarchy.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -382,7 +342,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_CreateInstance<a class="headerlink" href="#ucis-createinstance" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_CreateInstance">
-<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateInstance</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateInstance" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateInstance</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create an instance scope (convenience wrapper).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -410,7 +370,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetScopeName<a class="headerlink" href="#ucis-getscopename" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetScopeName">
-<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetScopeName" title="Link to this definition"></a><br /></dt>
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get the name of a scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -435,7 +395,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetScopeType<a class="headerlink" href="#ucis-getscopetype" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetScopeType">
-<span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeType</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetScopeType" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeType</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get the type of a scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -462,7 +422,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetParent<a class="headerlink" href="#ucis-getparent" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetParent">
-<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetParent</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetParent" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetParent</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get the parent scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -489,7 +449,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_SetScopeWeight<a class="headerlink" href="#ucis-setscopeweight" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_SetScopeWeight">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeWeight</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeWeight" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeWeight</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the coverage weight of a scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -510,7 +470,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_SetScopeGoal<a class="headerlink" href="#ucis-setscopegoal" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_SetScopeGoal">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeGoal</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">goal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeGoal" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeGoal</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">goal</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set the coverage goal percentage.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -531,7 +491,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_SetScopeFlags<a class="headerlink" href="#ucis-setscopeflags" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_SetScopeFlags">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeFlags</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeFlags" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeFlags</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set scope flags.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -552,7 +512,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_ScopeIterate<a class="headerlink" href="#ucis-scopeiterate" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_ScopeIterate">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_ScopeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisScopeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_ScopeIterate" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_ScopeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisScopeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Iterate over child scopes with optional type filtering.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -596,7 +556,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_CreateNextCover<a class="headerlink" href="#ucis-createnextcover" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_CreateNextCover">
-<span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateNextCover</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateNextCover" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateNextCover</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create the next coverage item in a scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -627,7 +587,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_GetCoverData<a class="headerlink" href="#ucis-getcoverdata" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_GetCoverData">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetCoverData" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Get coverage data for an item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -655,7 +615,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_SetCoverData<a class="headerlink" href="#ucis-setcoverdata" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_SetCoverData">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetCoverData" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set coverage data for an item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -676,7 +636,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_IncrementCoverData<a class="headerlink" href="#ucis-incrementcoverdata" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_IncrementCoverData">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_IncrementCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">amount</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_IncrementCoverData" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_IncrementCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">amount</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Increment coverage count.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -702,7 +662,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_CoverIterate<a class="headerlink" href="#ucis-coveriterate" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_CoverIterate">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CoverIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisCoverTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisCoverCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CoverIterate" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CoverIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisCoverTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisCoverCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Iterate over coverage items in a scope.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -732,7 +692,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_CreateHistoryNode<a class="headerlink" href="#ucis-createhistorynode" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_CreateHistoryNode">
-<span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateHistoryNode</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">logicalname</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">physicalname</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateHistoryNode" title="Link to this definition"></a><br /></dt>
+<span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateHistoryNode</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">logicalname</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">physicalname</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Create a test history node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -755,7 +715,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_SetTestStatus<a class="headerlink" href="#ucis-setteststatus" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_SetTestStatus">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetTestStatus</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">node</span></span>, <span class="n"><span class="pre">ucisTestStatusT</span></span><span class="w"> </span><span class="n"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetTestStatus" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetTestStatus</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">node</span></span>, <span class="n"><span class="pre">ucisTestStatusT</span></span><span class="w"> </span><span class="n"><span class="pre">status</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Set test execution status.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -776,7 +736,7 @@ python3<span class="w"> </span>test_scopes.py
 <h4>ucis_HistoryNodeIterate<a class="headerlink" href="#ucis-historynodeiterate" title="Link to this heading"></a></h4>
 <dl class="c function">
 <dt class="sig sig-object c" id="c.ucis_HistoryNodeIterate">
-<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_HistoryNodeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind_mask</span></span>, <span class="n"><span class="pre">ucisHistoryNodeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_HistoryNodeIterate" title="Link to this definition"></a><br /></dt>
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_HistoryNodeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind_mask</span></span>, <span class="n"><span class="pre">ucisHistoryNodeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><br /></dt>
 <dd><p>Iterate over history nodes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1057,9 +1017,7 @@ python3<span class="w"> </span>test_scopes.py
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="sqlite_schema_reference.html" class="btn btn-neutral float-left" title="SQLite Schema Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
+          <footer>
 
   <hr/>
 

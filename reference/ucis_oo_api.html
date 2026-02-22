@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -17,11 +18,10 @@
       <script src="../_static/documentation_options.js?v=d45e8c67"></script>
       <script src="../_static/doctools.js?v=fd6eb6e6"></script>
       <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="UCIS C-Style API" href="ucis_c_api.html" />
-    <link rel="prev" title="Best Practices for Recording Coverage" href="recording_coverage_best_practices.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,54 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="reference.html">PyUCIS Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_api.html">Coverage Report Object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="coverage_report_json.html">JSON Coverage Report</a></li>
-<li class="toctree-l2"><a class="reference internal" href="html_coverage_report.html">HTML Coverage Report Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="xml_interchange.html">XML Interchange Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="yaml_coverage.html">YAML Coverage Data Format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="recording_coverage_best_practices.html">Best Practices for Recording Coverage</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">UCIS Object-Oriented API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#ucis.Obj"><code class="docutils literal notranslate"><span class="pre">Obj</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getIntProperty"><code class="docutils literal notranslate"><span class="pre">Obj.getIntProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setIntProperty"><code class="docutils literal notranslate"><span class="pre">Obj.setIntProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getRealProperty"><code class="docutils literal notranslate"><span class="pre">Obj.getRealProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setRealProperty"><code class="docutils literal notranslate"><span class="pre">Obj.setRealProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getStringProperty"><code class="docutils literal notranslate"><span class="pre">Obj.getStringProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setStringProperty"><code class="docutils literal notranslate"><span class="pre">Obj.setStringProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getHandleProperty"><code class="docutils literal notranslate"><span class="pre">Obj.getHandleProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setHandleProperty"><code class="docutils literal notranslate"><span class="pre">Obj.setHandleProperty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.accept"><code class="docutils literal notranslate"><span class="pre">Obj.accept()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.setAttribute()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.getAttribute()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getAttributes"><code class="docutils literal notranslate"><span class="pre">Obj.getAttributes()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.deleteAttribute"><code class="docutils literal notranslate"><span class="pre">Obj.deleteAttribute()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.addTag"><code class="docutils literal notranslate"><span class="pre">Obj.addTag()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.hasTag"><code class="docutils literal notranslate"><span class="pre">Obj.hasTag()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.removeTag"><code class="docutils literal notranslate"><span class="pre">Obj.removeTag()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getTags"><code class="docutils literal notranslate"><span class="pre">Obj.getTags()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.getCoverFlags"><code class="docutils literal notranslate"><span class="pre">Obj.getCoverFlags()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setCoverFlags"><code class="docutils literal notranslate"><span class="pre">Obj.setCoverFlags()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ucis.Obj.setCoverData"><code class="docutils literal notranslate"><span class="pre">Obj.setCoverData()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ucis_c_api.html">UCIS C-Style API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_api.html">SQLite Backend API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlite_schema_reference.html">SQLite Schema Reference</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_api.html">Native C Library API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference.html#back-end-apis">Back-End APIs</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -107,7 +86,6 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="reference.html">PyUCIS Reference</a></li>
       <li class="breadcrumb-item active">UCIS Object-Oriented API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/ucis_oo_api.rst.txt" rel="nofollow"> View page source</a>
@@ -135,15 +113,17 @@ object itself (when coverindex &lt; 0) or with a specific cover item within a sc
 (when coverindex &gt;= 0).</p>
 <p>This class serves as an abstract base class and is typically extended by concrete
 implementations such as Scope, CoverItem, and HistoryNode.</p>
-<dl class="simple">
-<dt>Note:</dt><dd><p>The property interface provides a uniform way to access diverse object attributes
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The property interface provides a uniform way to access diverse object attributes
 without requiring separate methods for each property. Properties are defined by
 the UCIS standard and enable tool-independent data access.</p>
-</dd>
-<dt>See Also:</dt><dd><p>UCIS LRM Section 8.3 “Database Property Functions”
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>UCIS LRM Section 8.3 “Database Property Functions”
 UCIS LRM Section 8.4 “User-defined Attribute Functions”</p>
-</dd>
-</dl>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getIntProperty">
 <span class="sig-name descname"><span class="pre">getIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.Obj.getIntProperty" title="Link to this definition"></a></dt>
@@ -151,33 +131,42 @@ UCIS LRM Section 8.4 “User-defined Attribute Functions”</p>
 <p>Retrieves integer-valued properties such as weights, goals, counts, flags,
 and other numeric attributes. Properties can apply to the object as a whole
 (scope-level) or to a specific cover item within the object.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Integer property identifier from the IntProperty enumeration,
+such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, NUM_TESTS, etc.</p></li>
+</ul>
 </dd>
-<dt>property: Integer property identifier from the IntProperty enumeration,</dt><dd><p>such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, NUM_TESTS, etc.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The integer value of the requested property.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable to this object type.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><p>The integer value of the requested property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable to this object type.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the weight of a scope</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the weight of a scope</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">weight</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getIntProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">SCOPE_WEIGHT</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the goal of a specific cover item</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">goal</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getIntProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">COVER_GOAL</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>Note:</dt><dd><p>If the return value would naturally be -1, this method returns -1 without
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the return value would naturally be -1, this method returns -1 without
 raising an error. Error handlers are only invoked for true error conditions.</p>
-</dd>
-<dt>See Also:</dt><dd><p>setIntProperty(): Set integer property values
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>setIntProperty(): Set integer property values
 UCIS LRM Section 8.3.5 “ucis_GetIntProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -186,33 +175,41 @@ UCIS LRM Section 8.3.5 “ucis_GetIntProperty”</p>
 <dd><p>Set an integer property value on this object.</p>
 <p>Modifies integer-valued properties such as weights, goals, and flags.
 Properties can be set on the object as a whole or on a specific cover item.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Integer property identifier from the IntProperty enumeration,
+such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, etc.</p></li>
+<li><p><strong>value</strong> – New integer value for the property.</p></li>
+</ul>
 </dd>
-<dt>property: Integer property identifier from the IntProperty enumeration,</dt><dd><p>such as SCOPE_WEIGHT, SCOPE_GOAL, COVER_GOAL, etc.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable or read-only.</p></li>
+</ul>
 </dd>
 </dl>
-<p>value: New integer value for the property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable or read-only.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the weight of a scope</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the weight of a scope</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setIntProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">SCOPE_WEIGHT</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the goal of a specific cover item  </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the goal of a specific cover item</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setIntProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">IntProperty</span><span class="o">.</span><span class="n">COVER_GOAL</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>Note:</dt><dd><p>Some properties are read-only (e.g., NUM_TESTS, SCOPE_NUM_COVERITEMS)
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some properties are read-only (e.g., NUM_TESTS, SCOPE_NUM_COVERITEMS)
 and cannot be set. Attempting to set a read-only property will raise
 an error.</p>
-</dd>
-<dt>See Also:</dt><dd><p>getIntProperty(): Get integer property values
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>getIntProperty(): Get integer property values
 UCIS LRM Section 8.3.6 “ucis_SetIntProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -221,27 +218,34 @@ UCIS LRM Section 8.3.6 “ucis_SetIntProperty”</p>
 <dd><p>Get a floating-point property value from this object.</p>
 <p>Retrieves real-valued (floating-point) properties such as coverage percentages,
 thresholds, and other numeric attributes that require fractional precision.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Real property identifier from the RealProperty enumeration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The floating-point value of the requested property.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable to this object type.</p></li>
+</ul>
 </dd>
 </dl>
-<p>property: Real property identifier from the RealProperty enumeration.</p>
-</dd>
-<dt>Returns:</dt><dd><p>The floating-point value of the requested property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable to this object type.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get coverage percentage</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get coverage percentage</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pct</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getRealProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">RealProperty</span><span class="o">.</span><span class="n">COVERAGE_PCT</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>See Also:</dt><dd><p>setRealProperty(): Set real property values
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>setRealProperty(): Set real property values
 UCIS LRM Section 8.3.7 “ucis_GetRealProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -250,26 +254,32 @@ UCIS LRM Section 8.3.7 “ucis_GetRealProperty”</p>
 <dd><p>Set a floating-point property value on this object.</p>
 <p>Modifies real-valued (floating-point) properties such as coverage percentages
 and thresholds.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Real property identifier from the RealProperty enumeration.</p></li>
+<li><p><strong>value</strong> – New floating-point value for the property.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable or read-only.</p></li>
+</ul>
 </dd>
 </dl>
-<p>property: Real property identifier from the RealProperty enumeration.
-value: New floating-point value for the property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable or read-only.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a threshold value</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a threshold value</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setRealProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">RealProperty</span><span class="o">.</span><span class="n">THRESHOLD</span><span class="p">,</span> <span class="mf">95.0</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>See Also:</dt><dd><p>getRealProperty(): Get real property values
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>getRealProperty(): Get real property values
 UCIS LRM Section 8.3.8 “ucis_SetRealProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -278,30 +288,37 @@ UCIS LRM Section 8.3.8 “ucis_SetRealProperty”</p>
 <dd><p>Get a string property value from this object.</p>
 <p>Retrieves string-valued properties such as names, comments, file paths,
 and other textual attributes.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – String property identifier from the StrProperty enumeration,
+such as NAME, COMMENT, FILE_NAME, etc.</p></li>
+</ul>
 </dd>
-<dt>property: String property identifier from the StrProperty enumeration,</dt><dd><p>such as NAME, COMMENT, FILE_NAME, etc.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The string value of the requested property.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable to this object type.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><p>The string value of the requested property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable to this object type.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the name of a scope</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the name of a scope</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getStringProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">NAME</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get a comment on a cover item</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">comment</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getStringProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>See Also:</dt><dd><p>setStringProperty(): Set string property values
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>setStringProperty(): Set string property values
 UCIS LRM Section 8.3.9 “ucis_GetStringProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -310,96 +327,119 @@ UCIS LRM Section 8.3.9 “ucis_GetStringProperty”</p>
 <dd><p>Set a string property value on this object.</p>
 <p>Modifies string-valued properties such as names, comments, and other
 textual attributes.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – String property identifier from the StrProperty enumeration,
+such as NAME, COMMENT, etc.</p></li>
+<li><p><strong>value</strong> – New string value for the property.</p></li>
+</ul>
 </dd>
-<dt>property: String property identifier from the StrProperty enumeration,</dt><dd><p>such as NAME, COMMENT, etc.</p>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable or read-only.</p></li>
+</ul>
 </dd>
 </dl>
-<p>value: New string value for the property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable or read-only.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a comment on a scope</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a comment on a scope</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setStringProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">,</span> <span class="s2">&quot;Main test scope&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set a comment on a specific cover item</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">setStringProperty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">StrProperty</span><span class="o">.</span><span class="n">COMMENT</span><span class="p">,</span> <span class="s2">&quot;Edge case&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>Note:</dt><dd><p>Some string properties like NAME may be read-only after object creation
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some string properties like NAME may be read-only after object creation
 to maintain data model consistency.</p>
-</dd>
-<dt>See Also:</dt><dd><p>getStringProperty(): Get string property values
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>getStringProperty(): Get string property values
 UCIS LRM Section 8.3.10 “ucis_SetStringProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.getHandleProperty">
-<span class="sig-name descname"><span class="pre">getHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Scope</span></span></span><a class="headerlink" href="#ucis.Obj.getHandleProperty" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#ucis.Obj.getHandleProperty" title="Link to this definition"></a></dt>
 <dd><p>Get an object reference (handle) property from this object.</p>
 <p>Retrieves properties that reference other UCIS objects, such as parent
 scopes, design unit references, or related objects in the coverage hierarchy.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Handle property identifier from the HandleProperty enumeration,
+such as PARENT, DU_SCOPE, etc.</p></li>
+</ul>
 </dd>
-<dt>property: Handle property identifier from the HandleProperty enumeration,</dt><dd><p>such as PARENT, DU_SCOPE, etc.</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Reference to the related UCIS object (typically a Scope subclass).</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable to this object type.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-<dt>Returns:</dt><dd><p>Reference to the related UCIS object (typically a Scope subclass).</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable to this object type.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the parent scope</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the parent scope</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parent</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">PARENT</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get the design unit scope for an instance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">du</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">getHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">DU_SCOPE</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>See Also:</dt><dd><p>setHandleProperty(): Set object reference properties
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>setHandleProperty(): Set object reference properties
 UCIS LRM Section 8.3.11 “ucis_GetHandleProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ucis.Obj.setHandleProperty">
-<span class="sig-name descname"><span class="pre">setHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Scope</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setHandleProperty" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.Obj.setHandleProperty" title="Link to this definition"></a></dt>
 <dd><p>Set an object reference (handle) property on this object.</p>
 <p>Modifies properties that reference other UCIS objects in the coverage
 hierarchy, establishing relationships between objects.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>coverindex: Index of cover item within parent scope. Use -1 to apply</dt><dd><p>the property to the scope itself rather than a specific cover item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coverindex</strong> – Index of cover item within parent scope. Use -1 to apply
+the property to the scope itself rather than a specific cover item.</p></li>
+<li><p><strong>property</strong> – Handle property identifier from the HandleProperty enumeration.</p></li>
+<li><p><strong>value</strong> – Reference to the UCIS object to associate with this property.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>UnimplError</strong> – If the property is not implemented for this object type.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If the property is not applicable or read-only.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.14)"><strong>TypeError</strong></a> – If the value is not a compatible object type.</p></li>
+</ul>
 </dd>
 </dl>
-<p>property: Handle property identifier from the HandleProperty enumeration.
-value: Reference to the UCIS object to associate with this property.</p>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the property is not implemented for this object type.
-ValueError: If the property is not applicable or read-only.
-TypeError: If the value is not a compatible object type.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Associate a design unit with an instance</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Associate a design unit with an instance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">instance</span><span class="o">.</span><span class="n">setHandleProperty</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">HandleProperty</span><span class="o">.</span><span class="n">DU_SCOPE</span><span class="p">,</span> <span class="n">du</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>Note:</dt><dd><p>Most handle properties are set during object creation and may be
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Most handle properties are set during object creation and may be
 read-only afterward to maintain hierarchy consistency.</p>
-</dd>
-<dt>See Also:</dt><dd><p>getHandleProperty(): Get object reference properties
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>getHandleProperty(): Get object reference properties
 UCIS LRM Section 8.3.12 “ucis_SetHandleProperty”</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -410,15 +450,17 @@ UCIS LRM Section 8.3.12 “ucis_SetHandleProperty”</p>
 processing of the UCIS object tree without modifying the object classes.
 Visitors can implement operations like reporting, merging, filtering, or
 custom analysis.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>v: Visitor object implementing the appropriate visit methods for</dt><dd><p>each object type (visitScope, visitCoverItem, etc.).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>v</strong> – Visitor object implementing the appropriate visit methods for
+each object type (visitScope, visitCoverItem, etc.).</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>UnimplError</strong> – If the visitor pattern is not implemented.</p>
 </dd>
 </dl>
-</dd>
-<dt>Raises:</dt><dd><p>UnimplError: If the visitor pattern is not implemented.</p>
-</dd>
-<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyVisitor</span><span class="p">:</span>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyVisitor</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="k">def</span> <span class="nf">visitScope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visiting scope: </span><span class="si">{</span><span class="n">scope</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="gp">...</span>
@@ -426,14 +468,16 @@ custom analysis.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">scope</span><span class="o">.</span><span class="n">accept</span><span class="p">(</span><span class="n">visitor</span><span class="p">)</span>
 </pre></div>
 </div>
-</dd>
-<dt>Note:</dt><dd><p>The visitor pattern enables separation of algorithms from the object
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The visitor pattern enables separation of algorithms from the object
 structure they operate on, facilitating extensibility without modifying
 core classes.</p>
-</dd>
-<dt>See Also:</dt><dd><p>Visitor design pattern documentation</p>
-</dd>
-</dl>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Visitor design pattern documentation</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -509,10 +553,7 @@ core classes.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="recording_coverage_best_practices.html" class="btn btn-neutral float-left" title="Best Practices for Recording Coverage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ucis_c_api.html" class="btn btn-neutral float-right" title="UCIS C-Style API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

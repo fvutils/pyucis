@@ -1,0 +1,1533 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SQLite Schema Reference &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Report Formats" href="../report-formats/index.html" />
+    <link rel="prev" title="YAML Coverage Data Format" href="yaml-format.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">CLI Command Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sqlite-api.html">SQLite Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native-c-library.html">Native C Library API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best-practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../python-api/index.html">Python API</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">File Formats</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="xml-interchange.html">XML Interchange Format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="yaml-format.html">YAML Coverage Data Format</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">SQLite Schema Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#design-principles">Design Principles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#schema-initialization">Schema Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#table-reference">Table Reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#query-examples">Query Examples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#performance-tuning">Performance Tuning</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../report-formats/index.html">Report Formats</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">File Formats</a></li>
+      <li class="breadcrumb-item active">SQLite Schema Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/reference/formats/sqlite-schema.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sqlite-schema-reference">
+<h1>SQLite Schema Reference<a class="headerlink" href="#sqlite-schema-reference" title="Link to this heading"></a></h1>
+<p>This document provides a detailed reference of the SQLite database schema used by the SQLite backend. The schema is designed to efficiently represent all UCIS (Unified Coverage Interoperability Standard) concepts with full relational integrity.</p>
+<section id="design-principles">
+<h2>Design Principles<a class="headerlink" href="#design-principles" title="Link to this heading"></a></h2>
+<p>The schema is designed with the following priorities:</p>
+<ol class="arabic simple">
+<li><p><strong>Efficient Merging</strong> - Support for combining coverage data from multiple test runs</p></li>
+<li><p><strong>Fast Querying</strong> - Indexed access patterns for common operations</p></li>
+<li><p><strong>API Compatibility</strong> - Enable C API semantics through Python</p></li>
+<li><p><strong>Relational Integrity</strong> - Proper foreign key relationships with cascading deletes</p></li>
+<li><p><strong>Storage Efficiency</strong> - Normalized design with selective denormalization</p></li>
+</ol>
+<section id="hierarchical-organization">
+<h3>Hierarchical Organization<a class="headerlink" href="#hierarchical-organization" title="Link to this heading"></a></h3>
+<p>UCIS organizes coverage data hierarchically:</p>
+<ul class="simple">
+<li><p><strong>Scopes</strong> - Hierarchical containers (design units, instances, covergroups, etc.)</p></li>
+<li><p><strong>Coveritems</strong> - Leaf nodes containing coverage counts</p></li>
+<li><p><strong>History Nodes</strong> - Test records that produced coverage data</p></li>
+</ul>
+</section>
+<section id="object-identification">
+<h3>Object Identification<a class="headerlink" href="#object-identification" title="Link to this heading"></a></h3>
+<p>Objects can be identified by:</p>
+<ul class="simple">
+<li><p><strong>Hierarchical names</strong> - Path-based identification (e.g., <code class="docutils literal notranslate"><span class="pre">/top/module/signal</span></code>)</p></li>
+<li><p><strong>Unique IDs</strong> - Type + name components for universal object recognition</p></li>
+<li><p><strong>Primary keys</strong> - Integer IDs for efficient database operations</p></li>
+</ul>
+</section>
+</section>
+<section id="schema-initialization">
+<h2>Schema Initialization<a class="headerlink" href="#schema-initialization" title="Link to this heading"></a></h2>
+<section id="database-pragmas">
+<h3>Database Pragmas<a class="headerlink" href="#database-pragmas" title="Link to this heading"></a></h3>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Enable foreign key constraints</span>
+<span class="n">PRAGMA</span><span class="w"> </span><span class="n">foreign_keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">ON</span><span class="p">;</span>
+
+<span class="c1">-- Use Write-Ahead Logging for better concurrency</span>
+<span class="n">PRAGMA</span><span class="w"> </span><span class="n">journal_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WAL</span><span class="p">;</span>
+
+<span class="c1">-- Optimize for modern systems</span>
+<span class="n">PRAGMA</span><span class="w"> </span><span class="n">page_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4096</span><span class="p">;</span>
+<span class="n">PRAGMA</span><span class="w"> </span><span class="n">cache_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">64000</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 64MB cache</span>
+</pre></div>
+</div>
+</section>
+<section id="metadata-initialization">
+<h3>Metadata Initialization<a class="headerlink" href="#metadata-initialization" title="Link to this heading"></a></h3>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">db_metadata</span><span class="w"> </span><span class="p">(</span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;UCIS_VERSION&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1.0&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;API_VERSION&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1.0&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;PATH_SEPARATOR&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="s1">&#39;CREATED_TIME&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">datetime</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="table-reference">
+<h2>Table Reference<a class="headerlink" href="#table-reference" title="Link to this heading"></a></h2>
+<section id="database-metadata">
+<h3>1. Database Metadata<a class="headerlink" href="#database-metadata" title="Link to this heading"></a></h3>
+<section id="db-metadata">
+<h4>db_metadata<a class="headerlink" href="#db-metadata" title="Link to this heading"></a></h4>
+<p>Stores database-level configuration and version information.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">db_metadata</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">key</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">value</span><span class="w"> </span><span class="nb">TEXT</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_db_metadata_key</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">db_metadata</span><span class="p">(</span><span class="k">key</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Standard Keys:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DATABASE_TYPE</span></code></p></td>
+<td><p>Database type identifier (always “PYUCIS”)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DATABASE_FORMAT_VERSION</span></code></p></td>
+<td><p>Database format version (current: “1.0”)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UCIS_VERSION</span></code></p></td>
+<td><p>UCIS standard version (e.g., “1.0”)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">API_VERSION</span></code></p></td>
+<td><p>Implementation API version</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SCHEMA_VERSION</span></code></p></td>
+<td><p>Database schema version (current: “2.1”)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CREATED_TIME</span></code></p></td>
+<td><p>Database creation timestamp (ISO 8601)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">MODIFIED_TIME</span></code></p></td>
+<td><p>Last modification timestamp</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PATH_SEPARATOR</span></code></p></td>
+<td><p>Character used for path separation (default: ‘/’)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Database Identification:</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">DATABASE_TYPE</span></code> key serves as a marker to identify PyUCIS coverage databases. This allows validation that a SQLite file is specifically a PyUCIS database rather than an arbitrary SQLite file.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">key</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">db_metadata</span><span class="p">;</span>
+<span class="c1">-- Result:</span>
+<span class="c1">-- DATABASE_TYPE           | PYUCIS</span>
+<span class="c1">-- DATABASE_FORMAT_VERSION | 1.0</span>
+<span class="c1">-- UCIS_VERSION            | 1.0</span>
+<span class="c1">-- API_VERSION             | 1.0</span>
+<span class="c1">-- SCHEMA_VERSION          | 2.1</span>
+<span class="c1">-- CREATED_TIME            | 2026-01-12T15:30:00</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="file-management">
+<h3>2. File Management<a class="headerlink" href="#file-management" title="Link to this heading"></a></h3>
+<section id="files">
+<h4>files<a class="headerlink" href="#files" title="Link to this heading"></a></h4>
+<p>Tracks source files referenced by coverage objects.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">file_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">file_path</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">,</span>
+<span class="w">    </span><span class="n">file_hash</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">          </span><span class="c1">-- Optional hash for version tracking</span>
+<span class="w">    </span><span class="n">file_table_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w">    </span><span class="c1">-- For multi-file design units (1-indexed)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_files_path</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">files</span><span class="p">(</span><span class="n">file_path</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_files_hash</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">files</span><span class="p">(</span><span class="n">file_hash</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">file_hash</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Columns:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>file_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Primary key (auto-increment)</p></td>
+</tr>
+<tr class="row-odd"><td><p>file_path</p></td>
+<td><p>TEXT</p></td>
+<td><p>File path (unique)</p></td>
+</tr>
+<tr class="row-even"><td><p>file_hash</p></td>
+<td><p>TEXT</p></td>
+<td><p>Optional hash (MD5/SHA) for version tracking</p></td>
+</tr>
+<tr class="row-odd"><td><p>file_table_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Multi-file compilation unit ID (1-indexed)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="w"> </span><span class="n">file_hash</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;/project/rtl/counter.v&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;a1b2c3d4&#39;</span><span class="p">);</span>
+
+<span class="k">SELECT</span><span class="w"> </span><span class="n">file_id</span><span class="p">,</span><span class="w"> </span><span class="n">file_path</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">files</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">file_path</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%.v&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="scope-hierarchy">
+<h3>3. Scope Hierarchy<a class="headerlink" href="#scope-hierarchy" title="Link to this heading"></a></h3>
+<section id="scopes">
+<h4>scopes<a class="headerlink" href="#scopes" title="Link to this heading"></a></h4>
+<p>Hierarchical coverage containers representing design structure, coverage organization, and functional coverage groups.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">parent_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                    </span><span class="c1">-- NULL for root scopes</span>
+<span class="w">    </span><span class="n">scope_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">          </span><span class="c1">-- ucisScopeTypeT (bit flags)</span>
+<span class="w">    </span><span class="n">scope_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">scope_flags</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">        </span><span class="c1">-- Configuration flags</span>
+<span class="w">    </span><span class="n">weight</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">             </span><span class="c1">-- Coverage weight</span>
+<span class="w">    </span><span class="n">goal</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                         </span><span class="c1">-- Coverage goal percentage</span>
+<span class="w">    </span><span class="k">limit</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                        </span><span class="c1">-- Coverage limit</span>
+<span class="w">    </span><span class="n">source_file_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">               </span><span class="c1">-- Source location</span>
+<span class="w">    </span><span class="n">source_line</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">source_token</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">language_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                </span><span class="c1">-- VHDL, Verilog, etc.</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">source_file_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">files</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">NULL</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_scopes_parent</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">parent_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_scopes_parent_type_name</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span><span class="w"> </span><span class="n">scope_type</span><span class="p">,</span><span class="w"> </span><span class="n">scope_name</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Columns:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>scope_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Primary key (auto-increment)</p></td>
+</tr>
+<tr class="row-odd"><td><p>parent_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Parent scope ID (NULL for root)</p></td>
+</tr>
+<tr class="row-even"><td><p>scope_type</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Scope type bit flags (see ucisScopeTypeT)</p></td>
+</tr>
+<tr class="row-odd"><td><p>scope_name</p></td>
+<td><p>TEXT</p></td>
+<td><p>Scope name</p></td>
+</tr>
+<tr class="row-even"><td><p>scope_flags</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Configuration flags (enabled coverage, UOR flags)</p></td>
+</tr>
+<tr class="row-odd"><td><p>weight</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage weight (default: 1)</p></td>
+</tr>
+<tr class="row-even"><td><p>goal</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage goal percentage</p></td>
+</tr>
+<tr class="row-odd"><td><p>limit</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage limit</p></td>
+</tr>
+<tr class="row-even"><td><p>source_file_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Reference to files table</p></td>
+</tr>
+<tr class="row-odd"><td><p>source_line</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Source line number</p></td>
+</tr>
+<tr class="row-even"><td><p>source_token</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Source token position</p></td>
+</tr>
+<tr class="row-odd"><td><p>language_type</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Source language (VHDL, Verilog, SV, etc.)</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Scope Types (ucisScopeTypeT):</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_TOGGLE</p></td>
+<td><p>0x0001</p></td>
+<td><p>Toggle coverage scope</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_BRANCH</p></td>
+<td><p>0x0002</p></td>
+<td><p>Branch coverage scope</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_EXPR</p></td>
+<td><p>0x0004</p></td>
+<td><p>Expression coverage scope</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_COND</p></td>
+<td><p>0x0008</p></td>
+<td><p>Condition coverage scope</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_INSTANCE</p></td>
+<td><p>0x0010</p></td>
+<td><p>Design instance</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_DU_MODULE</p></td>
+<td><p>0x0020</p></td>
+<td><p>Module design unit</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_DU_ARCH</p></td>
+<td><p>0x0040</p></td>
+<td><p>Architecture design unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_DU_PACKAGE</p></td>
+<td><p>0x0080</p></td>
+<td><p>Package design unit</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_DU_PROGRAM</p></td>
+<td><p>0x0100</p></td>
+<td><p>Program design unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_DU_INTERFACE</p></td>
+<td><p>0x0200</p></td>
+<td><p>Interface design unit</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_BLOCK</p></td>
+<td><p>0x0800</p></td>
+<td><p>Block coverage scope</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_COVERGROUP</p></td>
+<td><p>0x1000</p></td>
+<td><p>Covergroup type definition</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_COVERINSTANCE</p></td>
+<td><p>0x2000</p></td>
+<td><p>Covergroup instance</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_COVERPOINT</p></td>
+<td><p>0x4000</p></td>
+<td><p>Coverpoint</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_CROSS</p></td>
+<td><p>0x8000</p></td>
+<td><p>Cross coverage</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_FSM</p></td>
+<td><p>0x400000</p></td>
+<td><p>Finite state machine</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_ASSERT</p></td>
+<td><p>0x800000</p></td>
+<td><p>Assertion/cover directive</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Scope Flags:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 15.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_ENABLED_STMT</p></td>
+<td><p>0x01</p></td>
+<td><p>Statement coverage enabled</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ENABLED_BRANCH</p></td>
+<td><p>0x02</p></td>
+<td><p>Branch coverage enabled</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_ENABLED_COND</p></td>
+<td><p>0x04</p></td>
+<td><p>Condition coverage enabled</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ENABLED_EXPR</p></td>
+<td><p>0x08</p></td>
+<td><p>Expression coverage enabled</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_ENABLED_FSM</p></td>
+<td><p>0x10</p></td>
+<td><p>FSM coverage enabled</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ENABLED_TOGGLE</p></td>
+<td><p>0x20</p></td>
+<td><p>Toggle coverage enabled</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_UOR_SAFE_SCOPE</p></td>
+<td><p>0x40</p></td>
+<td><p>Universal Object Recognition safe</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_UOR_SAFE_SCOPE_ALLCOVERS</p></td>
+<td><p>0x80</p></td>
+<td><p>All coveritems UOR safe</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_INST_ONCE</p></td>
+<td><p>0x100</p></td>
+<td><p>Instance appears once in design</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Create top-level instance</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span><span class="w"> </span><span class="n">scope_type</span><span class="p">,</span><span class="w"> </span><span class="n">scope_name</span><span class="p">,</span><span class="w"> </span><span class="n">scope_flags</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">x10</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;top&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="c1">-- Create child module with toggle coverage enabled</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="p">(</span><span class="n">parent_id</span><span class="p">,</span><span class="w"> </span><span class="n">scope_type</span><span class="p">,</span><span class="w"> </span><span class="n">scope_name</span><span class="p">,</span><span class="w"> </span><span class="n">scope_flags</span><span class="p">,</span><span class="w"> </span><span class="n">weight</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">x10</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;dut&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">x20</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+
+<span class="c1">-- Query all instances</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">scope_name</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">scopes</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">scope_type</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">0</span><span class="n">x10</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="coverage-items">
+<h3>4. Coverage Items<a class="headerlink" href="#coverage-items" title="Link to this heading"></a></h3>
+<section id="coveritems">
+<h4>coveritems<a class="headerlink" href="#coveritems" title="Link to this heading"></a></h4>
+<p>Leaf nodes containing actual coverage counts and metadata.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cover_index</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">         </span><span class="c1">-- Index within parent (0-based)</span>
+<span class="w">    </span><span class="n">cover_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">          </span><span class="c1">-- ucisCoverTypeT (bit flags)</span>
+<span class="w">    </span><span class="n">cover_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cover_flags</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">        </span><span class="c1">-- Coverage state flags</span>
+<span class="w">    </span><span class="n">cover_data</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">         </span><span class="c1">-- Primary hit count</span>
+<span class="w">    </span><span class="n">cover_data_fec</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">     </span><span class="c1">-- Functional equivalent count</span>
+<span class="w">    </span><span class="n">at_least</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">           </span><span class="c1">-- Minimum for coverage</span>
+<span class="w">    </span><span class="n">weight</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">goal</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="k">limit</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">source_file_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">               </span><span class="c1">-- Source location</span>
+<span class="w">    </span><span class="n">source_line</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">source_token</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">source_file_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">files</span><span class="p">(</span><span class="n">file_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">UNIQUE</span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">cover_index</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_coveritems_scope_index</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">cover_index</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Columns:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cover_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Primary key (auto-increment)</p></td>
+</tr>
+<tr class="row-odd"><td><p>scope_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Parent scope reference</p></td>
+</tr>
+<tr class="row-even"><td><p>cover_index</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Index within parent scope (0-based)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cover_type</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage type bit flags</p></td>
+</tr>
+<tr class="row-even"><td><p>cover_name</p></td>
+<td><p>TEXT</p></td>
+<td><p>Coverage item name</p></td>
+</tr>
+<tr class="row-odd"><td><p>cover_flags</p></td>
+<td><p>INTEGER</p></td>
+<td><p>State flags (covered, excluded, etc.)</p></td>
+</tr>
+<tr class="row-even"><td><p>cover_data</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Primary hit count</p></td>
+</tr>
+<tr class="row-odd"><td><p>cover_data_fec</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Functional equivalent count</p></td>
+</tr>
+<tr class="row-even"><td><p>at_least</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Minimum count for coverage (default: 1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>weight</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage weight</p></td>
+</tr>
+<tr class="row-even"><td><p>goal</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage goal</p></td>
+</tr>
+<tr class="row-odd"><td><p>limit</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Coverage limit</p></td>
+</tr>
+<tr class="row-even"><td><p>source_file_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Reference to files table</p></td>
+</tr>
+<tr class="row-odd"><td><p>source_line</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Source line number</p></td>
+</tr>
+<tr class="row-even"><td><p>source_token</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Source token position</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cover Types (ucisCoverTypeT):</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 15.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_CVGBIN</p></td>
+<td><p>0x0001</p></td>
+<td><p>Regular covergroup bin</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_STMTBIN</p></td>
+<td><p>0x0002</p></td>
+<td><p>Statement</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_BRANCHBIN</p></td>
+<td><p>0x0004</p></td>
+<td><p>Branch (true/false)</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_EXPRBIN</p></td>
+<td><p>0x0008</p></td>
+<td><p>Expression term</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_CONDBIN</p></td>
+<td><p>0x0010</p></td>
+<td><p>Condition</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_TOGGLEBIN</p></td>
+<td><p>0x0200</p></td>
+<td><p>Toggle (0-&gt;1 or 1-&gt;0)</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_ASSERTBIN</p></td>
+<td><p>0x0400</p></td>
+<td><p>Assertion/cover</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_FSMBIN</p></td>
+<td><p>0x0800</p></td>
+<td><p>FSM state or transition</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_IGNOREBIN</p></td>
+<td><p>0x80000</p></td>
+<td><p>Ignore bin (excluded from coverage)</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ILLEGALBIN</p></td>
+<td><p>0x100000</p></td>
+<td><p>Illegal bin (should not be hit)</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_DEFAULTBIN</p></td>
+<td><p>0x200000</p></td>
+<td><p>Default bin</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cover Flags:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 15.0%" />
+<col style="width: 45.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Flag</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_IS_COVERED</p></td>
+<td><p>0x01</p></td>
+<td><p>Meets coverage goal</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_CVG_EXCLUDE</p></td>
+<td><p>0x02</p></td>
+<td><p>Excluded from coverage</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_UOR_SAFE_COVERITEM</p></td>
+<td><p>0x04</p></td>
+<td><p>Universal Object Recognition safe</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Create toggle coveritems (0-&gt;1 and 1-&gt;0)</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">cover_index</span><span class="p">,</span><span class="w"> </span><span class="n">cover_type</span><span class="p">,</span><span class="w"> </span><span class="n">cover_name</span><span class="p">,</span><span class="w"> </span><span class="n">cover_data</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">x200</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;0-&gt;1&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">157</span><span class="p">);</span>
+
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">cover_index</span><span class="p">,</span><span class="w"> </span><span class="n">cover_type</span><span class="p">,</span><span class="w"> </span><span class="n">cover_name</span><span class="p">,</span><span class="w"> </span><span class="n">cover_data</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="n">x200</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;1-&gt;0&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">156</span><span class="p">);</span>
+
+<span class="c1">-- Find uncovered items</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_name</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="k">c</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="history-nodes-test-records">
+<h3>5. History Nodes (Test Records)<a class="headerlink" href="#history-nodes-test-records" title="Link to this heading"></a></h3>
+<section id="history-nodes">
+<h4>history_nodes<a class="headerlink" href="#history-nodes" title="Link to this heading"></a></h4>
+<p>Records of test runs, merges, and test plan nodes that contribute coverage data.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">history_nodes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">history_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">parent_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                    </span><span class="c1">-- Hierarchical organization</span>
+<span class="w">    </span><span class="n">history_kind</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">        </span><span class="c1">-- TEST, MERGE, TESTPLAN</span>
+<span class="w">    </span><span class="n">logical_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">physical_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">test_status</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                  </span><span class="c1">-- Pass/fail status</span>
+<span class="w">    </span><span class="n">sim_time_low</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                 </span><span class="c1">-- 64-bit simulation time</span>
+<span class="w">    </span><span class="n">sim_time_high</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">time_unit</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                    </span><span class="c1">-- Time unit scale</span>
+<span class="w">    </span><span class="n">cpu_time</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span><span class="w">                        </span><span class="c1">-- CPU execution time</span>
+<span class="w">    </span><span class="n">seed</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                            </span><span class="c1">-- Random seed</span>
+<span class="w">    </span><span class="n">cmd_line</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                        </span><span class="c1">-- Command line</span>
+<span class="w">    </span><span class="n">compulsory</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">         </span><span class="c1">-- Is test mandatory</span>
+<span class="w">    </span><span class="nb">date</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                            </span><span class="c1">-- Execution date</span>
+<span class="w">    </span><span class="n">user_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cost</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span><span class="w">                            </span><span class="c1">-- Test cost metric</span>
+<span class="w">    </span><span class="k">version</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                         </span><span class="c1">-- Tool version</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">parent_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_parent</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">parent_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_kind</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">history_kind</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_logical</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">logical_name</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_status</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">test_status</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_date</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="nb">date</span><span class="p">)</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="nb">date</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Columns:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 15.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>history_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Primary key (auto-increment)</p></td>
+</tr>
+<tr class="row-odd"><td><p>parent_id</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Parent history node (for hierarchical organization)</p></td>
+</tr>
+<tr class="row-even"><td><p>history_kind</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Node kind (TEST, MERGE, TESTPLAN)</p></td>
+</tr>
+<tr class="row-odd"><td><p>logical_name</p></td>
+<td><p>TEXT</p></td>
+<td><p>Logical test name</p></td>
+</tr>
+<tr class="row-even"><td><p>physical_name</p></td>
+<td><p>TEXT</p></td>
+<td><p>Physical file path</p></td>
+</tr>
+<tr class="row-odd"><td><p>test_status</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Test execution status</p></td>
+</tr>
+<tr class="row-even"><td><p>sim_time_low</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Lower 32 bits of simulation time</p></td>
+</tr>
+<tr class="row-odd"><td><p>sim_time_high</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Upper 32 bits of simulation time</p></td>
+</tr>
+<tr class="row-even"><td><p>time_unit</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Time unit scale factor</p></td>
+</tr>
+<tr class="row-odd"><td><p>cpu_time</p></td>
+<td><p>REAL</p></td>
+<td><p>CPU execution time (seconds)</p></td>
+</tr>
+<tr class="row-even"><td><p>seed</p></td>
+<td><p>TEXT</p></td>
+<td><p>Random seed value</p></td>
+</tr>
+<tr class="row-odd"><td><p>cmd_line</p></td>
+<td><p>TEXT</p></td>
+<td><p>Command line used</p></td>
+</tr>
+<tr class="row-even"><td><p>compulsory</p></td>
+<td><p>INTEGER</p></td>
+<td><p>Is test mandatory (boolean)</p></td>
+</tr>
+<tr class="row-odd"><td><p>date</p></td>
+<td><p>TEXT</p></td>
+<td><p>Execution date (ISO 8601)</p></td>
+</tr>
+<tr class="row-even"><td><p>user_name</p></td>
+<td><p>TEXT</p></td>
+<td><p>User who ran test</p></td>
+</tr>
+<tr class="row-odd"><td><p>cost</p></td>
+<td><p>REAL</p></td>
+<td><p>Test cost metric</p></td>
+</tr>
+<tr class="row-even"><td><p>version</p></td>
+<td><p>TEXT</p></td>
+<td><p>Tool version</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>History Kinds:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_HISTORYNODE_TEST</p></td>
+<td><p>0x01</p></td>
+<td><p>Individual test run</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_HISTORYNODE_MERGE</p></td>
+<td><p>0x02</p></td>
+<td><p>Merged coverage from multiple sources</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_HISTORYNODE_TESTPLAN</p></td>
+<td><p>0x04</p></td>
+<td><p>Test plan organizational node</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Test Status:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Status</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_TESTSTATUS_OK</p></td>
+<td><p>0</p></td>
+<td><p>Test passed</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_TESTSTATUS_WARNING</p></td>
+<td><p>1</p></td>
+<td><p>Test passed with warnings</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_TESTSTATUS_FATAL</p></td>
+<td><p>2</p></td>
+<td><p>Test failed</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Create test record</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">history_nodes</span><span class="w"> </span><span class="p">(</span><span class="n">history_kind</span><span class="p">,</span><span class="w"> </span><span class="n">logical_name</span><span class="p">,</span><span class="w"> </span><span class="n">physical_name</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">test_status</span><span class="p">,</span><span class="w"> </span><span class="n">seed</span><span class="p">,</span><span class="w"> </span><span class="nb">date</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="n">x01</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;test_basic&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;tests/test_basic.sv&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;12345&#39;</span><span class="p">,</span>
+<span class="w">        </span><span class="s1">&#39;2026-01-12T10:30:00&#39;</span><span class="p">);</span>
+
+<span class="c1">-- Query failed tests</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">logical_name</span><span class="p">,</span><span class="w"> </span><span class="n">test_status</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">history_nodes</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">test_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">history_kind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">x01</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="test-coverage-associations">
+<h3>6. Test-Coverage Associations<a class="headerlink" href="#test-coverage-associations" title="Link to this heading"></a></h3>
+<section id="coveritem-tests">
+<h4>coveritem_tests<a class="headerlink" href="#coveritem-tests" title="Link to this heading"></a></h4>
+<p>Many-to-many relationship linking coverage items to the tests that hit them. Enables test minimization and impact analysis.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">history_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">count_contribution</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">  </span><span class="c1">-- Count from this test</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">,</span><span class="w"> </span><span class="n">history_id</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_coveritem_tests_cover</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="p">(</span><span class="n">cover_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_coveritem_tests_history</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="p">(</span><span class="n">history_id</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p>Identify which tests hit specific coverage points</p></li>
+<li><p>Find tests that uniquely cover certain items</p></li>
+<li><p>Rank tests by unique coverage contribution</p></li>
+<li><p>Test minimization analysis</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Link test to coverage items</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">,</span><span class="w"> </span><span class="n">history_id</span><span class="p">,</span><span class="w"> </span><span class="n">count_contribution</span><span class="p">)</span>
+<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">15</span><span class="p">);</span>
+
+<span class="c1">-- Find tests that hit a specific coverage point</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">logical_name</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">count_contribution</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="n">ct</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">history_nodes</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">history_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">history_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span>
+
+<span class="c1">-- Find coverage unique to a test</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_name</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="k">c</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">cover_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">history_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">AND</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="n">ct2</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">ct2</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">ct2</span><span class="p">.</span><span class="n">history_id</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="properties">
+<h3>7. Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h3>
+<p>Generic key-value storage for extensible metadata on scopes, coveritems, and history nodes.</p>
+<section id="scope-properties">
+<h4>scope_properties<a class="headerlink" href="#scope-properties" title="Link to this heading"></a></h4>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">scope_properties</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">property_key</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">        </span><span class="c1">-- Property enum</span>
+<span class="w">    </span><span class="n">property_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">       </span><span class="c1">-- INT, REAL, STRING, HANDLE</span>
+<span class="w">    </span><span class="n">int_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">real_value</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">string_value</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">handle_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                 </span><span class="c1">-- Reference to another object</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">property_key</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_scope_props_key</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">scope_properties</span><span class="p">(</span><span class="n">property_key</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="coveritem-properties">
+<h4>coveritem_properties<a class="headerlink" href="#coveritem-properties" title="Link to this heading"></a></h4>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">coveritem_properties</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">property_key</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">property_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">int_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">real_value</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">string_value</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">handle_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">,</span><span class="w"> </span><span class="n">property_key</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_cover_props_key</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">coveritem_properties</span><span class="p">(</span><span class="n">property_key</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="history-properties">
+<h4>history_properties<a class="headerlink" href="#history-properties" title="Link to this heading"></a></h4>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">history_properties</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">history_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">property_key</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">property_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">int_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+<span class="w">    </span><span class="n">real_value</span><span class="w"> </span><span class="nb">REAL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">string_value</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">handle_value</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">history_id</span><span class="p">,</span><span class="w"> </span><span class="n">property_key</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_history_props_key</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">history_properties</span><span class="p">(</span><span class="n">property_key</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Property Types:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_ATTR_INT (1)</p></td>
+<td><p>Integer value</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ATTR_REAL (2)</p></td>
+<td><p>Floating point value</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_ATTR_STRING (3)</p></td>
+<td><p>String value</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_ATTR_HANDLE (4)</p></td>
+<td><p>Reference to another object</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Common Property Keys:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_STR_UNIQUE_ID (0x100)</p></td>
+<td><p>Unique identifier string</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_STR_NAME (0x101)</p></td>
+<td><p>Name property</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_STR_COMMENT (0x102)</p></td>
+<td><p>Comment text</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_INT_SCOPE_NUM_COVERS (0x200)</p></td>
+<td><p>Number of coveritems</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_INT_COVERAGE_COUNT (0x201)</p></td>
+<td><p>Total coverage count</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_REAL_CVG_INST_AVERAGE (0x300)</p></td>
+<td><p>Average coverage percentage</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="user-defined-attributes">
+<h3>8. User-Defined Attributes<a class="headerlink" href="#user-defined-attributes" title="Link to this heading"></a></h3>
+<section id="attributes">
+<h4>attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h4>
+<p>Flexible user-defined key-value pairs for custom metadata.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">attributes</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">attr_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">obj_kind</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">            </span><span class="c1">-- Scope, coveritem, or history</span>
+<span class="w">    </span><span class="n">obj_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">attr_key</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">attr_value</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">UNIQUE</span><span class="p">(</span><span class="n">obj_kind</span><span class="p">,</span><span class="w"> </span><span class="n">obj_id</span><span class="p">,</span><span class="w"> </span><span class="n">attr_key</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_attributes_obj</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">attributes</span><span class="p">(</span><span class="n">obj_kind</span><span class="p">,</span><span class="w"> </span><span class="n">obj_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_attributes_key</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">attributes</span><span class="p">(</span><span class="n">attr_key</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Object Kinds:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 15.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Kind</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_OBJ_SCOPE</p></td>
+<td><p>1</p></td>
+<td><p>Attribute on scope</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_OBJ_COVER</p></td>
+<td><p>2</p></td>
+<td><p>Attribute on coveritem</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_OBJ_HISTORY</p></td>
+<td><p>3</p></td>
+<td><p>Attribute on history node</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="tags">
+<h3>9. Tags<a class="headerlink" href="#tags" title="Link to this heading"></a></h3>
+<section id="tags-object-tags">
+<h4>tags / object_tags<a class="headerlink" href="#tags-object-tags" title="Link to this heading"></a></h4>
+<p>Named tags for linking objects to verification plans or categories.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">tags</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">tag_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">tag_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">UNIQUE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_tags_name</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">tags</span><span class="p">(</span><span class="n">tag_name</span><span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">object_tags</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">obj_kind</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">obj_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">tag_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">obj_kind</span><span class="p">,</span><span class="w"> </span><span class="n">obj_id</span><span class="p">,</span><span class="w"> </span><span class="n">tag_id</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">tag_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">tags</span><span class="p">(</span><span class="n">tag_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_object_tags_obj</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">object_tags</span><span class="p">(</span><span class="n">obj_kind</span><span class="p">,</span><span class="w"> </span><span class="n">obj_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_object_tags_tag</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">object_tags</span><span class="p">(</span><span class="n">tag_id</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="toggle-coverage-details">
+<h3>10. Toggle Coverage Details<a class="headerlink" href="#toggle-coverage-details" title="Link to this heading"></a></h3>
+<section id="toggle-bits">
+<h4>toggle_bits<a class="headerlink" href="#toggle-bits" title="Link to this heading"></a></h4>
+<p>Per-bit toggle information for multi-bit signals.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">toggle_bits</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">toggle_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">            </span><span class="c1">-- Parent toggle coveritem</span>
+<span class="w">    </span><span class="n">bit_index</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">bit_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">            </span><span class="c1">-- Bit, enum, others</span>
+<span class="w">    </span><span class="n">toggle_01</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">          </span><span class="c1">-- 0-&gt;1 count</span>
+<span class="w">    </span><span class="n">toggle_10</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">          </span><span class="c1">-- 1-&gt;0 count</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">UNIQUE</span><span class="p">(</span><span class="n">cover_id</span><span class="p">,</span><span class="w"> </span><span class="n">bit_index</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_toggle_bits_cover</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">toggle_bits</span><span class="p">(</span><span class="n">cover_id</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="fsm-coverage-details">
+<h3>11. FSM Coverage Details<a class="headerlink" href="#fsm-coverage-details" title="Link to this heading"></a></h3>
+<section id="fsm-states-fsm-transitions">
+<h4>fsm_states / fsm_transitions<a class="headerlink" href="#fsm-states-fsm-transitions" title="Link to this heading"></a></h4>
+<p>Finite state machine state definitions and transitions.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">fsm_states</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">state_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">            </span><span class="c1">-- Parent FSM scope</span>
+<span class="w">    </span><span class="n">state_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">state_index</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">UNIQUE</span><span class="p">(</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">state_index</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_fsm_states_scope</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">fsm_states</span><span class="p">(</span><span class="n">scope_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_fsm_states_name</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">fsm_states</span><span class="p">(</span><span class="n">state_name</span><span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">fsm_transitions</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">            </span><span class="c1">-- Transition coveritem</span>
+<span class="w">    </span><span class="n">from_state_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">to_state_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">from_state_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">fsm_states</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">to_state_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">fsm_states</span><span class="p">(</span><span class="n">state_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_fsm_trans_from</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">fsm_transitions</span><span class="p">(</span><span class="n">from_state_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_fsm_trans_to</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">fsm_transitions</span><span class="p">(</span><span class="n">to_state_id</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="cross-coverage">
+<h3>12. Cross Coverage<a class="headerlink" href="#cross-coverage" title="Link to this heading"></a></h3>
+<section id="cross-coverpoints">
+<h4>cross_coverpoints<a class="headerlink" href="#cross-coverpoints" title="Link to this heading"></a></h4>
+<p>Links cross coverage to constituent coverpoints.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">cross_coverpoints</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cross_scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">      </span><span class="c1">-- UCIS_CROSS scope</span>
+<span class="w">    </span><span class="n">coverpoint_scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="c1">-- UCIS_COVERPOINT scope</span>
+<span class="w">    </span><span class="n">cvp_index</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">           </span><span class="c1">-- Order in cross</span>
+
+<span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cross_scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">cvp_index</span><span class="p">),</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cross_scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span><span class="p">,</span>
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">coverpoint_scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_cross_cvps_cross</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">cross_coverpoints</span><span class="p">(</span><span class="n">cross_scope_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_cross_cvps_cvp</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">cross_coverpoints</span><span class="p">(</span><span class="n">coverpoint_scope_id</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="formal-verification">
+<h3>13. Formal Verification<a class="headerlink" href="#formal-verification" title="Link to this heading"></a></h3>
+<section id="formal-data-formal-envs">
+<h4>formal_data / formal_envs<a class="headerlink" href="#formal-data-formal-envs" title="Link to this heading"></a></h4>
+<p>Formal verification results and environment settings.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">formal_data</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">cover_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w">         </span><span class="c1">-- Assertion coveritem</span>
+<span class="w">    </span><span class="n">formal_status</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                </span><span class="c1">-- Proven, disproven, etc.</span>
+<span class="w">    </span><span class="n">formal_radius</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                </span><span class="c1">-- Proof depth</span>
+<span class="w">    </span><span class="n">witness_file</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span><span class="w">                    </span><span class="c1">-- Counter-example location</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">coveritems</span><span class="p">(</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_formal_status</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">formal_data</span><span class="p">(</span><span class="n">formal_status</span><span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">formal_envs</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">env_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">history_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span><span class="w">                   </span><span class="c1">-- Associated test/proof</span>
+<span class="w">    </span><span class="n">env_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">env_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">env_value</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">history_nodes</span><span class="p">(</span><span class="n">history_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_formal_envs_history</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">formal_envs</span><span class="p">(</span><span class="n">history_id</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_formal_envs_type</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">formal_envs</span><span class="p">(</span><span class="n">env_type</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Formal Status Values:</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Status</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UCIS_FORMAL_VACUOUS (1)</p></td>
+<td><p>Vacuously true</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_FORMAL_UNREACHABLE (2)</p></td>
+<td><p>Unreachable</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_FORMAL_DISPROVEN (3)</p></td>
+<td><p>Counter-example found</p></td>
+</tr>
+<tr class="row-odd"><td><p>UCIS_FORMAL_PROVEN (4)</p></td>
+<td><p>Formally proven</p></td>
+</tr>
+<tr class="row-even"><td><p>UCIS_FORMAL_INCONCLUSIVE (5)</p></td>
+<td><p>Inconclusive result</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="design-unit-management">
+<h3>14. Design Unit Management<a class="headerlink" href="#design-unit-management" title="Link to this heading"></a></h3>
+<section id="design-units">
+<h4>design_units<a class="headerlink" href="#design-units" title="Link to this heading"></a></h4>
+<p>Tracks design unit definitions and relationships.</p>
+<p><strong>Schema:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">design_units</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">du_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="n">AUTOINCREMENT</span><span class="p">,</span>
+<span class="w">    </span><span class="n">du_scope_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">UNIQUE</span><span class="p">,</span><span class="w">  </span><span class="c1">-- References scopes table</span>
+<span class="w">    </span><span class="n">du_name</span><span class="w"> </span><span class="nb">TEXT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">du_type</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">             </span><span class="c1">-- Module, architecture, etc.</span>
+
+<span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">du_scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">scopes</span><span class="p">(</span><span class="n">scope_id</span><span class="p">)</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">DELETE</span><span class="w"> </span><span class="k">CASCADE</span>
+<span class="p">);</span>
+
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_design_units_name</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">design_units</span><span class="p">(</span><span class="n">du_name</span><span class="p">);</span>
+<span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="n">idx_design_units_type</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">design_units</span><span class="p">(</span><span class="n">du_type</span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="query-examples">
+<h2>Query Examples<a class="headerlink" href="#query-examples" title="Link to this heading"></a></h2>
+<section id="hierarchical-path-queries">
+<h3>Hierarchical Path Queries<a class="headerlink" href="#hierarchical-path-queries" title="Link to this heading"></a></h3>
+<p>Build full paths using recursive CTEs:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">WITH</span><span class="w"> </span><span class="k">RECURSIVE</span><span class="w"> </span><span class="n">scope_path</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">scope_name</span><span class="p">,</span><span class="w"> </span><span class="n">scope_type</span><span class="p">,</span><span class="w"> </span><span class="n">parent_id</span><span class="p">,</span>
+<span class="w">           </span><span class="n">scope_name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">full_path</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">scopes</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">parent_id</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span>
+
+<span class="w">    </span><span class="k">UNION</span><span class="w"> </span><span class="k">ALL</span>
+
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_id</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_name</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_type</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">parent_id</span><span class="p">,</span>
+<span class="w">           </span><span class="n">sp</span><span class="p">.</span><span class="n">full_path</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="s1">&#39;/&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_name</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="n">s</span>
+<span class="w">    </span><span class="k">JOIN</span><span class="w"> </span><span class="n">scope_path</span><span class="w"> </span><span class="n">sp</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">parent_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sp</span><span class="p">.</span><span class="n">scope_id</span>
+<span class="p">)</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">full_path</span><span class="p">,</span><span class="w"> </span><span class="n">scope_type</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">scope_path</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">scope_name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%clk%&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage-calculation">
+<h3>Coverage Calculation<a class="headerlink" href="#coverage-calculation" title="Link to this heading"></a></h3>
+<p>Calculate coverage percentages:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Coverpoint coverage</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">s</span><span class="p">.</span><span class="n">scope_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_bins</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">covered_bins</span><span class="p">,</span>
+<span class="w">    </span><span class="p">(</span><span class="mi">100</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">SUM</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">ELSE</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="o">/</span>
+<span class="w">     </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">))</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">coverage_pct</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="n">s</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="k">c</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">scope_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">x4000</span><span class="w">  </span><span class="c1">-- COVERPOINT</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_id</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="test-unique-coverage">
+<h3>Test Unique Coverage<a class="headerlink" href="#test-unique-coverage" title="Link to this heading"></a></h3>
+<p>Find coverage unique to specific tests:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">h</span><span class="p">.</span><span class="n">logical_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">cover_id</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">bins_hit</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">unique_hits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">unique_bins</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">history_nodes</span><span class="w"> </span><span class="n">h</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">coveritem_tests</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">history_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">history_id</span>
+<span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">cover_id</span><span class="p">,</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">unique_hits</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">coveritem_tests</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">cover_id</span>
+<span class="p">)</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ct</span><span class="p">.</span><span class="n">cover_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">.</span><span class="n">cover_id</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">history_id</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="uncovered-items">
+<h3>Uncovered Items<a class="headerlink" href="#uncovered-items" title="Link to this heading"></a></h3>
+<p>Find items not meeting coverage goals:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">s</span><span class="p">.</span><span class="n">scope_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">c</span><span class="p">.</span><span class="n">cover_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">hits</span><span class="p">,</span>
+<span class="w">    </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">required</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">coveritems</span><span class="w"> </span><span class="k">c</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">scopes</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">scope_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_data</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">at_least</span>
+<span class="k">AND</span><span class="w"> </span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">cover_flags</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mi">0</span><span class="n">x02</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c1">-- Not excluded</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">scope_name</span><span class="p">,</span><span class="w"> </span><span class="k">c</span><span class="p">.</span><span class="n">cover_index</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-tuning">
+<h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<section id="schema-version">
+<h3>Schema Version<a class="headerlink" href="#schema-version" title="Link to this heading"></a></h3>
+<p><strong>Current Version: 2.1</strong></p>
+<p>The database schema includes a version number stored in the <code class="docutils literal notranslate"><span class="pre">db_metadata</span></code> table. Version 2.1 introduces optimizations for merge performance and storage efficiency:</p>
+<ul class="simple">
+<li><p><strong>Reduced indexes</strong> - Removed 7 unused indexes that provided no query benefit</p></li>
+<li><p><strong>Merge optimization</strong> - Streamlined bin creation to minimize row growth</p></li>
+<li><p><strong>History tracking</strong> - Optional history squashing for large-scale merges</p></li>
+</ul>
+<p>Opening a database with a mismatched schema version will raise an error. Databases from older schema versions must be recreated with the current schema.</p>
+</section>
+<section id="index-optimization">
+<h3>Index Optimization<a class="headerlink" href="#index-optimization" title="Link to this heading"></a></h3>
+<p>Version 2.1 includes optimized indexes for common query patterns:</p>
+<p><strong>Scopes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">idx_scopes_parent</span></code> - Parent-child traversal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idx_scopes_parent_type_name</span></code> - Composite lookup by parent, type, and name</p></li>
+</ul>
+<p><strong>Coveritems:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">idx_coveritems_scope_index</span></code> - Lookup by scope and cover index (critical for merge performance)</p></li>
+</ul>
+<p><strong>Removed Indexes (v2.1):</strong></p>
+<p>The following indexes were removed as they provided no measurable performance benefit:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">idx_scopes_type</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_scopes_name</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_scopes_parent_name</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_scopes_source</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">idx_coveritems_scope</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_coveritems_type</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_coveritems_name</span></code>, <code class="docutils literal notranslate"><span class="pre">idx_coveritems_source</span></code></p></li>
+</ul>
+<p>This reduces storage overhead by approximately 30-40% with no query performance impact.</p>
+</section>
+<section id="analyze-command">
+<h3>ANALYZE Command<a class="headerlink" href="#analyze-command" title="Link to this heading"></a></h3>
+<p>Update statistics for query optimization:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ANALYZE</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="vacuum">
+<h3>Vacuum<a class="headerlink" href="#vacuum" title="Link to this heading"></a></h3>
+<p>Reclaim space and optimize storage:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">VACUUM</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../sqlite-api.html"><span class="doc">SQLite Backend API</span></a> - Python API documentation</p></li>
+<li><p><a class="reference internal" href="../native-c-library.html"><span class="doc">Native C Library API</span></a> - C API documentation</p></li>
+<li><p><a class="reference internal" href="../python-api/oo-api.html"><span class="doc">UCIS Object-Oriented API</span></a> - General object-oriented API</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="yaml-format.html" class="btn btn-neutral float-left" title="YAML Coverage Data Format" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../report-formats/index.html" class="btn btn-neutral float-right" title="Report Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

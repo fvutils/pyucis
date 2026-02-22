@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analyzing Coverage &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Comparing Coverage Databases" href="comparing.html" />
+    <link rel="prev" title="Exploring Coverage with TUI" href="exploring-tui.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exploring-tui.html">Exploring Coverage with TUI</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Analyzing Coverage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#recommended-workflow">Recommended Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-summary">Step 1 — Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-gaps">Step 2 — Gaps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-hotspots">Step 3 — Hotspots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-drill-down">Step 4 — Drill Down</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-options">Other Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-gate-script">Coverage Gate Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Working with Coverage</a></li>
+      <li class="breadcrumb-item active">Analyzing Coverage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/working-with-coverage/analyzing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="analyzing-coverage">
+<h1>Analyzing Coverage<a class="headerlink" href="#analyzing-coverage" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ucis</span> <span class="pre">show</span></code> sub-commands extract coverage data from any UCIS database
+and print it in text or JSON format. Use them for quick checks, scripting,
+and CI/CD gates.</p>
+<section id="recommended-workflow">
+<h2>Recommended Workflow<a class="headerlink" href="#recommended-workflow" title="Link to this heading"></a></h2>
+<p>Work through these commands in order for an efficient analysis session:</p>
+<ol class="arabic simple">
+<li><p>Get an overall health check</p></li>
+<li><p>Find what is not covered</p></li>
+<li><p>Prioritize where to work next</p></li>
+<li><p>Drill down into specific items</p></li>
+</ol>
+</section>
+<section id="step-1-summary">
+<h2>Step 1 — Summary<a class="headerlink" href="#step-1-summary" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p>Prints overall coverage percentage and a breakdown by type (functional, code,
+assertion, toggle). Add <code class="docutils literal notranslate"><span class="pre">--output-format</span> <span class="pre">json</span></code> for machine-readable output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.xml<span class="w"> </span>--output-format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.overall_coverage&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-gaps">
+<h2>Step 2 — Gaps<a class="headerlink" href="#step-2-gaps" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p>Lists every item below 100% coverage. Use <code class="docutils literal notranslate"><span class="pre">--threshold</span></code> to show only items
+below a specific percentage, and <code class="docutils literal notranslate"><span class="pre">--limit</span></code> to cap the output:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>gaps<span class="w"> </span>coverage.xml<span class="w"> </span>--threshold<span class="w"> </span><span class="m">80</span><span class="w"> </span>--limit<span class="w"> </span><span class="m">20</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-hotspots">
+<h2>Step 3 — Hotspots<a class="headerlink" href="#step-3-hotspots" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>hotspots<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p>Provides prioritized recommendations (P0/P1/P2) based on coverage percentage
+and potential impact. The <code class="docutils literal notranslate"><span class="pre">--target</span></code> option sets the goal:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>hotspots<span class="w"> </span>coverage.xml<span class="w"> </span>--target<span class="w"> </span><span class="m">90</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-drill-down">
+<h2>Step 4 — Drill Down<a class="headerlink" href="#step-4-drill-down" title="Link to this heading"></a></h2>
+<p class="rubric">Covergroups</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>coverage.xml
+ucis<span class="w"> </span>show<span class="w"> </span>covergroups<span class="w"> </span>coverage.xml<span class="w"> </span>--pattern<span class="w"> </span><span class="s2">&quot;alu_*&quot;</span>
+</pre></div>
+</div>
+<p class="rubric">Bins</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>bins<span class="w"> </span>coverage.xml<span class="w"> </span>--covergroup<span class="w"> </span>addr_cg
+ucis<span class="w"> </span>show<span class="w"> </span>bins<span class="w"> </span>coverage.xml<span class="w"> </span>--status<span class="w"> </span>missed<span class="w">   </span><span class="c1"># only uncovered bins</span>
+</pre></div>
+</div>
+<p class="rubric">Tests</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>tests<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+<p>Shows per-test pass/fail status and test-specific coverage contribution.</p>
+<p class="rubric">Hierarchy</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>hierarchy<span class="w"> </span>coverage.xml<span class="w"> </span>--depth<span class="w"> </span><span class="m">3</span>
+</pre></div>
+</div>
+<p class="rubric">Assertions and Toggle</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ucis<span class="w"> </span>show<span class="w"> </span>assertions<span class="w"> </span>coverage.xml
+ucis<span class="w"> </span>show<span class="w"> </span>toggle<span class="w"> </span>coverage.xml
+</pre></div>
+</div>
+</section>
+<section id="other-options">
+<h2>Other Options<a class="headerlink" href="#other-options" title="Link to this heading"></a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">show</span></code> commands accept:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--output-format</span></code> / <code class="docutils literal notranslate"><span class="pre">-of</span></code> — <code class="docutils literal notranslate"><span class="pre">json</span></code>, <code class="docutils literal notranslate"><span class="pre">text</span></code> (default varies by command)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--out</span></code> / <code class="docutils literal notranslate"><span class="pre">-o</span></code> — write output to a file instead of stdout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--input-format</span></code> / <code class="docutils literal notranslate"><span class="pre">-if</span></code> — source format (default: <code class="docutils literal notranslate"><span class="pre">xml</span></code>)</p></li>
+</ul>
+</section>
+<section id="coverage-gate-script">
+<h2>Coverage Gate Script<a class="headerlink" href="#coverage-gate-script" title="Link to this heading"></a></h2>
+<p>Check whether coverage meets a threshold in CI/CD:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nv">COVERAGE</span><span class="o">=</span><span class="k">$(</span>ucis<span class="w"> </span>show<span class="w"> </span>summary<span class="w"> </span>coverage.xml<span class="w"> </span>-of<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.overall_coverage&#39;</span><span class="k">)</span>
+<span class="nv">THRESHOLD</span><span class="o">=</span><span class="m">80</span>
+<span class="k">if</span><span class="w"> </span><span class="o">((</span><span class="w"> </span><span class="k">$(</span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;</span><span class="nv">$COVERAGE</span><span class="s2"> &lt; </span><span class="nv">$THRESHOLD</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bc<span class="w"> </span>-l<span class="k">)</span><span class="w"> </span><span class="o">))</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Coverage </span><span class="si">${</span><span class="nv">COVERAGE</span><span class="si">}</span><span class="s2">% is below </span><span class="si">${</span><span class="nv">THRESHOLD</span><span class="si">}</span><span class="s2">%&quot;</span>
+<span class="w">    </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>See the full parameter reference in <a class="reference internal" href="../reference/cli.html"><span class="doc">CLI Command Reference</span></a>.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="comparing.html"><span class="doc">Comparing Coverage Databases</span></a> — compare two databases to detect regressions</p></li>
+<li><p><a class="reference internal" href="../reporting/exporting.html"><span class="doc">Exporting to CI/CD Formats</span></a> — export to LCOV, Cobertura, JaCoCo, or Clover</p></li>
+<li><p><a class="reference internal" href="../cicd/index.html"><span class="doc">CI/CD Integration</span></a> — ready-to-use CI/CD pipeline examples</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="exploring-tui.html" class="btn btn-neutral float-left" title="Exploring Coverage with TUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="comparing.html" class="btn btn-neutral float-right" title="Comparing Coverage Databases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

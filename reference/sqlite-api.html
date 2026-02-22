@@ -1,0 +1,1211 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SQLite Backend API &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Native C Library API" href="native-c-library.html" />
+    <link rel="prev" title="CLI Command Reference" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli.html">CLI Command Reference</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">SQLite Backend API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-database">Creating a Database</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#querying-coverage">Querying Coverage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-transactions">Using Transactions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sqliteucis-class">SqliteUCIS Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sqlitescope-class">SqliteScope Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sqlitecoverindex-class">SqliteCoverIndex Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sqlitehistorynode-class">SqliteHistoryNode Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#property-system">Property System</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#merge-support">Merge Support</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#merge-operations">Merge Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#convenience-function">Convenience Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#command-line-interface">Command-Line Interface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#merge-behavior">Merge Behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#optimization-strategies">Optimization Strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#typical-performance">Typical Performance</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#database-format">Database Format</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-extension">File Extension</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#database-identification">Database Identification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compatibility">Compatibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#direct-sql-access">Direct SQL Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#migration">Migration</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="native-c-library.html">Native C Library API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="best-practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python-api/index.html">Python API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formats/index.html">File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="report-formats/index.html">Report Formats</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">SQLite Backend API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/sqlite-api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sqlite-backend-api">
+<h1>SQLite Backend API<a class="headerlink" href="#sqlite-backend-api" title="Link to this heading"></a></h1>
+<p>The SQLite backend provides persistent, queryable storage for UCIS coverage data using SQLite3 databases. It offers a complete implementation of the UCIS Python API with efficient lazy loading, property caching, and transaction support.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Persistent Storage</strong> - Coverage data saved directly to SQLite database files (.cdb)</p></li>
+<li><p><strong>Full API Compatibility</strong> - Drop-in replacement for in-memory and libucis implementations</p></li>
+<li><p><strong>Lazy Loading</strong> - Memory-efficient loading of large databases</p></li>
+<li><p><strong>Transaction Support</strong> - Atomic operations with rollback capability</p></li>
+<li><p><strong>Property System</strong> - Complete int/real/string/handle property storage</p></li>
+<li><p><strong>Hierarchical Queries</strong> - Efficient scope and coverage iteration with filtering</p></li>
+<li><p><strong>Test Tracking</strong> - History node management with complete metadata</p></li>
+<li><p><strong>Source Information</strong> - File and line number tracking for all coverage items</p></li>
+<li><p><strong>Type Filtering</strong> - Scope and coverage type mask filtering for targeted queries</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<p>The SQLite backend implements a comprehensive relational database schema that captures all UCIS concepts:</p>
+<ul class="simple">
+<li><p><strong>15 normalized tables</strong> with full referential integrity</p></li>
+<li><p><strong>Optimized indexes</strong> for efficient query performance (v2.1: reduced to essential indexes only)</p></li>
+<li><p><strong>Foreign key constraints</strong> for data consistency</p></li>
+<li><p><strong>WAL mode</strong> for concurrent read access</p></li>
+<li><p><strong>Prepared statements</strong> for efficient repeated operations</p></li>
+<li><p><strong>Schema versioning</strong> for compatibility tracking</p></li>
+</ul>
+</section>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="creating-a-database">
+<h3>Creating a Database<a class="headerlink" href="#creating-a-database" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span> <span class="nn">ucis.cover_data</span> <span class="kn">import</span> <span class="n">CoverData</span>
+<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+
+<span class="c1"># Create or open database</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build design hierarchy</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">dut</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;dut&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Add coverage item</span>
+<span class="n">cover_data</span> <span class="o">=</span> <span class="n">CoverData</span><span class="p">(</span><span class="mh">0x01</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># CVGBIN type</span>
+<span class="n">cover_data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Hit count</span>
+<span class="n">bin1</span> <span class="o">=</span> <span class="n">dut</span><span class="o">.</span><span class="n">createNextCover</span><span class="p">(</span><span class="s2">&quot;bin1&quot;</span><span class="p">,</span> <span class="n">cover_data</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Create test record</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createHistoryNode</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;test1&quot;</span><span class="p">,</span> <span class="s2">&quot;test1.sv&quot;</span><span class="p">,</span> <span class="n">HistoryNodeKind</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">setSeed</span><span class="p">(</span><span class="s2">&quot;12345&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save and close</span>
+<span class="n">ucis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="querying-coverage">
+<h3>Querying Coverage<a class="headerlink" href="#querying-coverage" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reopen database</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Iterate through hierarchy</span>
+<span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">ucis</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scope: </span><span class="si">{</span><span class="n">scope</span><span class="o">.</span><span class="n">getScopeName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">cover</span> <span class="ow">in</span> <span class="n">scope</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">cover</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">cover</span><span class="o">.</span><span class="n">getCoverData</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s2"> hits&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access history</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of tests: </span><span class="si">{</span><span class="n">ucis</span><span class="o">.</span><span class="n">getNumTests</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">ucis</span><span class="o">.</span><span class="n">historyNodes</span><span class="p">(</span><span class="n">HistoryNodeKind</span><span class="o">.</span><span class="n">TEST</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test: </span><span class="si">{</span><span class="n">test</span><span class="o">.</span><span class="n">getLogicalName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">ucis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-transactions">
+<h3>Using Transactions<a class="headerlink" href="#using-transactions" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Begin transaction for bulk operations</span>
+<span class="n">ucis</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Create multiple scopes efficiently</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="n">scope</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;module_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                               <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">ucis</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">ucis</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+    <span class="k">raise</span>
+
+<span class="n">ucis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="sqliteucis-class">
+<h3>SqliteUCIS Class<a class="headerlink" href="#sqliteucis-class" title="Link to this heading"></a></h3>
+<p>Main database class providing UCIS root functionality.</p>
+<section id="constructor">
+<h4>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h4>
+<dl class="py class">
+<dt class="sig sig-object py" id="SqliteUCIS">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">SqliteUCIS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#SqliteUCIS" title="Link to this definition"></a></dt>
+<dd><p>Create or open a SQLite UCIS database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em> or </em><em>None</em>) – Path to database file. If None, creates in-memory database.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="database-management">
+<h4>Database Management<a class="headerlink" href="#database-management" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#close" title="Link to this definition"></a></dt>
+<dd><p>Close the database connection. Commits any pending changes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#write" title="Link to this definition"></a></dt>
+<dd><p>Write database to a file (for in-memory databases).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – Target file path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="isModified">
+<span class="sig-name descname"><span class="pre">isModified</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#isModified" title="Link to this definition"></a></dt>
+<dd><p>Check if database has been modified since last write.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if modified</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="metadata-operations">
+<h4>Metadata Operations<a class="headerlink" href="#metadata-operations" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getAPIVersion">
+<span class="sig-name descname"><span class="pre">getAPIVersion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getAPIVersion" title="Link to this definition"></a></dt>
+<dd><p>Get UCIS API version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Version string (e.g., “1.0”)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getWrittenBy">
+<span class="sig-name descname"><span class="pre">getWrittenBy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getWrittenBy" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setWrittenBy">
+<span class="sig-name descname"><span class="pre">setWrittenBy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setWrittenBy" title="Link to this definition"></a></dt>
+<dd><p>Get or set the tool/user that wrote the database.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getWrittenTime">
+<span class="sig-name descname"><span class="pre">getWrittenTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getWrittenTime" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setWrittenTime">
+<span class="sig-name descname"><span class="pre">setWrittenTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setWrittenTime" title="Link to this definition"></a></dt>
+<dd><p>Get or set the timestamp when database was written.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getPathSeparator">
+<span class="sig-name descname"><span class="pre">getPathSeparator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getPathSeparator" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setPathSeparator">
+<span class="sig-name descname"><span class="pre">setPathSeparator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setPathSeparator" title="Link to this definition"></a></dt>
+<dd><p>Get or set the path separator character (default: ‘/’).</p>
+</dd></dl>
+
+</section>
+<section id="test-management">
+<h4>Test Management<a class="headerlink" href="#test-management" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getNumTests">
+<span class="sig-name descname"><span class="pre">getNumTests</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getNumTests" title="Link to this definition"></a></dt>
+<dd><p>Get the total number of test history nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Number of tests</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="createHistoryNode">
+<span class="sig-name descname"><span class="pre">createHistoryNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logicalname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">physicalname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind" title="ucis.history_node_kind.HistoryNodeKind"><span class="pre">HistoryNodeKind</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.history_node.HistoryNode" title="ucis.history_node.HistoryNode"><span class="pre">HistoryNode</span></a></span></span><a class="headerlink" href="#createHistoryNode" title="Link to this definition"></a></dt>
+<dd><p>Create a new test history node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent</strong> – Parent history node or None for root</p></li>
+<li><p><strong>logicalname</strong> – Logical test name</p></li>
+<li><p><strong>physicalname</strong> – Physical file path (optional)</p></li>
+<li><p><strong>kind</strong> – History node kind (TEST, MERGE, etc.)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New history node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="historyNodes">
+<span class="sig-name descname"><span class="pre">historyNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind" title="ucis.history_node_kind.HistoryNodeKind"><span class="pre">HistoryNodeKind</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="python-api/oo-api.html#ucis.history_node.HistoryNode" title="ucis.history_node.HistoryNode"><span class="pre">HistoryNode</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#historyNodes" title="Link to this definition"></a></dt>
+<dd><p>Iterate over history nodes, optionally filtered by kind.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kind</strong> – Filter by kind (None for all)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator of history nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="file-management">
+<h4>File Management<a class="headerlink" href="#file-management" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="createFileHandle">
+<span class="sig-name descname"><span class="pre">createFileHandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">workdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FileHandle</span></span></span><a class="headerlink" href="#createFileHandle" title="Link to this definition"></a></dt>
+<dd><p>Create or retrieve a file handle for source file tracking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – Source file path</p></li>
+<li><p><strong>workdir</strong> – Working directory (optional)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>File handle</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="transaction-control">
+<h4>Transaction Control<a class="headerlink" href="#transaction-control" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="begin_transaction">
+<span class="sig-name descname"><span class="pre">begin_transaction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#begin_transaction" title="Link to this definition"></a></dt>
+<dd><p>Begin a database transaction for bulk operations.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#commit" title="Link to this definition"></a></dt>
+<dd><p>Commit the current transaction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="rollback">
+<span class="sig-name descname"><span class="pre">rollback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rollback" title="Link to this definition"></a></dt>
+<dd><p>Rollback the current transaction.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="sqlitescope-class">
+<h3>SqliteScope Class<a class="headerlink" href="#sqlitescope-class" title="Link to this heading"></a></h3>
+<p>Hierarchical coverage container class.</p>
+<section id="scope-creation">
+<h4>Scope Creation<a class="headerlink" href="#scope-creation" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="createScope">
+<span class="sig-name descname"><span class="pre">createScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcinfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.source_t.SourceT" title="ucis.source_t.SourceT"><span class="pre">SourceT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#createScope" title="Link to this definition"></a></dt>
+<dd><p>Create a child scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Scope name</p></li>
+<li><p><strong>srcinfo</strong> – Source information (SourceInfo or None)</p></li>
+<li><p><strong>weight</strong> – Coverage weight</p></li>
+<li><p><strong>source</strong> – Source type</p></li>
+<li><p><strong>type</strong> – Scope type (INSTANCE, BRANCH, COVERGROUP, etc.)</p></li>
+<li><p><strong>flags</strong> – Scope flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New scope</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="createInstance">
+<span class="sig-name descname"><span class="pre">createInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileinfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.source_t.SourceT" title="ucis.source_t.SourceT"><span class="pre">SourceT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">du_scope</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#createInstance" title="Link to this definition"></a></dt>
+<dd><p>Create an instance scope (convenience method).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Instance name</p></li>
+<li><p><strong>fileinfo</strong> – File information</p></li>
+<li><p><strong>weight</strong> – Coverage weight</p></li>
+<li><p><strong>source</strong> – Source type</p></li>
+<li><p><strong>type</strong> – Scope type</p></li>
+<li><p><strong>du_scope</strong> – Design unit scope</p></li>
+<li><p><strong>flags</strong> – Instance flags</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New instance scope</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="createToggle">
+<span class="sig-name descname"><span class="pre">createToggle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#createToggle" title="Link to this definition"></a></dt>
+<dd><p>Create a toggle coverage scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Toggle name</p></li>
+<li><p><strong>canonical_name</strong> – Canonical signal name</p></li>
+<li><p><strong>flags</strong> – Toggle flags</p></li>
+<li><p><strong>toggle_metric</strong> – Metric type</p></li>
+<li><p><strong>toggle_type</strong> – Toggle type</p></li>
+<li><p><strong>toggle_dir</strong> – Direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New toggle scope</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="createCovergroup">
+<span class="sig-name descname"><span class="pre">createCovergroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcinfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.source_t.SourceT" title="ucis.source_t.SourceT"><span class="pre">SourceT</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#createCovergroup" title="Link to this definition"></a></dt>
+<dd><p>Create a covergroup scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Covergroup name</p></li>
+<li><p><strong>srcinfo</strong> – Source information</p></li>
+<li><p><strong>weight</strong> – Coverage weight</p></li>
+<li><p><strong>source</strong> – Source type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New covergroup scope</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="coverage-item-creation">
+<h4>Coverage Item Creation<a class="headerlink" href="#coverage-item-creation" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="createNextCover">
+<span class="sig-name descname"><span class="pre">createNextCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.cover_data.CoverData" title="ucis.cover_data.CoverData"><span class="pre">CoverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceinfo</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CoverIndex</span></span></span><a class="headerlink" href="#createNextCover" title="Link to this definition"></a></dt>
+<dd><p>Create the next coverage item in this scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Coverage item name</p></li>
+<li><p><strong>data</strong> – Coverage data (type and count)</p></li>
+<li><p><strong>sourceinfo</strong> – Source information</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New coverage item</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="scope-properties">
+<h4>Scope Properties<a class="headerlink" href="#scope-properties" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getScopeName">
+<span class="sig-name descname"><span class="pre">getScopeName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getScopeName" title="Link to this definition"></a></dt>
+<dd><p>Get the scope name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getScopeType">
+<span class="sig-name descname"><span class="pre">getScopeType</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span></span><a class="headerlink" href="#getScopeType" title="Link to this definition"></a></dt>
+<dd><p>Get the scope type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getFlags">
+<span class="sig-name descname"><span class="pre">getFlags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getFlags" title="Link to this definition"></a></dt>
+<dd><p>Get scope flags.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getWeight">
+<span class="sig-name descname"><span class="pre">getWeight</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getWeight" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setWeight">
+<span class="sig-name descname"><span class="pre">setWeight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setWeight" title="Link to this definition"></a></dt>
+<dd><p>Get or set coverage weight.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getGoal">
+<span class="sig-name descname"><span class="pre">getGoal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getGoal" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setGoal">
+<span class="sig-name descname"><span class="pre">setGoal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setGoal" title="Link to this definition"></a></dt>
+<dd><p>Get or set coverage goal percentage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getSourceInfo">
+<span class="sig-name descname"><span class="pre">getSourceInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.source_info.SourceInfo" title="ucis.source_info.SourceInfo"><span class="pre">SourceInfo</span></a></span></span><a class="headerlink" href="#getSourceInfo" title="Link to this definition"></a></dt>
+<dd><p>Get source information (file, line, token).</p>
+</dd></dl>
+
+</section>
+<section id="iteration">
+<h4>Iteration<a class="headerlink" href="#iteration" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="scopes">
+<span class="sig-name descname"><span class="pre">scopes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="python-api/oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#scopes" title="Link to this definition"></a></dt>
+<dd><p>Iterate over child scopes, optionally filtered by type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mask</strong> – Scope type mask (bitwise OR of types, -1 for all)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator of child scopes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="coverItems">
+<span class="sig-name descname"><span class="pre">coverItems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">CoverIndex</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#coverItems" title="Link to this definition"></a></dt>
+<dd><p>Iterate over coverage items, optionally filtered by type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mask</strong> – Coverage type mask (-1 for all)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Iterator of coverage items</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="sqlitecoverindex-class">
+<h3>SqliteCoverIndex Class<a class="headerlink" href="#sqlitecoverindex-class" title="Link to this heading"></a></h3>
+<p>Coverage item with hit count and metadata.</p>
+<section id="coverage-data-access">
+<h4>Coverage Data Access<a class="headerlink" href="#coverage-data-access" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getName">
+<span class="sig-name descname"><span class="pre">getName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getName" title="Link to this definition"></a></dt>
+<dd><p>Get coverage item name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getCoverData">
+<span class="sig-name descname"><span class="pre">getCoverData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.cover_data.CoverData" title="ucis.cover_data.CoverData"><span class="pre">CoverData</span></a></span></span><a class="headerlink" href="#getCoverData" title="Link to this definition"></a></dt>
+<dd><p>Get coverage data structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>CoverData with type and count</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getCount">
+<span class="sig-name descname"><span class="pre">getCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getCount" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setCount">
+<span class="sig-name descname"><span class="pre">setCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setCount" title="Link to this definition"></a></dt>
+<dd><p>Get or set hit count.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="incrementCover">
+<span class="sig-name descname"><span class="pre">incrementCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#incrementCover" title="Link to this definition"></a></dt>
+<dd><p>Increment hit count by specified amount.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>amount</strong> – Amount to increment (default: 1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="coverage-source-information">
+<h4>Coverage Source Information<a class="headerlink" href="#coverage-source-information" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">getSourceInfo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.source_info.SourceInfo" title="ucis.source_info.SourceInfo"><span class="pre">SourceInfo</span></a></span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>Get source file location for this coverage item.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="sqlitehistorynode-class">
+<h3>SqliteHistoryNode Class<a class="headerlink" href="#sqlitehistorynode-class" title="Link to this heading"></a></h3>
+<p>Test record with execution metadata.</p>
+<section id="identification">
+<h4>Identification<a class="headerlink" href="#identification" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getLogicalName">
+<span class="sig-name descname"><span class="pre">getLogicalName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getLogicalName" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setLogicalName">
+<span class="sig-name descname"><span class="pre">setLogicalName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setLogicalName" title="Link to this definition"></a></dt>
+<dd><p>Get or set logical test name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getPhysicalName">
+<span class="sig-name descname"><span class="pre">getPhysicalName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getPhysicalName" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setPhysicalName">
+<span class="sig-name descname"><span class="pre">setPhysicalName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setPhysicalName" title="Link to this definition"></a></dt>
+<dd><p>Get or set physical file path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getKind">
+<span class="sig-name descname"><span class="pre">getKind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind" title="ucis.history_node_kind.HistoryNodeKind"><span class="pre">HistoryNodeKind</span></a></span></span><a class="headerlink" href="#getKind" title="Link to this definition"></a></dt>
+<dd><p>Get history node kind (TEST, MERGE, TESTPLAN).</p>
+</dd></dl>
+
+</section>
+<section id="test-status">
+<h4>Test Status<a class="headerlink" href="#test-status" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getTestStatus">
+<span class="sig-name descname"><span class="pre">getTestStatus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="python-api/oo-api.html#ucis.test_status_t.TestStatusT" title="ucis.test_status_t.TestStatusT"><span class="pre">TestStatusT</span></a></span></span><a class="headerlink" href="#getTestStatus" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setTestStatus">
+<span class="sig-name descname"><span class="pre">setTestStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="python-api/oo-api.html#ucis.test_status_t.TestStatusT" title="ucis.test_status_t.TestStatusT"><span class="pre">TestStatusT</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setTestStatus" title="Link to this definition"></a></dt>
+<dd><p>Get or set test execution status (OK, WARNING, FATAL).</p>
+</dd></dl>
+
+</section>
+<section id="timing-information">
+<h4>Timing Information<a class="headerlink" href="#timing-information" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getSimTime">
+<span class="sig-name descname"><span class="pre">getSimTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#getSimTime" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setSimTime">
+<span class="sig-name descname"><span class="pre">setSimTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setSimTime" title="Link to this definition"></a></dt>
+<dd><p>Get or set simulation time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getCpuTime">
+<span class="sig-name descname"><span class="pre">getCpuTime</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#getCpuTime" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setCpuTime">
+<span class="sig-name descname"><span class="pre">setCpuTime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setCpuTime" title="Link to this definition"></a></dt>
+<dd><p>Get or set CPU execution time.</p>
+</dd></dl>
+
+</section>
+<section id="test-metadata">
+<h4>Test Metadata<a class="headerlink" href="#test-metadata" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="getSeed">
+<span class="sig-name descname"><span class="pre">getSeed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getSeed" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setSeed">
+<span class="sig-name descname"><span class="pre">setSeed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setSeed" title="Link to this definition"></a></dt>
+<dd><p>Get or set random seed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getCmd">
+<span class="sig-name descname"><span class="pre">getCmd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getCmd" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setCmd">
+<span class="sig-name descname"><span class="pre">setCmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setCmd" title="Link to this definition"></a></dt>
+<dd><p>Get or set command line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getDate">
+<span class="sig-name descname"><span class="pre">getDate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getDate" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setDate">
+<span class="sig-name descname"><span class="pre">setDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setDate" title="Link to this definition"></a></dt>
+<dd><p>Get or set execution date (Unix timestamp).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getUserName">
+<span class="sig-name descname"><span class="pre">getUserName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getUserName" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setUserName">
+<span class="sig-name descname"><span class="pre">setUserName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setUserName" title="Link to this definition"></a></dt>
+<dd><p>Get or set user name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getCost">
+<span class="sig-name descname"><span class="pre">getCost</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getCost" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="setCost">
+<span class="sig-name descname"><span class="pre">setCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setCost" title="Link to this definition"></a></dt>
+<dd><p>Get or set test cost metric.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="property-system">
+<h3>Property System<a class="headerlink" href="#property-system" title="Link to this heading"></a></h3>
+<p>All SQLite objects support the UCIS property system for extensible metadata.</p>
+<section id="integer-properties">
+<h4>Integer Properties<a class="headerlink" href="#integer-properties" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="setIntProperty">
+<span class="sig-name descname"><span class="pre">setIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setIntProperty" title="Link to this definition"></a></dt>
+<dd><p>Set an integer property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getIntProperty">
+<span class="sig-name descname"><span class="pre">getIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#getIntProperty" title="Link to this definition"></a></dt>
+<dd><p>Get an integer property value.</p>
+</dd></dl>
+
+</section>
+<section id="string-properties">
+<h4>String Properties<a class="headerlink" href="#string-properties" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="setStringProperty">
+<span class="sig-name descname"><span class="pre">setStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setStringProperty" title="Link to this definition"></a></dt>
+<dd><p>Set a string property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getStringProperty">
+<span class="sig-name descname"><span class="pre">getStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#getStringProperty" title="Link to this definition"></a></dt>
+<dd><p>Get a string property value.</p>
+</dd></dl>
+
+</section>
+<section id="real-properties">
+<h4>Real Properties<a class="headerlink" href="#real-properties" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="setRealProperty">
+<span class="sig-name descname"><span class="pre">setRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setRealProperty" title="Link to this definition"></a></dt>
+<dd><p>Set a real (floating point) property.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getRealProperty">
+<span class="sig-name descname"><span class="pre">getRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#getRealProperty" title="Link to this definition"></a></dt>
+<dd><p>Get a real property value.</p>
+</dd></dl>
+
+</section>
+<section id="handle-properties">
+<h4>Handle Properties<a class="headerlink" href="#handle-properties" title="Link to this heading"></a></h4>
+<dl class="py method">
+<dt class="sig sig-object py" id="setHandleProperty">
+<span class="sig-name descname"><span class="pre">setHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#setHandleProperty" title="Link to this definition"></a></dt>
+<dd><p>Set a handle property (reference to another object).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="getHandleProperty">
+<span class="sig-name descname"><span class="pre">getHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#getHandleProperty" title="Link to this definition"></a></dt>
+<dd><p>Get a handle property value.</p>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="merge-support">
+<h2>Merge Support<a class="headerlink" href="#merge-support" title="Link to this heading"></a></h2>
+<p>The SQLite backend provides efficient merge operations for combining coverage data from multiple test runs.</p>
+<section id="merge-operations">
+<h3>Merge Operations<a class="headerlink" href="#merge-operations" title="Link to this heading"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_ucis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MergeStats</span></span></span><a class="headerlink" href="#merge" title="Link to this definition"></a></dt>
+<dd><p>Merge coverage data from another UCIS database into this database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source_ucis</strong> (<a class="reference internal" href="sqlite_api.html#SqliteUCIS" title="SqliteUCIS"><em>SqliteUCIS</em></a>) – Source database to merge from</p></li>
+<li><p><strong>create_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Whether to create merge history node (default: True)</p></li>
+<li><p><strong>squash_history</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – Collapse per-test history into summary node (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Statistics about the merge operation</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MergeStats</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Basic Merge:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;merged.cdb&quot;</span><span class="p">)</span>
+<span class="n">source</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Merge with full history tracking</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Merged </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">tests_merged</span><span class="si">}</span><span class="s2"> tests&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Added </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">coveritems_added</span><span class="si">}</span><span class="s2"> new bins&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Updated </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">coveritems_matched</span><span class="si">}</span><span class="s2"> existing bins&quot;</span><span class="p">)</span>
+
+<span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Squashed History Merge:</strong></p>
+<p>For large-scale merges where per-test history is not needed, use <code class="docutils literal notranslate"><span class="pre">squash_history=True</span></code> to reduce storage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;merged.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Merge multiple databases with squashed history</span>
+<span class="k">for</span> <span class="n">test_db</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test2.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test3.cdb&quot;</span><span class="p">]:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="n">test_db</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">squash_history</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">source</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="c1"># Result: Single summary history node instead of N test nodes</span>
+<span class="c1"># Coverage data is identical, but history overhead is eliminated</span>
+<span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="convenience-function">
+<h3>Convenience Function<a class="headerlink" href="#convenience-function" title="Link to this heading"></a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="merge_databases">
+<span class="sig-name descname"><span class="pre">merge_databases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squash_history</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">MergeStats</span></span></span><a class="headerlink" href="#merge_databases" title="Link to this definition"></a></dt>
+<dd><p>Merge multiple databases in one operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_path</strong> – Path to target (base) database</p></li>
+<li><p><strong>source_paths</strong> – List of source database paths to merge</p></li>
+<li><p><strong>output_path</strong> – Optional output path (None = modify target in-place)</p></li>
+<li><p><strong>squash_history</strong> – Collapse history into summary (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cumulative merge statistics</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_merge</span> <span class="kn">import</span> <span class="n">merge_databases</span>
+
+<span class="n">stats</span> <span class="o">=</span> <span class="n">merge_databases</span><span class="p">(</span>
+    <span class="s2">&quot;base.cdb&quot;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s2">&quot;test1.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test2.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;test3.cdb&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;final.cdb&quot;</span><span class="p">,</span>
+    <span class="n">squash_history</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total tests merged: </span><span class="si">{</span><span class="n">stats</span><span class="o">.</span><span class="n">tests_merged</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="command-line-interface">
+<h3>Command-Line Interface<a class="headerlink" href="#command-line-interface" title="Link to this heading"></a></h3>
+<p>Merge databases using the CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard merge (preserves all test history)</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>-if<span class="w"> </span>sqlite<span class="w"> </span>-of<span class="w"> </span>sqlite<span class="w"> </span>test*.cdb<span class="w"> </span>-o<span class="w"> </span>merged.cdb
+
+<span class="c1"># Optimized merge (squashed history, reduced storage)</span>
+pyucis<span class="w"> </span>merge<span class="w"> </span>--squash-history<span class="w"> </span>-if<span class="w"> </span>sqlite<span class="w"> </span>-of<span class="w"> </span>sqlite<span class="w"> </span>test*.cdb<span class="w"> </span>-o<span class="w"> </span>merged.cdb
+</pre></div>
+</div>
+</section>
+<section id="merge-behavior">
+<h3>Merge Behavior<a class="headerlink" href="#merge-behavior" title="Link to this heading"></a></h3>
+<p><strong>Coverage Accumulation:</strong></p>
+<ul class="simple">
+<li><p>Bin counts are summed across all source databases</p></li>
+<li><p>Missing bins are created with source count</p></li>
+<li><p>Existing bins are updated in-place (no row duplication)</p></li>
+</ul>
+<p><strong>History Tracking:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">squash_history=False</span></code>: All test nodes preserved, full traceability</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">squash_history=True</span></code>: Single summary node with test count only</p></li>
+</ul>
+<p><strong>Storage Impact:</strong></p>
+<ul class="simple">
+<li><p>Normal merge: ~N KB per test (history metadata)</p></li>
+<li><p>Squashed merge: ~1 KB total (single summary node)</p></li>
+<li><p>Coverage data size is identical in both modes</p></li>
+</ul>
+</section>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h2>
+<section id="optimization-strategies">
+<h3>Optimization Strategies<a class="headerlink" href="#optimization-strategies" title="Link to this heading"></a></h3>
+<p>The SQLite backend is optimized for both read and write performance:</p>
+<dl class="simple">
+<dt><strong>Lazy Loading</strong></dt><dd><p>Objects are loaded from database only when accessed, minimizing memory usage.</p>
+</dd>
+<dt><strong>Property Caching</strong></dt><dd><p>Frequently-accessed properties are cached in memory to reduce database queries.</p>
+</dd>
+<dt><strong>Indexed Queries</strong></dt><dd><p>Strategic indexes on common query patterns (parent_id, type, name combinations).</p>
+</dd>
+<dt><strong>WAL Mode</strong></dt><dd><p>Write-Ahead Logging enables concurrent read access during writes.</p>
+</dd>
+<dt><strong>Transaction Support</strong></dt><dd><p>Bulk operations can be wrapped in transactions for significant speedup.</p>
+</dd>
+<dt><strong>Prepared Statements</strong></dt><dd><p>Common queries use prepared statements for reduced parsing overhead.</p>
+</dd>
+</dl>
+</section>
+<section id="typical-performance">
+<h3>Typical Performance<a class="headerlink" href="#typical-performance" title="Link to this heading"></a></h3>
+<p>Database sizes:</p>
+<ul class="simple">
+<li><p>Small (10 scopes, 50 bins, 5 tests): ~100 KB</p></li>
+<li><p>Medium (100 scopes, 500 bins, 20 tests): ~500 KB</p></li>
+<li><p>Large (1000 scopes, 5000 bins, 100 tests): ~5 MB</p></li>
+<li><p>Very Large (10k scopes, 50k bins, 500 tests): ~50 MB</p></li>
+</ul>
+<p>Operation speeds (on modern hardware):</p>
+<ul class="simple">
+<li><p>Scope creation: ~10,000 scopes/second</p></li>
+<li><p>Coverage item creation: ~20,000 items/second</p></li>
+<li><p>Iteration: ~50,000 items/second</p></li>
+<li><p>Property access (cached): ~1,000,000 reads/second</p></li>
+<li><p>Property access (uncached): ~100,000 reads/second</p></li>
+</ul>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Use transactions for bulk operations</strong></p>
+<p>Wrap large batches of creates/updates in begin_transaction()/commit()</p>
+</li>
+<li><p><strong>Close databases when done</strong></p>
+<p>Always call close() to ensure all changes are flushed</p>
+</li>
+<li><p><strong>Filter iterations when possible</strong></p>
+<p>Use type masks to reduce iteration overhead</p>
+</li>
+<li><p><strong>Cache frequently-accessed objects</strong></p>
+<p>Store scope/cover references rather than re-querying</p>
+</li>
+<li><p><strong>Use in-memory for temporary work</strong></p>
+<p>Create with db_path=None, write to file when complete</p>
+</li>
+</ol>
+</section>
+</section>
+<section id="database-format">
+<h2>Database Format<a class="headerlink" href="#database-format" title="Link to this heading"></a></h2>
+<section id="file-extension">
+<h3>File Extension<a class="headerlink" href="#file-extension" title="Link to this heading"></a></h3>
+<p>SQLite databases use the <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> (Coverage DataBase) extension by convention, though any extension works.</p>
+</section>
+<section id="database-identification">
+<h3>Database Identification<a class="headerlink" href="#database-identification" title="Link to this heading"></a></h3>
+<p>PyUCIS databases include identification markers to distinguish them from arbitrary SQLite files:</p>
+<ul class="simple">
+<li><p><strong>SQLite Header:</strong> Standard SQLite file format (starts with “SQLite format 3”)</p></li>
+<li><p><strong>DATABASE_TYPE Marker:</strong> Metadata key set to “PYUCIS” for validation</p></li>
+<li><p><strong>Required Tables:</strong> scopes, coveritems, history_nodes tables must exist</p></li>
+</ul>
+<p><strong>Validation Functions:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">schema_manager</span>
+
+<span class="c1"># Check if file is a valid SQLite database</span>
+<span class="k">if</span> <span class="n">schema_manager</span><span class="o">.</span><span class="n">is_valid_sqlite_file</span><span class="p">(</span><span class="s2">&quot;myfile.db&quot;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valid SQLite file&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check if it&#39;s a PyUCIS coverage database</span>
+<span class="n">is_valid</span><span class="p">,</span> <span class="n">error_msg</span> <span class="o">=</span> <span class="n">schema_manager</span><span class="o">.</span><span class="n">is_pyucis_database</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">is_valid</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Valid PyUCIS database&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid: </span><span class="si">{</span><span class="n">error_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Automatic Validation:</strong></p>
+<p>The SQLite backend automatically validates databases when opening:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automatically validates file format and PyUCIS markers</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Raises ValueError if:</span>
+<span class="c1"># - Not a valid SQLite file</span>
+<span class="c1"># - Missing DATABASE_TYPE marker</span>
+<span class="c1"># - Missing required tables</span>
+<span class="c1"># - Schema version mismatch</span>
+</pre></div>
+</div>
+</section>
+<section id="compatibility">
+<h3>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>SQLite version: 3.31.0 or later recommended</p></li>
+<li><p><strong>Schema version: 2.1</strong> (stored in db_metadata table)</p></li>
+<li><p><strong>Database format version: 1.0</strong> (PyUCIS identification)</p></li>
+<li><p>Python version: 3.7+</p></li>
+<li><p>No external dependencies beyond Python’s built-in sqlite3 module</p></li>
+</ul>
+<p><strong>Schema Version Checking:</strong></p>
+<p>The SQLite backend automatically verifies schema version compatibility when opening databases. If a database has an incompatible schema version, an exception is raised:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;old_database.cdb&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="c1"># &quot;Database schema version mismatch: found 2.0, expected 2.1.</span>
+    <span class="c1">#  Please recreate the database with the current schema version.&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="direct-sql-access">
+<h3>Direct SQL Access<a class="headerlink" href="#direct-sql-access" title="Link to this heading"></a></h3>
+<p>SQLite databases can be queried directly using standard SQLite tools:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open with sqlite3 command-line tool</span>
+sqlite3<span class="w"> </span>coverage.cdb
+
+<span class="c1"># Run queries</span>
+SELECT<span class="w"> </span>scope_name,<span class="w"> </span>scope_type<span class="w"> </span>FROM<span class="w"> </span>scopes<span class="w"> </span>WHERE<span class="w"> </span>parent_id<span class="w"> </span>IS<span class="w"> </span>NULL<span class="p">;</span>
+
+<span class="c1"># Export to CSV</span>
+.mode<span class="w"> </span>csv
+.output<span class="w"> </span>coveritems.csv
+SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </span>coveritems<span class="p">;</span>
+</pre></div>
+</div>
+<p>For detailed schema information, see <a class="reference internal" href="sqlite_schema_reference.html"><span class="doc">SQLite Schema Reference</span></a>.</p>
+</section>
+<section id="migration">
+<h3>Migration<a class="headerlink" href="#migration" title="Link to this heading"></a></h3>
+<p>Converting from other formats:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From XML</span>
+<span class="kn">from</span> <span class="nn">ucis.xml</span> <span class="kn">import</span> <span class="n">XMLUCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+
+<span class="n">xml_db</span> <span class="o">=</span> <span class="n">XMLUCIS</span><span class="p">(</span><span class="s2">&quot;old.xml&quot;</span><span class="p">)</span>
+<span class="n">sqlite_db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;new.cdb&quot;</span><span class="p">)</span>
+<span class="c1"># Copy logic here</span>
+
+<span class="c1"># From YAML</span>
+<span class="kn">from</span> <span class="nn">ucis.yaml</span> <span class="kn">import</span> <span class="n">YAMLUCIS</span>
+<span class="n">yaml_db</span> <span class="o">=</span> <span class="n">YAMLUCIS</span><span class="p">(</span><span class="s2">&quot;old.yaml&quot;</span><span class="p">)</span>
+<span class="c1"># Copy to sqlite_db</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
+<section id="complete-example">
+<h3>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span> <span class="nn">ucis.cover_data</span> <span class="kn">import</span> <span class="n">CoverData</span>
+<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+<span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
+
+<span class="c1"># Create database</span>
+<span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;example.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build hierarchy</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                      <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">dut</span> <span class="o">=</span> <span class="n">top</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;dut&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                     <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Create covergroup</span>
+<span class="n">cg</span> <span class="o">=</span> <span class="n">dut</span><span class="o">.</span><span class="n">createCovergroup</span><span class="p">(</span><span class="s2">&quot;addr_cg&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">)</span>
+<span class="n">cp</span> <span class="o">=</span> <span class="n">cg</span><span class="o">.</span><span class="n">createScope</span><span class="p">(</span><span class="s2">&quot;addr_cp&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">SourceT</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span>
+                   <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Add bins</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s2">&quot;low&quot;</span><span class="p">,</span> <span class="s2">&quot;mid&quot;</span><span class="p">,</span> <span class="s2">&quot;high&quot;</span><span class="p">]):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">CoverData</span><span class="p">(</span><span class="mh">0x01</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># CVGBIN</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">cp</span><span class="o">.</span><span class="n">createNextCover</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Create test</span>
+<span class="n">test</span> <span class="o">=</span> <span class="n">ucis</span><span class="o">.</span><span class="n">createHistoryNode</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;test_basic&quot;</span><span class="p">,</span>
+                             <span class="s2">&quot;test_basic.sv&quot;</span><span class="p">,</span>
+                             <span class="n">HistoryNodeKind</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">setTestStatus</span><span class="p">(</span><span class="n">TestStatusT</span><span class="o">.</span><span class="n">OK</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">setSeed</span><span class="p">(</span><span class="s2">&quot;424242&quot;</span><span class="p">)</span>
+<span class="n">test</span><span class="o">.</span><span class="n">setSimTime</span><span class="p">(</span><span class="mf">1000.0</span><span class="p">)</span>
+
+<span class="c1"># Query results</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tests: </span><span class="si">{</span><span class="n">ucis</span><span class="o">.</span><span class="n">getNumTests</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">scope</span> <span class="ow">in</span> <span class="n">ucis</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">INSTANCE</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Instance: </span><span class="si">{</span><span class="n">scope</span><span class="o">.</span><span class="n">getScopeName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">ucis</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="see-also">
+<h3>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="sqlite_schema_reference.html"><span class="doc">SQLite Schema Reference</span></a> - Detailed SQL schema documentation</p></li>
+<li><p><a class="reference internal" href="ucis_oo_api.html"><span class="doc">UCIS Object-Oriented API</span></a> - Object-oriented API reference</p></li>
+<li><p><a class="reference internal" href="recording_coverage_best_practices.html"><span class="doc">Best Practices for Recording Coverage</span></a> - General best practices</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="CLI Command Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="native-c-library.html" class="btn btn-neutral float-right" title="Native C Library API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

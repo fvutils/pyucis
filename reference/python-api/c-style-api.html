@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UCIS C-Style API &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="File Formats" href="../formats/index.html" />
+    <link rel="prev" title="UCIS Object-Oriented API" href="oo-api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../cli.html">CLI Command Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sqlite-api.html">SQLite Backend API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../native-c-library.html">Native C Library API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../best-practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Python API</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="oo-api.html">UCIS Object-Oriented API</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">UCIS C-Style API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_GetIntProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetIntProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_SetIntProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetIntProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_GetRealProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetRealProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_SetRealProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetRealProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_GetStringProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetStringProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_SetStringProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetStringProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_GetHandleProperty"><code class="docutils literal notranslate"><span class="pre">ucis_GetHandleProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_SetHandleProperty"><code class="docutils literal notranslate"><span class="pre">ucis_SetHandleProperty()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateScope"><code class="docutils literal notranslate"><span class="pre">ucis_CreateScope()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateInstance"><code class="docutils literal notranslate"><span class="pre">ucis_CreateInstance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateToggle"><code class="docutils literal notranslate"><span class="pre">ucis_CreateToggle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateNextCover"><code class="docutils literal notranslate"><span class="pre">ucis_CreateNextCover()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_RemoveScope"><code class="docutils literal notranslate"><span class="pre">ucis_RemoveScope()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateHistoryNode"><code class="docutils literal notranslate"><span class="pre">ucis_CreateHistoryNode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_CreateFileHandle"><code class="docutils literal notranslate"><span class="pre">ucis_CreateFileHandle()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_SetTestData"><code class="docutils literal notranslate"><span class="pre">ucis_SetTestData()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_Write"><code class="docutils literal notranslate"><span class="pre">ucis_Write()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_Close"><code class="docutils literal notranslate"><span class="pre">ucis_Close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.__init__.ucis_Time"><code class="docutils literal notranslate"><span class="pre">ucis_Time()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../formats/index.html">File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../report-formats/index.html">Report Formats</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Reference</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Python API</a></li>
+      <li class="breadcrumb-item active">UCIS C-Style API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/reference/python-api/c-style-api.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ucis-c-style-api">
+<h1>UCIS C-Style API<a class="headerlink" href="#ucis-c-style-api" title="Link to this heading"></a></h1>
+<p>Placeholder for documenting the C-Style UCIS API implemented by PyUCIS</p>
+<dl class="py function" id="module-ucis.__init__">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_GetIntProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_GetIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_GetIntProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_SetIntProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_SetIntProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">IntProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_SetIntProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_GetRealProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_GetRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RealProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_GetRealProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_SetRealProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_SetRealProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">RealProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_SetRealProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_GetStringProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_GetStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_GetStringProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_SetStringProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_SetStringProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">StrProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_SetStringProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_GetHandleProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_GetHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_GetHandleProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_SetHandleProperty">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_SetHandleProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../ucis_oo_api.html#ucis.Obj" title="ucis.obj.Obj"><span class="pre">Obj</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">coverindex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">HandleProperty</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_SetHandleProperty" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateScope">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceinfo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.source_info.SourceInfo" title="ucis.source_info.SourceInfo"><span class="pre">SourceInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.source_t.SourceT" title="ucis.source_t.SourceT"><span class="pre">SourceT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_CreateScope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateInstance">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileinfo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.source_info.SourceInfo" title="ucis.source_info.SourceInfo"><span class="pre">SourceInfo</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.source_t.SourceT" title="ucis.source_t.SourceT"><span class="pre">SourceT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope_type_t.ScopeTypeT" title="ucis.scope_type_t.ScopeTypeT"><span class="pre">ScopeTypeT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">du_scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.flags_t.FlagsT" title="ucis.flags_t.FlagsT"><span class="pre">FlagsT</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_CreateInstance" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateToggle">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateToggle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">canonical_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.flags_t.FlagsT" title="ucis.flags_t.FlagsT"><span class="pre">FlagsT</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_metric</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ToggleMetricT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ToggleTypeT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">toggle_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ToggleDirT</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_CreateToggle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateNextCover">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateNextCover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.cover_data.CoverData" title="ucis.cover_data.CoverData"><span class="pre">CoverData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourceinfo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.source_info.SourceInfo" title="ucis.source_info.SourceInfo"><span class="pre">SourceInfo</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_CreateNextCover" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_RemoveScope">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_RemoveScope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_RemoveScope" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateHistoryNode">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateHistoryNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.history_node.HistoryNode" title="ucis.history_node.HistoryNode"><span class="pre">HistoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">logicalname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physicalname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.history_node_kind.HistoryNodeKind" title="ucis.history_node_kind.HistoryNodeKind"><span class="pre">HistoryNodeKind</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_CreateHistoryNode" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_CreateFileHandle">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_CreateFileHandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileworkdir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_CreateFileHandle" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_SetTestData">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_SetTestData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">testhistorynode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.history_node.HistoryNode" title="ucis.history_node.HistoryNode"><span class="pre">HistoryNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">testdata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.test_data.TestData" title="ucis.test_data.TestData"><span class="pre">TestData</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_SetTestData" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_Write">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_Write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.scope.Scope" title="ucis.scope.Scope"><span class="pre">Scope</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">covertype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.cover_type_t.CoverTypeT" title="ucis.cover_type_t.CoverTypeT"><span class="pre">CoverTypeT</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_Write" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_Close">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_Close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="oo-api.html#ucis.ucis.UCIS" title="ucis.ucis.UCIS"><span class="pre">UCIS</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.__init__.ucis_Close" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.__init__.ucis_Time">
+<span class="sig-prename descclassname"><span class="pre">ucis.__init__.</span></span><span class="sig-name descname"><span class="pre">ucis_Time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ucis.__init__.ucis_Time" title="Link to this definition"></a></dt>
+<dd><p>Current time in UCIS Y/M/D/H/M/S format</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="oo-api.html" class="btn btn-neutral float-left" title="UCIS Object-Oriented API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../formats/index.html" class="btn btn-neutral float-right" title="File Formats" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -17,11 +18,10 @@
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="MCP Server" href="mcp_server.html" />
-    <link rel="prev" title="Verilator Coverage Import" href="verilator_coverage_import.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,82 +43,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Coverage Import (cocotb and AVL)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#supported-frameworks">Supported Frameworks</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#cocotb-coverage">cocotb-coverage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#avl-apheleia-verification-library">AVL (Apheleia Verification Library)</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started/index.html">Getting Started</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#coverage-types-supported">Coverage Types Supported</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#functional-coverage-full-support">Functional Coverage (Full Support)</a></li>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="importing/index.html">Importing Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick Start</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#command-line-cli">Command Line (CLI)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#automatic-import-recommended">Automatic Import (Recommended)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#import-specific-formats">Import Specific Formats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#export-to-other-formats">Export to Other Formats</a></li>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="working-with-coverage/index.html">Working with Coverage</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#cocotb-coverage-integration">cocotb-coverage Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#generating-cocotb-coverage">Generating cocotb Coverage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#importing-into-pyucis">Importing into PyUCIS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#file-format-details">File Format Details</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reporting/index.html">Reporting</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#avl-integration">AVL Integration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#generating-avl-coverage">Generating AVL Coverage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Importing into PyUCIS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">File Format Details</a></li>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cicd/index.html">CI/CD Integration</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#format-detection">Format Detection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#detection-criteria">Detection Criteria</a></li>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ai-integration/mcp-server.html">MCP Server</a></li>
 </ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#workflow-examples">Workflow Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#command-line-workflows">Command Line Workflows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#python-api-workflows">Python API Workflows</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#basic-workflow">Basic Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#merging-multiple-runs">Merging Multiple Runs</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mixed-format-import">Mixed Format Import</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#coverage-hierarchy">Coverage Hierarchy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#accessing-coverage-data">Accessing Coverage Data</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced Usage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#custom-import-processing">Custom Import Processing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#filtering-coverage">Filtering Coverage</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-details">Implementation Details</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#architecture">Architecture</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#limitations">Limitations</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#current-limitations">Current Limitations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#see-also">See Also</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -747,10 +698,7 @@ Export (XML, SQLite, etc.)
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="verilator_coverage_import.html" class="btn btn-neutral float-left" title="Verilator Coverage Import" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="mcp_server.html" class="btn btn-neutral float-right" title="MCP Server" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

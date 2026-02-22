@@ -9,6 +9,7 @@
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
@@ -16,6 +17,7 @@
       <script src="_static/documentation_options.js?v=d45e8c67"></script>
       <script src="_static/doctools.js?v=fd6eb6e6"></script>
       <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -40,15 +42,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commands.html">Commands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tui.html">Interactive Terminal UI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="show_commands.html">Show Commands Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="verilator_coverage_import.html">Verilator Coverage Import</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cocotb_avl_coverage_import.html">Coverage Import (cocotb and AVL)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mcp_server.html">MCP Server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference/reference.html">PyUCIS Reference</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/index.html">Reference</a></li>
 </ul>
 
         </div>
@@ -83,26 +103,31 @@
  | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/html_coverage_report.html#init__">__init__()</a>
+      <li><a href="reference/html_coverage_report.html#init__">__init__()</a>, <a href="reference/report-formats/html-report-format.html#init__">[1]</a>
 
       <ul>
-        <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter.__init__">(ucis.formatters.format_html.HtmlFormatter method)</a>
+        <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter.__init__">(ucis.formatters.format_html.HtmlFormatter method)</a>, <a href="reference/report-formats/html-report-format.html#ucis.formatters.format_html.HtmlFormatter.__init__">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -111,11 +136,33 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.accept">accept() (ucis.Obj method)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope.accept">accept() (ucis.du_scope.DUScope method)</a>
+
+      <ul>
+        <li><a href="reference/ucis_oo_api.html#ucis.Obj.accept">(ucis.Obj method)</a>
 </li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.ACTIVEBIN">ACTIVEBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/ucis_oo_api.html#ucis.Obj.addTag">addTag() (ucis.Obj method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.ALL">ALL (ucis.cover_type_t.CoverTypeT attribute)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind.ALL">(ucis.history_node_kind.HistoryNodeKind attribute)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.ALL">(ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_oo_api.html#ucis.Obj.addTag">addTag() (ucis.Obj method)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.args">args (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.ASSERT">ASSERT (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.ASSERTBIN">ASSERTBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.ATTEMPTBIN">ATTEMPTBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -123,17 +170,31 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#begin_transaction">begin_transaction()</a>
+      <li><a href="reference/sqlite-api.html#begin_transaction">begin_transaction()</a>, <a href="reference/sqlite_api.html#begin_transaction">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.begin_transaction">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReportBuilder.build">build() (ucis.report.CoverageReportBuilder static method)</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.bitlen">bitlen (ucis.cover_data.CoverData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.BLOCK">BLOCK (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.BLOCKBIN">BLOCKBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.BRANCH">BRANCH (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.BRANCHBIN">BRANCHBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReportBuilder.build">build() (ucis.report.CoverageReportBuilder static method)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReportBuilder.build">[1]</a>
+</li>
       <li>
     built-in function
 
       <ul>
-        <li><a href="reference/sqlite_api.html#merge_databases">merge_databases()</a>
+        <li><a href="reference/sqlite-api.html#merge_databases">merge_databases()</a>, <a href="reference/sqlite_api.html#merge_databases">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -142,65 +203,197 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#close">close()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.CLASS">CLASS (ucis.scope_type_t.ScopeTypeT attribute)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#commit">commit()</a>
-</li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.coverage">coverage (ucis.report.CoverageReport attribute)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.mem.mem_factory.MemFactory.clone">clone() (ucis.mem.mem_factory.MemFactory static method)</a>
 
       <ul>
-        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.coverage">(ucis.report.CoverageReport.CoverItem attribute)</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.clone">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
-        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.coverage">(ucis.report.CoverageReport.Coverpoint attribute)</a>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#close">close()</a>, <a href="reference/sqlite_api.html#close">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.close">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.close">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.cmd">cmd (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#commit">commit()</a>, <a href="reference/sqlite_api.html#commit">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.commit">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.compulsory">compulsory (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COND">COND (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.CONDBIN">CONDBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.cost">cost (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.COUNT">COUNT (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COVBLOCK">COVBLOCK (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COVER">COVER (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.coverage">coverage (ucis.report.CoverageReport attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.coverage">[1]</a>
+
+      <ul>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.coverage">(ucis.report.CoverageReport.CoverItem attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.CoverItem.coverage">[1]</a>
+</li>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.coverage">(ucis.report.CoverageReport.Coverpoint attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Coverpoint.coverage">[1]</a>
 </li>
         <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross.coverage">(ucis.report.CoverageReport.Cross attribute)</a>
 </li>
       </ul></li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport">CoverageReport (class in ucis.report)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport">CoverageReport (class in ucis.report)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport">[1]</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReportBuilder">CoverageReportBuilder (class in ucis.report)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReportBuilder">CoverageReportBuilder (class in ucis.report)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReportBuilder">[1]</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup">Covergroup (class in ucis.report.CoverageReport)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.COVERBIN">COVERBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.covergroup_m">covergroup_m (ucis.report.CoverageReport.Covergroup attribute)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData">CoverData (class in ucis.cover_data)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.covergroups">covergroups (ucis.report.CoverageReport attribute)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT">CoverFlagsT (class in ucis.cover_flags_t)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup">Covergroup (class in ucis.covergroup)</a>
 
       <ul>
-        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.covergroups">(ucis.report.CoverageReport.Covergroup attribute)</a>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup">(class in ucis.report.CoverageReport)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup">[1]</a>
 </li>
       </ul></li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem">CoverItem (class in ucis.report.CoverageReport)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COVERGROUP">COVERGROUP (ucis.scope_type_t.ScopeTypeT attribute)</a>
 </li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.covergroup_m">covergroup_m (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.covergroup_m">[1]</a>
+</li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.covergroups">covergroups (ucis.report.CoverageReport attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.covergroups">[1]</a>
+
+      <ul>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.covergroups">(ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.covergroups">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COVERINSTANCE">COVERINSTANCE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_item.CoverItem">CoverItem (class in ucis.cover_item)</a>
+
+      <ul>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem">(class in ucis.report.CoverageReport)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.CoverItem">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#coverItems">coverItems()</a>, <a href="reference/sqlite_api.html#coverItems">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.coverItems">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.coverpoint.Coverpoint">Coverpoint (class in ucis.coverpoint)</a>
+
+      <ul>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint">(class in ucis.report.CoverageReport)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Coverpoint">[1]</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#coverItems">coverItems()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.COVERPOINT">COVERPOINT (ucis.scope_type_t.ScopeTypeT attribute)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint">Coverpoint (class in ucis.report.CoverageReport)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoint_m">coverpoint_m (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.coverpoint_m">[1]</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoint_m">coverpoint_m (ucis.report.CoverageReport.Covergroup attribute)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoints">coverpoints (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.coverpoints">[1]</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.coverpoints">coverpoints (ucis.report.CoverageReport.Covergroup attribute)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT">CoverTypeT (class in ucis.cover_type_t)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createCovergroup">createCovergroup()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cov_scope.CovScope">CovScope (class in ucis.cov_scope)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createFileHandle">createFileHandle()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.cputime">cputime (ucis.test_data.TestData attribute)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createHistoryNode">createHistoryNode()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.mem.mem_factory.MemFactory.create">create() (ucis.mem.mem_factory.MemFactory static method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createInstance">createInstance()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.coverpoint.Coverpoint.createBin">createBin() (ucis.coverpoint.Coverpoint method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createNextCover">createNextCover()</a>
+      <li><a href="reference/sqlite-api.html#createCovergroup">createCovergroup()</a>, <a href="reference/sqlite_api.html#createCovergroup">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createCovergroup">(ucis.scope.Scope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createScope">createScope()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.createCoverInstance">createCoverInstance() (ucis.covergroup.Covergroup method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#createToggle">createToggle()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.createCoverpoint">createCoverpoint() (ucis.covergroup.Covergroup method)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross">Cross (class in ucis.report.CoverageReport)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.createCross">createCross() (ucis.covergroup.Covergroup method)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.cross_m">cross_m (ucis.report.CoverageReport.Covergroup attribute)</a>
+      <li><a href="reference/sqlite-api.html#createFileHandle">createFileHandle()</a>, <a href="reference/sqlite_api.html#createFileHandle">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.createFileHandle">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.crosses">crosses (ucis.report.CoverageReport.Covergroup attribute)</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.createFileHandle">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#createHistoryNode">createHistoryNode()</a>, <a href="reference/sqlite_api.html#createHistoryNode">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.createHistoryNode">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.createHistoryNode">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#createInstance">createInstance()</a>, <a href="reference/sqlite_api.html#createInstance">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createInstance">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.createInstanceByName">createInstanceByName() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.createInstanceByName">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#createNextCover">createNextCover()</a>, <a href="reference/sqlite_api.html#createNextCover">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createNextCover">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createNextTransition">createNextTransition() (ucis.scope.Scope method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#createScope">createScope()</a>, <a href="reference/sqlite_api.html#createScope">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createScope">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#createToggle">createToggle()</a>, <a href="reference/sqlite_api.html#createToggle">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.createToggle">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cross.Cross">Cross (class in ucis.cross)</a>
+
+      <ul>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross">(class in ucis.report.CoverageReport)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.CROSS">CROSS (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.cross_m">cross_m (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.cross_m">[1]</a>
+</li>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.crosses">crosses (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.crosses">[1]</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.CVGBIN">CVGBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_bin_scope.CvgBinScope">CvgBinScope (class in ucis.cvg_bin_scope)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.CVGBINSCOPE">CVGBINSCOPE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope">CvgScope (class in ucis.cvg_scope)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -208,7 +401,61 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.data">data (ucis.cover_data.CoverData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.date">date (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.DEFAULTBIN">DEFAULTBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.deleteAttribute">deleteAttribute() (ucis.Obj method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.DISABLEDBIN">DISABLEDBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_ANY">DU_ANY() (ucis.scope_type_t.ScopeTypeT static method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_ARCH">DU_ARCH (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_INTERFACE">DU_INTERFACE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_MODULE">DU_MODULE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_PACKAGE">DU_PACKAGE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.DU_PROGRAM">DU_PROGRAM (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope">DUScope (class in ucis.du_scope)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.E">E (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_BLOCK">ENABLED_BLOCK (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_BRANCH">ENABLED_BRANCH (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_COND">ENABLED_COND (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_EXPR">ENABLED_EXPR (ucis.flags_t.FlagsT attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_FSM">ENABLED_FSM (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_STMT">ENABLED_STMT (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.ENABLED_TOGGLE">ENABLED_TOGGLE (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.ERROR">ERROR (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.EXPR">EXPR (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.EXPRBIN">EXPRBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -216,115 +463,365 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/html_coverage_report.html#format">format()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.FAILBIN">FAILBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.FATAL">FATAL (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_info.SourceInfo.file">file (ucis.source_info.SourceInfo attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.flags">flags (ucis.cover_data.CoverData attribute)</a>
 
       <ul>
-        <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter.format">(ucis.formatters.format_html.HtmlFormatter method)</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.flags">(ucis.scope.Scope attribute)</a>
 </li>
       </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT">FlagsT (class in ucis.flags_t)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.FORKJOIN">FORKJOIN (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/html_coverage_report.html#format">format()</a>, <a href="reference/report-formats/html-report-format.html#format">[1]</a>
+
+      <ul>
+        <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter.format">(ucis.formatters.format_html.HtmlFormatter method)</a>, <a href="reference/report-formats/html-report-format.html#ucis.formatters.format_html.HtmlFormatter.format">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.FSM">FSM (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.FSM_STATES">FSM_STATES (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.FSM_TRANS">FSM_TRANS (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.FSMBIN">FSMBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.func_cov_scope.FuncCovScope">FuncCovScope (class in ucis.func_cov_scope)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.FUNCTION">FUNCTION (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#getAPIVersion">getAPIVersion()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.GENERATE">GENERATE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.GENERIC">GENERIC (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.GENERICBIN">GENERICBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.get_test_coverage_api">get_test_coverage_api() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getAPIVersion">getAPIVersion()</a>, <a href="reference/sqlite_api.html#getAPIVersion">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getAPIVersion">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getAPIVersion">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getArgs">getArgs() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getAtLeast">getAtLeast() (ucis.cvg_scope.CvgScope method)</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.getAttribute">getAttribute() (ucis.Obj method)</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.getAttributes">getAttributes() (ucis.Obj method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getCmd">getCmd()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getAutoBinMax">getAutoBinMax() (ucis.cvg_scope.CvgScope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getCost">getCost()</a>
+      <li><a href="reference/sqlite-api.html#getCmd">getCmd()</a>, <a href="reference/sqlite_api.html#getCmd">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getCmd">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getCount">getCount()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getComment">getComment() (ucis.cvg_scope.CvgScope method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getComment">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getCoverData">getCoverData()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getCompulsory">getCompulsory() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getCost">getCost()</a>, <a href="reference/sqlite_api.html#getCost">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getCost">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getCount">getCount()</a>, <a href="reference/sqlite_api.html#getCount">[1]</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getCoverData">getCoverData()</a>, <a href="reference/sqlite_api.html#getCoverData">[1]</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.getCoverFlags">getCoverFlags() (ucis.Obj method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getCpuTime">getCpuTime()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getCoverInstances">getCoverInstances() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getCoverInstances">(ucis.ucis.UCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getDate">getDate()</a>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getCpuTime">getCpuTime()</a>, <a href="reference/sqlite_api.html#getCpuTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getCpuTime">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getFlags">getFlags()</a>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getDate">getDate()</a>, <a href="reference/sqlite_api.html#getDate">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getDate">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getGoal">getGoal()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getDBVersion">getDBVersion() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getDBVersion">(ucis.ucis.UCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getHandleProperty">getHandleProperty()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getDetectOverlap">getDetectOverlap() (ucis.cvg_scope.CvgScope method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getFlags">getFlags()</a>, <a href="reference/sqlite_api.html#getFlags">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getFlags">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.getGetInstCoverage">getGetInstCoverage() (ucis.covergroup.Covergroup method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getGoal">getGoal()</a>, <a href="reference/sqlite_api.html#getGoal">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getGoal">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getHandleProperty">getHandleProperty()</a>, <a href="reference/sqlite_api.html#getHandleProperty">[1]</a>
 
       <ul>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.getHandleProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/sqlite_api.html#getIntProperty">getIntProperty()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getHistoryNodes">getHistoryNodes() (ucis.ucis.UCIS method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.instance_scope.InstanceScope.getInstanceDu">getInstanceDu() (ucis.instance_scope.InstanceScope method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getIntProperty">getIntProperty()</a>, <a href="reference/sqlite_api.html#getIntProperty">[1]</a>
 
       <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.getIntProperty">(ucis.covergroup.Covergroup method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getIntProperty">(ucis.cvg_scope.CvgScope method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.instance_scope.InstanceScope.getIntProperty">(ucis.instance_scope.InstanceScope method)</a>
+</li>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.getIntProperty">(ucis.Obj method)</a>
 </li>
-      </ul></li>
-      <li><a href="reference/sqlite_api.html#getKind">getKind()</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getIntProperty">(ucis.scope.Scope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getLogicalName">getLogicalName()</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getIntProperty">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getIntProperty">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.instance_scope.InstanceScope.getIthCoverItem">getIthCoverItem() (ucis.instance_scope.InstanceScope method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cross.Cross.getIthCrossedCoverpoint">getIthCrossedCoverpoint() (ucis.cross.Cross method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getKind">getKind()</a>, <a href="reference/sqlite_api.html#getKind">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getKind">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getLogicalName">getLogicalName()</a>, <a href="reference/sqlite_api.html#getLogicalName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getLogicalName">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.getMergeInstances">getMergeInstances() (ucis.covergroup.Covergroup method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getName">getName()</a>, <a href="reference/sqlite_api.html#getName">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#getName">getName()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cross.Cross.getNumCrossedCoverpoints">getNumCrossedCoverpoints() (ucis.cross.Cross method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getNumTests">getNumTests()</a>
+      <li><a href="reference/sqlite-api.html#getNumTests">getNumTests()</a>, <a href="reference/sqlite_api.html#getNumTests">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getNumTests">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getPathSeparator">getPathSeparator()</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getNumTests">(ucis.ucis.UCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getPhysicalName">getPhysicalName()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getParent">getParent() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getRealProperty">getRealProperty()</a>
+      <li><a href="reference/sqlite-api.html#getPathSeparator">getPathSeparator()</a>, <a href="reference/sqlite_api.html#getPathSeparator">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getPathSeparator">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getPathSeparator">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.getPerInstance">getPerInstance() (ucis.covergroup.Covergroup method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getPhysicalName">getPhysicalName()</a>, <a href="reference/sqlite_api.html#getPhysicalName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getPhysicalName">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getRealProperty">getRealProperty()</a>, <a href="reference/sqlite_api.html#getRealProperty">[1]</a>
 
       <ul>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.getRealProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/sqlite_api.html#getScopeName">getScopeName()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getRunCwd">getRunCwd() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getScopeType">getScopeType()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getSameTests">getSameTests() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getSeed">getSeed()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.coverpoint.Coverpoint.getScopeGoal">getScopeGoal() (ucis.coverpoint.Coverpoint method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getSimTime">getSimTime()</a>
-</li>
-      <li><a href="reference/sqlite_api.html#getSourceInfo">getSourceInfo()</a>, <a href="reference/sqlite_api.html#id0">[1]</a>
-</li>
-      <li><a href="reference/sqlite_api.html#getStringProperty">getStringProperty()</a>
+      <li><a href="reference/sqlite-api.html#getScopeName">getScopeName()</a>, <a href="reference/sqlite_api.html#getScopeName">[1]</a>
 
       <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getScopeName">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getScopeType">getScopeType()</a>, <a href="reference/sqlite_api.html#getScopeType">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getScopeType">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getSeed">getSeed()</a>, <a href="reference/sqlite_api.html#getSeed">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getSeed">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope.getSignature">getSignature() (ucis.du_scope.DUScope method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getSimTime">getSimTime()</a>, <a href="reference/sqlite_api.html#getSimTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getSimTime">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getSourceFiles">getSourceFiles() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getSourceFiles">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getSourceInfo">getSourceInfo()</a>, <a href="reference/sqlite-api.html#id0">[1]</a>, <a href="reference/sqlite_api.html#getSourceInfo">[2]</a>, <a href="reference/sqlite_api.html#id0">[3]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getSourceInfo">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_item.CoverItem.getStmtIndex">getStmtIndex() (ucis.cover_item.CoverItem method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getStringProperty">getStringProperty()</a>, <a href="reference/sqlite_api.html#getStringProperty">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getStringProperty">(ucis.cvg_scope.CvgScope method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope.getStringProperty">(ucis.du_scope.DUScope method)</a>
+</li>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.getStringProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.getStrobe">getStrobe() (ucis.cvg_scope.CvgScope method)</a>
+</li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.getTags">getTags() (ucis.Obj method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getTestStatus">getTestStatus()</a>
+      <li><a href="reference/sqlite-api.html#getTestStatus">getTestStatus()</a>, <a href="reference/sqlite_api.html#getTestStatus">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getTestStatus">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getUserName">getUserName()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getTimeUnit">getTimeUnit() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getWeight">getWeight()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getToolCategory">getToolCategory() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getWrittenBy">getWrittenBy()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getUCISVersion">getUCISVersion() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#getWrittenTime">getWrittenTime()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getUserAttr">getUserAttr() (ucis.history_node.HistoryNode method)</a>
 </li>
+      <li><a href="reference/sqlite-api.html#getUserName">getUserName()</a>, <a href="reference/sqlite_api.html#getUserName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getUserName">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getVendorId">getVendorId() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getVendorTool">getVendorTool() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.getVendorToolVersion">getVendorToolVersion() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#getWeight">getWeight()</a>, <a href="reference/sqlite_api.html#getWeight">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.getWeight">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getWrittenBy">getWrittenBy()</a>, <a href="reference/sqlite_api.html#getWrittenBy">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getWrittenBy">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getWrittenBy">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#getWrittenTime">getWrittenTime()</a>, <a href="reference/sqlite_api.html#getWrittenTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.getWrittenTime">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.getWrittenTime">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.goal">goal (ucis.cover_data.CoverData attribute)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.goal">(ucis.scope.Scope attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT.HAS_GOAL">HAS_GOAL (ucis.cover_flags_t.CoverFlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT.HAS_WEIGHT">HAS_WEIGHT (ucis.cover_flags_t.CoverFlagsT attribute)</a>
+</li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.hasTag">hasTag() (ucis.Obj method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode">HistoryNode (class in ucis.history_node)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#historyNodes">historyNodes()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind">HistoryNodeKind (class in ucis.history_node_kind)</a>
 </li>
-      <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter">HtmlFormatter (class in ucis.formatters.format_html)</a>
+      <li><a href="reference/sqlite-api.html#historyNodes">historyNodes()</a>, <a href="reference/sqlite_api.html#historyNodes">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.historyNodes">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.historyNodes">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/html_coverage_report.html#ucis.formatters.format_html.HtmlFormatter">HtmlFormatter (class in ucis.formatters.format_html)</a>, <a href="reference/report-formats/html-report-format.html#ucis.formatters.format_html.HtmlFormatter">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -332,13 +829,61 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#incrementCover">incrementCover()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.IGNOREBIN">IGNOREBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.ignore_bin_scope.IgnoreBinScope">IgnoreBinScope (class in ucis.ignore_bin_scope)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.IGNOREBINSCOPE">IGNOREBINSCOPE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.ILLEGALBIN">ILLEGALBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.illegal_bin_scope.IllegalBinScope">IllegalBinScope (class in ucis.illegal_bin_scope)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.ILLEGALBINSCOPE">ILLEGALBINSCOPE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#incrementCover">incrementCover()</a>, <a href="reference/sqlite_api.html#incrementCover">[1]</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.INST_ONCE">INST_ONCE (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.INSTANCE">INSTANCE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.instance_scope.InstanceScope">InstanceScope (class in ucis.instance_scope)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.instname">instname (ucis.report.CoverageReport.Covergroup attribute)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Covergroup.instname">instname (ucis.report.CoverageReport.Covergroup attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Covergroup.instname">[1]</a>
 </li>
-      <li><a href="reference/sqlite_api.html#isModified">isModified()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.INTERFACE">INTERFACE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT.IS_32BIT">IS_32BIT (ucis.cover_flags_t.CoverFlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT.IS_64BIT">IS_64BIT (ucis.cover_flags_t.CoverFlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.IS_IMMEDIATE_ASSERT">IS_IMMEDIATE_ASSERT (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.IS_TOP_NODE">IS_TOP_NODE (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_flags_t.CoverFlagsT.IS_VECTOR">IS_VECTOR (ucis.cover_flags_t.CoverFlagsT attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#isModified">isModified()</a>, <a href="reference/sqlite_api.html#isModified">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.isModified">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.isModified">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.limit">limit (ucis.cover_data.CoverData attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_info.SourceInfo.line">line (ucis.source_info.SourceInfo attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -346,22 +891,56 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#merge">merge()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.matchCoverByUniqueId">matchCoverByUniqueId() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.matchCoverByUniqueId">(ucis.ucis.UCIS method)</a>
 </li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.matchScopeByUniqueId">matchScopeByUniqueId() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.matchScopeByUniqueId">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.mem.mem_factory.MemFactory">MemFactory (class in ucis.mem.mem_factory)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind.MERGE">MERGE (ucis.history_node_kind.HistoryNodeKind attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#merge">merge()</a>, <a href="reference/sqlite_api.html#merge">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.merge">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      </ul></li>
       <li>
     merge_databases()
 
       <ul>
-        <li><a href="reference/sqlite_api.html#merge_databases">built-in function</a>
+        <li><a href="reference/sqlite-api.html#merge_databases">built-in function</a>, <a href="reference/sqlite_api.html#merge_databases">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.MERGE_ERROR">MERGE_ERROR (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.merge_fast">merge_fast() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.merge_many">merge_many() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.MISSING">MISSING (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.modifiedSinceSim">modifiedSinceSim() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.modifiedSinceSim">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
       <li>
     module
 
       <ul>
-        <li><a href="reference/ucis_c_api.html#module-ucis.__init__">ucis.__init__</a>
+        <li><a href="reference/python-api/c-style-api.html#module-ucis.__init__">ucis.__init__</a>, <a href="reference/ucis_c_api.html#module-ucis.__init__">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -370,12 +949,22 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.name">name (ucis.report.CoverageReport.CoverItem attribute)</a>
+      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.name">name (ucis.report.CoverageReport.CoverItem attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.CoverItem.name">[1]</a>
 
       <ul>
-        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.name">(ucis.report.CoverageReport.Coverpoint attribute)</a>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.name">(ucis.report.CoverageReport.Coverpoint attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Coverpoint.name">[1]</a>
 </li>
         <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross.name">(ucis.report.CoverageReport.Cross attribute)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.name">(ucis.scope.Scope attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind.NONE">NONE (ucis.history_node_kind.HistoryNodeKind attribute)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.NONE">(ucis.source_t.SourceT attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -386,17 +975,69 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj">Obj (class in ucis)</a>
 </li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.OK">OK (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.open_readonly">open_readonly() (ucis.sqlite.sqlite_ucis.SqliteUCIS class method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.OTHER">OTHER (ucis.source_t.SourceT attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.PACKAGE">PACKAGE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.PASSBIN">PASSBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.PEAKACTIVEBIN">PEAKACTIVEBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.PROCESS">PROCESS (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.PROGRAM">PROGRAM (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.PSL_SV">PSL_SV (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.PSL_SYSTEMC">PSL_SYSTEMC (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.PSL_VHDL">PSL_VHDL (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.PSL_VLOG">PSL_VLOG (ucis.source_t.SourceT attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.removeCover">removeCover() (ucis.scope.Scope method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.removeScope">removeScope() (ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.removeScope">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.removeTag">removeTag() (ucis.Obj method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#rollback">rollback()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.RESERVEDBIN">RESERVEDBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.RESERVEDSCOPE">RESERVEDSCOPE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#rollback">rollback()</a>, <a href="reference/sqlite_api.html#rollback">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.rollback">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.runcwd">runcwd (ucis.test_data.TestData attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -404,170 +1045,412 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#scopes">scopes()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope">Scope (class in ucis.scope)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_BLOCK_ISBRANCH">SCOPE_BLOCK_ISBRANCH (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_CVG_AUTO">SCOPE_CVG_AUTO (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_CVG_SCALAR">SCOPE_CVG_SCALAR (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_CVG_TRANSITION">SCOPE_CVG_TRANSITION (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_CVG_VECTOR">SCOPE_CVG_VECTOR (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.SCOPE_ERROR">SCOPE_ERROR (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_EXCLUDED">SCOPE_EXCLUDED (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_IFF_EXISTS">SCOPE_IFF_EXISTS (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_PRAGMA_CLEARED">SCOPE_PRAGMA_CLEARED (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_PRAGMA_EXCLUDED">SCOPE_PRAGMA_EXCLUDED (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_SPECIALIZED">SCOPE_SPECIALIZED (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.SCOPE_UNDER_DU">SCOPE_UNDER_DU (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#scopes">scopes()</a>, <a href="reference/sqlite_api.html#scopes">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.scopes">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT">ScopeTypeT (class in ucis.scope_type_t)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.seed">seed (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setArgs">setArgs() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setAtLeast">setAtLeast() (ucis.cvg_scope.CvgScope method)</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.setAttribute">setAttribute() (ucis.Obj method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setCmd">setCmd()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setAutoBinMax">setAutoBinMax() (ucis.cvg_scope.CvgScope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setCost">setCost()</a>
+      <li><a href="reference/sqlite-api.html#setCmd">setCmd()</a>, <a href="reference/sqlite_api.html#setCmd">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setCmd">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setCount">setCount()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setComment">setComment() (ucis.cvg_scope.CvgScope method)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setComment">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setCompulsory">setCompulsory() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setCost">setCost()</a>, <a href="reference/sqlite_api.html#setCost">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setCost">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setCount">setCount()</a>, <a href="reference/sqlite_api.html#setCount">[1]</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.setCoverData">setCoverData() (ucis.Obj method)</a>
 </li>
       <li><a href="reference/ucis_oo_api.html#ucis.Obj.setCoverFlags">setCoverFlags() (ucis.Obj method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setCpuTime">setCpuTime()</a>
+      <li><a href="reference/sqlite-api.html#setCpuTime">setCpuTime()</a>, <a href="reference/sqlite_api.html#setCpuTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setCpuTime">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setDate">setDate()</a>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setDate">setDate()</a>, <a href="reference/sqlite_api.html#setDate">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setDate">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setGoal">setGoal()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setDetectOverlap">setDetectOverlap() (ucis.cvg_scope.CvgScope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setHandleProperty">setHandleProperty()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.setGetInstCoverage">setGetInstCoverage() (ucis.covergroup.Covergroup method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setGoal">setGoal()</a>, <a href="reference/sqlite_api.html#setGoal">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.setGoal">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setHandleProperty">setHandleProperty()</a>, <a href="reference/sqlite_api.html#setHandleProperty">[1]</a>
 
       <ul>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.setHandleProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/sqlite_api.html#setIntProperty">setIntProperty()</a>
+      <li><a href="reference/sqlite-api.html#setIntProperty">setIntProperty()</a>, <a href="reference/sqlite_api.html#setIntProperty">[1]</a>
 
       <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.setIntProperty">(ucis.covergroup.Covergroup method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setIntProperty">(ucis.cvg_scope.CvgScope method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.instance_scope.InstanceScope.setIntProperty">(ucis.instance_scope.InstanceScope method)</a>
+</li>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.setIntProperty">(ucis.Obj method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.setIntProperty">(ucis.scope.Scope method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.setIntProperty">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setLogicalName">setLogicalName()</a>, <a href="reference/sqlite_api.html#setLogicalName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setLogicalName">(ucis.history_node.HistoryNode method)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#setLogicalName">setLogicalName()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.setMergeInstances">setMergeInstances() (ucis.covergroup.Covergroup method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setPathSeparator">setPathSeparator()</a>
+      <li><a href="reference/sqlite-api.html#setPathSeparator">setPathSeparator()</a>, <a href="reference/sqlite_api.html#setPathSeparator">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.setPathSeparator">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setPhysicalName">setPhysicalName()</a>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.setPathSeparator">(ucis.ucis.UCIS method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setRealProperty">setRealProperty()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.covergroup.Covergroup.setPerInstance">setPerInstance() (ucis.covergroup.Covergroup method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setPhysicalName">setPhysicalName()</a>, <a href="reference/sqlite_api.html#setPhysicalName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setPhysicalName">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setRealProperty">setRealProperty()</a>, <a href="reference/sqlite_api.html#setRealProperty">[1]</a>
 
       <ul>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.setRealProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/sqlite_api.html#setSeed">setSeed()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setRunCwd">setRunCwd() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setSimTime">setSimTime()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setSameTests">setSameTests() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setStringProperty">setStringProperty()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.coverpoint.Coverpoint.setScopeGoal">setScopeGoal() (ucis.coverpoint.Coverpoint method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setSeed">setSeed()</a>, <a href="reference/sqlite_api.html#setSeed">[1]</a>
 
       <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setSeed">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope.setSignature">setSignature() (ucis.du_scope.DUScope method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setSimTime">setSimTime()</a>, <a href="reference/sqlite_api.html#setSimTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setSimTime">(ucis.history_node.HistoryNode method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_item.CoverItem.setStmtIndex">setStmtIndex() (ucis.cover_item.CoverItem method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setStringProperty">setStringProperty()</a>, <a href="reference/sqlite_api.html#setStringProperty">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setStringProperty">(ucis.cvg_scope.CvgScope method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.du_scope.DUScope.setStringProperty">(ucis.du_scope.DUScope method)</a>
+</li>
         <li><a href="reference/ucis_oo_api.html#ucis.Obj.setStringProperty">(ucis.Obj method)</a>
 </li>
       </ul></li>
-      <li><a href="reference/sqlite_api.html#setTestStatus">setTestStatus()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.cvg_scope.CvgScope.setStrobe">setStrobe() (ucis.cvg_scope.CvgScope method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setUserName">setUserName()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setTestData">setTestData() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setWeight">setWeight()</a>
+      <li><a href="reference/sqlite-api.html#setTestStatus">setTestStatus()</a>, <a href="reference/sqlite_api.html#setTestStatus">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setTestStatus">(ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setWrittenBy">setWrittenBy()</a>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setTimeUnit">setTimeUnit() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#setWrittenTime">setWrittenTime()</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setToolCategory">setToolCategory() (ucis.history_node.HistoryNode method)</a>
 </li>
-      <li><a href="reference/sqlite_api.html#SqliteUCIS">SqliteUCIS (built-in class)</a>
+      <li><a href="reference/sqlite-api.html#setUserName">setUserName()</a>, <a href="reference/sqlite_api.html#setUserName">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setUserName">(ucis.history_node.HistoryNode method)</a>
 </li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setVendorId">setVendorId() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setVendorTool">setVendorTool() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node.HistoryNode.setVendorToolVersion">setVendorToolVersion() (ucis.history_node.HistoryNode method)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#setWeight">setWeight()</a>, <a href="reference/sqlite_api.html#setWeight">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.setWeight">(ucis.scope.Scope method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setWrittenBy">setWrittenBy()</a>, <a href="reference/sqlite_api.html#setWrittenBy">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.setWrittenBy">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.setWrittenBy">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/sqlite-api.html#setWrittenTime">setWrittenTime()</a>, <a href="reference/sqlite_api.html#setWrittenTime">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.setWrittenTime">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.setWrittenTime">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.simtime">simtime (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.source">source (ucis.scope.Scope attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.SOURCE_ERROR">SOURCE_ERROR (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_info.SourceInfo">SourceInfo (class in ucis.source_info)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT">SourceT (class in ucis.source_t)</a>
+</li>
+      <li><a href="reference/sqlite-api.html#SqliteUCIS">SqliteUCIS (built-in class)</a>, <a href="reference/sqlite_api.html#SqliteUCIS">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS">(class in ucis.sqlite.sqlite_ucis)</a>
+</li>
+      </ul></li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.STMTBIN">STMTBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.SV">SV (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.SYSTEMC">SYSTEMC (ucis.source_t.SourceT attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.TASK">TASK (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.history_node_kind.HistoryNodeKind.TEST">TEST (ucis.history_node_kind.HistoryNodeKind attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData">TestData (class in ucis.test_data)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.teststatus">teststatus (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT">TestStatusT (class in ucis.test_status_t)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.timeunit">timeunit (ucis.test_data.TestData attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.scope_type_t.ScopeTypeT.TOGGLE">TOGGLE (ucis.scope_type_t.ScopeTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.TOGGLEBIN">TOGGLEBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_info.SourceInfo.token">token (ucis.source_info.SourceInfo attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.toolcategory">toolcategory (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.type">type (ucis.cover_data.CoverData attribute)</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.type">(ucis.scope.Scope attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS">UCIS (class in ucis.ucis)</a>
+</li>
       <li>
     ucis.__init__
 
       <ul>
-        <li><a href="reference/ucis_c_api.html#module-ucis.__init__">module</a>
+        <li><a href="reference/python-api/c-style-api.html#module-ucis.__init__">module</a>, <a href="reference/ucis_c_api.html#module-ucis.__init__">[1]</a>
 </li>
       </ul></li>
-      <li><a href="reference/native_api.html#c.ucis_Close">ucis_Close (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_Close">ucis_Close (C function)</a>, <a href="reference/native_api.html#c.ucis_Close">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Close">ucis_Close() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_Close">ucis_Close() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_Close">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_CoverIterate">ucis_CoverIterate (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_CoverIterate">ucis_CoverIterate (C function)</a>, <a href="reference/native_api.html#c.ucis_CoverIterate">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateFileHandle">ucis_CreateFileHandle() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateFileHandle">ucis_CreateFileHandle() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateFileHandle">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_CreateHistoryNode">ucis_CreateHistoryNode (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_CreateHistoryNode">ucis_CreateHistoryNode (C function)</a>, <a href="reference/native_api.html#c.ucis_CreateHistoryNode">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateHistoryNode">ucis_CreateHistoryNode() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateHistoryNode">ucis_CreateHistoryNode() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateHistoryNode">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_CreateInstance">ucis_CreateInstance (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_CreateInstance">ucis_CreateInstance (C function)</a>, <a href="reference/native_api.html#c.ucis_CreateInstance">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateInstance">ucis_CreateInstance() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateInstance">ucis_CreateInstance() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateInstance">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_CreateNextCover">ucis_CreateNextCover (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_CreateNextCover">ucis_CreateNextCover (C function)</a>, <a href="reference/native_api.html#c.ucis_CreateNextCover">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateNextCover">ucis_CreateNextCover() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateNextCover">ucis_CreateNextCover() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateNextCover">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_CreateScope">ucis_CreateScope (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_CreateScope">ucis_CreateScope (C function)</a>, <a href="reference/native_api.html#c.ucis_CreateScope">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateScope">ucis_CreateScope() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateScope">ucis_CreateScope() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateScope">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateToggle">ucis_CreateToggle() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_CreateToggle">ucis_CreateToggle() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_CreateToggle">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetAPIVersion">ucis_GetAPIVersion (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_GetAPIVersion">ucis_GetAPIVersion (C function)</a>, <a href="reference/native_api.html#c.ucis_GetAPIVersion">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetCoverData">ucis_GetCoverData (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_GetCoverData">ucis_GetCoverData (C function)</a>, <a href="reference/native_api.html#c.ucis_GetCoverData">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetHandleProperty">ucis_GetHandleProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_GetHandleProperty">ucis_GetHandleProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetHandleProperty">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetIntProperty">ucis_GetIntProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_GetIntProperty">ucis_GetIntProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetIntProperty">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetLastError">ucis_GetLastError (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_GetLastError">ucis_GetLastError (C function)</a>, <a href="reference/native_api.html#c.ucis_GetLastError">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetParent">ucis_GetParent (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_GetParent">ucis_GetParent (C function)</a>, <a href="reference/native_api.html#c.ucis_GetParent">[1]</a>
+</li>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_GetRealProperty">ucis_GetRealProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetRealProperty">[1]</a>
+</li>
+      <li><a href="reference/native-c-library.html#c.ucis_GetScopeName">ucis_GetScopeName (C function)</a>, <a href="reference/native_api.html#c.ucis_GetScopeName">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetRealProperty">ucis_GetRealProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_GetScopeType">ucis_GetScopeType (C function)</a>, <a href="reference/native_api.html#c.ucis_GetScopeType">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetScopeName">ucis_GetScopeName (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_GetStringProperty">ucis_GetStringProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetStringProperty">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_GetScopeType">ucis_GetScopeType (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_HistoryNodeIterate">ucis_HistoryNodeIterate (C function)</a>, <a href="reference/native_api.html#c.ucis_HistoryNodeIterate">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_GetStringProperty">ucis_GetStringProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_IncrementCoverData">ucis_IncrementCoverData (C function)</a>, <a href="reference/native_api.html#c.ucis_IncrementCoverData">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_HistoryNodeIterate">ucis_HistoryNodeIterate (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_Open">ucis_Open (C function)</a>, <a href="reference/native_api.html#c.ucis_Open">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_IncrementCoverData">ucis_IncrementCoverData (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_RemoveScope">ucis_RemoveScope() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_RemoveScope">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_Open">ucis_Open (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_ScopeIterate">ucis_ScopeIterate (C function)</a>, <a href="reference/native_api.html#c.ucis_ScopeIterate">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_RemoveScope">ucis_RemoveScope() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_SetCoverData">ucis_SetCoverData (C function)</a>, <a href="reference/native_api.html#c.ucis_SetCoverData">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_ScopeIterate">ucis_ScopeIterate (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_SetHandleProperty">ucis_SetHandleProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetHandleProperty">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_SetCoverData">ucis_SetCoverData (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_SetIntProperty">ucis_SetIntProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetIntProperty">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetHandleProperty">ucis_SetHandleProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_SetRealProperty">ucis_SetRealProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetRealProperty">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetIntProperty">ucis_SetIntProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_SetScopeFlags">ucis_SetScopeFlags (C function)</a>, <a href="reference/native_api.html#c.ucis_SetScopeFlags">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetRealProperty">ucis_SetRealProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_SetScopeGoal">ucis_SetScopeGoal (C function)</a>, <a href="reference/native_api.html#c.ucis_SetScopeGoal">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_SetScopeFlags">ucis_SetScopeFlags (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_SetScopeWeight">ucis_SetScopeWeight (C function)</a>, <a href="reference/native_api.html#c.ucis_SetScopeWeight">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_SetScopeGoal">ucis_SetScopeGoal (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_SetStringProperty">ucis_SetStringProperty() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetStringProperty">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_SetScopeWeight">ucis_SetScopeWeight (C function)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_SetTestData">ucis_SetTestData() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetTestData">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetStringProperty">ucis_SetStringProperty() (in module ucis.__init__)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_SetTestStatus">ucis_SetTestStatus (C function)</a>, <a href="reference/native_api.html#c.ucis_SetTestStatus">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_SetTestData">ucis_SetTestData() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_Time">ucis_Time() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_Time">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_SetTestStatus">ucis_SetTestStatus (C function)</a>
+      <li><a href="reference/native-c-library.html#c.ucis_Write">ucis_Write (C function)</a>, <a href="reference/native_api.html#c.ucis_Write">[1]</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Time">ucis_Time() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/c-style-api.html#ucis.__init__.ucis_Write">ucis_Write() (in module ucis.__init__)</a>, <a href="reference/ucis_c_api.html#ucis.__init__.ucis_Write">[1]</a>
 </li>
-      <li><a href="reference/native_api.html#c.ucis_Write">ucis_Write (C function)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.UOR_SAFE_SCOPE">UOR_SAFE_SCOPE (ucis.flags_t.FlagsT attribute)</a>
 </li>
-      <li><a href="reference/ucis_c_api.html#ucis.__init__.ucis_Write">ucis_Write() (in module ucis.__init__)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.flags_t.FlagsT.UOR_SAFE_SCOPE_ALLCOVERS">UOR_SAFE_SCOPE_ALLCOVERS (ucis.flags_t.FlagsT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_data.TestData.user">user (ucis.test_data.TestData attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.USERBIN">USERBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.USERBITS">USERBITS (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_type_t.CoverTypeT.VACUOUSBIN">VACUOUSBIN (ucis.cover_type_t.CoverTypeT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.VERA">VERA (ucis.source_t.SourceT attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.VHDL">VHDL (ucis.source_t.SourceT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.source_t.SourceT.VLOG">VLOG (ucis.source_t.SourceT attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -575,18 +1458,30 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.weight">weight (ucis.report.CoverageReport.CoverItem attribute)</a>
+      <li><a href="reference/python-api/oo-api.html#ucis.test_status_t.TestStatusT.WARNING">WARNING (ucis.test_status_t.TestStatusT attribute)</a>
+</li>
+      <li><a href="reference/python-api/oo-api.html#ucis.cover_data.CoverData.weight">weight (ucis.cover_data.CoverData attribute)</a>
 
       <ul>
-        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.weight">(ucis.report.CoverageReport.Coverpoint attribute)</a>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.CoverItem.weight">(ucis.report.CoverageReport.CoverItem attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.CoverItem.weight">[1]</a>
+</li>
+        <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Coverpoint.weight">(ucis.report.CoverageReport.Coverpoint attribute)</a>, <a href="reference/report-formats/json-report-format.html#ucis.report.CoverageReport.Coverpoint.weight">[1]</a>
 </li>
         <li><a href="reference/coverage_report_api.html#ucis.report.CoverageReport.Cross.weight">(ucis.report.CoverageReport.Cross attribute)</a>
+</li>
+        <li><a href="reference/python-api/oo-api.html#ucis.scope.Scope.weight">(ucis.scope.Scope attribute)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="reference/sqlite_api.html#write">write()</a>
+      <li><a href="reference/sqlite-api.html#write">write()</a>, <a href="reference/sqlite_api.html#write">[1]</a>
+
+      <ul>
+        <li><a href="reference/python-api/oo-api.html#ucis.sqlite.sqlite_ucis.SqliteUCIS.write">(ucis.sqlite.sqlite_ucis.SqliteUCIS method)</a>
 </li>
+        <li><a href="reference/python-api/oo-api.html#ucis.ucis.UCIS.write">(ucis.ucis.UCIS method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 

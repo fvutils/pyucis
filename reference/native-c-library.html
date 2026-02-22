@@ -1,0 +1,1104 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Native C Library API &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Best Practices for Recording Coverage" href="best-practices.html" />
+    <link rel="prev" title="SQLite Backend API" href="sqlite-api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../working-with-coverage/index.html">Working with Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cli.html">CLI Command Reference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlite-api.html">SQLite Backend API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Native C Library API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#architecture">Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#building">Building</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-steps">Build Steps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build-outputs">Build Outputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#database-lifecycle">Database Lifecycle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scope-operations">Scope Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-operations">Coverage Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#history-operations">History Operations</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#type-definitions">Type Definitions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#opaque-handle-types">Opaque Handle Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scope-types">Scope Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-types">Coverage Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coverage-data">Coverage Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#source-information">Source Information</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#source-types">Source Types</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#test-status">Test Status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#history-node-kinds">History Node Kinds</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#complete-examples">Complete Examples</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#iterating-scopes">Iterating Scopes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-from-python">Using from Python</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#performance">Performance</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#optimization-tips">Optimization Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#typical-performance">Typical Performance</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#see-also">See Also</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="best-practices.html">Best Practices for Recording Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python-api/index.html">Python API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="formats/index.html">File Formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="report-formats/index.html">Report Formats</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Reference</a></li>
+      <li class="breadcrumb-item active">Native C Library API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/native-c-library.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="native-c-library-api">
+<h1>Native C Library API<a class="headerlink" href="#native-c-library-api" title="Link to this heading"></a></h1>
+<p>The PyUCIS Native C Library provides a complete implementation of the UCIS 1.0 C API using SQLite3 as the backend storage. This native library can be used directly from C/C++ applications or through Python’s ctypes interface.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>UCIS 1.0 Standard Compliant</strong> - Full implementation of the official C API</p></li>
+<li><p><strong>SQLite3 Backend</strong> - Persistent, queryable storage with SQL access</p></li>
+<li><p><strong>High Performance</strong> - Optimized with prepared statements and caching</p></li>
+<li><p><strong>Thread-Safe</strong> - Can be used in multi-threaded applications</p></li>
+<li><p><strong>Cross-Platform</strong> - Builds on Linux, macOS, and Windows</p></li>
+<li><p><strong>Python Integration</strong> - Can be loaded via ctypes from Python</p></li>
+</ul>
+</section>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h3>
+<dl class="simple">
+<dt><strong>Opaque Handles</strong></dt><dd><p>All API types are opaque pointers backed by an internal handle table for type safety.</p>
+</dd>
+<dt><strong>Prepared Statements</strong></dt><dd><p>Frequently-used SQL queries are prepared once and cached for performance.</p>
+</dd>
+<dt><strong>Foreign Keys</strong></dt><dd><p>Referential integrity enforced at the database level.</p>
+</dd>
+<dt><strong>WAL Mode</strong></dt><dd><p>Write-Ahead Logging enabled for better concurrency.</p>
+</dd>
+<dt><strong>Handle Caching</strong></dt><dd><p>Frequently-accessed data cached in handle entries to minimize database queries.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="building">
+<h2>Building<a class="headerlink" href="#building" title="Link to this heading"></a></h2>
+<section id="requirements">
+<h3>Requirements<a class="headerlink" href="#requirements" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>C compiler (GCC, Clang, or MSVC)</p></li>
+<li><p>CMake 3.10 or later</p></li>
+<li><p>SQLite3 (included as amalgamation)</p></li>
+</ul>
+</section>
+<section id="build-steps">
+<h3>Build Steps<a class="headerlink" href="#build-steps" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Navigate to native directory</span>
+<span class="nb">cd</span><span class="w"> </span>src/native
+
+<span class="c1"># Build with CMake</span>
+mkdir<span class="w"> </span>build
+<span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..
+make
+
+<span class="c1"># Or use make directly</span>
+<span class="nb">cd</span><span class="w"> </span>src/native
+make
+
+<span class="c1"># Install library (optional)</span>
+sudo<span class="w"> </span>make<span class="w"> </span>install
+</pre></div>
+</div>
+</section>
+<section id="build-outputs">
+<h3>Build Outputs<a class="headerlink" href="#build-outputs" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>libucis.so</strong> (Linux) - Shared library</p></li>
+<li><p><strong>libucis.dylib</strong> (macOS) - Shared library</p></li>
+<li><p><strong>ucis.dll</strong> (Windows) - Dynamic link library</p></li>
+<li><p><strong>libucis.a</strong> - Static library (optional)</p></li>
+</ul>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run test suite</span>
+make<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Or run individual tests</span>
+<span class="nb">cd</span><span class="w"> </span><span class="nb">test</span>
+python3<span class="w"> </span>test_basic.py
+python3<span class="w"> </span>test_scopes.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<section id="database-lifecycle">
+<h3>Database Lifecycle<a class="headerlink" href="#database-lifecycle" title="Link to this heading"></a></h3>
+<section id="ucis-open">
+<h4>ucis_Open<a class="headerlink" href="#ucis-open" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_Open">
+<span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Open</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Open" title="Link to this definition"></a><br /></dt>
+<dd><p>Open or create a UCIS database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – File path or NULL for in-memory database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Database handle or NULL on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisT</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_Open</span><span class="p">(</span><span class="s">&quot;coverage.ucisdb&quot;</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetLastError</span><span class="p">());</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-close">
+<h4>ucis_Close<a class="headerlink" href="#ucis-close" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_Close">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Close</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Close" title="Link to this definition"></a><br /></dt>
+<dd><p>Close a UCIS database and free all resources.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucis_Close</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-write">
+<h4>ucis_Write<a class="headerlink" href="#ucis-write" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_Write">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_Write</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_Write" title="Link to this definition"></a><br /></dt>
+<dd><p>Write database to a file (useful for in-memory databases).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>name</strong> – Target file path</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ucis_Write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;output.ucisdb&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Write failed: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetLastError</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getapiversion">
+<h4>ucis_GetAPIVersion<a class="headerlink" href="#ucis-getapiversion" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetAPIVersion">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetAPIVersion</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetAPIVersion" title="Link to this definition"></a><br /></dt>
+<dd><p>Get UCIS API version string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Version string (e.g., “1.0”)</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;UCIS API Version: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetAPIVersion</span><span class="p">());</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getlasterror">
+<h4>ucis_GetLastError<a class="headerlink" href="#ucis-getlasterror" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetLastError">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetLastError</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetLastError" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the last error message from any UCIS operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Error message string or NULL if no error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetLastError</span><span class="p">());</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="scope-operations">
+<h3>Scope Operations<a class="headerlink" href="#scope-operations" title="Link to this heading"></a></h3>
+<section id="ucis-createscope">
+<h4>ucis_CreateScope<a class="headerlink" href="#ucis-createscope" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_CreateScope">
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateScope</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateScope" title="Link to this definition"></a><br /></dt>
+<dd><p>Create a new scope in the hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent scope or NULL for root-level scope</p></li>
+<li><p><strong>name</strong> – Scope name</p></li>
+<li><p><strong>source</strong> – Source location info or NULL</p></li>
+<li><p><strong>weight</strong> – Coverage weight (typically 1)</p></li>
+<li><p><strong>source_type</strong> – Source type (UCIS_VHDL, UCIS_VLOG, etc.)</p></li>
+<li><p><strong>type</strong> – Scope type (UCIS_INSTANCE, UCIS_COVERGROUP, etc.)</p></li>
+<li><p><strong>flags</strong> – Scope flags (coverage enables, UOR flags)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New scope handle or NULL on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create top-level instance</span>
+<span class="n">ucisScopeT</span><span class="w"> </span><span class="n">top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateScope</span><span class="p">(</span>
+<span class="w">    </span><span class="n">db</span><span class="p">,</span>
+<span class="w">    </span><span class="nb">NULL</span><span class="p">,</span><span class="w">               </span><span class="c1">// No parent</span>
+<span class="w">    </span><span class="s">&quot;top&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nb">NULL</span><span class="p">,</span><span class="w">               </span><span class="c1">// No source info</span>
+<span class="w">    </span><span class="mi">1</span><span class="p">,</span><span class="w">                  </span><span class="c1">// Weight</span>
+<span class="w">    </span><span class="n">UCIS_VLOG</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_INSTANCE</span><span class="p">,</span>
+<span class="w">    </span><span class="mi">0</span><span class="w">                   </span><span class="c1">// No flags</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-createinstance">
+<h4>ucis_CreateInstance<a class="headerlink" href="#ucis-createinstance" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_CreateInstance">
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateInstance</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span>, <span class="n"><span class="pre">ucisSourceT</span></span><span class="w"> </span><span class="n"><span class="pre">source_type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateInstance" title="Link to this definition"></a><br /></dt>
+<dd><p>Create an instance scope (convenience wrapper).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent scope</p></li>
+<li><p><strong>name</strong> – Instance name</p></li>
+<li><p><strong>source</strong> – Source location or NULL</p></li>
+<li><p><strong>weight</strong> – Coverage weight</p></li>
+<li><p><strong>source_type</strong> – Source type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New instance scope or NULL on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">dut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateInstance</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dut&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_VLOG</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getscopename">
+<h4>ucis_GetScopeName<a class="headerlink" href="#ucis-getscopename" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetScopeName">
+<span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeName</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetScopeName" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the name of a scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scope name or NULL on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_GetScopeName</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;Scope name: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getscopetype">
+<h4>ucis_GetScopeType<a class="headerlink" href="#ucis-getscopetype" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetScopeType">
+<span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetScopeType</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetScopeType" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the type of a scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scope type flags</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisScopeTypeT</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_GetScopeType</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">type</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">UCIS_INSTANCE</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;This is an instance</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getparent">
+<h4>ucis_GetParent<a class="headerlink" href="#ucis-getparent" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetParent">
+<span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetParent</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetParent" title="Link to this definition"></a><br /></dt>
+<dd><p>Get the parent scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Parent scope handle or NULL if root</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">parent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_GetParent</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">parent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Parent: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetScopeName</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-setscopeweight">
+<h4>ucis_SetScopeWeight<a class="headerlink" href="#ucis-setscopeweight" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_SetScopeWeight">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeWeight</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">weight</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeWeight" title="Link to this definition"></a><br /></dt>
+<dd><p>Set the coverage weight of a scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+<li><p><strong>weight</strong> – New weight value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-setscopegoal">
+<h4>ucis_SetScopeGoal<a class="headerlink" href="#ucis-setscopegoal" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_SetScopeGoal">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeGoal</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">goal</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeGoal" title="Link to this definition"></a><br /></dt>
+<dd><p>Set the coverage goal percentage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+<li><p><strong>goal</strong> – Goal percentage (0-100)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-setscopeflags">
+<h4>ucis_SetScopeFlags<a class="headerlink" href="#ucis-setscopeflags" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_SetScopeFlags">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetScopeFlags</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">scope</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">flags</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetScopeFlags" title="Link to this definition"></a><br /></dt>
+<dd><p>Set scope flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>scope</strong> – Scope handle</p></li>
+<li><p><strong>flags</strong> – Flag bits (coverage enables, UOR flags)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-scopeiterate">
+<h4>ucis_ScopeIterate<a class="headerlink" href="#ucis-scopeiterate" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_ScopeIterate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_ScopeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisScopeTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisScopeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_ScopeIterate" title="Link to this definition"></a><br /></dt>
+<dd><p>Iterate over child scopes with optional type filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent scope or NULL for root-level scopes</p></li>
+<li><p><strong>type_mask</strong> – Scope type filter (bitwise OR of types, -1 for all)</p></li>
+<li><p><strong>callback</strong> – Callback function called for each scope</p></li>
+<li><p><strong>userdata</strong> – User data passed to callback</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+<p><strong>Callback signature:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ucisScopeCBT</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">userdata</span><span class="p">,</span><span class="w"> </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">scope</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">print_scope</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">userdata</span><span class="p">,</span><span class="w"> </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">scope</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ucisT</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ucisT</span><span class="p">)</span><span class="n">userdata</span><span class="p">;</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Scope: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ucis_GetScopeName</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Continue iteration</span>
+<span class="p">}</span>
+
+<span class="c1">// Iterate all child scopes</span>
+<span class="n">ucis_ScopeIterate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">print_scope</span><span class="p">,</span><span class="w"> </span><span class="n">db</span><span class="p">);</span>
+
+<span class="c1">// Iterate only instances</span>
+<span class="n">ucis_ScopeIterate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">parent</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_INSTANCE</span><span class="p">,</span><span class="w"> </span><span class="n">print_scope</span><span class="p">,</span><span class="w"> </span><span class="n">db</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="coverage-operations">
+<h3>Coverage Operations<a class="headerlink" href="#coverage-operations" title="Link to this heading"></a></h3>
+<section id="ucis-createnextcover">
+<h4>ucis_CreateNextCover<a class="headerlink" href="#ucis-createnextcover" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_CreateNextCover">
+<span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateNextCover</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">name</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span>, <span class="n"><span class="pre">ucisSourceInfoT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">source</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateNextCover" title="Link to this definition"></a><br /></dt>
+<dd><p>Create the next coverage item in a scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent scope</p></li>
+<li><p><strong>name</strong> – Coverage item name</p></li>
+<li><p><strong>data</strong> – Coverage data (type and initial count)</p></li>
+<li><p><strong>source</strong> – Source location or NULL</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New coverage item handle or NULL on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisCoverDataT</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="n">data</span><span class="p">.</span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UCIS_CVGBIN</span><span class="p">;</span>
+<span class="n">data</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span><span class="c1">// Initial count</span>
+
+<span class="n">ucisCoverT</span><span class="w"> </span><span class="n">bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateNextCover</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">coverpoint</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;low&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-getcoverdata">
+<h4>ucis_GetCoverData<a class="headerlink" href="#ucis-getcoverdata" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_GetCoverData">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_GetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_GetCoverData" title="Link to this definition"></a><br /></dt>
+<dd><p>Get coverage data for an item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>cover</strong> – Coverage item handle</p></li>
+<li><p><strong>data</strong> – Output parameter for coverage data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">ucisCoverDataT</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ucis_GetCoverData</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">cover</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hit count: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-setcoverdata">
+<h4>ucis_SetCoverData<a class="headerlink" href="#ucis-setcoverdata" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_SetCoverData">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="n"><span class="pre">ucisCoverDataT</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetCoverData" title="Link to this definition"></a><br /></dt>
+<dd><p>Set coverage data for an item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>cover</strong> – Coverage item handle</p></li>
+<li><p><strong>data</strong> – New coverage data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-incrementcoverdata">
+<h4>ucis_IncrementCoverData<a class="headerlink" href="#ucis-incrementcoverdata" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_IncrementCoverData">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_IncrementCoverData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisCoverT</span></span><span class="w"> </span><span class="n"><span class="pre">cover</span></span>, <span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">amount</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_IncrementCoverData" title="Link to this definition"></a><br /></dt>
+<dd><p>Increment coverage count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>cover</strong> – Coverage item handle</p></li>
+<li><p><strong>amount</strong> – Amount to increment (default: 1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+<p><strong>Example:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Increment by 1</span>
+<span class="n">ucis_IncrementCoverData</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">cover</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="ucis-coveriterate">
+<h4>ucis_CoverIterate<a class="headerlink" href="#ucis-coveriterate" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_CoverIterate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CoverIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisScopeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="n"><span class="pre">ucisCoverTypeT</span></span><span class="w"> </span><span class="n"><span class="pre">type_mask</span></span>, <span class="n"><span class="pre">ucisCoverCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CoverIterate" title="Link to this definition"></a><br /></dt>
+<dd><p>Iterate over coverage items in a scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent scope</p></li>
+<li><p><strong>type_mask</strong> – Coverage type filter (-1 for all)</p></li>
+<li><p><strong>callback</strong> – Callback function</p></li>
+<li><p><strong>userdata</strong> – User data passed to callback</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+<p><strong>Callback signature:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="p">(</span><span class="o">*</span><span class="n">ucisCoverCBT</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">userdata</span><span class="p">,</span><span class="w"> </span><span class="n">ucisCoverT</span><span class="w"> </span><span class="n">cover</span><span class="p">);</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+<section id="history-operations">
+<h3>History Operations<a class="headerlink" href="#history-operations" title="Link to this heading"></a></h3>
+<section id="ucis-createhistorynode">
+<h4>ucis_CreateHistoryNode<a class="headerlink" href="#ucis-createhistorynode" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_CreateHistoryNode">
+<span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_CreateHistoryNode</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">parent</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">logicalname</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">physicalname</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_CreateHistoryNode" title="Link to this definition"></a><br /></dt>
+<dd><p>Create a test history node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>parent</strong> – Parent history node or NULL</p></li>
+<li><p><strong>logicalname</strong> – Logical test name</p></li>
+<li><p><strong>physicalname</strong> – Physical file path or NULL</p></li>
+<li><p><strong>kind</strong> – History node kind (TEST, MERGE, TESTPLAN)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New history node handle or NULL on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-setteststatus">
+<h4>ucis_SetTestStatus<a class="headerlink" href="#ucis-setteststatus" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_SetTestStatus">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_SetTestStatus</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeT</span></span><span class="w"> </span><span class="n"><span class="pre">node</span></span>, <span class="n"><span class="pre">ucisTestStatusT</span></span><span class="w"> </span><span class="n"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_SetTestStatus" title="Link to this definition"></a><br /></dt>
+<dd><p>Set test execution status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>node</strong> – History node handle</p></li>
+<li><p><strong>status</strong> – Test status (OK, WARNING, FATAL)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="ucis-historynodeiterate">
+<h4>ucis_HistoryNodeIterate<a class="headerlink" href="#ucis-historynodeiterate" title="Link to this heading"></a></h4>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.ucis_HistoryNodeIterate">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ucis_HistoryNodeIterate</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">ucisT</span></span><span class="w"> </span><span class="n"><span class="pre">db</span></span>, <span class="n"><span class="pre">ucisHistoryNodeKindT</span></span><span class="w"> </span><span class="n"><span class="pre">kind_mask</span></span>, <span class="n"><span class="pre">ucisHistoryNodeCBT</span></span><span class="w"> </span><span class="n"><span class="pre">callback</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">userdata</span></span><span class="sig-paren">)</span><a class="headerlink" href="#c.ucis_HistoryNodeIterate" title="Link to this definition"></a><br /></dt>
+<dd><p>Iterate over history nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Database handle</p></li>
+<li><p><strong>kind_mask</strong> – Kind filter (-1 for all)</p></li>
+<li><p><strong>callback</strong> – Callback function</p></li>
+<li><p><strong>userdata</strong> – User data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, non-zero on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+</section>
+<section id="type-definitions">
+<h2>Type Definitions<a class="headerlink" href="#type-definitions" title="Link to this heading"></a></h2>
+<section id="opaque-handle-types">
+<h3>Opaque Handle Types<a class="headerlink" href="#opaque-handle-types" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ucis_s</span><span class="o">*</span><span class="w"> </span><span class="n">ucisT</span><span class="p">;</span><span class="w">                    </span><span class="c1">// Database handle</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ucis_scope_s</span><span class="o">*</span><span class="w"> </span><span class="n">ucisScopeT</span><span class="p">;</span><span class="w">         </span><span class="c1">// Scope handle</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ucis_cover_s</span><span class="o">*</span><span class="w"> </span><span class="n">ucisCoverT</span><span class="p">;</span><span class="w">         </span><span class="c1">// Coverage item handle</span>
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">ucis_history_s</span><span class="o">*</span><span class="w"> </span><span class="n">ucisHistoryNodeT</span><span class="p">;</span><span class="w"> </span><span class="c1">// History node handle</span>
+</pre></div>
+</div>
+</section>
+<section id="scope-types">
+<h3>Scope Types<a class="headerlink" href="#scope-types" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UCIS_TOGGLE</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0001</span><span class="p">,</span><span class="w">   </span><span class="c1">// Toggle coverage</span>
+<span class="w">    </span><span class="n">UCIS_BRANCH</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0002</span><span class="p">,</span><span class="w">   </span><span class="c1">// Branch coverage</span>
+<span class="w">    </span><span class="n">UCIS_EXPR</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0004</span><span class="p">,</span><span class="w">   </span><span class="c1">// Expression coverage</span>
+<span class="w">    </span><span class="n">UCIS_COND</span><span class="w">          </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0008</span><span class="p">,</span><span class="w">   </span><span class="c1">// Condition coverage</span>
+<span class="w">    </span><span class="n">UCIS_INSTANCE</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0010</span><span class="p">,</span><span class="w">   </span><span class="c1">// Design instance</span>
+<span class="w">    </span><span class="n">UCIS_DU_MODULE</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0020</span><span class="p">,</span><span class="w">   </span><span class="c1">// Module design unit</span>
+<span class="w">    </span><span class="n">UCIS_DU_ARCH</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0040</span><span class="p">,</span><span class="w">   </span><span class="c1">// Architecture design unit</span>
+<span class="w">    </span><span class="n">UCIS_COVERGROUP</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x1000</span><span class="p">,</span><span class="w">   </span><span class="c1">// Covergroup type</span>
+<span class="w">    </span><span class="n">UCIS_COVERINSTANCE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x2000</span><span class="p">,</span><span class="w">   </span><span class="c1">// Covergroup instance</span>
+<span class="w">    </span><span class="n">UCIS_COVERPOINT</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x4000</span><span class="p">,</span><span class="w">   </span><span class="c1">// Coverpoint</span>
+<span class="w">    </span><span class="n">UCIS_CROSS</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="mh">0x8000</span><span class="p">,</span><span class="w">   </span><span class="c1">// Cross coverage</span>
+<span class="w">    </span><span class="n">UCIS_FSM</span><span class="w">           </span><span class="o">=</span><span class="w"> </span><span class="mh">0x400000</span><span class="p">,</span><span class="w"> </span><span class="c1">// Finite state machine</span>
+<span class="w">    </span><span class="n">UCIS_ASSERT</span><span class="w">        </span><span class="o">=</span><span class="w"> </span><span class="mh">0x800000</span><span class="w">  </span><span class="c1">// Assertion</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisScopeTypeT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage-types">
+<h3>Coverage Types<a class="headerlink" href="#coverage-types" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UCIS_CVGBIN</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0001</span><span class="p">,</span><span class="w">   </span><span class="c1">// Covergroup bin</span>
+<span class="w">    </span><span class="n">UCIS_STMTBIN</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0002</span><span class="p">,</span><span class="w">   </span><span class="c1">// Statement</span>
+<span class="w">    </span><span class="n">UCIS_BRANCHBIN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0004</span><span class="p">,</span><span class="w">   </span><span class="c1">// Branch</span>
+<span class="w">    </span><span class="n">UCIS_EXPRBIN</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0008</span><span class="p">,</span><span class="w">   </span><span class="c1">// Expression</span>
+<span class="w">    </span><span class="n">UCIS_CONDBIN</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0010</span><span class="p">,</span><span class="w">   </span><span class="c1">// Condition</span>
+<span class="w">    </span><span class="n">UCIS_TOGGLEBIN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0200</span><span class="p">,</span><span class="w">   </span><span class="c1">// Toggle</span>
+<span class="w">    </span><span class="n">UCIS_ASSERTBIN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0400</span><span class="p">,</span><span class="w">   </span><span class="c1">// Assertion</span>
+<span class="w">    </span><span class="n">UCIS_FSMBIN</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="mh">0x0800</span><span class="p">,</span><span class="w">   </span><span class="c1">// FSM state/transition</span>
+<span class="w">    </span><span class="n">UCIS_IGNOREBIN</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="mh">0x80000</span><span class="p">,</span><span class="w">  </span><span class="c1">// Ignore bin</span>
+<span class="w">    </span><span class="n">UCIS_ILLEGALBIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x100000</span><span class="p">,</span><span class="w"> </span><span class="c1">// Illegal bin</span>
+<span class="w">    </span><span class="n">UCIS_DEFAULTBIN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x200000</span><span class="w">  </span><span class="c1">// Default bin</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisCoverTypeT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="coverage-data">
+<h3>Coverage Data<a class="headerlink" href="#coverage-data" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ucisCoverTypeT</span><span class="w"> </span><span class="n">type</span><span class="p">;</span><span class="w">  </span><span class="c1">// Coverage type</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w">             </span><span class="c1">// Hit count</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">goal</span><span class="p">;</span><span class="w">             </span><span class="c1">// Goal value</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">weight</span><span class="p">;</span><span class="w">           </span><span class="c1">// Weight</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">at_least</span><span class="p">;</span><span class="w">         </span><span class="c1">// Minimum count for coverage</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisCoverDataT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="source-information">
+<h3>Source Information<a class="headerlink" href="#source-information" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">file</span><span class="p">;</span><span class="w">  </span><span class="c1">// Source file path</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">line</span><span class="p">;</span><span class="w">          </span><span class="c1">// Line number</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">token</span><span class="p">;</span><span class="w">         </span><span class="c1">// Token position</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisSourceInfoT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="source-types">
+<h3>Source Types<a class="headerlink" href="#source-types" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UCIS_NONE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_VHDL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_VLOG</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_SV</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_PSL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_E</span><span class="p">,</span>
+<span class="w">    </span><span class="n">UCIS_VERA</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisSourceT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="test-status">
+<h3>Test Status<a class="headerlink" href="#test-status" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UCIS_TESTSTATUS_OK</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">      </span><span class="c1">// Test passed</span>
+<span class="w">    </span><span class="n">UCIS_TESTSTATUS_WARNING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="c1">// Test passed with warnings</span>
+<span class="w">    </span><span class="n">UCIS_TESTSTATUS_FATAL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w">    </span><span class="c1">// Test failed</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisTestStatusT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="history-node-kinds">
+<h3>History Node Kinds<a class="headerlink" href="#history-node-kinds" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">UCIS_HISTORYNODE_TEST</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x01</span><span class="p">,</span><span class="w">     </span><span class="c1">// Test run</span>
+<span class="w">    </span><span class="n">UCIS_HISTORYNODE_MERGE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x02</span><span class="p">,</span><span class="w">    </span><span class="c1">// Merged coverage</span>
+<span class="w">    </span><span class="n">UCIS_HISTORYNODE_TESTPLAN</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x04</span><span class="w">  </span><span class="c1">// Test plan node</span>
+<span class="p">}</span><span class="w"> </span><span class="n">ucisHistoryNodeKindT</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="complete-examples">
+<h2>Complete Examples<a class="headerlink" href="#complete-examples" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;ucis.h&quot;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Create database</span>
+<span class="w">    </span><span class="n">ucisT</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_Open</span><span class="p">(</span><span class="s">&quot;example.ucisdb&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Failed to open database</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="c1">// Create hierarchy</span>
+<span class="w">    </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateInstance</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;top&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_VLOG</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">dut</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateInstance</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;dut&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_VLOG</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Create covergroup</span>
+<span class="w">    </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">cg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateScope</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">dut</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;addr_cg&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">UCIS_SV</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_COVERGROUP</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateScope</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">cg</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;addr_cp&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                                     </span><span class="n">UCIS_SV</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_COVERPOINT</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Add bins</span>
+<span class="w">    </span><span class="n">ucisCoverDataT</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">UCIS_CVGBIN</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ucis_CreateNextCover</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;low&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ucis_CreateNextCover</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;high&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Create test record</span>
+<span class="w">    </span><span class="n">ucisHistoryNodeT</span><span class="w"> </span><span class="n">test</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ucis_CreateHistoryNode</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test1&quot;</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="s">&quot;test1.sv&quot;</span><span class="p">,</span>
+<span class="w">                                                   </span><span class="n">UCIS_HISTORYNODE_TEST</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ucis_SetTestStatus</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="n">UCIS_TESTSTATUS_OK</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Close database</span>
+<span class="w">    </span><span class="n">ucis_Close</span><span class="p">(</span><span class="n">db</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="iterating-scopes">
+<h3>Iterating Scopes<a class="headerlink" href="#iterating-scopes" title="Link to this heading"></a></h3>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ucisT</span><span class="w"> </span><span class="n">db</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">depth</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">IterCtx</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">print_scope_cb</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">userdata</span><span class="p">,</span><span class="w"> </span><span class="n">ucisScopeT</span><span class="w"> </span><span class="n">scope</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">IterCtx</span><span class="o">*</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">IterCtx</span><span class="o">*</span><span class="p">)</span><span class="n">userdata</span><span class="p">;</span>
+
+<span class="w">    </span><span class="c1">// Print with indentation</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">depth</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;  &quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s (type=0x%x)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">ucis_GetScopeName</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">),</span>
+<span class="w">           </span><span class="n">ucis_GetScopeType</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// Recurse to children</span>
+<span class="w">    </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">depth</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="n">ucis_ScopeIterate</span><span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">print_scope_cb</span><span class="p">,</span><span class="w"> </span><span class="n">ctx</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">depth</span><span class="o">--</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">print_hierarchy</span><span class="p">(</span><span class="n">ucisT</span><span class="w"> </span><span class="n">db</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">IterCtx</span><span class="w"> </span><span class="n">ctx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">};</span>
+<span class="w">    </span><span class="n">ucis_ScopeIterate</span><span class="p">(</span><span class="n">db</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">print_scope_cb</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">ctx</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="using-from-python">
+<h3>Using from Python<a class="headerlink" href="#using-from-python" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="c1"># Load library</span>
+<span class="n">libucis</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CDLL</span><span class="p">(</span><span class="s2">&quot;./libucis.so&quot;</span><span class="p">)</span>
+
+<span class="c1"># Define function signatures</span>
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_Open</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">]</span>
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_Open</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_CreateInstance</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>  <span class="c1"># db</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>  <span class="c1"># parent</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_char_p</span><span class="p">,</span>  <span class="c1"># name</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">,</span>  <span class="c1"># source</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span><span class="p">,</span>     <span class="c1"># weight</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">c_int</span>      <span class="c1"># source_type</span>
+<span class="p">]</span>
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_CreateInstance</span><span class="o">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span>
+
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_Close</span><span class="o">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_void_p</span><span class="p">]</span>
+
+<span class="c1"># Use the API</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">libucis</span><span class="o">.</span><span class="n">ucis_Open</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;test.ucisdb&quot;</span><span class="p">)</span>
+<span class="n">top</span> <span class="o">=</span> <span class="n">libucis</span><span class="o">.</span><span class="n">ucis_CreateInstance</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># UCIS_VLOG=2</span>
+<span class="n">libucis</span><span class="o">.</span><span class="n">ucis_Close</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance">
+<h2>Performance<a class="headerlink" href="#performance" title="Link to this heading"></a></h2>
+<section id="optimization-tips">
+<h3>Optimization Tips<a class="headerlink" href="#optimization-tips" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Use transactions for bulk operations:</strong></p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">sqlite3_exec</span><span class="p">(</span><span class="n">db_conn</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BEGIN TRANSACTION&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+<span class="c1">// Create many scopes/covers</span>
+<span class="n">sqlite3_exec</span><span class="p">(</span><span class="n">db_conn</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;COMMIT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">,</span><span class="w"> </span><span class="nb">NULL</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Cache handles when possible:</strong></p>
+<p>Store scope/cover handles rather than looking them up repeatedly.</p>
+</li>
+<li><p><strong>Use type masks in iteration:</strong></p>
+<p>Filter iterations to specific types to reduce overhead.</p>
+</li>
+<li><p><strong>Close database when done:</strong></p>
+<p>Call ucis_Close() to ensure all data is flushed.</p>
+</li>
+</ol>
+</section>
+<section id="typical-performance">
+<h3>Typical Performance<a class="headerlink" href="#typical-performance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Scope creation: ~10,000 scopes/second</p></li>
+<li><p>Coverage item creation: ~20,000 items/second</p></li>
+<li><p>Iteration: ~50,000 items/second</p></li>
+<li><p>Handle lookup: ~1,000,000 lookups/second</p></li>
+</ul>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="sqlite_api.html"><span class="doc">SQLite Backend API</span></a> - Python SQLite API</p></li>
+<li><p><a class="reference internal" href="sqlite_schema_reference.html"><span class="doc">SQLite Schema Reference</span></a> - SQL schema details</p></li>
+<li><p><a class="reference internal" href="ucis_c_api.html"><span class="doc">UCIS C-Style API</span></a> - General UCIS C API reference</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sqlite-api.html" class="btn btn-neutral float-left" title="SQLite Backend API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="best-practices.html" class="btn btn-neutral float-right" title="Best Practices for Recording Coverage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
