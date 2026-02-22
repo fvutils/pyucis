@@ -26,9 +26,11 @@ def get_parser():
         help="Specifies the output of the conversion",
         required=True)
     convert.add_argument("--input-format", "-if",
-        help="Specifies the format of the input database. Defaults to 'xml'")
+        help="Specifies the format of the input database. Defaults to 'xml'. "
+             "Valid formats: avl-json, cocotb-xml, cocotb-yaml, libucis, sqlite, vltcov, xml, yaml")
     convert.add_argument("--output-format", "-of",
-        help="Specifies the format of the output database. Defaults to 'xml'")
+        help="Specifies the format of the output database. Defaults to 'xml'. "
+             "Valid formats: avl-json, cocotb-xml, cocotb-yaml, libucis, sqlite, vltcov, xml, yaml")
     convert.add_argument("input", help="Source database to convert")
     convert.set_defaults(func=cmd_convert.convert)
    
