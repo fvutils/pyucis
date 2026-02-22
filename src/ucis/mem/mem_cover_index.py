@@ -29,5 +29,18 @@ class MemCoverIndex(CoverIndex):
     
     def incrementCover(self, amt=1):
         self.data.data += amt
+
+    def setCoverData(self, data: CoverData):
+        """Replace the cover data for this item."""
+        self.data = data
+
+    def getCoverFlags(self) -> int:
+        """Get cover flags (stored in data.flags)."""
+        return self.data.flags if self.data else 0
+
+    def setCoverFlags(self, flags: int):
+        """Set cover flags."""
+        if self.data:
+            self.data.flags = flags
         
         

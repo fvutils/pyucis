@@ -10,4 +10,5 @@ sphinxcontrib-makedomain
 sphinxcontrib-spelling
 sphinx-issues
 sphinx-argparse
+sphinx-design
 

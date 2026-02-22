@@ -143,14 +143,13 @@ class SqliteCoverpoint(SqliteScope, Coverpoint):
         )
     
     def getComment(self) -> str:
-        self._ensure_loaded()
-        return self._comment
+        from ucis.str_property import StrProperty
+        val = self.getStringProperty(-1, StrProperty.COMMENT)
+        return val if val is not None else ''
     
     def setComment(self, value: str):
-        self._ensure_loaded()
-        self._comment = value
-    
-    # Coverpoint-specific: Scope goal methods
+        from ucis.str_property import StrProperty
+        self.setStringProperty(-1, StrProperty.COMMENT, value)
     def getScopeGoal(self) -> int:
         """Get coverpoint-specific goal"""
         return self.getGoal()

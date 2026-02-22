@@ -1,0 +1,21 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="mballance" writtenTime="1771-07-09T02:03:05" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <sourceFiles fileName="prop.sv" id="2"/>
+  <historyNodes historyNodeId="0" logicalName="test_basic" physicalName="./run.sh" kind="1" testStatus="true" seed="42" date="2024-01-01T12:00:00" toolCategory="simulator" ucisVersion="1.0" vendorId="unknown" vendorTool="unknown" vendorToolVersion="unknown"/>
+  <instanceCoverages name="prop_inst" key="0" instanceId="0" moduleName="work.prop">
+    <id file="2" line="1" inlineCount="1"/>
+    <assertionCoverage>
+      <assertion name="prop_valid" assertionKind="cover">
+        <coverBin>
+          <contents coverageCount="8"/>
+        </coverBin>
+        <failBin>
+          <contents coverageCount="0"/>
+        </failBin>
+        <attemptBin>
+          <contents coverageCount="8"/>
+        </attemptBin>
+      </assertion>
+    </assertionCoverage>
+  </instanceCoverages>
+</UCIS>

@@ -195,13 +195,13 @@ class SqliteCovergroup(SqliteScope, Covergroup):
         )
     
     def getComment(self) -> str:
-        self._ensure_loaded()
-        return self._comment
+        from ucis.str_property import StrProperty
+        val = self.getStringProperty(-1, StrProperty.COMMENT)
+        return val if val is not None else ''
     
     def setComment(self, value: str):
-        self._ensure_loaded()
-        self._comment = value
-        # Note: comment might be stored in properties table or separate column
+        from ucis.str_property import StrProperty
+        self.setStringProperty(-1, StrProperty.COMMENT, value)
     
     # Creation methods
     def createCoverpoint(self, name: str, srcinfo: SourceInfo, weight: int,

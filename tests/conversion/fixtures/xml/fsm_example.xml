@@ -1,0 +1,41 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="mballance" writtenTime="1771-07-09T02:03:05" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <sourceFiles fileName="fsm.sv" id="2"/>
+  <historyNodes historyNodeId="0" logicalName="test_basic" physicalName="./run.sh" kind="1" testStatus="true" seed="42" date="2024-01-01T12:00:00" toolCategory="simulator" ucisVersion="1.0" vendorId="unknown" vendorTool="unknown" vendorToolVersion="unknown"/>
+  <instanceCoverages name="fsm_inst" key="0" instanceId="0" moduleName="work.fsm">
+    <id file="2" line="1" inlineCount="1"/>
+    <fsmCoverage>
+      <fsm name="state_reg" type="reg" width="1">
+        <state stateName="IDLE" stateValue="0">
+          <stateBin>
+            <contents coverageCount="5"/>
+          </stateBin>
+        </state>
+        <state stateName="ACTIVE" stateValue="1">
+          <stateBin>
+            <contents coverageCount="3"/>
+          </stateBin>
+        </state>
+        <state stateName="DONE" stateValue="2">
+          <stateBin>
+            <contents coverageCount="0"/>
+          </stateBin>
+        </state>
+        <stateTransition>
+          <state>IDLE</state>
+          <state>ACTIVE</state>
+          <transitionBin>
+            <contents coverageCount="3"/>
+          </transitionBin>
+        </stateTransition>
+        <stateTransition>
+          <state>ACTIVE</state>
+          <state>DONE</state>
+          <transitionBin>
+            <contents coverageCount="0"/>
+          </transitionBin>
+        </stateTransition>
+      </fsm>
+    </fsmCoverage>
+  </instanceCoverages>
+</UCIS>

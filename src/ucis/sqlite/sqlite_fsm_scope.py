@@ -51,6 +51,23 @@ class FSMState:
         row = cursor.fetchone()
         return row[0] if row else 0
 
+    def getCount(self) -> int:
+        """Alias for getVisitCount."""
+        return self.getVisitCount()
+
+    def incrementCount(self, amt: int = 1):
+        """Increment visit count by amt."""
+        current = self.getVisitCount()
+        self.fsm_scope.ucis_db.conn.execute(
+            """UPDATE coveritems SET cover_data = ?
+               WHERE scope_id = ? AND cover_name = ? AND cover_type & 0x800 != 0""",
+            (current + amt, self.fsm_scope.scope_id, self.state_name)
+        )
+
+    def incrementVisitCount(self, amt: int = 1):
+        """Alias for incrementCount."""
+        self.incrementCount(amt)
+
 
 class FSMTransition:
     """Represents an FSM state transition"""
@@ -288,3 +305,14 @@ class SqliteFSMScope(SqliteScope):
         covered = row[0] if row else 0
         
         return (100.0 * covered / total) if total > 0 else 0.0
+
+    def createNextTransition(self, from_state_name: str, to_state_name: str,
+                             data=None, srcinfo=None):
+        """Create an FSM transition cover item, creating states if needed."""
+        from_state = self.getState(from_state_name)
+        if from_state is None:
+            from_state = self.createState(from_state_name)
+        to_state = self.getState(to_state_name)
+        if to_state is None:
+            to_state = self.createState(to_state_name)
+        return self.createTransition(from_state, to_state)

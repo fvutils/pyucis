@@ -21,7 +21,7 @@ Created on Jan 9, 2020
 
 @author: ballance
 '''
-from enum import IntEnum
+from enum import IntEnum, auto
 
 
 class RealProperty(IntEnum):
@@ -52,5 +52,14 @@ class RealProperty(IntEnum):
         StrProperty: String property identifiers
         UCIS LRM Section 8.16 "Property Management"
     """
-    b = 0
-    """Placeholder real property (currently unused)."""
+    SIMTIME = 0          # UCIS_REAL_TEST_SIMTIME — simulation end time
+    """Simulation time at end of test run. Applied to HistoryNode."""
+    
+    CPUTIME = auto()     # UCIS_REAL_HIST_CPUTIME — CPU time for the test run
+    """CPU time consumed by the test run. Applied to HistoryNode."""
+    
+    COST = auto()        # UCIS_REAL_TEST_COST — cost to re-run this test
+    """Relative cost of re-running this test. Applied to HistoryNode."""
+    
+    CVG_INST_AVERAGE = auto()  # UCIS_REAL_CVG_INST_AVERAGE — avg coverage across instances
+    """Average coverage percentage across all covergroup instances."""

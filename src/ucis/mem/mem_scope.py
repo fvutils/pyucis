@@ -164,11 +164,21 @@ class MemScope(MemObj,Scope):
         elif type == ScopeTypeT.COVERPOINT:
             from .mem_coverpoint import MemCoverpoint
             ret = MemCoverpoint(self, name, srcinfo, weight, source)
-#         elif type == ScopeTypeT.CROSS:
-#             from .mem_cross import MemCross
-#             ret = MemCross(self, name, srcinfo, weight, source)
+        elif type == ScopeTypeT.CROSS:
+            from .mem_cross import MemCross
+            ret = MemCross(self, name, srcinfo, weight, source)
+        elif type == ScopeTypeT.TOGGLE:
+            from .mem_toggle_scope import MemToggleScope
+            ret = MemToggleScope(self, name, srcinfo, weight, source, flags)
+        elif type == ScopeTypeT.FSM:
+            from .mem_fsm_scope import MemFSMScope
+            ret = MemFSMScope(self, name, srcinfo, weight, source, flags)
         else:
-            raise NotImplementedError("Scope type " + str(type) + " not supported")
+            # Generic fallthrough for BRANCH, COND, EXPR, COVBLOCK, PROCESS,
+            # BLOCK, FUNCTION, TASK, FORKJOIN, GENERATE, ASSERT, COVER,
+            # PROGRAM, PACKAGE, INTERFACE, CLASS, GENERIC, FSM_STATES,
+            # FSM_TRANS, CVGBINSCOPE, ILLEGALBINSCOPE, IGNOREBINSCOPE
+            ret = MemScope(self, name, srcinfo, weight, source, type, flags)
         
         self.addChild(ret)
         
@@ -195,11 +205,76 @@ class MemScope(MemObj,Scope):
                     toggle_metric : ToggleMetricT,
                     toggle_type : ToggleTypeT,
                     toggle_dir : ToggleDirT) -> 'Scope':
-        raise UnimplError()            
+        from ucis.mem.mem_toggle_scope import MemToggleScope
+        ret = MemToggleScope(self, name, None, 1, SourceT.NONE, flags)
+        ret.setCanonicalName(canonical_name if canonical_name else name)
+        if toggle_metric is not None:
+            ret.setToggleMetric(toggle_metric)
+        if toggle_type is not None:
+            ret.setToggleType(toggle_type)
+        if toggle_dir is not None:
+            ret.setToggleDir(toggle_dir)
+        self.addChild(ret)
+        return ret
     
     def scopes(self, mask)->Iterator['Scope']:
         return MemScopeIterator(self.m_children, mask)
     
     def coverItems(self, mask : CoverTypeT) -> Iterator[CoverIndex]:
         return MemCoverIndexIterator(self.m_cover_items, mask)
+
+    def setAttribute(self, key: str, value: str):
+        """Set a user-defined attribute on this scope."""
+        if not hasattr(self, '_attributes'):
+            self._attributes = {}
+        self._attributes[key] = value
+
+    def getAttribute(self, key: str) -> str:
+        """Get a user-defined attribute by key."""
+        if not hasattr(self, '_attributes'):
+            return None
+        return self._attributes.get(key)
+
+    def getAttributes(self):
+        """Get all user-defined attributes as a dict."""
+        if not hasattr(self, '_attributes'):
+            return {}
+        return dict(self._attributes)
+
+    def deleteAttribute(self, key: str):
+        """Delete a user-defined attribute by key."""
+        if hasattr(self, '_attributes'):
+            self._attributes.pop(key, None)
+
+    def addTag(self, tag_name: str):
+        """Add a tag to this scope."""
+        if not hasattr(self, '_tags'):
+            self._tags = set()
+        self._tags.add(tag_name)
+
+    def hasTag(self, tag_name: str) -> bool:
+        """Check if this scope has a specific tag."""
+        if not hasattr(self, '_tags'):
+            return False
+        return tag_name in self._tags
+
+    def removeTag(self, tag_name: str):
+        """Remove a tag from this scope."""
+        if hasattr(self, '_tags'):
+            self._tags.discard(tag_name)
+
+    def getTags(self):
+        """Get all tags on this scope."""
+        if not hasattr(self, '_tags'):
+            return set()
+        return set(self._tags)
+
+    def removeCover(self, coverindex: int) -> None:
+        """Remove cover item at the given index from this scope."""
+        # Remove from both cover item lists
+        if 0 <= coverindex < len(self.m_cover_items):
+            self.m_cover_items.pop(coverindex)
+        # Also remove from m_cover_item_l if present (MemInstanceScope)
+        if hasattr(self, 'm_cover_item_l') and 0 <= coverindex < len(self.m_cover_item_l):
+            self.m_cover_item_l.pop(coverindex)
     

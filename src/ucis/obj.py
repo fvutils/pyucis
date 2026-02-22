@@ -367,4 +367,56 @@ class Obj():
             Visitor design pattern documentation
         """
         raise UnimplError()
+
+    # --- User-defined attributes ---
+
+    def setAttribute(self, key: str, value: str):
+        """Set a user-defined string attribute on this object."""
+        raise UnimplError()
+
+    def getAttribute(self, key: str) -> str:
+        """Get a user-defined attribute by key. Returns None if not found."""
+        raise UnimplError()
+
+    def getAttributes(self) -> dict:
+        """Get all user-defined attributes as a {key: value} dict."""
+        raise UnimplError()
+
+    def deleteAttribute(self, key: str):
+        """Delete a user-defined attribute by key."""
+        raise UnimplError()
+
+    # --- Tags ---
+
+    def addTag(self, tag_name: str):
+        """Add a tag to this object."""
+        raise UnimplError()
+
+    def hasTag(self, tag_name: str) -> bool:
+        """Return True if this object has the given tag."""
+        raise UnimplError()
+
+    def removeTag(self, tag_name: str):
+        """Remove a tag from this object."""
+        raise UnimplError()
+
+    def getTags(self) -> set:
+        """Return the set of all tags on this object."""
+        raise UnimplError()
+
+    # --- Cover item flags ---
+
+    def getCoverFlags(self) -> int:
+        """Get the flags bitmask for this cover item."""
+        raise UnimplError()
+
+    def setCoverFlags(self, flags: int):
+        """Set the flags bitmask for this cover item."""
+        raise UnimplError()
+
+    # --- setCoverData ---
+
+    def setCoverData(self, data):
+        """Replace cover data for this item."""
+        raise UnimplError()
         

@@ -120,4 +120,7 @@ class CoverTypeT(IntFlag):
     RESERVEDBIN = 0xFF00000000000000
     """Reserved for future use by the UCIS standard."""
 
+    ALL = 0xFFFFFFFFFFFFFFFF
+    """Mask for all cover item types."""
+
     

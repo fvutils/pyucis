@@ -58,14 +58,15 @@ class MemInstanceScope(MemScope,InstanceScope):
             ret = MemBranchScope(self, name, srcinfo, weight, source, flags)
         elif (type & ScopeTypeT.TOGGLE) != 0:
             ret = MemToggleScope(self, name, srcinfo, weight, source, flags)
+        elif (type & ScopeTypeT.FSM) != 0:
+            from ucis.mem.mem_fsm_scope import MemFSMScope
+            ret = MemFSMScope(self, name, srcinfo, weight, source, flags)
         else:
-            raise UnimplError()
+            # Generic fallback for other scope types
+            ret = MemScope(self, name, srcinfo, weight, source, type, flags)
 
         self.addChild(ret)        
         return ret
-            
-        
-        MemScope.createScope(self, name, srcinfo, weight, source, type, flags)
 
     def createNextCover(self, 
         name:str, 
@@ -74,7 +75,9 @@ class MemInstanceScope(MemScope,InstanceScope):
         ret = len(self.m_cover_item_l)
         ci = MemCoverItem(self, name, data, sourceinfo)
         self.m_cover_item_l.append(ci)
-        
+        # Also track in parent's m_cover_items for coverItems() iteration
+        from ucis.mem.mem_cover_index import MemCoverIndex
+        self.m_cover_items.append(MemCoverIndex(name, data, sourceinfo))
         return ret
     
     def createToggle(self,
