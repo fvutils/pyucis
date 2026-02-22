@@ -1,0 +1,19 @@
+	   README.md
+	   doc/source/index.rst
+	   doc/source/introduction.rst
+	    examples/ai_assisted_workflow/MIGRATION_COMPLETE.md
+	   ivpm.yaml
+	   setup.py
+	   src/ucis/rgy/format_rgy.py
+
+	doc/source/cocotb_avl_coverage_import.rst
+	src/ucis/avl/
+	src/ucis/cocotb/
+	src/ucis/format_detection.py
+	src/ucis/tui/key_parser_old.py
+	tests/fixtures/
+	tests/unit/test_avl_json_reader.py
+	tests/unit/test_cocotb_xml_reader.py
+	tests/unit/test_cocotb_yaml_reader.py
+	tests/unit/test_format_detection.py
+
