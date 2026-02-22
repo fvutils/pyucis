@@ -39,6 +39,7 @@ sys.path.insert(0, os.path.join(rootdir, 'src'))
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
     'sphinxcontrib.makedomain',
     'sphinx.ext.autosectionlabel',
@@ -46,6 +47,7 @@ extensions = [
     'sphinx-jsonschema',
     'sphinx_issues',
     'sphinxarg.ext',
+    'sphinx_design',
     ]
 
 intersphinx_mapping = {

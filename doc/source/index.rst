@@ -1,35 +1,72 @@
-PyUCIS Documentation
-====================
+PyUCIS
+======
 
-PyUCIS is a Python implementation of the Unified Coverage Interoperability Standard (UCIS) for storing, manipulating, and reporting functional verification coverage data.
+PyUCIS is a Python toolkit for **importing, merging, analyzing, and reporting
+functional verification coverage data** in the
+`Unified Coverage Interoperability Standard (UCIS) <https://www.accellera.org/activities/committees/ucis>`_
+format. It works with coverage from Verilator, cocotb-coverage, AVL, and UCIS XML files,
+and provides a command-line interface, an interactive terminal UI, HTML reports, and
+CI/CD format export.
 
-**Key Features:**
+.. rubric:: Where do you want to start?
 
-* **Multiple Backend Support** - In-memory, SQLite, XML, and YAML backends
-* **SQLite Backend** - Persistent, queryable storage with SQL access
-* **Native C Library** - High-performance UCIS 1.0 C API with SQLite backend
-* **Full UCIS API** - Complete implementation of the UCIS object-oriented API
-* **Coverage Import** - Import from Verilator, cocotb-coverage, and AVL frameworks
-* **Coverage Reporting** - Interactive HTML, JSON, XML, Cobertura, and text report formats
-* **Interactive HTML Reports** - Single-file reports with visualizations, bin details, and filtering
-* **Interactive Terminal UI** - Real-time coverage exploration with keyboard-driven navigation
-* **Coverage Merging** - Combine coverage from multiple test runs
-* **Cross-Platform** - Works on Linux, macOS, and Windows
+.. list-table::
+   :widths: 40 60
 
-Contents:
+   * - :doc:`getting-started/quickstart`
+     - I have a coverage file and want to view or report it in 5 minutes
+   * - :doc:`importing/index`
+     - I need to import coverage from Verilator, cocotb, or AVL
+   * - :doc:`cicd/index`
+     - I want to integrate coverage into a CI/CD pipeline
+   * - :doc:`reference/index`
+     - I'm writing Python code against the PyUCIS API
 
 .. toctree::
    :maxdepth: 2
-   
-   introduction
-   commands
-   tui
-   show_commands
-   verilator_coverage_import
-   cocotb_avl_coverage_import
-   mcp_server
-   reference/reference
-   
-   
-Indices and tables
-==================
+   :hidden:
+   :caption: Getting Started
+
+   getting-started/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Importing Coverage
+
+   importing/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Working with Coverage
+
+   working-with-coverage/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Reporting
+
+   reporting/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: CI/CD Integration
+
+   cicd/index
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: AI Integration
+
+   ai-integration/mcp-server
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Reference
+
+   reference/index
