@@ -550,6 +550,10 @@ class XmlWriter():
     def setAttrDateTime(self, e, name, val):
         if val is None:
             return
+        # If val is an integer, treat it as a Unix timestamp directly
+        if isinstance(val, int):
+            self.setAttr(e, name, datetime.fromtimestamp(val).isoformat())
+            return
         # Try the standard UCIS format first, then common ISO variants
         for fmt in ("%Y%m%d%H%M%S", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
             try:

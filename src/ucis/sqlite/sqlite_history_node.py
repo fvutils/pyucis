@@ -19,6 +19,7 @@
 SQLite-backed HistoryNode implementation
 """
 
+from datetime import datetime
 from ucis.history_node import HistoryNode
 from ucis.history_node_kind import HistoryNodeKind
 from ucis.test_status_t import TestStatusT
@@ -206,26 +207,30 @@ class SqliteHistoryNode(SqliteObj, HistoryNode):
             (cmd, self.history_id)
         )
     
-    def getDate(self) -> int:
-        """Get test date"""
+    def getDate(self) -> str:
+        """Get test date as YYYYMMDDHHmmss string per the UCIS LRM"""
         cursor = self.ucis_db.conn.execute(
             "SELECT date FROM history_nodes WHERE history_id = ?",
             (self.history_id,)
         )
         row = cursor.fetchone()
         if row and row[0] is not None:
-            # Try to parse as int first, otherwise return 0
+            val = row[0]
+            # Handle legacy values stored as Unix timestamps (int or int-string)
             try:
-                return int(row[0])
+                ts = int(val)
+                return datetime.fromtimestamp(ts).strftime("%Y%m%d%H%M%S")
             except (ValueError, TypeError):
-                return 0
-        return 0
-    
-    def setDate(self, date: int):
-        """Set test date"""
+                pass
+            # Already a YYYYMMDDHHMMSS string
+            return str(val)
+        return ""
+
+    def setDate(self, date: str):
+        """Set test date as YYYYMMDDHHmmss string per the UCIS LRM"""
         self.ucis_db.conn.execute(
             "UPDATE history_nodes SET date = ? WHERE history_id = ?",
-            (str(date), self.history_id)
+            (str(date) if date is not None else None, self.history_id)
         )
     
     def getUserName(self) -> str:

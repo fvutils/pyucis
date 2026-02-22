@@ -189,7 +189,7 @@ class SqliteMerger:
                             None,
                             HistoryNodeKind.MERGE
                         )
-                        summary_node.setDate(int(datetime.now().timestamp()))
+                        summary_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
                         # Initialize test counter
                         cursor = self.target.conn.cursor()
                         cursor.execute(
@@ -216,7 +216,7 @@ class SqliteMerger:
                         None,
                         HistoryNodeKind.MERGE
                     )
-                    merge_node.setDate(int(datetime.now().timestamp()))
+                    merge_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
                     
                     # Copy test history nodes from source
                     for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
@@ -474,7 +474,7 @@ class SqliteMerger:
             None,
             HistoryNodeKind.MERGE
         )
-        merge_node.setDate(int(datetime.now().timestamp()))
+        merge_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
 
     def _create_squash_summary(self, num_sources):
         """Create or update a squashed summary history node."""
@@ -488,7 +488,7 @@ class SqliteMerger:
             summary_node = self.target.createHistoryNode(
                 None, "merged_summary", None, HistoryNodeKind.MERGE
             )
-            summary_node.setDate(int(datetime.now().timestamp()))
+            summary_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
             self.target.conn.execute(
                 "INSERT INTO history_properties (history_id, property_key, property_type, int_value) VALUES (?, ?, ?, ?)",
                 (summary_node.history_id, hash("TESTS_MERGED") & 0x7FFFFFFF, 0, 0)
@@ -517,7 +517,7 @@ class SqliteMerger:
                     summary_node = self.target.createHistoryNode(
                         None, "merged_summary", None, HistoryNodeKind.MERGE
                     )
-                    summary_node.setDate(int(datetime.now().timestamp()))
+                    summary_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
                     cursor = self.target.conn.cursor()
                     cursor.execute(
                         "INSERT INTO history_properties (history_id, property_key, property_type, int_value) VALUES (?, ?, ?, ?)",
@@ -538,7 +538,7 @@ class SqliteMerger:
                     None,
                     HistoryNodeKind.MERGE
                 )
-                merge_node.setDate(int(datetime.now().timestamp()))
+                merge_node.setDate(datetime.now().strftime("%Y%m%d%H%M%S"))
                 for src_test in source_ucis.historyNodes(HistoryNodeKind.TEST):
                     self._copy_history_node(src_test, merge_node)
                     self.stats.tests_merged += 1

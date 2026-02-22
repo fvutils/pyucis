@@ -212,10 +212,10 @@ class HistoryNode(Obj):
     def setCompulsory(self, compulsory : [str]):
         raise UnimplError()
     
-    def getDate(self)->int:
+    def getDate(self)->str:
         raise UnimplError()
     
-    def setDate(self, date : int):
+    def setDate(self, date : str):
         raise UnimplError()
     
     def getUserName(self) -> str:
