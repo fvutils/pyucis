@@ -120,6 +120,19 @@ class HierarchyView(BaseView):
             ).fetchall()
         }
 
+        toggle_stats = {
+            row[0]: (row[1] or 0, row[2] or 0)
+            for row in conn.execute(
+                """SELECT scope_id,
+                          COUNT(*) AS total,
+                          SUM(CASE WHEN cover_data > 0 THEN 1 ELSE 0 END) AS covered
+                   FROM coveritems
+                   WHERE cover_type = ?
+                   GROUP BY scope_id""",
+                (int(CoverTypeT.TOGGLEBIN),)
+            ).fetchall()
+        }
+
         parent_map = {}
         for scope_id, parent_id, scope_type, scope_name in scope_rows:
             node = HierarchyNode(scope_id=scope_id, name=scope_name, scope_type=scope_type)
@@ -128,6 +141,8 @@ class HierarchyView(BaseView):
             parent_map[scope_id] = parent_id
             if scope_type == int(ScopeTypeT.COVERPOINT):
                 node.total, node.covered = cp_stats.get(scope_id, (0, 0))
+            elif scope_type == int(ScopeTypeT.TOGGLE):
+                node.total, node.covered = toggle_stats.get(scope_id, (0, 0))
 
         for scope_id, parent_id in parent_map.items():
             node = self._nodes_by_id[scope_id]
@@ -179,6 +194,19 @@ class HierarchyView(BaseView):
                 covered = 0
                 try:
                     for bin_idx in node.scope.coverItems(CoverTypeT.CVGBIN):
+                        total += 1
+                        cover_data = bin_idx.getCoverData()
+                        if cover_data and cover_data.data > 0:
+                            covered += 1
+                except Exception:
+                    pass
+                node.total = total
+                node.covered = covered
+            elif node.scope_type == ScopeTypeT.TOGGLE and node.scope is not None:
+                total = 0
+                covered = 0
+                try:
+                    for bin_idx in node.scope.coverItems(CoverTypeT.TOGGLEBIN):
                         total += 1
                         cover_data = bin_idx.getCoverData()
                         if cover_data and cover_data.data > 0:
@@ -293,6 +321,7 @@ class HierarchyView(BaseView):
             ScopeTypeT.COVERPOINT: "📊",
             ScopeTypeT.DU_MODULE: "🔧",
             ScopeTypeT.PACKAGE: "📦",
+            ScopeTypeT.TOGGLE: "⇅",
         }
         icon = icons.get(node.scope_type, "•")
 
@@ -401,6 +430,37 @@ class HierarchyView(BaseView):
                         table.add_row("", Text(f"{status} {bin_name}: {count} hits", style=color))
                 else:
                     table.add_row("", Text("No bin details available", style="dim"))
+            except Exception:
+                pass
+
+        elif node.scope_type == ScopeTypeT.TOGGLE:
+            table.add_row("", "")
+            table.add_row("Transitions:", "")
+            try:
+                if hasattr(self.model.db, "conn"):
+                    rows = self.model.db.conn.execute(
+                        """SELECT cover_name, cover_data
+                           FROM coveritems
+                           WHERE scope_id = ? AND cover_type = ?
+                           ORDER BY cover_index""",
+                        (node.scope_id, int(CoverTypeT.TOGGLEBIN))
+                    ).fetchall()
+                    for row in rows:
+                        tname = row[0] or "?"
+                        count = row[1] or 0
+                        status = "✓" if count > 0 else "✗"
+                        color = "green" if count > 0 else "red"
+                        table.add_row("", Text(f"{status} {tname}: {count}×", style=color))
+                elif node.scope is not None:
+                    for bin_idx in node.scope.coverItems(CoverTypeT.TOGGLEBIN):
+                        tname = bin_idx.getName() if hasattr(bin_idx, "getName") else "?"
+                        cover_data = bin_idx.getCoverData()
+                        count = cover_data.data if cover_data else 0
+                        status = "✓" if count > 0 else "✗"
+                        color = "green" if count > 0 else "red"
+                        table.add_row("", Text(f"{status} {tname}: {count}×", style=color))
+                else:
+                    table.add_row("", Text("No transition details available", style="dim"))
             except Exception:
                 pass
 

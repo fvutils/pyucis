@@ -87,14 +87,15 @@ class DashboardView(BaseView):
         
         # Type name mapping
         type_names = {
-            CoverTypeT.CVGBIN: ("Functional (Bins)", "💎"),
-            CoverTypeT.STMTBIN: ("Line/Statement", "📝"),
+            CoverTypeT.CVGBIN:    ("Functional (Bins)", "💎"),
+            CoverTypeT.ASSERTBIN: ("Assertion (SVA/PSL)", "🔔"),
+            CoverTypeT.STMTBIN:   ("Line/Statement", "📝"),
             CoverTypeT.BRANCHBIN: ("Branch", "🔀"),
             CoverTypeT.TOGGLEBIN: ("Toggle", "⚡"),
-            CoverTypeT.EXPRBIN: ("Expression", "🧮"),
-            CoverTypeT.CONDBIN: ("Condition", "❓"),
-            CoverTypeT.FSMBIN: ("FSM", "🔄"),
-            CoverTypeT.BLOCKBIN: ("Block", "🧱"),
+            CoverTypeT.EXPRBIN:   ("Expression", "🧮"),
+            CoverTypeT.CONDBIN:   ("Condition", "❓"),
+            CoverTypeT.FSMBIN:    ("FSM", "🔄"),
+            CoverTypeT.BLOCKBIN:  ("Block", "🧱"),
         }
         
         if not types:
