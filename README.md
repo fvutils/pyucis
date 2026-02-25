@@ -212,8 +212,7 @@ pyucis convert --input-format xml --output-format cocotb-yaml --warn-summary inp
 
 ## Documentation
 
-- [MCP Server Documentation](MCP_SERVER.md)
-- [Python SQLite Performance Report](PYTHON_SQLITE_PERFORMANCE_REPORT.md)
+- [MCP Server Documentation](./doc/source/ai-integration/mcp-server.rst)
 - [UCIS Standard](https://www.accellera.org/activities/committees/ucis)
 
 ## License
