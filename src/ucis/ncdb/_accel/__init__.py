@@ -63,8 +63,21 @@ if HAS_ACCEL:
 else:
     def encode_varints(values) -> bytes:
         """Encode a sequence of non-negative ints as LEB128 (pure Python)."""
-        from ucis.ncdb.varint import encode_varint
-        return b"".join(encode_varint(v) for v in values)
+        parts = []
+        for value in values:
+            if value < 0:
+                raise ValueError(f"varint requires non-negative integer, got {value}")
+            result = []
+            while True:
+                byte = value & 0x7F
+                value >>= 7
+                if value != 0:
+                    byte |= 0x80
+                result.append(byte)
+                if value == 0:
+                    break
+            parts.append(bytes(result))
+        return b"".join(parts)
 
 # ── decode_varints ─────────────────────────────────────────────────────────
 
@@ -89,8 +102,21 @@ else:
 
         Returns (list[int], new_offset).
         """
-        from ucis.ncdb.varint import decode_varints as _py_decode
-        return _py_decode(data, count, offset)
+        values = []
+        for _ in range(count):
+            result = 0
+            shift = 0
+            while True:
+                if offset >= len(data):
+                    raise ValueError("Buffer too short for varint")
+                byte = data[offset]
+                offset += 1
+                result |= (byte & 0x7F) << shift
+                shift += 7
+                if not (byte & 0x80):
+                    break
+            values.append(result)
+        return values, offset
 
 # ── add_uint32_arrays ──────────────────────────────────────────────────────
 
