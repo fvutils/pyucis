@@ -67,6 +67,13 @@ class MemUCIS(MemScope,UCIS):
         
         self.m_du_scope_l = []
         self.m_inst_scope_l = []
+
+        # Per-test coverage contributions: history_idx → {bin_index → count}
+        self._per_test_data: dict = {}
+        self._test_coverage = None  # lazy MemTestCoverage instance
+
+        # Formal verification data: bin_index → {"status", "radius", "witness"}
+        self._formal_data: dict = {}
     
     def getAPIVersion(self)->str:
         return "1.0"
@@ -171,6 +178,46 @@ class MemUCIS(MemScope,UCIS):
     def close(self):
         # NOP
         pass
+
+    def record_test_association(self, history_idx: int, bin_index: int, count: int = 1):
+        """Record that history node *history_idx* contributed *count* hits to *bin_index*.
+
+        Args:
+            history_idx: Index of the history node in m_history_node_l.
+            bin_index:   Flat coveritem bin index (same ordering as counts.bin).
+            count:       Hit count contribution (default 1).
+        """
+        node_data = self._per_test_data.setdefault(history_idx, {})
+        node_data[bin_index] = node_data.get(bin_index, 0) + count
+
+    def get_test_coverage_api(self):
+        """Return a MemTestCoverage query object for per-test contribution analysis."""
+        if self._test_coverage is None:
+            from ucis.mem.mem_test_coverage import MemTestCoverage
+            self._test_coverage = MemTestCoverage(self)
+        return self._test_coverage
+
+    def set_formal_data(self, bin_index: int, status=None, radius: int = None,
+                        witness: str = None):
+        """Set formal verification data for the assertion coveritem at *bin_index*.
+
+        Args:
+            bin_index: Flat coveritem bin index (DFS order, same as counts.bin).
+            status:    FormalStatusT value (or int).  None leaves existing unchanged.
+            radius:    Proof radius.  None leaves existing unchanged.
+            witness:   Path to witness file.  None leaves existing unchanged.
+        """
+        entry = self._formal_data.setdefault(bin_index, {})
+        if status is not None:
+            entry['status'] = int(status)
+        if radius is not None:
+            entry['radius'] = int(radius)
+        if witness is not None:
+            entry['witness'] = str(witness)
+
+    def get_formal_data(self, bin_index: int):
+        """Return formal data dict for *bin_index*, or None if not set."""
+        return self._formal_data.get(bin_index)
 
     def createInstanceByName(self, name: str, du_name: str,
                              fileinfo, weight: int, source, flags: int):

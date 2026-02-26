@@ -742,8 +742,14 @@ class XmlReader():
     def getAttrDateTime(self, e, name):
         """Converts ISO time used by XML to the YYYYMMDDHHMMSS format used by the library"""
         val = e.get(name)
-        dateVal = datetime.strptime(val,"%Y-%m-%dT%H:%M:%S")
-        return dateVal.strftime("%Y%m%d%H%M%S")
+        # Try with and without fractional seconds
+        for fmt in ("%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                dateVal = datetime.strptime(val, fmt)
+                return dateVal.strftime("%Y%m%d%H%M%S")
+            except ValueError:
+                continue
+        raise ValueError(f"Cannot parse datetime: {val!r}")
     
     def getAttr(self, node, name, default):
         if name in node.attrib:

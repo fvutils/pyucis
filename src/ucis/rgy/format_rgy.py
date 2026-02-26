@@ -85,6 +85,14 @@ class FormatRgy(object):
         elif ext in ['.yaml', '.yml']:
             return 'yaml'
         elif ext in ['.cdb', '.db', '.sqlite', '.sqlite3']:
+            # Use header-byte detection to distinguish SQLite vs NCDB
+            try:
+                from ucis.ncdb.format_detect import detect_cdb_format
+                fmt = detect_cdb_format(path)
+                if fmt in ('sqlite', 'ncdb'):
+                    return fmt
+            except Exception:
+                pass
             return 'sqlite'
         elif ext == '.dat':
             return 'vltcov'
@@ -134,6 +142,10 @@ class FormatRgy(object):
         # Register LCOV format
         from ucis.formatters.db_format_if_lcov import DbFormatIfLcov
         DbFormatIfLcov.register(self)
+
+        # Register NCDB format
+        from ucis.ncdb.db_format_if_ncdb import DbFormatIfNcdb
+        DbFormatIfNcdb.register(self)
         
         FormatRptJson.register(self)
         FormatRptText.register(self)
