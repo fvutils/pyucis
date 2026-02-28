@@ -8,6 +8,7 @@ from ucis.mem.db_format_if_mem import DbFormatIfMem
 from ucis.yaml.db_format_if_yaml import DbFormatIfYaml
 from ucis.lib.db_format_if_lib import DbFormatIfLib
 from ucis.sqlite.db_format_if_sqlite import DbFormatIfSqlite
+from ucis.ncdb.db_format_if_ncdb import DbFormatIfNcdb
 
 class DbFormatRgy(object):
     """Database format registry.
@@ -105,7 +106,7 @@ class DbFormatRgy(object):
         self.addFormatIf("xml", DbFormatIfXml, "XML format")
         self.addFormatIf("yml", DbFormatIfYaml, "YAML format")
         self.addFormatIf("sqlite", DbFormatIfSqlite, "SQLite database format")
-        pass
+        self.addFormatIf("ncdb", DbFormatIfNcdb, "NCDB ZIP-based binary format")
     
     @classmethod
     def inst(cls):

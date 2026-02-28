@@ -97,6 +97,22 @@ class MemFSMScope(MemScope):
                                      source, ScopeTypeT.FSM_TRANS, flags)
         self.m_children.append(self._trans_scope)
 
+    def createScope(self, name, srcinfo, weight, source, type, flags):
+        """Return the existing FSM_STATES/FSM_TRANS sub-scope when requested.
+
+        Per LRM 6.5.6 an FSM scope has exactly ONE FSM_STATES and ONE
+        FSM_TRANS child.  When the scope-tree reader deserialises those
+        children it calls createScope() on this FSM scope.  Without this
+        override a second copy would be appended to m_children.
+        """
+        if type == ScopeTypeT.FSM_STATES:
+            self._states_scope.m_name = name
+            return self._states_scope
+        if type == ScopeTypeT.FSM_TRANS:
+            self._trans_scope.m_name = name
+            return self._trans_scope
+        return super().createScope(name, srcinfo, weight, source, type, flags)
+
     def createNextCover(self, name, data, sourceinfo):
         """Route FSMBIN coveritems to the correct mandatory sub-scope."""
         if "->" in name:

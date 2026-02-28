@@ -127,3 +127,4 @@ dmypy.json
 .pyre/
 
 packages/
+src/ucis/ncdb/_accel/_ncdb_accel.c

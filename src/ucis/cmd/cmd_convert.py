@@ -44,6 +44,13 @@ def convert(args):
         merger = SqliteMerger(out_db)
         merger.merge(in_db, create_history=True, squash_history=False)
         out_db.close()
+    elif args.output_format in ("ncdb", "xml", "yaml"):
+        # Direct write: pass the loaded db directly to the output format writer
+        # without going through DbMerger (which would lose nested INSTANCE scopes)
+        try:
+            output_if.write(in_db, args.out, ctx)
+        except TypeError:
+            output_if.write(in_db, args.out)
     else:
         # Generic merge for other formats
         out_db = output_if.create()

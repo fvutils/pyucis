@@ -29,6 +29,12 @@ def merge(args):
     squash_history = getattr(args, 'squash_history', False)
     use_fast = getattr(args, 'fast', False)
 
+    # NCDB fast-path merge
+    if args.input_format == "ncdb" and args.output_format == "ncdb":
+        from ucis.ncdb.ncdb_merger import NcdbMerger
+        NcdbMerger().merge(args.db, args.out)
+        return
+
     if args.input_format == "sqlite" and args.output_format == "sqlite":
         # Use SQLite-specific merge (faster and preserves test associations)
         from ucis.sqlite import SqliteUCIS

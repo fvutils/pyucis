@@ -48,6 +48,35 @@ Common Options
     Collapse per-test history nodes into a single summary. Useful when
     you do not need per-test attribution in the merged result.
 
+NCDB — Fast, Compact Merging
+==============================
+
+For large regressions the **NCDB** format offers the best merge performance
+and the smallest disk footprint (typically 100–200× smaller than SQLite).
+Use ``ncdb`` as the output format to accumulate per-test ``.cdb`` files:
+
+.. code-block:: bash
+
+    # Per-test run (simulator writes NCDB directly, or convert after)
+    ucis convert -if sqlite -of ncdb -o test_42.cdb test_42.ucisdb
+
+    # Merge all per-test NCDB files into one
+    ucis merge --input-format ncdb --output-format ncdb \
+        -o regression.cdb tests/test_*.cdb
+
+When all input files share the same scope-tree structure (same design, same
+elaboration), NCDB uses a *same-schema fast-merge* path that reduces the
+merge to element-wise integer addition over a flat array — no SQL overhead,
+no scope-tree parsing.  See :doc:`../reference/formats/ncdb-format` for the
+technical details.
+
+**When to choose NCDB vs SQLite:**
+
+* **NCDB** — continuous integration, large seed sweeps, any scenario where
+  disk space and merge speed matter.
+* **SQLite** — when you need to query coverage via SQL, or when third-party
+  tools require a SQLite ``.cdb``.
+
 Typical Regression Workflow
 ============================
 

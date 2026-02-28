@@ -32,63 +32,73 @@ class DbMerger(object):
         
         self.dst_db = dst_db
         
+        self._merge_instances_under(dst_db, src_db_l, dst_db)
+        self._merge_history_nodes(dst_db, src_db_l)
+
+    def _merge_instances_under(self, dst_parent, src_parents, dst_root):
+        """Merge all INSTANCE scopes that are immediate children of each parent.
+
+        *dst_parent* is either the destination db (top level) or a destination
+        INSTANCE scope (recursive call for nested instances).
+        *src_parents* is a list of source containers (db or INSTANCE scopes)
+        aligned by database index — a None means that database has no matching
+        parent at this level.
+        *dst_root* is the top-level destination db, used for history merging
+        only at the outermost call.
+        """
         iscope_m : Dict[str, List[object]] = {}
         iscope_name_l = []
 
-        for i,db in enumerate(src_db_l):
-            for src_iscope in db.scopes(ScopeTypeT.INSTANCE):
+        for i, parent in enumerate(src_parents):
+            if parent is None:
+                continue
+            for src_iscope in parent.scopes(ScopeTypeT.INSTANCE):
                 name = src_iscope.getScopeName()
-                if not name in iscope_m.keys():
-                    scope_l = [None]*len(src_db_l)
-                    scope_l[i] = src_iscope
+                if name not in iscope_m:
+                    scope_l = [None] * len(src_parents)
                     iscope_m[name] = scope_l
                     iscope_name_l.append(name)
-                else:
-                    iscope_m[name][i] = src_iscope
-            
+                iscope_m[name][i] = src_iscope
+
         for name in iscope_name_l:
-            # We'll create the scope using the first src database
-            # that it was in
             src_scopes = list(filter(lambda e: e is not None, iscope_m[name]))
-            
             src_iscope = src_scopes[0]
-            
-            # Create a representation of the scope in the destination
-            # database                
+
             src_du = src_iscope.getInstanceDu()
-            dst_du = self.dst_db.createScope(
+            dst_du = dst_parent.createScope(
                 src_du.getScopeName(),
                 src_du.getSourceInfo(),
-                src_du.getWeight(), # weight
-                UCIS_OTHER, # TODO: must query SourceType
-                UCIS_DU_MODULE, # TODO: must query GetScopeType
+                src_du.getWeight(),
+                UCIS_OTHER,
+                UCIS_DU_MODULE,
                 UCIS_ENABLED_STMT | UCIS_ENABLED_BRANCH
                 | UCIS_ENABLED_COND | UCIS_ENABLED_EXPR
                 | UCIS_ENABLED_FSM | UCIS_ENABLED_TOGGLE
-                | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU) # TODO: GetScopeFlags
-                    
-            dst_iscope = self.dst_db.createInstance(
+                | UCIS_INST_ONCE | UCIS_SCOPE_UNDER_DU)
+
+            dst_iscope = dst_parent.createInstance(
                 src_iscope.getScopeName(),
                 src_iscope.getSourceInfo(),
-                1, # weight
-                UCIS_OTHER, # query SourceType
+                1,
+                UCIS_OTHER,
                 UCIS_INSTANCE,
                 dst_du,
                 UCIS_INST_ONCE)
-        
+
             self._merge_covergroups(dst_iscope, src_scopes)
             self._merge_code_coverage(dst_iscope, src_scopes)
+            # Recurse into nested INSTANCE scopes
+            self._merge_instances_under(dst_iscope, iscope_m[name], dst_root)
 
-        # Copy history nodes from all source databases
+    def _merge_history_nodes(self, dst_db, src_db_l: List[UCIS]):
+        """Copy history nodes from all source databases into *dst_db*."""
         def _node_key(n):
-            """Stable key for a history node regardless of backend."""
             return getattr(n, 'history_id', id(n))
 
         for db in src_db_l:
             src_nodes = list(db.historyNodes(HistoryNodeKind.ALL))
-            src_to_dst = {}  # maps _node_key(src_node) → dst_node
+            src_to_dst = {}
 
-            # Sort so parents are created before children
             def _sort_key(n):
                 depth = 0
                 p = n.getParent()
@@ -134,7 +144,7 @@ class DbMerger(object):
                     dst_hn.setVendorToolVersion(src_hn.getVendorToolVersion())
                 if src_hn.getComment() is not None:
                     dst_hn.setComment(src_hn.getComment())
-            
+
     def _merge_covergroups(self, dst_scope, src_scopes):
         
         cg_name_m : Dict[str,List] = {}

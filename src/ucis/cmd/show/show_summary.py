@@ -98,25 +98,25 @@ class ShowSummary(ShowBase):
     
     def _get_test_info(self) -> Dict[str, Any]:
         """Get test execution information."""
-        from ucis import UCIS_HISTORYNODE_TEST
         from ucis.history_node_kind import HistoryNodeKind
-        
+
         tests = []
-        
-        # Get all test history nodes
+
+        # Use individual getters — getTestData() only exists in the C-library
+        # wrapper; MemHistoryNode and SqliteHistoryNode use per-field accessors.
         try:
             for node in self.db.historyNodes(HistoryNodeKind.TEST):
-                test_data = node.getTestData()
-                if test_data:
-                    tests.append({
-                        'name': node.getLogicalName(),
-                        'status': test_data.teststatus,
-                        'date': test_data.date if hasattr(test_data, 'date') else None,
-                    })
+                entry = {'name': node.getLogicalName()}
+                if hasattr(node, 'getTestStatus'):
+                    entry['status'] = node.getTestStatus()
+                if hasattr(node, 'getDate'):
+                    d = node.getDate()
+                    if d is not None:
+                        entry['date'] = str(d)
+                tests.append(entry)
         except Exception:
-            # If historyNodes fails, just return empty
             pass
-        
+
         return {
             'total_tests': len(tests),
             'tests': tests

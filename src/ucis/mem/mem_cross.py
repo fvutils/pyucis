@@ -18,13 +18,13 @@ class MemCross(MemCoverpoint,Cross):
                  srcinfo : SourceInfo,
                  weight : int,
                  source : SourceT,
-                 coverpoints : List['MemCoverpoint']
+                 coverpoints : List['MemCoverpoint'] = None
                  ):
         MemCoverpoint.__init__(self, parent, name, srcinfo, weight, source)
         self.m_type = UCIS_CROSS
         Cross.__init__(self)
         
-        self.coverpoints = coverpoints
+        self.coverpoints = coverpoints if coverpoints is not None else []
         
     def getNumCrossedCoverpoints(self)->int:
         return len(self.coverpoints)

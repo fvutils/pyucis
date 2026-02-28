@@ -191,6 +191,7 @@ PyUCIS supports bi-directional conversion between formats using the UCIS data mo
 | UCIS XML | `xml` | ✓ | ✓ | ✓ | ✓ | - | near |
 | UCIS YAML | `yaml` | ✓ | ✓ | ✓ | - | - | - |
 | SQLite | `sqlite` | ✓ | ✓ | ✓ | ✓ | ✓ | **✓** |
+| **NCDB** | `ncdb` | **✓** | **✓** | **✓** | **✓** | **✓** | **✓** |
 | LCOV | `lcov` | - | ✓ | - | ✓ | - | - |
 | cocotb YAML | `cocotb-yaml` | ✓ | ✓ | ✓ | - | - | - |
 | cocotb XML | `cocotb-xml` | ✓ | ✓ | ✓ | - | - | - |
@@ -209,6 +210,54 @@ pyucis convert --input-format xml --output-format lcov --strict input.xml -o out
 # Show a summary of warnings after conversion
 pyucis convert --input-format xml --output-format cocotb-yaml --warn-summary input.xml -o out.yml
 ```
+
+## NCDB — Native Coverage Database Format
+
+NCDB (`.cdb`) is a compact binary format for UCIS coverage data, implemented as a ZIP archive. It achieves **~60–73× size reduction** over SQLite by using schema-aware V2 encoding: LEB128 varints, toggle-pair compression, presence bitfields, and type-level defaults.
+
+### NCDB CLI Examples
+
+```bash
+# Convert SQLite → NCDB
+pyucis convert --input-format sqlite --output-format ncdb input.cdb -o compact.cdb
+
+# Convert NCDB → SQLite (for tool interop)
+pyucis convert --input-format ncdb --output-format sqlite compact.cdb -o output.cdb
+
+# Merge NCDB files (fast same-schema path avoids re-decoding the scope tree)
+pyucis merge --input-format ncdb --output-format ncdb run1.cdb run2.cdb -o merged.cdb
+
+# Auto-detect format (.cdb files are identified by header bytes)
+pyucis show summary coverage.cdb
+```
+
+### NCDB Python API
+
+```python
+from ucis.ncdb.ncdb_writer import NcdbWriter
+from ucis.ncdb.ncdb_reader import NcdbReader
+
+# Write any UCIS database as NCDB
+NcdbWriter().write(db, "coverage.cdb")
+
+# Read back as an in-memory UCIS database
+db = NcdbReader().read("coverage.cdb")
+
+# Merge NCDB files
+from ucis.ncdb.ncdb_merger import NcdbMerger
+NcdbMerger().merge(["run1.cdb", "run2.cdb"], "merged.cdb")
+```
+
+### NCDB ZIP Archive Members
+
+| Member | Contents |
+|--------|----------|
+| `manifest.json` | Format version, schema hash (for fast-path merge) |
+| `scope_tree.bin` | V2-encoded scope hierarchy |
+| `counts.bin` | Coverage hit counts (LEB128 varint or uint32 array) |
+| `strings.bin` | Deduplicated string table |
+| `history.json` | Test/merge history nodes |
+| `sources.json` | Source file references |
 
 ## Documentation
 
