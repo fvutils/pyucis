@@ -305,6 +305,12 @@ def _launch_tui(args):
     app.run()
 
 def main():
+    # Handle --version/-V before the subcommand parser (which requires a subcommand)
+    if len(sys.argv) == 2 and sys.argv[1] in ("--version", "-V"):
+        from ucis.__version__ import get_version
+        print(get_version())
+        return
+
     # Print skill information at the start
     print_skill_info()
     print()
