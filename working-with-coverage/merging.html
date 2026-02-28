@@ -58,6 +58,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Merging Coverage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#common-options">Common Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ncdb-fast-compact-merging">NCDB — Fast, Compact Merging</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#typical-regression-workflow">Typical Regression Workflow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#next-steps">Next Steps</a></li>
 </ul>
@@ -149,6 +150,32 @@ Requires both inputs and output to be SQLite format.</p>
 you do not need per-test attribution in the merged result.</p>
 </dd>
 </dl>
+</section>
+<section id="ncdb-fast-compact-merging">
+<h2>NCDB — Fast, Compact Merging<a class="headerlink" href="#ncdb-fast-compact-merging" title="Link to this heading"></a></h2>
+<p>For large regressions the <strong>NCDB</strong> format offers the best merge performance
+and the smallest disk footprint (typically 100–200× smaller than SQLite).
+Use <code class="docutils literal notranslate"><span class="pre">ncdb</span></code> as the output format to accumulate per-test <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> files:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Per-test run (simulator writes NCDB directly, or convert after)</span>
+ucis<span class="w"> </span>convert<span class="w"> </span>-if<span class="w"> </span>sqlite<span class="w"> </span>-of<span class="w"> </span>ncdb<span class="w"> </span>-o<span class="w"> </span>test_42.cdb<span class="w"> </span>test_42.ucisdb
+
+<span class="c1"># Merge all per-test NCDB files into one</span>
+ucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span class="w"> </span>ncdb<span class="w"> </span>--output-format<span class="w"> </span>ncdb<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-o<span class="w"> </span>regression.cdb<span class="w"> </span>tests/test_*.cdb
+</pre></div>
+</div>
+<p>When all input files share the same scope-tree structure (same design, same
+elaboration), NCDB uses a <em>same-schema fast-merge</em> path that reduces the
+merge to element-wise integer addition over a flat array — no SQL overhead,
+no scope-tree parsing.  See <a class="reference internal" href="../reference/formats/ncdb-format.html"><span class="doc">NCDB Coverage File Format</span></a> for the
+technical details.</p>
+<p><strong>When to choose NCDB vs SQLite:</strong></p>
+<ul class="simple">
+<li><p><strong>NCDB</strong> — continuous integration, large seed sweeps, any scenario where
+disk space and merge speed matter.</p></li>
+<li><p><strong>SQLite</strong> — when you need to query coverage via SQL, or when third-party
+tools require a SQLite <code class="docutils literal notranslate"><span class="pre">.cdb</span></code>.</p></li>
+</ul>
 </section>
 <section id="typical-regression-workflow">
 <h2>Typical Regression Workflow<a class="headerlink" href="#typical-regression-workflow" title="Link to this heading"></a></h2>
