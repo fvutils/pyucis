@@ -1,5 +1,5 @@
 
-BASE = "0.1.5"
+BASE = "0.2.0"
 SUFFIX = ""
 
 __version__ = (BASE, SUFFIX)
