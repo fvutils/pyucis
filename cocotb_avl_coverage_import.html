@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Coverage Import (cocotb and AVL) &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
@@ -174,7 +174,7 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="automatic-import-recommended">
 <h3>Automatic Import (Recommended)<a class="headerlink" href="#automatic-import-recommended" title="Link to this heading"></a></h3>
 <p>The simplest way to import coverage is using automatic format detection:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
 
 <span class="c1"># Automatically detects and imports any supported format</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>    <span class="c1"># cocotb XML</span>
@@ -186,8 +186,8 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="import-specific-formats">
 <h3>Import Specific Formats<a class="headerlink" href="#import-specific-formats" title="Link to this heading"></a></h3>
 <p>You can also import specific formats explicitly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.cocotb</span> <span class="kn">import</span> <span class="n">read_cocotb_xml</span><span class="p">,</span> <span class="n">read_cocotb_yaml</span>
-<span class="kn">from</span> <span class="nn">ucis.avl</span> <span class="kn">import</span> <span class="n">read_avl_json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cocotb</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_cocotb_xml</span><span class="p">,</span> <span class="n">read_cocotb_yaml</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.avl</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_avl_json</span>
 
 <span class="c1"># Import cocotb XML</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_cocotb_xml</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
@@ -203,8 +203,8 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="export-to-other-formats">
 <h3>Export to Other Formats<a class="headerlink" href="#export-to-other-formats" title="Link to this heading"></a></h3>
 <p>Once imported, you can export to any UCIS format:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
-<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite.sqlite_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
 
 <span class="c1"># Import cocotb coverage</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;cocotb_coverage.xml&#39;</span><span class="p">)</span>
@@ -221,24 +221,24 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="generating-cocotb-coverage">
 <h3>Generating cocotb Coverage<a class="headerlink" href="#generating-cocotb-coverage" title="Link to this heading"></a></h3>
 <p>Use cocotb-coverage in your testbench:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cocotb_coverage.coverage</span> <span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
-<span class="kn">import</span> <span class="nn">cocotb</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cocotb_coverage.coverage</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cocotb</span>
 
 <span class="c1"># Define coverage</span>
 <span class="nd">@CoverGroup</span>
-<span class="k">class</span> <span class="nc">MyCoverage</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCoverage</span><span class="p">:</span>
     <span class="nd">@CoverPoint</span><span class="p">(</span><span class="s2">&quot;addr&quot;</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">63</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">127</span><span class="p">)])</span>
-    <span class="k">def</span> <span class="nf">addr_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addr_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
 <span class="nd">@cocotb</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">my_test</span><span class="p">(</span><span class="n">dut</span><span class="p">):</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_test</span><span class="p">(</span><span class="n">dut</span><span class="p">):</span>
     <span class="n">cov</span> <span class="o">=</span> <span class="n">MyCoverage</span><span class="p">()</span>
     <span class="c1"># ... run test and sample coverage</span>
     <span class="n">cov</span><span class="o">.</span><span class="n">addr_range</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">dut</span><span class="o">.</span><span class="n">addr</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
 <span class="c1"># At end of simulation, export coverage</span>
-<span class="kn">from</span> <span class="nn">cocotb_coverage.coverage</span> <span class="kn">import</span> <span class="n">coverage_db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cocotb_coverage.coverage</span><span class="w"> </span><span class="kn">import</span> <span class="n">coverage_db</span>
 <span class="n">coverage_db</span><span class="o">.</span><span class="n">export_to_xml</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
 <span class="n">coverage_db</span><span class="o">.</span><span class="n">export_to_yaml</span><span class="p">(</span><span class="s2">&quot;coverage.yml&quot;</span><span class="p">)</span>
 </pre></div>
@@ -246,15 +246,15 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </section>
 <section id="importing-into-pyucis">
 <h3>Importing into PyUCIS<a class="headerlink" href="#importing-into-pyucis" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
 
 <span class="c1"># Import cocotb XML</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
 
 <span class="c1"># Analyze coverage</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
 
-<span class="k">def</span> <span class="nf">count_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
     <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">:</span>
         <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -298,8 +298,8 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="generating-avl-coverage">
 <h3>Generating AVL Coverage<a class="headerlink" href="#generating-avl-coverage" title="Link to this heading"></a></h3>
 <p>Use AVL in your Python testbench:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">avl.coverage</span> <span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">avl.coverage</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverPoint</span><span class="p">,</span> <span class="n">CoverGroup</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Define coverage</span>
 <span class="n">cg</span> <span class="o">=</span> <span class="n">CoverGroup</span><span class="p">(</span><span class="s2">&quot;address_coverage&quot;</span><span class="p">)</span>
@@ -318,15 +318,15 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </section>
 <section id="id1">
 <h3>Importing into PyUCIS<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.avl</span> <span class="kn">import</span> <span class="n">read_avl_json</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.avl</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_avl_json</span>
 
 <span class="c1"># Import AVL JSON (any variation)</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_avl_json</span><span class="p">(</span><span class="s1">&#39;coverage.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># Access coverage data</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
 
-<span class="k">def</span> <span class="nf">print_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="n">scope_type</span> <span class="o">=</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">scope_type</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">CROSS</span><span class="p">]:</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">scope</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -392,7 +392,7 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="format-detection">
 <h2>Format Detection<a class="headerlink" href="#format-detection" title="Link to this heading"></a></h2>
 <p>PyUCIS automatically detects the input format based on file content:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">detect_format</span><span class="p">,</span> <span class="n">CoverageFormat</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_format</span><span class="p">,</span> <span class="n">CoverageFormat</span>
 
 <span class="c1"># Detect format</span>
 <span class="n">fmt</span> <span class="o">=</span> <span class="n">detect_format</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
@@ -463,14 +463,14 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </section>
 <section id="basic-workflow">
 <h3>Basic Workflow<a class="headerlink" href="#basic-workflow" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
 
 <span class="c1"># 1. Run your Python testbench (generates coverage file)</span>
 <span class="c1"># 2. Import coverage</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
 
 <span class="c1"># 3. Analyze</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
 
 <span class="n">covergroups</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">scopes</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERGROUP</span><span class="p">]</span>
@@ -480,8 +480,8 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </section>
 <section id="merging-multiple-runs">
 <h3>Merging Multiple Runs<a class="headerlink" href="#merging-multiple-runs" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
-<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite.sqlite_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
 
 <span class="c1"># Import multiple coverage files</span>
 <span class="n">db1</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;test1_coverage.xml&#39;</span><span class="p">)</span>
@@ -496,7 +496,7 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="mixed-format-import">
 <h3>Mixed Format Import<a class="headerlink" href="#mixed-format-import" title="Link to this heading"></a></h3>
 <p>Import from multiple frameworks in the same workflow:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
 
 <span class="c1"># Import cocotb coverage</span>
 <span class="n">cocotb_db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;cocotb_coverage.xml&#39;</span><span class="p">)</span>
@@ -524,13 +524,13 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </div>
 <section id="accessing-coverage-data">
 <h3>Accessing Coverage Data<a class="headerlink" href="#accessing-coverage-data" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
 
 <span class="c1"># Find all coverpoints</span>
-<span class="k">def</span> <span class="nf">find_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">found</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_coverpoints</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">found</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="o">==</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">:</span>
@@ -558,8 +558,8 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 <section id="custom-import-processing">
 <h3>Custom Import Processing<a class="headerlink" href="#custom-import-processing" title="Link to this heading"></a></h3>
 <p>Process coverage data during import:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.cocotb</span> <span class="kn">import</span> <span class="n">CocotbXmlReader</span>
-<span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_ucis</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cocotb</span><span class="w"> </span><span class="kn">import</span> <span class="n">CocotbXmlReader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite.sqlite_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
 
 <span class="c1"># Create custom database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s1">&#39;custom.ucisdb&#39;</span><span class="p">)</span>
@@ -574,13 +574,13 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--input-format<span c
 </section>
 <section id="filtering-coverage">
 <h3>Filtering Coverage<a class="headerlink" href="#filtering-coverage" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.format_detection</span> <span class="kn">import</span> <span class="n">read_coverage_file</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.format_detection</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_coverage_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">read_coverage_file</span><span class="p">(</span><span class="s1">&#39;coverage.xml&#39;</span><span class="p">)</span>
 
 <span class="c1"># Find uncovered bins</span>
-<span class="k">def</span> <span class="nf">find_uncovered_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_uncovered_bins</span><span class="p">(</span><span class="n">scope</span><span class="p">):</span>
     <span class="n">uncovered</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="n">scope</span><span class="o">.</span><span class="n">getScopeType</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">COVERPOINT</span><span class="p">,</span> <span class="n">ScopeTypeT</span><span class="o">.</span><span class="n">CROSS</span><span class="p">]:</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">scope</span><span class="o">.</span><span class="n">coverItems</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>

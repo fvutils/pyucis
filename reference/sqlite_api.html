@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SQLite Backend API &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -132,11 +132,11 @@
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
 <section id="creating-a-database">
 <h3>Creating a Database<a class="headerlink" href="#creating-a-database" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
-<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
-<span class="kn">from</span> <span class="nn">ucis.cover_data</span> <span class="kn">import</span> <span class="n">CoverData</span>
-<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.source_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cover_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.history_node_kind</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryNodeKind</span>
 
 <span class="c1"># Create or open database</span>
 <span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
@@ -858,7 +858,7 @@
 </dl>
 </dd></dl>
 
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite.sqlite_merge</span> <span class="kn">import</span> <span class="n">merge_databases</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite.sqlite_merge</span><span class="w"> </span><span class="kn">import</span> <span class="n">merge_databases</span>
 
 <span class="n">stats</span> <span class="o">=</span> <span class="n">merge_databases</span><span class="p">(</span>
     <span class="s2">&quot;base.cdb&quot;</span><span class="p">,</span>
@@ -976,7 +976,7 @@ pyucis<span class="w"> </span>merge<span class="w"> </span>--squash-history<span
 <li><p><strong>Required Tables:</strong> scopes, coveritems, history_nodes tables must exist</p></li>
 </ul>
 <p><strong>Validation Functions:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">schema_manager</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">schema_manager</span>
 
 <span class="c1"># Check if file is a valid SQLite database</span>
 <span class="k">if</span> <span class="n">schema_manager</span><span class="o">.</span><span class="n">is_valid_sqlite_file</span><span class="p">(</span><span class="s2">&quot;myfile.db&quot;</span><span class="p">):</span>
@@ -1044,15 +1044,15 @@ SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </sp
 <h3>Migration<a class="headerlink" href="#migration" title="Link to this heading"></a></h3>
 <p>Converting from other formats:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># From XML</span>
-<span class="kn">from</span> <span class="nn">ucis.xml</span> <span class="kn">import</span> <span class="n">XMLUCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.xml</span><span class="w"> </span><span class="kn">import</span> <span class="n">XMLUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
 
 <span class="n">xml_db</span> <span class="o">=</span> <span class="n">XMLUCIS</span><span class="p">(</span><span class="s2">&quot;old.xml&quot;</span><span class="p">)</span>
 <span class="n">sqlite_db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;new.cdb&quot;</span><span class="p">)</span>
 <span class="c1"># Copy logic here</span>
 
 <span class="c1"># From YAML</span>
-<span class="kn">from</span> <span class="nn">ucis.yaml</span> <span class="kn">import</span> <span class="n">YAMLUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.yaml</span><span class="w"> </span><span class="kn">import</span> <span class="n">YAMLUCIS</span>
 <span class="n">yaml_db</span> <span class="o">=</span> <span class="n">YAMLUCIS</span><span class="p">(</span><span class="s2">&quot;old.yaml&quot;</span><span class="p">)</span>
 <span class="c1"># Copy to sqlite_db</span>
 </pre></div>
@@ -1063,12 +1063,12 @@ SELECT<span class="w"> </span>*<span class="w"> </span>FROM<span class="w"> </sp
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h2>
 <section id="complete-example">
 <h3>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
-<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
-<span class="kn">from</span> <span class="nn">ucis.cover_data</span> <span class="kn">import</span> <span class="n">CoverData</span>
-<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
-<span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.source_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cover_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.history_node_kind</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_status_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestStatusT</span>
 
 <span class="c1"># Create database</span>
 <span class="n">ucis</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;example.cdb&quot;</span><span class="p">)</span>

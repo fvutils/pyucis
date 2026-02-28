@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTML Coverage Report Format &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -165,8 +165,8 @@ open<span class="w"> </span>report.html<span class="w">  </span><span class="c1"
 <section id="python-api">
 <h3>Python API<a class="headerlink" href="#python-api" title="Link to this heading"></a></h3>
 <p>You can generate HTML reports programmatically using the <code class="docutils literal notranslate"><span class="pre">HtmlFormatter</span></code> class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.formatters.format_html</span><span class="w"> </span><span class="kn">import</span> <span class="n">HtmlFormatter</span>
 
 <span class="c1"># Load database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
@@ -620,8 +620,8 @@ scp<span class="w"> </span>coverage_report.html<span class="w"> </span>user@serv
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
 <span class="sd">&quot;&quot;&quot;Generate HTML coverage report with custom filtering.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.formatters.format_html</span><span class="w"> </span><span class="kn">import</span> <span class="n">HtmlFormatter</span>
 
 <span class="c1"># Load database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.ucis&quot;</span><span class="p">)</span>
@@ -730,8 +730,8 @@ scp<span class="w"> </span>coverage_report.html<span class="w"> </span>user@serv
 </dd>
 </dl>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis</span> <span class="kn">import</span> <span class="n">UCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.formatters.format_html</span> <span class="kn">import</span> <span class="n">HtmlFormatter</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">UCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.formatters.format_html</span><span class="w"> </span><span class="kn">import</span> <span class="n">HtmlFormatter</span>
 
 <span class="n">db</span> <span class="o">=</span> <span class="n">UCIS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
 <span class="n">formatter</span> <span class="o">=</span> <span class="n">HtmlFormatter</span><span class="p">()</span>

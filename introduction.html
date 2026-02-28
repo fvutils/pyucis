@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Introduction &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
@@ -131,9 +131,9 @@ and accessing coverage data:</p>
 <li><p><strong>Native C Library</strong> - High-performance UCIS 1.0 C API implementation</p></li>
 </ul>
 <p>Quick example using SQLite:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.sqlite</span> <span class="kn">import</span> <span class="n">SqliteUCIS</span>
-<span class="kn">from</span> <span class="nn">ucis.scope_type_t</span> <span class="kn">import</span> <span class="n">ScopeTypeT</span>
-<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.sqlite</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqliteUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.scope_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopeTypeT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.source_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceT</span>
 
 <span class="c1"># Create or open database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">SqliteUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.ucisdb&quot;</span><span class="p">)</span>
@@ -154,12 +154,12 @@ and accessing coverage data:</p>
 <section id="object-oriented-api-example">
 <h2>Object-Oriented API Example<a class="headerlink" href="#object-oriented-api-example" title="Link to this heading"></a></h2>
 <p>Here is an example using the in-memory backend with the object-oriented Python API:</p>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ucis.mem</span> <span class="kn">import</span> <span class="n">MemFactory</span>
-<span class="kn">from</span> <span class="nn">ucis.history_node_kind</span> <span class="kn">import</span> <span class="n">HistoryNodeKind</span>
-<span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
-<span class="kn">from</span> <span class="nn">ucis.source_t</span> <span class="kn">import</span> <span class="n">SourceT</span>
-<span class="kn">from</span> <span class="nn">ucis.source_info</span> <span class="kn">import</span> <span class="n">SourceInfo</span>
-<span class="kn">from</span> <span class="nn">ucis.test_data</span> <span class="kn">import</span> <span class="n">TestData</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.mem</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemFactory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.history_node_kind</span><span class="w"> </span><span class="kn">import</span> <span class="n">HistoryNodeKind</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_status_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestStatusT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.source_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.source_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestData</span>
 
 <span class="c1"># Create in-memory database</span>
 <span class="n">db</span> <span class="o">=</span> <span class="n">MemFactory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>

@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UCIS Object-Oriented API &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -526,7 +526,7 @@ management, and history tracking.</p>
 different trade-offs between performance, persistence, and file size.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create in-memory database</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.mem</span> <span class="kn">import</span> <span class="n">MemFactory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.mem</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemFactory</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">MemFactory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create design hierarchy</span>
@@ -773,7 +773,7 @@ last written to persistent storage.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getWrittenTime</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Written: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">ctime</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -799,7 +799,7 @@ during write() operations.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">time</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">setWrittenTime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
 </pre></div>
 </div>
@@ -1048,8 +1048,8 @@ hierarchy for tracking merge operations.</p></li>
 <span class="gp">... </span>    <span class="s2">&quot;./run_sim.sh&quot;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">HistoryNodeKind</span><span class="o">.</span><span class="n">TEST</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set test data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.test_data</span> <span class="kn">import</span> <span class="n">TestData</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestData</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_status_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestStatusT</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">td</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span><span class="n">teststatus</span><span class="o">=</span><span class="n">TestStatusT</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>
 <span class="gp">... </span>              <span class="n">toolcategory</span><span class="o">=</span><span class="s2">&quot;simulator&quot;</span><span class="p">,</span>
 <span class="gp">... </span>              <span class="n">date</span><span class="o">=</span><span class="s2">&quot;2024-01-15&quot;</span><span class="p">)</span>
@@ -1212,7 +1212,7 @@ Use -1 (default) for all types, or CoverTypeT mask to filter.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;dut_coverage.xml&quot;</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Write only functional coverage (no code coverage)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.cover_type_t</span> <span class="kn">import</span> <span class="n">CoverTypeT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cover_type_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverTypeT</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;funcov.xml&quot;</span><span class="p">,</span> <span class="n">covertype</span><span class="o">=</span><span class="n">CoverTypeT</span><span class="o">.</span><span class="n">CVGBIN</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2096,8 +2096,8 @@ execution status, timing, command line, seed, user, and resource usage.</p>
 <p>History nodes extend Obj, so they support the property interface for
 additional metadata storage.</p>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.test_data</span> <span class="kn">import</span> <span class="n">TestData</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_status_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestStatusT</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestData</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create test history node</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">test</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">createHistoryNode</span><span class="p">(</span>
@@ -3893,8 +3893,8 @@ each object type (visitScope, visitCoverItem, etc.).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyVisitor</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="k">def</span> <span class="nf">visitScope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyVisitor</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span><span class="w"> </span><span class="nf">visitScope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">):</span>
 <span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Visiting scope: </span><span class="si">{</span><span class="n">scope</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="gp">...</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">visitor</span> <span class="o">=</span> <span class="n">MyVisitor</span><span class="p">()</span>
@@ -4310,7 +4310,7 @@ For example, HAS_GOAL flag indicates the goal field is meaningful.</p>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.cover_flags_t</span> <span class="kn">import</span> <span class="n">CoverFlagsT</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.cover_flags_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">CoverFlagsT</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple bin with goal and weight</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">CoverData</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="nb">type</span><span class="o">=</span><span class="n">CoverTypeT</span><span class="o">.</span><span class="n">CVGBIN</span><span class="p">,</span>
@@ -4617,7 +4617,7 @@ coverage debugging.</p>
 </dd></dl>
 
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">ucis.test_status_t</span> <span class="kn">import</span> <span class="n">TestStatusT</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.test_status_t</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestStatusT</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create test data for successful run</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">test_data</span> <span class="o">=</span> <span class="n">TestData</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">teststatus</span><span class="o">=</span><span class="n">TestStatusT</span><span class="o">.</span><span class="n">OK</span><span class="p">,</span>

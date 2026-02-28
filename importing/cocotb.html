@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Importing cocotb-coverage Data &mdash; pyucis 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
       <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
@@ -149,7 +149,7 @@ YAML</label><div class="sd-tab-content docutils">
 <section id="exporting-coverage-from-cocotb-coverage">
 <h2>Exporting Coverage from cocotb-coverage<a class="headerlink" href="#exporting-coverage-from-cocotb-coverage" title="Link to this heading"></a></h2>
 <p>In your cocotb testbench, after sampling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cocotb_coverage.coverage</span> <span class="kn">import</span> <span class="n">coverage_db</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cocotb_coverage.coverage</span><span class="w"> </span><span class="kn">import</span> <span class="n">coverage_db</span>
 
 <span class="c1"># Export at end of test</span>
 <span class="n">coverage_db</span><span class="o">.</span><span class="n">export_to_xml</span><span class="p">(</span><span class="s2">&quot;coverage.xml&quot;</span><span class="p">)</span>
