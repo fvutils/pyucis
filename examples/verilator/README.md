@@ -393,7 +393,7 @@ pip install pyucis
 - [Verilator Manual](https://verilator.org/guide/latest/)
 - [Verilator Coverage](https://verilator.org/guide/latest/exe_verilator_coverage.html)
 - [PyUCIS Documentation](https://github.com/fvutils/pyucis)
-- [UCIS Standard](https://www.accellera.org/activities/committees/ucis)
+- [UCIS Standard](https://www.accellera.org/downloads/standards/ucis)
 - [SystemVerilog Assertions](https://standards.ieee.org/standard/1800-2017.html)
 
 ## Related Examples
