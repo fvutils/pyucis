@@ -265,7 +265,8 @@ class ScopeTreeReader:
         # Create the two implicit TOGGLEBIN coveritems
         for (bin_name, count) in ((TOGGLE_BIN_0_TO_1, count_0to1),
                                    (TOGGLE_BIN_1_TO_0, count_1to0)):
-            cd = CoverData(CoverTypeT.TOGGLEBIN, 0)
+            cd = CoverData(CoverTypeT.TOGGLEBIN,
+                           COVER_TYPE_DEFAULTS.get(CoverTypeT.TOGGLEBIN, (0,0,1))[0])
             cd.data = count
             scope.createNextCover(bin_name, cd, None)
 
@@ -344,7 +345,8 @@ class ScopeTreeReader:
             ci_name_ref, offset = decode_varint(data, offset)
             ci_name = self._st.get(ci_name_ref)
             count = next(counts_iter, 0)
-            cd = CoverData(child_cover_type, 0)
+            default_flags = COVER_TYPE_DEFAULTS.get(child_cover_type, (0, 0, 1))[0]
+            cd = CoverData(child_cover_type, default_flags)
             cd.data = count
             if at_least_override is not None or (child_cover_type and
                     COVER_TYPE_DEFAULTS.get(child_cover_type, (0,0,1))[1] != 0):

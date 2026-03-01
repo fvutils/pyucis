@@ -17,6 +17,7 @@ from ucis.scope_type_t import ScopeTypeT
 
 from .varint import encode_varint, decode_varint
 from .dfs_util import dfs_scope_list
+from .constants import COVER_TYPE_DEFAULTS
 
 _VERSION = 1
 _COVER_ALL = 0xFFFFFFFF
@@ -32,7 +33,9 @@ class CoveritemFlagsWriter:
         for scope in scopes:
             for ci in scope.coverItems(_COVER_ALL):
                 flags = ci.getCoverFlags()
-                if flags != 0:
+                ct = ci.getCoverData().type
+                default_flags = COVER_TYPE_DEFAULTS.get(ct, (0, 0, 1))[0]
+                if flags != default_flags:
                     entries.append((global_ci_idx, flags))
                 global_ci_idx += 1
 
@@ -83,4 +86,8 @@ class CoveritemFlagsReader:
                 if entry_pos < len(entries) and entries[entry_pos][0] == global_ci_idx:
                     ci.setCoverFlags(entries[entry_pos][1])
                     entry_pos += 1
+                else:
+                    ct = ci.getCoverData().type
+                    default_flags = COVER_TYPE_DEFAULTS.get(ct, (0, 0, 1))[0]
+                    ci.setCoverFlags(default_flags)
                 global_ci_idx += 1
