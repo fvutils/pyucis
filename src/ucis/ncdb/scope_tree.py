@@ -26,6 +26,7 @@ from .varint import encode_varint, decode_varint
 from .constants import (
     SCOPE_MARKER_REGULAR, SCOPE_MARKER_TOGGLE_PAIR,
     PRESENCE_FLAGS, PRESENCE_SOURCE, PRESENCE_WEIGHT, PRESENCE_AT_LEAST,
+    PRESENCE_GOAL, PRESENCE_SOURCE_TYPE,
     TOGGLE_BIN_0_TO_1, TOGGLE_BIN_1_TO_0,
     COVER_TYPE_DEFAULTS,
 )
@@ -117,6 +118,12 @@ class ScopeTreeWriter:
         has_flags  = (hasattr(scope, 'm_flags') and scope.m_flags != 0)
         weight     = scope.getWeight() if hasattr(scope, 'getWeight') else 1
         has_weight = (weight is not None and weight != 1)
+        goal       = scope.getGoal() if hasattr(scope, 'getGoal') else -1
+        has_goal   = (goal is not None and goal != -1)
+
+        source_type = getattr(scope, 'm_source_type', None)
+        has_source_type = (source_type is not None
+                           and int(source_type) != int(SourceT.NONE))
 
         # Cover items under this scope
         cover_items = list(scope.coverItems(CoverTypeT.ALL))
@@ -149,6 +156,8 @@ class ScopeTreeWriter:
         if has_src:    presence |= PRESENCE_SOURCE
         if has_weight: presence |= PRESENCE_WEIGHT
         if has_at_least: presence |= PRESENCE_AT_LEAST
+        if has_goal:     presence |= PRESENCE_GOAL
+        if has_source_type: presence |= PRESENCE_SOURCE_TYPE
 
         # Count child sub-scopes
         child_scopes = list(scope.scopes(ScopeTypeT.ALL))
@@ -170,6 +179,10 @@ class ScopeTreeWriter:
             w(encode_varint(weight))
         if has_at_least:
             w(encode_varint(at_least_override))
+        if has_goal:
+            w(encode_varint(goal))
+        if has_source_type:
+            w(encode_varint(int(source_type)))
 
         w(encode_varint(len(child_scopes)))
         w(encode_varint(num_coveritems))
@@ -283,6 +296,12 @@ class ScopeTreeReader:
             weight, offset = decode_varint(data, offset)
         if presence & PRESENCE_AT_LEAST:
             at_least_override, offset = decode_varint(data, offset)
+        goal = -1
+        if presence & PRESENCE_GOAL:
+            goal, offset = decode_varint(data, offset)
+        source_type_val = int(SourceT.NONE)
+        if presence & PRESENCE_SOURCE_TYPE:
+            source_type_val, offset = decode_varint(data, offset)
 
         num_children,   offset = decode_varint(data, offset)
         num_coveritems, offset = decode_varint(data, offset)
@@ -314,6 +333,11 @@ class ScopeTreeReader:
                 name, srcinfo, weight, SourceT.NONE, scope_type, du_scope, flags)
         else:
             scope = parent.createScope(name, srcinfo, weight, SourceT.NONE, scope_type, flags)
+
+        if goal != -1 and hasattr(scope, 'setGoal'):
+            scope.setGoal(goal)
+        if source_type_val != int(SourceT.NONE) and hasattr(scope, 'm_source_type'):
+            scope.m_source_type = SourceT(source_type_val)
 
         # Coveritems
         for _ in range(num_coveritems):
