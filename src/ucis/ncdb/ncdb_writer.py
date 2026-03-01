@@ -18,6 +18,7 @@ from .fsm import FsmWriter
 from .cross import CrossWriter
 from .contrib import ContribWriter
 from .formal import FormalWriter
+from .coveritem_flags import CoveritemFlagsWriter
 from .design_units import DesignUnitsWriter
 from .manifest import Manifest
 from .constants import (
@@ -25,6 +26,7 @@ from .constants import (
     MEMBER_COUNTS, MEMBER_HISTORY, MEMBER_SOURCES,
     MEMBER_ATTRS, MEMBER_TAGS, MEMBER_PROPERTIES, MEMBER_TOGGLE, MEMBER_FSM,
     MEMBER_CROSS, MEMBER_DESIGN_UNITS, MEMBER_FORMAL,
+    MEMBER_COVERITEM_FLAGS,
 )
 
 from ucis.history_node_kind import HistoryNodeKind
@@ -82,6 +84,7 @@ class NcdbWriter:
         du_bytes      = DesignUnitsWriter().serialize(db)
         contrib_members = ContribWriter().serialize(db)
         formal_bytes  = FormalWriter().serialize(db)
+        ci_flags_bytes = CoveritemFlagsWriter().serialize(db)
 
         # 7. Manifest
         manifest = Manifest.build(db, scope_tree_bytes, counts, all_nodes)
@@ -95,7 +98,8 @@ class NcdbWriter:
             zf.writestr(MEMBER_COUNTS,     counts_bytes)
             zf.writestr(MEMBER_HISTORY,    history_bytes)
             zf.writestr(MEMBER_SOURCES,    sources_bytes)
-            if attrs_bytes != b'{"version":1,"entries":[]}':
+            _EMPTY_ATTRS_V2 = b'{"version":2,"scopes":[],"coveritems":[],"history":[],"global":{}}'
+            if attrs_bytes not in (b'{"version":1,"entries":[]}', _EMPTY_ATTRS_V2):
                 zf.writestr(MEMBER_ATTRS, attrs_bytes)
             if tags_bytes != b'{"version":1,"entries":[]}':
                 zf.writestr(MEMBER_TAGS, tags_bytes)
@@ -113,3 +117,5 @@ class NcdbWriter:
                 zf.writestr(member_name, member_bytes)
             if formal_bytes:
                 zf.writestr(MEMBER_FORMAL, formal_bytes)
+            if ci_flags_bytes:
+                zf.writestr(MEMBER_COVERITEM_FLAGS, ci_flags_bytes)

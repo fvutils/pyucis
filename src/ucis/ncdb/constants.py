@@ -49,6 +49,8 @@ PRESENCE_SOURCE     = 0x02  # has source info (file_id, line, token)
 PRESENCE_WEIGHT     = 0x04  # has non-default weight (≠1)
 PRESENCE_AT_LEAST   = 0x08  # coveritem at_least override at scope level
 PRESENCE_CVG_OPTS   = 0x10  # has covergroup options
+PRESENCE_GOAL       = 0x20  # has non-default scope goal (≠-1)
+PRESENCE_SOURCE_TYPE = 0x40  # has explicit SourceT enum
 
 # ── counts.bin encoding modes ─────────────────────────────────────────────
 
@@ -104,3 +106,4 @@ SCOPE_TO_COVER_TYPE: dict = {
     ScopeTypeT.COVER:      CoverTypeT.COVERBIN,
     ScopeTypeT.ASSERT:     CoverTypeT.ASSERTBIN,
 }
+MEMBER_COVERITEM_FLAGS = "coveritem_flags.bin"

@@ -151,8 +151,24 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     def createInstance(self, name: str, fileinfo: SourceInfo, weight: int,
                       source: SourceT, type: ScopeTypeT, du_scope: 'Scope',
                       flags: FlagsT) -> 'Scope':
-        """Create an instance scope"""
-        return self.createScope(name, fileinfo, weight, source, type, flags)
+        """Create an instance scope with design-unit linkage.
+
+        Persists the instance-to-DU association in the design_units table
+        so that getInstanceDu() can retrieve it later.
+        """
+        scope = self.createScope(name, fileinfo, weight, source, type, flags)
+        if du_scope is not None:
+            du_id = getattr(du_scope, 'scope_id', None)
+            if du_id is not None:
+                du_name = du_scope.getScopeName()
+                du_type = (du_scope._scope_type
+                           if getattr(du_scope, '_scope_type', None) is not None
+                           else 0)
+                self.ucis_db.conn.execute(
+                    "INSERT OR REPLACE INTO design_units "
+                    "(du_scope_id, du_name, du_type) VALUES (?, ?, ?)",
+                    (scope.scope_id, du_name, du_type))
+        return scope
     
     def createToggle(self, name: str, canonical_name: str, flags: FlagsT,
                     toggle_metric, toggle_type, toggle_dir) -> 'Scope':
@@ -281,26 +297,36 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
     def getInstanceDu(self) -> 'SqliteScope':
         """Get the design-unit scope associated with this instance.
 
-        Searches sibling scopes (same parent) for the first DU_MODULE (or any
-        DU_ANY) scope and returns it.  This mirrors how MemInstanceScope works.
+        First checks the design_units table for an explicit link recorded by
+        createInstance().  Falls back to a sibling-scope heuristic for
+        databases created before the fix.
         """
+        # Explicit lookup via design_units table
+        row = self.ucis_db.conn.execute(
+            "SELECT du_name FROM design_units WHERE du_scope_id = ?",
+            (self.scope_id,)).fetchone()
+        if row is not None:
+            du_name = row[0]
+            du_row = self.ucis_db.conn.execute(
+                "SELECT scope_id FROM scopes WHERE scope_name = ? AND scope_type = ?",
+                (du_name, ScopeTypeT.DU_MODULE)).fetchone()
+            if du_row is not None:
+                return SqliteScope(self.ucis_db, du_row[0])
+
+        # Fallback: search sibling scopes for a DU scope
         self._ensure_loaded()
         du_mask = (ScopeTypeT.DU_MODULE | ScopeTypeT.DU_ARCH |
                    ScopeTypeT.DU_PACKAGE | ScopeTypeT.DU_PROGRAM |
                    ScopeTypeT.DU_INTERFACE)
-        # Look in parent's children for a DU scope
         parent_id = self._parent_id
         if parent_id is None:
-            # Top-level: search root-level scopes in db
             cursor = self.ucis_db.conn.execute(
                 "SELECT scope_id FROM scopes WHERE parent_id IS NULL AND (scope_type & ?) != 0",
-                (int(du_mask),)
-            )
+                (int(du_mask),))
         else:
             cursor = self.ucis_db.conn.execute(
                 "SELECT scope_id FROM scopes WHERE parent_id = ? AND (scope_type & ?) != 0",
-                (parent_id, int(du_mask))
-            )
+                (parent_id, int(du_mask)))
         row = cursor.fetchone()
         if row:
             return SqliteScope(self.ucis_db, row[0])
