@@ -190,12 +190,17 @@ sufficient detail to write an independent parser.</p></li>
 <li><p><a class="reference internal" href="#tags-json" id="id24">11.2 tags.json</a></p></li>
 <li><p><a class="reference internal" href="#toggle-bin" id="id25">11.3 toggle.bin</a></p></li>
 <li><p><a class="reference internal" href="#fsm-bin" id="id26">11.4 fsm.bin</a></p></li>
-<li><p><a class="reference internal" href="#contrib-nnnnn-bin" id="id27">11.5 contrib/NNNNN.bin</a></p></li>
+<li><p><a class="reference internal" href="#cross-bin" id="id27">11.5 cross.bin</a></p></li>
+<li><p><a class="reference internal" href="#properties-json" id="id28">11.6 properties.json</a></p></li>
+<li><p><a class="reference internal" href="#design-units-json" id="id29">11.7 design_units.json</a></p></li>
+<li><p><a class="reference internal" href="#formal-bin" id="id30">11.8 formal.bin</a></p></li>
+<li><p><a class="reference internal" href="#coveritem-flags-bin" id="id31">11.9 coveritem_flags.bin</a></p></li>
+<li><p><a class="reference internal" href="#contrib-hist-idx-bin" id="id32">11.10 contrib/&lt;hist_idx&gt;.bin</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#version-history" id="id28">12. Version history</a></p></li>
-<li><p><a class="reference internal" href="#size-and-performance-reference" id="id29">13. Size and performance reference</a></p></li>
-<li><p><a class="reference internal" href="#implementing-a-reader" id="id30">14. Implementing a reader</a></p></li>
+<li><p><a class="reference internal" href="#version-history" id="id33">12. Version history</a></p></li>
+<li><p><a class="reference internal" href="#size-and-performance-reference" id="id34">13. Size and performance reference</a></p></li>
+<li><p><a class="reference internal" href="#implementing-a-reader" id="id35">14. Implementing a reader</a></p></li>
 </ul>
 </nav>
 <hr class="docutils" />
@@ -290,39 +295,48 @@ non-default.</p>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attrs.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>User-defined attribute assignments.</p></td>
+<td><p>User-defined attribute assignments (V2 JSON: scopes, coveritems,
+history nodes, and global attributes).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">tags.json</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Tag assignments for scopes and coveritems.</p></td>
+<td><p>Tag assignments for scopes (sparse, DFS-indexed).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">toggle.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Per-signal toggle metadata (canonical name, type, direction).</p></td>
+<td><p>Per-signal toggle metadata (JSON: canonical name, metric, type,
+direction).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fsm.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>FSM state and transition metadata.</p></td>
+<td><p>FSM state-index overrides (JSON, sparse; only written when state
+indices differ from the default 0, 1, 2, … sequence).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cross.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Cross-coverpoint link records.</p></td>
+<td><p>Cross-coverpoint link records (JSON: crossed coverpoint sibling names).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">properties.json</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Typed property values (int, real, string, handle).</p></td>
+<td><p>Typed string property values (DFS scope-indexed).</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">design_units.json</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Design-unit records (module, package, interface, program).</p></td>
+<td><p>Design-unit name-to-DFS-index lookup table (name, index, scope type).</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">formal.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Formal-verification assertion data.</p></td>
+<td><p>Formal-verification assertion data (JSON: status, radius, witness).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">contrib/NNNNN.bin</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">coveritem_flags.bin</span></code></p></td>
 <td><p>—</p></td>
-<td><p>Per-test coveritem contribution arrays (delta-encoded, sparse).</p></td>
+<td><p>Per-coveritem non-default flags (sparse delta-encoded binary).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">contrib/&lt;hist_idx&gt;.bin</span></code></p></td>
+<td><p>—</p></td>
+<td><p>Per-test coveritem contribution arrays (delta-encoded, sparse).
+One file per history node that has contributions; <code class="docutils literal notranslate"><span class="pre">&lt;hist_idx&gt;</span></code> is
+the integer history-node index (not zero-padded).</p></td>
 </tr>
 </tbody>
 </table>
@@ -521,12 +535,14 @@ TOGGLEBIN coveritems with the implicit names <code class="docutils literal notra
 [presence  : varint  ]  bitfield of optional fields present (see below)
 
 — optional fields, each present only if the corresponding bit is set —
-[flags     : varint  ]  only if PRESENCE_FLAGS  (bit 0) set
-[file_id   : varint  ]  only if PRESENCE_SOURCE (bit 1) set
-[line      : varint  ]     &quot;
-[token     : varint  ]     &quot;
-[weight    : varint  ]  only if PRESENCE_WEIGHT  (bit 2) set
-[at_least  : varint  ]  only if PRESENCE_AT_LEAST (bit 3) set
+[flags       : varint  ]  only if PRESENCE_FLAGS       (bit 0) set
+[file_id     : varint  ]  only if PRESENCE_SOURCE      (bit 1) set
+[line        : varint  ]     &quot;
+[token       : varint  ]     &quot;
+[weight      : varint  ]  only if PRESENCE_WEIGHT      (bit 2) set
+[at_least    : varint  ]  only if PRESENCE_AT_LEAST    (bit 3) set
+[goal        : varint  ]  only if PRESENCE_GOAL        (bit 5) set
+[source_type : varint  ]  only if PRESENCE_SOURCE_TYPE (bit 6) set
 
 — always present —
 [num_children : varint]  number of child scope records that follow
@@ -572,6 +588,19 @@ TOGGLEBIN coveritems with the implicit names <code class="docutils literal notra
 <td><p>An <code class="docutils literal notranslate"><span class="pre">at_least</span></code> threshold that overrides the cover-type default is
 stored at the scope level (applies to all coveritems in the scope).</p></td>
 </tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PRESENCE_CVG_OPTS</span></code></p></td>
+<td><p>Reserved for covergroup options (not yet used by the writer).</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PRESENCE_GOAL</span></code></p></td>
+<td><p>Non-default scope goal (≠ −1) is stored.</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">PRESENCE_SOURCE_TYPE</span></code></p></td>
+<td><p>Explicit <code class="docutils literal notranslate"><span class="pre">SourceT</span></code> enum value is stored.  When absent, the source
+type defaults to <code class="docutils literal notranslate"><span class="pre">SourceT.NONE</span></code>.</p></td>
+</tr>
 </tbody>
 </table>
 <p><strong>Cover-type defaults</strong> (used when <code class="docutils literal notranslate"><span class="pre">PRESENCE_AT_LEAST</span></code> is absent):</p>
@@ -591,12 +620,12 @@ stored at the scope level (applies to all coveritems in the scope).</p></td>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CVGBIN</span></code></p></td>
-<td><p>0</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x19</span></code></p></td>
 <td><p><strong>1</strong></p></td>
 <td><p>1</p></td>
 </tr>
 <tr class="row-odd"><td><p>All others (TOGGLEBIN, STMTBIN, BRANCHBIN, …)</p></td>
-<td><p>0</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">0x01</span></code></p></td>
 <td><p>0</p></td>
 <td><p>1</p></td>
 </tr>
@@ -725,21 +754,28 @@ run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <
 <p><strong>Record schema:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;regression_seed_42&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w">        </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;logical_name&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;regression_seed_42&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;physical_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;TEST&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;teststatus&quot;</span><span class="p">:</span><span class="w">    </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;toolcategory&quot;</span><span class="p">:</span><span class="w">  </span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;test_status&quot;</span><span class="p">:</span><span class="w">   </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;tool_category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sim&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;2026-02-25&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;simtime&quot;</span><span class="p">:</span><span class="w">       </span><span class="mf">1500.0</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;timeunit&quot;</span><span class="p">:</span><span class="w">      </span><span class="s2">&quot;ns&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;runcwd&quot;</span><span class="p">:</span><span class="w">        </span><span class="s2">&quot;/home/user/sim&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;cputime&quot;</span><span class="p">:</span><span class="w">       </span><span class="mf">12.3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sim_time&quot;</span><span class="p">:</span><span class="w">      </span><span class="mf">1500.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;time_unit&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;ns&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;run_cwd&quot;</span><span class="p">:</span><span class="w">       </span><span class="s2">&quot;/home/user/sim&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;cpu_time&quot;</span><span class="p">:</span><span class="w">      </span><span class="mf">12.3</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;seed&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;42&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;cmd&quot;</span><span class="p">:</span><span class="w">           </span><span class="s2">&quot;vsim -seed 42 top&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;user&quot;</span><span class="p">:</span><span class="w">          </span><span class="s2">&quot;jsmith&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;cost&quot;</span><span class="p">:</span><span class="w">          </span><span class="mf">0.0</span>
+<span class="w">    </span><span class="nt">&quot;compulsory&quot;</span><span class="p">:</span><span class="w">    </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;user_name&quot;</span><span class="p">:</span><span class="w">     </span><span class="s2">&quot;jsmith&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;cost&quot;</span><span class="p">:</span><span class="w">          </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ucis_version&quot;</span><span class="p">:</span><span class="w">  </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vendor_id&quot;</span><span class="p">:</span><span class="w">     </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vendor_tool&quot;</span><span class="p">:</span><span class="w">   </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;vendor_tool_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;same_tests&quot;</span><span class="p">:</span><span class="w">    </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;comment&quot;</span><span class="p">:</span><span class="w">       </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
@@ -757,24 +793,24 @@ run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">logical_name</span></code></p></td>
 <td><p>string</p></td>
 <td><p>Unique name for this history node (test name or merge label).</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">parent</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">physical_name</span></code></p></td>
 <td><p>string | null</p></td>
-<td><p>Name of the parent history node, or <code class="docutils literal notranslate"><span class="pre">null</span></code> for a root node.</p></td>
+<td><p>Physical file name associated with the history node, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">kind</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">&quot;TEST&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;MERGE&quot;</span></code></p></td>
 <td><p>History node kind.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">teststatus</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test_status</span></code></p></td>
 <td><p>integer</p></td>
 <td><p>Test status code: 0 = OK, 1 = WARNING, 2 = ERROR, 3 = FATAL,
 4 = NOTRUN.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">toolcategory</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tool_category</span></code></p></td>
 <td><p>string</p></td>
 <td><p>Free-form tool category (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;sim&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;formal&quot;</span></code>).</p></td>
 </tr>
@@ -782,19 +818,19 @@ run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <
 <td><p>string</p></td>
 <td><p>Date string (ISO 8601 recommended).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">simtime</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sim_time</span></code></p></td>
 <td><p>number</p></td>
-<td><p>Simulation end time in <code class="docutils literal notranslate"><span class="pre">timeunit</span></code> units.</p></td>
+<td><p>Simulation end time in <code class="docutils literal notranslate"><span class="pre">time_unit</span></code> units.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">timeunit</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">time_unit</span></code></p></td>
 <td><p>string</p></td>
 <td><p>Simulation time unit (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;ns&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;ps&quot;</span></code>).</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">runcwd</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">run_cwd</span></code></p></td>
 <td><p>string</p></td>
 <td><p>Working directory of the simulation run.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cputime</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cpu_time</span></code></p></td>
 <td><p>number</p></td>
 <td><p>CPU seconds consumed.</p></td>
 </tr>
@@ -810,13 +846,41 @@ run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <
 <td><p>string</p></td>
 <td><p>Additional arguments.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">user</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">compulsory</span></code></p></td>
+<td><p>any | null</p></td>
+<td><p>Compulsory flag (tool-defined), or <code class="docutils literal notranslate"><span class="pre">null</span></code> if unset.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">user_name</span></code></p></td>
 <td><p>string</p></td>
 <td><p>Username that ran the simulation.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cost</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cost</span></code></p></td>
 <td><p>number</p></td>
 <td><p>Simulation cost (tool-defined).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ucis_version</span></code></p></td>
+<td><p>string | null</p></td>
+<td><p>UCIS version associated with this history node, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vendor_id</span></code></p></td>
+<td><p>string | null</p></td>
+<td><p>Vendor identifier, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vendor_tool</span></code></p></td>
+<td><p>string | null</p></td>
+<td><p>Vendor tool name, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">vendor_tool_version</span></code></p></td>
+<td><p>string | null</p></td>
+<td><p>Vendor tool version, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">same_tests</span></code></p></td>
+<td><p>integer | null</p></td>
+<td><p>Number of identical tests merged, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">comment</span></code></p></td>
+<td><p>string | null</p></td>
+<td><p>Free-form comment, or <code class="docutils literal notranslate"><span class="pre">null</span></code>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -877,11 +941,11 @@ that have evolved between runs.</p>
 <h3><a class="toc-backref" href="#id21" role="doc-backlink">10.3 Merge history node</a><a class="headerlink" href="#merge-history-node" title="Link to this heading"></a></h3>
 <p>A merge operation appends a <code class="docutils literal notranslate"><span class="pre">&quot;MERGE&quot;</span></code>-kind history node to <code class="docutils literal notranslate"><span class="pre">history.json</span></code>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w">   </span><span class="s2">&quot;merge:output.cdb&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;logical_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merge:output.cdb&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;physical_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w">   </span><span class="s2">&quot;MERGE&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;teststatus&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;toolcategory&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merge&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;test_status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;tool_category&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merge&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;date&quot;</span><span class="p">:</span><span class="w">   </span><span class="s2">&quot;2026-02-25T21:00:00Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -896,33 +960,174 @@ absent or all-default.  Readers must silently skip any optional member they
 do not support, and must not fail if an expected optional member is absent.</p>
 <section id="attrs-bin">
 <h3><a class="toc-backref" href="#id23" role="doc-backlink">11.1 attrs.bin</a><a class="headerlink" href="#attrs-bin" title="Link to this heading"></a></h3>
-<p>User-defined attribute assignments for scopes and coveritems.</p>
+<p>User-defined attribute assignments.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this
+member is JSON-encoded.</p>
+<p><strong>Format v2</strong> (current):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scopes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">}}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;coveritems&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;scope_idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ci_idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">}}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;history&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;TEST&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;attrs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">}}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;global&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;value&quot;</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">idx</span></code> / <code class="docutils literal notranslate"><span class="pre">scope_idx</span></code> values are DFS scope indices (same ordering as
+<code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code>).  <code class="docutils literal notranslate"><span class="pre">ci_idx</span></code> is the zero-based coveritem position
+within its parent scope.  Only objects with at least one attribute are
+included (sparse).  The reader also accepts legacy <strong>v1</strong> files that store
+only scope-level attributes.</p>
 </section>
 <section id="tags-json">
 <h3><a class="toc-backref" href="#id24" role="doc-backlink">11.2 tags.json</a><a class="headerlink" href="#tags-json" title="Link to this heading"></a></h3>
-<p>Tag assignments.  A JSON object mapping tag names to arrays of scope paths.</p>
+<p>Tag assignments for scopes (sparse, DFS-indexed).</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;tag_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;tag_b&quot;</span><span class="p">]}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">idx</span></code> is the DFS scope index.  Only scopes with at least one tag are
+included.</p>
 </section>
 <section id="toggle-bin">
 <h3><a class="toc-backref" href="#id25" role="doc-backlink">11.3 toggle.bin</a><a class="headerlink" href="#toggle-bin" title="Link to this heading"></a></h3>
-<p>Per-signal toggle metadata for <code class="docutils literal notranslate"><span class="pre">TOGGLE</span></code>-type scopes.  Records the
-canonical signal name, toggle type (NET, REG, …), and direction (IN, OUT, …).</p>
+<p>Per-signal toggle metadata for <code class="docutils literal notranslate"><span class="pre">TOGGLE</span></code>-type scopes.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code>
+extension, this member is JSON-encoded.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;canonical&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;top.clk&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;metric&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;dir&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">idx</span></code> is the DFS scope index.  All fields except <code class="docutils literal notranslate"><span class="pre">idx</span></code> are optional and
+are omitted when they match the defaults (<code class="docutils literal notranslate"><span class="pre">metric</span></code> = <code class="docutils literal notranslate"><span class="pre">ToggleMetricT._2STOGGLE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">type</span></code> = <code class="docutils literal notranslate"><span class="pre">ToggleTypeT.NET</span></code>, <code class="docutils literal notranslate"><span class="pre">dir</span></code> = <code class="docutils literal notranslate"><span class="pre">ToggleDirT.INTERNAL</span></code>).  Only
+<code class="docutils literal notranslate"><span class="pre">TOGGLE</span></code> scopes with at least one non-default value are included.</p>
 </section>
 <section id="fsm-bin">
 <h3><a class="toc-backref" href="#id26" role="doc-backlink">11.4 fsm.bin</a><a class="headerlink" href="#fsm-bin" title="Link to this heading"></a></h3>
-<p>FSM metadata for <code class="docutils literal notranslate"><span class="pre">FSM</span></code>-type scopes.  Records state names and transition
-labels that correspond to coveritems in <code class="docutils literal notranslate"><span class="pre">counts.bin</span></code>.</p>
+<p>FSM state-index overrides for <code class="docutils literal notranslate"><span class="pre">FSM</span></code>-type scopes.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code>
+extension, this member is JSON-encoded.  State and transition names are
+already stored in <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code> as FSMBIN coveritems under FSM_STATES
+and FSM_TRANS sub-scopes; this member only records non-sequential state
+indices.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;fsm_idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;states&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;IDLE&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;index&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">}]}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">fsm_idx</span></code> is the DFS scope index of the <code class="docutils literal notranslate"><span class="pre">FSM</span></code> scope.  Only FSM scopes
+whose state indices differ from the default 0, 1, 2, … sequence are included.
+The member is omitted entirely when all indices are sequential.</p>
 </section>
-<section id="contrib-nnnnn-bin">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">11.5 contrib/NNNNN.bin</a><a class="headerlink" href="#contrib-nnnnn-bin" title="Link to this heading"></a></h3>
-<p>Per-test contribution arrays.  One file per test (zero-padded 5-digit
-sequence number matches the TEST history node order).  Each file encodes a
-sparse, delta-encoded array of per-test hit counts, allowing reconstruction
-of which tests hit which bins.</p>
+<section id="cross-bin">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">11.5 cross.bin</a><a class="headerlink" href="#cross-bin" title="Link to this heading"></a></h3>
+<p>Cross-coverpoint link records for <code class="docutils literal notranslate"><span class="pre">CROSS</span></code>-type scopes.  Despite the
+<code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this member is JSON-encoded.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;crossed&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;cp_a&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;cp_b&quot;</span><span class="p">]}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">idx</span></code> is the DFS scope index of the <code class="docutils literal notranslate"><span class="pre">CROSS</span></code> scope.  <code class="docutils literal notranslate"><span class="pre">crossed</span></code> lists
+the <code class="docutils literal notranslate"><span class="pre">getScopeName()</span></code> values of each crossed coverpoint (sibling scopes
+within the same parent COVERGROUP/COVERINSTANCE).</p>
+</section>
+<section id="properties-json">
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">11.6 properties.json</a><a class="headerlink" href="#properties-json" title="Link to this heading"></a></h3>
+<p>Typed string property values for scopes (DFS-indexed).</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;kind&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scope&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;str&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;comment text&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">key</span></code> is the integer value of the <code class="docutils literal notranslate"><span class="pre">StrProperty</span></code> enum.  Only scopes with
+explicitly-set properties are included.</p>
+</section>
+<section id="design-units-json">
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">11.7 design_units.json</a><a class="headerlink" href="#design-units-json" title="Link to this heading"></a></h3>
+<p>Design-unit name-to-DFS-index lookup table.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;units&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;top&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">type</span></code> is the integer value of <code class="docutils literal notranslate"><span class="pre">ScopeTypeT</span></code> (e.g. 2 = <code class="docutils literal notranslate"><span class="pre">DU_MODULE</span></code>).
+Only DU_ANY scopes are included.  The member is omitted when no design units
+are present.</p>
+</section>
+<section id="formal-bin">
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">11.8 formal.bin</a><a class="headerlink" href="#formal-bin" title="Link to this heading"></a></h3>
+<p>Formal-verification assertion data.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this
+member is JSON-encoded.</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;entries&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;idx&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;radius&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;witness&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/path/to/witness.vcd&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">idx</span></code> is the flat DFS coveritem index (same ordering as <code class="docutils literal notranslate"><span class="pre">counts.bin</span></code>).
+Fields <code class="docutils literal notranslate"><span class="pre">status</span></code>, <code class="docutils literal notranslate"><span class="pre">radius</span></code>, and <code class="docutils literal notranslate"><span class="pre">witness</span></code> are each omitted when they
+match the defaults (0, 0, <code class="docutils literal notranslate"><span class="pre">null</span></code> respectively).  Defaults:
+<code class="docutils literal notranslate"><span class="pre">status</span></code> = <code class="docutils literal notranslate"><span class="pre">FormalStatusT.NONE</span></code> (0), <code class="docutils literal notranslate"><span class="pre">radius</span></code> = 0.</p>
+</section>
+<section id="coveritem-flags-bin">
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">11.9 coveritem_flags.bin</a><a class="headerlink" href="#coveritem-flags-bin" title="Link to this heading"></a></h3>
+<p>Per-coveritem non-default flags.  This member uses a true binary encoding
+(sparse, delta-encoded varint pairs).</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[version      : varint]  always 1
+[num_entries  : varint]  number of (index, flags) pairs
+per entry:
+    [delta_idx : varint]  coveritem DFS index delta from previous entry
+    [flags     : varint]  ucisFlagsT value
+</pre></div>
+</div>
+<p>Only coveritems whose flags differ from the cover-type default (see
+cover-type defaults table in Section 6.2) are included.  The member is
+omitted entirely when all coveritems use default flags.</p>
+</section>
+<section id="contrib-hist-idx-bin">
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">11.10 contrib/&lt;hist_idx&gt;.bin</a><a class="headerlink" href="#contrib-hist-idx-bin" title="Link to this heading"></a></h3>
+<p>Per-test contribution arrays.  One file per history node that recorded
+contributions; <code class="docutils literal notranslate"><span class="pre">&lt;hist_idx&gt;</span></code> is the integer history-node index (not
+zero-padded).  Each file encodes a sparse, delta-encoded array of per-test
+hit counts, allowing reconstruction of which tests hit which bins.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[num_entries      : varint]
+per entry (sorted by bin_index, ascending):
+    [delta_bin_index : varint]  bin_index − previous bin_index
+    [count           : varint]  hit count for this bin from this test
+</pre></div>
+</div>
 </section>
 </section>
 <hr class="docutils" />
 <section id="version-history">
-<h2><a class="toc-backref" href="#id28" role="doc-backlink">12. Version history</a><a class="headerlink" href="#version-history" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id33" role="doc-backlink">12. Version history</a><a class="headerlink" href="#version-history" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15.0%" />
@@ -939,12 +1144,27 @@ of which tests hit which bins.</p>
 TOGGLE_PAIR optimization.  Varint + UINT32 dual-mode counts encoding.
 Same-schema fast-merge path via <code class="docutils literal notranslate"><span class="pre">schema_hash</span></code>.</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">1.0</span></code> (UCIS compliance update)</p></td>
+<td><p>Added presence bits 4–6 (<code class="docutils literal notranslate"><span class="pre">PRESENCE_CVG_OPTS</span></code>, <code class="docutils literal notranslate"><span class="pre">PRESENCE_GOAL</span></code>,
+<code class="docutils literal notranslate"><span class="pre">PRESENCE_SOURCE_TYPE</span></code>) to scope records.  Added
+<code class="docutils literal notranslate"><span class="pre">coveritem_flags.bin</span></code> member for per-coveritem non-default flags.
+Updated <code class="docutils literal notranslate"><span class="pre">history.json</span></code> to UCIS-compliant field names
+(<code class="docutils literal notranslate"><span class="pre">logical_name</span></code>, <code class="docutils literal notranslate"><span class="pre">physical_name</span></code>, <code class="docutils literal notranslate"><span class="pre">test_status</span></code>, <code class="docutils literal notranslate"><span class="pre">sim_time</span></code>,
+<code class="docutils literal notranslate"><span class="pre">time_unit</span></code>, <code class="docutils literal notranslate"><span class="pre">run_cwd</span></code>, <code class="docutils literal notranslate"><span class="pre">cpu_time</span></code>, <code class="docutils literal notranslate"><span class="pre">user_name</span></code>) and added
+vendor/tool fields (<code class="docutils literal notranslate"><span class="pre">ucis_version</span></code>, <code class="docutils literal notranslate"><span class="pre">vendor_id</span></code>, <code class="docutils literal notranslate"><span class="pre">vendor_tool</span></code>,
+<code class="docutils literal notranslate"><span class="pre">vendor_tool_version</span></code>, <code class="docutils literal notranslate"><span class="pre">same_tests</span></code>, <code class="docutils literal notranslate"><span class="pre">comment</span></code>, <code class="docutils literal notranslate"><span class="pre">compulsory</span></code>).
+Upgraded <code class="docutils literal notranslate"><span class="pre">attrs.bin</span></code> to V2 format with sections for scopes,
+coveritems, history nodes, and global attributes.  Updated
+cover-type default flags to <code class="docutils literal notranslate"><span class="pre">0x01</span></code> (most types) / <code class="docutils literal notranslate"><span class="pre">0x19</span></code>
+(<code class="docutils literal notranslate"><span class="pre">CVGBIN</span></code>).  Documented <code class="docutils literal notranslate"><span class="pre">cross.bin</span></code>, <code class="docutils literal notranslate"><span class="pre">properties.json</span></code>,
+<code class="docutils literal notranslate"><span class="pre">design_units.json</span></code>, <code class="docutils literal notranslate"><span class="pre">formal.bin</span></code>, and <code class="docutils literal notranslate"><span class="pre">contrib/</span></code> formats.</p></td>
+</tr>
 </tbody>
 </table>
 <hr class="docutils" />
 </section>
 <section id="size-and-performance-reference">
-<span id="ncdb-benchmarks"></span><h2><a class="toc-backref" href="#id29" role="doc-backlink">13. Size and performance reference</a><a class="headerlink" href="#size-and-performance-reference" title="Link to this heading"></a></h2>
+<span id="ncdb-benchmarks"></span><h2><a class="toc-backref" href="#id34" role="doc-backlink">13. Size and performance reference</a><a class="headerlink" href="#size-and-performance-reference" title="Link to this heading"></a></h2>
 <p>Measurements using synthetic BM1–BM6 benchmark databases (pure Python,
 no C accelerator, median of 3 merge runs):</p>
 <table class="docutils align-default">
@@ -1027,7 +1247,7 @@ to drop to ~5 ms (~7.5× faster than SQLite).</p>
 </section>
 <hr class="docutils" />
 <section id="implementing-a-reader">
-<h2><a class="toc-backref" href="#id30" role="doc-backlink">14. Implementing a reader</a><a class="headerlink" href="#implementing-a-reader" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">14. Implementing a reader</a><a class="headerlink" href="#implementing-a-reader" title="Link to this heading"></a></h2>
 <p>To read an NCDB file without PyUCIS:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">struct</span><span class="o">,</span><span class="w"> </span><span class="nn">hashlib</span>
 
