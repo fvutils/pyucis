@@ -77,23 +77,27 @@ class CoverageReportBuilder(object):
         for cg_in in cg_n.scopes(ScopeTypeT.COVERINSTANCE):
             cg_r.covergroups.append(self.build_covergroup(cg_in))
             
-        # Determine the covergroup coverage
+        # Determine the covergroup coverage.
+        # If the covergroup has type-level coverpoints/crosses (the aggregate
+        # view across all instances), use those. Otherwise fall back to the
+        # average of sub-instances.
         coverage = 0.0
-
         div = 0
-        for cp in cg_r.coverpoints:
-            if cp.weight > 0:
-                coverage += cp.coverage * cp.weight
-            div += cp.weight
-            
-        for cr in cg_r.crosses:
-            coverage += cr.coverage * cr.weight
-            div += cr.weight
 
-        for sub in cg_r.covergroups:
-            if sub.weight > 0:
-                coverage += sub.coverage * sub.weight
-            div += sub.weight
+        if cg_r.coverpoints or cg_r.crosses:
+            for cp in cg_r.coverpoints:
+                if cp.weight > 0:
+                    coverage += cp.coverage * cp.weight
+                div += cp.weight
+
+            for cr in cg_r.crosses:
+                coverage += cr.coverage * cr.weight
+                div += cr.weight
+        else:
+            for sub in cg_r.covergroups:
+                if sub.weight > 0:
+                    coverage += sub.coverage * sub.weight
+                div += sub.weight
 
         if div > 0: coverage /= div
 
