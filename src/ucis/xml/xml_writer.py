@@ -250,7 +250,7 @@ class XmlWriter():
                     bin_elem = self.mkElem(toggle_elem, "bin")
                     contents_elem = self.mkElem(bin_elem, "contents")
                     contents_elem.set("coverageCount", str(bin_item.getCoverData().data))
-        self.write_user_attrs(tc_elem, scope)
+            self.write_user_attrs(to_elem, toggle_scope)
 
     def write_block_coverage(self, inst_elem, scope):
         block_scopes = list(scope.scopes(ScopeTypeT.BLOCK))
@@ -266,7 +266,7 @@ class XmlWriter():
                 bin_elem = self.mkElem(stmt_elem, "bin")
                 contents_elem = self.mkElem(bin_elem, "contents")
                 contents_elem.set("coverageCount", str(stmt.getCoverData().data))
-        self.write_user_attrs(bc_elem, scope)
+                self.write_user_attrs(stmt_elem, block_scope)
 
     def write_branch_coverage(self, inst_elem, scope):
         branch_scopes = list(scope.scopes(ScopeTypeT.BRANCH))
@@ -286,7 +286,7 @@ class XmlWriter():
                 bb_elem.set("alias", arm.getName())  # use alias to preserve name
                 contents_elem = self.mkElem(bb_elem, "contents")
                 contents_elem.set("coverageCount", str(arm.getCoverData().data))
-        self.write_user_attrs(bc_elem, scope)
+            self.write_user_attrs(stmt_elem, branch_scope)
 
     def write_fsm_coverage(self, inst_elem, scope):
         fsm_scopes = list(scope.scopes(ScopeTypeT.FSM))
@@ -323,7 +323,7 @@ class XmlWriter():
                 tb_elem = self.mkElem(trans_elem, "transitionBin")
                 contents = self.mkElem(tb_elem, "contents")
                 contents.set("coverageCount", str(bin_item.getCoverData().data))
-        self.write_user_attrs(fc_elem, scope)
+            self.write_user_attrs(fsm_elem, fsm_scope)
 
     def write_assertion_coverage(self, inst_elem, scope):
         assert_scopes = (list(scope.scopes(ScopeTypeT.ASSERT))
@@ -360,7 +360,7 @@ class XmlWriter():
                     contents = self.mkElem(bin_elem, "contents")
                     contents.set("coverageCount",
                                  str(sum(b.getCoverData().data for b in bins)))
-        self.write_user_attrs(ac_elem, scope)
+            self.write_user_attrs(asrt_elem, assert_scope)
 
     def write_condition_coverage(self, inst_elem, scope):
         cond_scopes = list(scope.scopes(ScopeTypeT.COND))
@@ -398,7 +398,7 @@ class XmlWriter():
                 bin_elem.set("alias", bin_item.getName())
                 contents_elem = self.mkElem(bin_elem, "contents")
                 contents_elem.set("coverageCount", str(bin_item.getCoverData().data))
-        self.write_user_attrs(cc_elem, scope)
+            self.write_user_attrs(expr_elem, cond_scope)
 
     def write_covergroups(self, inst, scope):
         for cg in scope.scopes(ScopeTypeT.COVERGROUP):
@@ -417,6 +417,7 @@ class XmlWriter():
                 while cg_inst is not None:
                     self.write_coverinstance(cgElem, cg.getScopeName(), cg_inst)
                     cg_inst = next(inst_it, None)
+            self.write_user_attrs(cgElem, cg)
     
     def write_coverinstance(self, cgElem, cgName, cg : Covergroup):
         cgInstElem = self.mkElem(cgElem, "cgInstance")
@@ -446,6 +447,7 @@ class XmlWriter():
             
         for cr in cg.scopes(ScopeTypeT.CROSS):
             self.write_cross(cgInstElem, cr)
+        self.write_user_attrs(cgInstElem, cg)
             
     def write_coverpoint(self, cgInstElem, cp : Coverpoint):
         cpElem = self.mkElem(cgInstElem, "coverpoint")
@@ -466,6 +468,7 @@ class XmlWriter():
             for cs in cp.scopes(_BINSCOPE_MASK):
                 bins.extend(cs.coverItems(_BIN_MASK))
         self.write_coverpoint_bins(cpElem, iter(bins))
+        self.write_user_attrs(cpElem, cp)
 
     def write_coverpoint_bins(self, cpElem, coveritems : Iterator[CoverIndex]):
         # TODO: should probably organize bins into a structure that fits more nicely into the interchage format
