@@ -100,31 +100,39 @@ non-default.
      - Ordered list of source file paths; indices match file IDs in ``scope_tree.bin``.
    * - ``attrs.bin``
      - —
-     - User-defined attribute assignments.
+     - User-defined attribute assignments (V2 JSON: scopes, coveritems,
+       history nodes, and global attributes).
    * - ``tags.json``
      - —
-     - Tag assignments for scopes and coveritems.
+     - Tag assignments for scopes (sparse, DFS-indexed).
    * - ``toggle.bin``
      - —
-     - Per-signal toggle metadata (canonical name, type, direction).
+     - Per-signal toggle metadata (JSON: canonical name, metric, type,
+       direction).
    * - ``fsm.bin``
      - —
-     - FSM state and transition metadata.
+     - FSM state-index overrides (JSON, sparse; only written when state
+       indices differ from the default 0, 1, 2, … sequence).
    * - ``cross.bin``
      - —
-     - Cross-coverpoint link records.
+     - Cross-coverpoint link records (JSON: crossed coverpoint sibling names).
    * - ``properties.json``
      - —
-     - Typed property values (int, real, string, handle).
+     - Typed string property values (DFS scope-indexed).
    * - ``design_units.json``
      - —
-     - Design-unit records (module, package, interface, program).
+     - Design-unit name-to-DFS-index lookup table (name, index, scope type).
    * - ``formal.bin``
      - —
-     - Formal-verification assertion data.
-   * - ``contrib/NNNNN.bin``
+     - Formal-verification assertion data (JSON: status, radius, witness).
+   * - ``coveritem_flags.bin``
+     - —
+     - Per-coveritem non-default flags (sparse delta-encoded binary).
+   * - ``contrib/<hist_idx>.bin``
      - —
      - Per-test coveritem contribution arrays (delta-encoded, sparse).
+       One file per history node that has contributions; ``<hist_idx>`` is
+       the integer history-node index (not zero-padded).
 
 -----------
 
@@ -320,12 +328,14 @@ Every scope record begins with a one-byte **marker**:
    [presence  : varint  ]  bitfield of optional fields present (see below)
 
    — optional fields, each present only if the corresponding bit is set —
-   [flags     : varint  ]  only if PRESENCE_FLAGS  (bit 0) set
-   [file_id   : varint  ]  only if PRESENCE_SOURCE (bit 1) set
-   [line      : varint  ]     "
-   [token     : varint  ]     "
-   [weight    : varint  ]  only if PRESENCE_WEIGHT  (bit 2) set
-   [at_least  : varint  ]  only if PRESENCE_AT_LEAST (bit 3) set
+   [flags       : varint  ]  only if PRESENCE_FLAGS       (bit 0) set
+   [file_id     : varint  ]  only if PRESENCE_SOURCE      (bit 1) set
+   [line        : varint  ]     "
+   [token       : varint  ]     "
+   [weight      : varint  ]  only if PRESENCE_WEIGHT      (bit 2) set
+   [at_least    : varint  ]  only if PRESENCE_AT_LEAST    (bit 3) set
+   [goal        : varint  ]  only if PRESENCE_GOAL        (bit 5) set
+   [source_type : varint  ]  only if PRESENCE_SOURCE_TYPE (bit 6) set
 
    — always present —
    [num_children : varint]  number of child scope records that follow
@@ -361,6 +371,16 @@ Every scope record begins with a one-byte **marker**:
      - ``PRESENCE_AT_LEAST``
      - An ``at_least`` threshold that overrides the cover-type default is
        stored at the scope level (applies to all coveritems in the scope).
+   * - 4
+     - ``PRESENCE_CVG_OPTS``
+     - Reserved for covergroup options (not yet used by the writer).
+   * - 5
+     - ``PRESENCE_GOAL``
+     - Non-default scope goal (≠ −1) is stored.
+   * - 6
+     - ``PRESENCE_SOURCE_TYPE``
+     - Explicit ``SourceT`` enum value is stored.  When absent, the source
+       type defaults to ``SourceT.NONE``.
 
 **Cover-type defaults** (used when ``PRESENCE_AT_LEAST`` is absent):
 
@@ -373,11 +393,11 @@ Every scope record begins with a one-byte **marker**:
      - at_least default
      - weight default
    * - ``CVGBIN``
-     - 0
+     - ``0x19``
      - **1**
      - 1
    * - All others (TOGGLEBIN, STMTBIN, BRANCHBIN, …)
-     - 0
+     - ``0x01``
      - 0
      - 1
 
@@ -508,21 +528,28 @@ run (``kind: "TEST"``) or a merge operation (``kind: "MERGE"``).
 
    [
      {
-       "name":          "regression_seed_42",
-       "parent":        null,
+       "logical_name":  "regression_seed_42",
+       "physical_name": null,
        "kind":          "TEST",
-       "teststatus":    0,
-       "toolcategory":  "sim",
+       "test_status":   0,
+       "tool_category": "sim",
        "date":          "2026-02-25",
-       "simtime":       1500.0,
-       "timeunit":      "ns",
-       "runcwd":        "/home/user/sim",
-       "cputime":       12.3,
+       "sim_time":      1500.0,
+       "time_unit":     "ns",
+       "run_cwd":       "/home/user/sim",
+       "cpu_time":      12.3,
        "seed":          "42",
        "cmd":           "vsim -seed 42 top",
        "args":          "",
-       "user":          "jsmith",
-       "cost":          0.0
+       "compulsory":    null,
+       "user_name":     "jsmith",
+       "cost":          0.0,
+       "ucis_version":  null,
+       "vendor_id":     null,
+       "vendor_tool":   null,
+       "vendor_tool_version": null,
+       "same_tests":    null,
+       "comment":       null
      }
    ]
 
@@ -533,35 +560,35 @@ run (``kind: "TEST"``) or a merge operation (``kind: "MERGE"``).
    * - Field
      - Type
      - Description
-   * - ``name``
+   * - ``logical_name``
      - string
      - Unique name for this history node (test name or merge label).
-   * - ``parent``
+   * - ``physical_name``
      - string | null
-     - Name of the parent history node, or ``null`` for a root node.
+     - Physical file name associated with the history node, or ``null``.
    * - ``kind``
      - ``"TEST"`` | ``"MERGE"``
      - History node kind.
-   * - ``teststatus``
+   * - ``test_status``
      - integer
      - Test status code: 0 = OK, 1 = WARNING, 2 = ERROR, 3 = FATAL,
        4 = NOTRUN.
-   * - ``toolcategory``
+   * - ``tool_category``
      - string
      - Free-form tool category (e.g. ``"sim"``, ``"formal"``).
    * - ``date``
      - string
      - Date string (ISO 8601 recommended).
-   * - ``simtime``
+   * - ``sim_time``
      - number
-     - Simulation end time in ``timeunit`` units.
-   * - ``timeunit``
+     - Simulation end time in ``time_unit`` units.
+   * - ``time_unit``
      - string
      - Simulation time unit (e.g. ``"ns"``, ``"ps"``).
-   * - ``runcwd``
+   * - ``run_cwd``
      - string
      - Working directory of the simulation run.
-   * - ``cputime``
+   * - ``cpu_time``
      - number
      - CPU seconds consumed.
    * - ``seed``
@@ -573,12 +600,33 @@ run (``kind: "TEST"``) or a merge operation (``kind: "MERGE"``).
    * - ``args``
      - string
      - Additional arguments.
-   * - ``user``
+   * - ``compulsory``
+     - any | null
+     - Compulsory flag (tool-defined), or ``null`` if unset.
+   * - ``user_name``
      - string
      - Username that ran the simulation.
    * - ``cost``
      - number
      - Simulation cost (tool-defined).
+   * - ``ucis_version``
+     - string | null
+     - UCIS version associated with this history node, or ``null``.
+   * - ``vendor_id``
+     - string | null
+     - Vendor identifier, or ``null``.
+   * - ``vendor_tool``
+     - string | null
+     - Vendor tool name, or ``null``.
+   * - ``vendor_tool_version``
+     - string | null
+     - Vendor tool version, or ``null``.
+   * - ``same_tests``
+     - integer | null
+     - Number of identical tests merged, or ``null``.
+   * - ``comment``
+     - string | null
+     - Free-form comment, or ``null``.
 
 -----------
 
@@ -654,11 +702,11 @@ A merge operation appends a ``"MERGE"``-kind history node to ``history.json``:
 .. code-block:: json
 
    {
-     "name":   "merge:output.cdb",
-     "parent": null,
+     "logical_name": "merge:output.cdb",
+     "physical_name": null,
      "kind":   "MERGE",
-     "teststatus": 0,
-     "toolcategory": "merge",
+     "test_status": 0,
+     "tool_category": "merge",
      "date":   "2026-02-25T21:00:00Z"
    }
 
@@ -675,32 +723,198 @@ do not support, and must not fail if an expected optional member is absent.
 11.1 attrs.bin
 ==============
 
-User-defined attribute assignments for scopes and coveritems.
+User-defined attribute assignments.  Despite the ``.bin`` extension, this
+member is JSON-encoded.
+
+**Format v2** (current):
+
+.. code-block:: json
+
+   {
+     "version": 2,
+     "scopes": [
+       {"idx": 0, "attrs": {"key": "value"}}
+     ],
+     "coveritems": [
+       {"scope_idx": 0, "ci_idx": 1, "attrs": {"key": "value"}}
+     ],
+     "history": [
+       {"idx": 0, "kind": "TEST", "attrs": {"key": "value"}}
+     ],
+     "global": {"key": "value"}
+   }
+
+``idx`` / ``scope_idx`` values are DFS scope indices (same ordering as
+``scope_tree.bin``).  ``ci_idx`` is the zero-based coveritem position
+within its parent scope.  Only objects with at least one attribute are
+included (sparse).  The reader also accepts legacy **v1** files that store
+only scope-level attributes.
 
 11.2 tags.json
 ==============
 
-Tag assignments.  A JSON object mapping tag names to arrays of scope paths.
+Tag assignments for scopes (sparse, DFS-indexed).
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"idx": 0, "tags": ["tag_a", "tag_b"]}
+     ]
+   }
+
+``idx`` is the DFS scope index.  Only scopes with at least one tag are
+included.
 
 11.3 toggle.bin
 ================
 
-Per-signal toggle metadata for ``TOGGLE``-type scopes.  Records the
-canonical signal name, toggle type (NET, REG, …), and direction (IN, OUT, …).
+Per-signal toggle metadata for ``TOGGLE``-type scopes.  Despite the ``.bin``
+extension, this member is JSON-encoded.
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"idx": 5, "canonical": "top.clk", "metric": 0, "type": 1, "dir": 2}
+     ]
+   }
+
+``idx`` is the DFS scope index.  All fields except ``idx`` are optional and
+are omitted when they match the defaults (``metric`` = ``ToggleMetricT._2STOGGLE``,
+``type`` = ``ToggleTypeT.NET``, ``dir`` = ``ToggleDirT.INTERNAL``).  Only
+``TOGGLE`` scopes with at least one non-default value are included.
 
 11.4 fsm.bin
 =============
 
-FSM metadata for ``FSM``-type scopes.  Records state names and transition
-labels that correspond to coveritems in ``counts.bin``.
+FSM state-index overrides for ``FSM``-type scopes.  Despite the ``.bin``
+extension, this member is JSON-encoded.  State and transition names are
+already stored in ``scope_tree.bin`` as FSMBIN coveritems under FSM_STATES
+and FSM_TRANS sub-scopes; this member only records non-sequential state
+indices.
 
-11.5 contrib/NNNNN.bin
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"fsm_idx": 3, "states": [{"name": "IDLE", "index": 5}]}
+     ]
+   }
+
+``fsm_idx`` is the DFS scope index of the ``FSM`` scope.  Only FSM scopes
+whose state indices differ from the default 0, 1, 2, … sequence are included.
+The member is omitted entirely when all indices are sequential.
+
+11.5 cross.bin
+===============
+
+Cross-coverpoint link records for ``CROSS``-type scopes.  Despite the
+``.bin`` extension, this member is JSON-encoded.
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"idx": 12, "crossed": ["cp_a", "cp_b"]}
+     ]
+   }
+
+``idx`` is the DFS scope index of the ``CROSS`` scope.  ``crossed`` lists
+the ``getScopeName()`` values of each crossed coverpoint (sibling scopes
+within the same parent COVERGROUP/COVERINSTANCE).
+
+11.6 properties.json
+=====================
+
+Typed string property values for scopes (DFS-indexed).
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"kind": "scope", "idx": 0, "key": 1, "type": "str", "value": "comment text"}
+     ]
+   }
+
+``key`` is the integer value of the ``StrProperty`` enum.  Only scopes with
+explicitly-set properties are included.
+
+11.7 design_units.json
 =======================
 
-Per-test contribution arrays.  One file per test (zero-padded 5-digit
-sequence number matches the TEST history node order).  Each file encodes a
-sparse, delta-encoded array of per-test hit counts, allowing reconstruction
-of which tests hit which bins.
+Design-unit name-to-DFS-index lookup table.
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "units": [
+       {"name": "top", "idx": 0, "type": 2}
+     ]
+   }
+
+``type`` is the integer value of ``ScopeTypeT`` (e.g. 2 = ``DU_MODULE``).
+Only DU_ANY scopes are included.  The member is omitted when no design units
+are present.
+
+11.8 formal.bin
+================
+
+Formal-verification assertion data.  Despite the ``.bin`` extension, this
+member is JSON-encoded.
+
+.. code-block:: json
+
+   {
+     "version": 1,
+     "entries": [
+       {"idx": 42, "status": 1, "radius": 100, "witness": "/path/to/witness.vcd"}
+     ]
+   }
+
+``idx`` is the flat DFS coveritem index (same ordering as ``counts.bin``).
+Fields ``status``, ``radius``, and ``witness`` are each omitted when they
+match the defaults (0, 0, ``null`` respectively).  Defaults:
+``status`` = ``FormalStatusT.NONE`` (0), ``radius`` = 0.
+
+11.9 coveritem_flags.bin
+=========================
+
+Per-coveritem non-default flags.  This member uses a true binary encoding
+(sparse, delta-encoded varint pairs).
+
+.. code-block:: text
+
+   [version      : varint]  always 1
+   [num_entries  : varint]  number of (index, flags) pairs
+   per entry:
+       [delta_idx : varint]  coveritem DFS index delta from previous entry
+       [flags     : varint]  ucisFlagsT value
+
+Only coveritems whose flags differ from the cover-type default (see
+cover-type defaults table in Section 6.2) are included.  The member is
+omitted entirely when all coveritems use default flags.
+
+11.10 contrib/<hist_idx>.bin
+=============================
+
+Per-test contribution arrays.  One file per history node that recorded
+contributions; ``<hist_idx>`` is the integer history-node index (not
+zero-padded).  Each file encodes a sparse, delta-encoded array of per-test
+hit counts, allowing reconstruction of which tests hit which bins.
+
+.. code-block:: text
+
+   [num_entries      : varint]
+   per entry (sorted by bin_index, ascending):
+       [delta_bin_index : varint]  bin_index − previous bin_index
+       [count           : varint]  hit count for this bin from this test
 
 -----------
 
@@ -718,6 +932,20 @@ of which tests hit which bins.
      - Initial release.  Scope-tree V2 encoding with presence bitfield and
        TOGGLE_PAIR optimization.  Varint + UINT32 dual-mode counts encoding.
        Same-schema fast-merge path via ``schema_hash``.
+   * - ``1.0`` (UCIS compliance update)
+     - Added presence bits 4–6 (``PRESENCE_CVG_OPTS``, ``PRESENCE_GOAL``,
+       ``PRESENCE_SOURCE_TYPE``) to scope records.  Added
+       ``coveritem_flags.bin`` member for per-coveritem non-default flags.
+       Updated ``history.json`` to UCIS-compliant field names
+       (``logical_name``, ``physical_name``, ``test_status``, ``sim_time``,
+       ``time_unit``, ``run_cwd``, ``cpu_time``, ``user_name``) and added
+       vendor/tool fields (``ucis_version``, ``vendor_id``, ``vendor_tool``,
+       ``vendor_tool_version``, ``same_tests``, ``comment``, ``compulsory``).
+       Upgraded ``attrs.bin`` to V2 format with sections for scopes,
+       coveritems, history nodes, and global attributes.  Updated
+       cover-type default flags to ``0x01`` (most types) / ``0x19``
+       (``CVGBIN``).  Documented ``cross.bin``, ``properties.json``,
+       ``design_units.json``, ``formal.bin``, and ``contrib/`` formats.
 
 -----------
 

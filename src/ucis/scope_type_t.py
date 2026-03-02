@@ -190,6 +190,6 @@ class ScopeTypeT(IntFlag):
             >>> if ScopeTypeT.DU_ANY(scope.getType()):
             ...     print("This is a design unit")
         """
-        return (t & (ScopeTypeT.DU_MODULE|ScopeTypeT.DU_ARCH|ScopeTypeT.DU_PACKAGE|ScopeTypeT.DU_PROGRAM|ScopeTypeT.DU_INTERFACE)) != 0
+        return (int(t) & 0x000000001F000000) != 0
 
     

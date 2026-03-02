@@ -11,23 +11,17 @@ class MemCoverIndexIterator(object):
     
     def __init__(self, coveritems : List[MemCoverIndex], mask : CoverTypeT):
         self.coveritems = coveritems
-        self.mask = mask
+        self.mask = int(mask)
         self.idx = 0
-        
+
     def __iter__(self):
         return self
-    
+
     def __next__(self):
-        next = None
-        
-        while self.idx < len(self.coveritems) and next is None:
+        mask = self.mask
+        while self.idx < len(self.coveritems):
             n = self.coveritems[self.idx]
-
-            if (n.data.type & self.mask) != 0:
-                next = n
             self.idx += 1
-
-        if next is None:
-            raise StopIteration
-        
-        return next
+            if (int(n.data.type) & mask) != 0:
+                return n
+        raise StopIteration

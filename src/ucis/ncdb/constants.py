@@ -49,6 +49,8 @@ PRESENCE_SOURCE     = 0x02  # has source info (file_id, line, token)
 PRESENCE_WEIGHT     = 0x04  # has non-default weight (≠1)
 PRESENCE_AT_LEAST   = 0x08  # coveritem at_least override at scope level
 PRESENCE_CVG_OPTS   = 0x10  # has covergroup options
+PRESENCE_GOAL       = 0x20  # has non-default scope goal (≠-1)
+PRESENCE_SOURCE_TYPE = 0x40  # has explicit SourceT enum
 
 # ── counts.bin encoding modes ─────────────────────────────────────────────
 
@@ -65,21 +67,21 @@ TOGGLE_BIN_1_TO_0 = "1 -> 0"
 # Used by reader to reconstruct coveritem objects without per-item storage.
 
 COVER_TYPE_DEFAULTS: dict = {
-    CoverTypeT.TOGGLEBIN:  (0, 0, 1),
-    CoverTypeT.STMTBIN:    (0, 0, 1),
-    CoverTypeT.BRANCHBIN:  (0, 0, 1),
-    CoverTypeT.CONDBIN:    (0, 0, 1),
-    CoverTypeT.EXPRBIN:    (0, 0, 1),
-    CoverTypeT.FSMBIN:     (0, 0, 1),
-    CoverTypeT.CVGBIN:     (0, 1, 1),
-    CoverTypeT.DEFAULTBIN: (0, 0, 1),
-    CoverTypeT.IGNOREBIN:  (0, 0, 1),
-    CoverTypeT.ILLEGALBIN: (0, 0, 1),
-    CoverTypeT.BLOCKBIN:   (0, 0, 1),
-    CoverTypeT.COVERBIN:   (0, 0, 1),
-    CoverTypeT.ASSERTBIN:  (0, 0, 1),
-    CoverTypeT.PASSBIN:    (0, 0, 1),
-    CoverTypeT.FAILBIN:    (0, 0, 1),
+    CoverTypeT.TOGGLEBIN:  (0x01, 0, 1),
+    CoverTypeT.STMTBIN:    (0x01, 0, 1),
+    CoverTypeT.BRANCHBIN:  (0x01, 0, 1),
+    CoverTypeT.CONDBIN:    (0x01, 0, 1),
+    CoverTypeT.EXPRBIN:    (0x01, 0, 1),
+    CoverTypeT.FSMBIN:     (0x01, 0, 1),
+    CoverTypeT.CVGBIN:     (0x19, 1, 1),
+    CoverTypeT.DEFAULTBIN: (0x01, 0, 1),
+    CoverTypeT.IGNOREBIN:  (0x01, 0, 1),
+    CoverTypeT.ILLEGALBIN: (0x01, 0, 1),
+    CoverTypeT.BLOCKBIN:   (0x01, 0, 1),
+    CoverTypeT.COVERBIN:   (0x01, 0, 1),
+    CoverTypeT.ASSERTBIN:  (0x01, 0, 1),
+    CoverTypeT.PASSBIN:    (0x01, 0, 1),
+    CoverTypeT.FAILBIN:    (0x01, 0, 1),
 }
 
 # ── Scope-type → implicit child cover type mapping ────────────────────────
@@ -104,3 +106,4 @@ SCOPE_TO_COVER_TYPE: dict = {
     ScopeTypeT.COVER:      CoverTypeT.COVERBIN,
     ScopeTypeT.ASSERT:     CoverTypeT.ASSERTBIN,
 }
+MEMBER_COVERITEM_FLAGS = "coveritem_flags.bin"

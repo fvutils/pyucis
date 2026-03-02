@@ -42,5 +42,21 @@ class MemCoverIndex(CoverIndex):
         """Set cover flags."""
         if self.data:
             self.data.flags = flags
-        
-        
+
+    def setAttribute(self, key: str, value: str):
+        """Set a user-defined attribute on this coveritem."""
+        if not hasattr(self, '_attributes'):
+            self._attributes = {}
+        self._attributes[key] = value
+
+    def getAttribute(self, key: str):
+        """Get a user-defined attribute by key."""
+        if not hasattr(self, '_attributes'):
+            return None
+        return self._attributes.get(key)
+
+    def getAttributes(self):
+        """Get all user-defined attributes as a dict."""
+        if not hasattr(self, '_attributes'):
+            return {}
+        return dict(self._attributes)

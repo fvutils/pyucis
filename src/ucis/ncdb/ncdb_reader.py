@@ -18,6 +18,7 @@ from .fsm import FsmReader
 from .cross import CrossReader
 from .contrib import ContribReader
 from .formal import FormalReader
+from .coveritem_flags import CoveritemFlagsReader
 from .design_units import DesignUnitsReader
 from .manifest import Manifest
 from .constants import (
@@ -26,6 +27,7 @@ from .constants import (
     MEMBER_ATTRS, MEMBER_TAGS, MEMBER_PROPERTIES, MEMBER_TOGGLE, MEMBER_FSM,
     MEMBER_CROSS, MEMBER_DESIGN_UNITS, MEMBER_CONTRIB_DIR, MEMBER_FORMAL,
     NCDB_FORMAT,
+    MEMBER_COVERITEM_FLAGS,
 )
 
 from ucis.mem.mem_ucis import MemUCIS
@@ -42,24 +44,26 @@ def _fixup_instance_du_links(db: MemUCIS) -> None:
     """
     from ucis.mem.mem_instance_scope import MemInstanceScope
 
-    def _fix_parent(parent):
-        # Build name → DU map from real (attached) children
-        du_map = {}
-        for child in parent.scopes(ScopeTypeT.ALL):
-            if ScopeTypeT.DU_ANY(child.getScopeType()):
-                du_map[child.getScopeName()] = child
+    _DU_MASK = 0x000000001F000000
+    _INSTANCE_VAL = int(ScopeTypeT.INSTANCE)
 
-        # Replace placeholder DU refs on INSTANCE scopes
-        for child in parent.scopes(ScopeTypeT.ALL):
-            if isinstance(child, MemInstanceScope):
-                du = child.m_du_scope
-                if du is not None and du.m_parent is None:
-                    # Detached placeholder — replace with real DU if available
-                    real_du = du_map.get(child.getScopeName())
-                    if real_du is not None:
-                        child.m_du_scope = real_du
-            # Recurse
+    def _fix_parent(parent):
+        children = parent.m_children if hasattr(parent, 'm_children') else list(parent.scopes(ScopeTypeT.ALL))
+        du_map = {}
+        instances = []
+        for child in children:
+            st = int(child.getScopeType())
+            if st & _DU_MASK:
+                du_map[child.getScopeName()] = child
+            if st == _INSTANCE_VAL:
+                instances.append(child)
             _fix_parent(child)
+        for child in instances:
+            du = child.m_du_scope
+            if du is not None and du.m_parent is None:
+                real_du = du_map.get(child.getScopeName())
+                if real_du is not None:
+                    child.m_du_scope = real_du
 
     _fix_parent(db)
 
@@ -84,6 +88,7 @@ class NcdbReader:
             cross_bytes  = zf.read(MEMBER_CROSS)         if MEMBER_CROSS         in names else b''
             du_bytes     = zf.read(MEMBER_DESIGN_UNITS)  if MEMBER_DESIGN_UNITS  in names else b''
             formal_bytes = zf.read(MEMBER_FORMAL)         if MEMBER_FORMAL         in names else b''
+            ci_flags_bytes = zf.read(MEMBER_COVERITEM_FLAGS) if MEMBER_COVERITEM_FLAGS in names else b''
             # Collect all contrib/* members
             contrib_members = {
                 n: zf.read(n) for n in names if n.startswith(MEMBER_CONTRIB_DIR)
@@ -117,8 +122,6 @@ class NcdbReader:
         _fixup_instance_du_links(db)
 
         # Apply optional attrs, tags, typed properties, toggle and FSM metadata
-        if attrs_bytes:
-            AttrsReader().deserialize(attrs_bytes, db)
         if tags_bytes:
             TagsReader().deserialize(tags_bytes, db)
         if props_bytes:
@@ -139,6 +142,8 @@ class NcdbReader:
         # Formal verification data (optional)
         if formal_bytes:
             FormalReader().apply(db, formal_bytes)
+        if ci_flags_bytes:
+            CoveritemFlagsReader().deserialize(ci_flags_bytes, db)
 
         # Register source files as file handles in db
         for fh in file_handles:
@@ -190,5 +195,8 @@ class NcdbReader:
                 hn.setSameTests(node.getSameTests())
             if node.getComment() is not None:
                 hn.setComment(node.getComment())
+
+        if attrs_bytes:
+            AttrsReader().deserialize(attrs_bytes, db)
 
         return db

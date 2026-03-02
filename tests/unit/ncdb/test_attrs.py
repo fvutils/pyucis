@@ -51,8 +51,8 @@ def test_attrs_writer_empty():
     db.createScope("blk", None, 1, SourceT.SV, ScopeTypeT.BLOCK, 0)
     data = AttrsWriter().serialize(db)
     payload = json.loads(data)
-    assert payload["version"] == 1
-    assert payload["entries"] == []
+    assert payload["version"] == 2
+    assert payload["scopes"] == []
 
 
 def test_attrs_writer_single():
@@ -60,8 +60,8 @@ def test_attrs_writer_single():
     db, block = _make_db_with_attrs({"author": "alice"})
     data = AttrsWriter().serialize(db)
     payload = json.loads(data)
-    assert len(payload["entries"]) == 1
-    assert payload["entries"][0]["attrs"] == {"author": "alice"}
+    assert len(payload["scopes"]) == 1
+    assert payload["scopes"][0]["attrs"] == {"author": "alice"}
 
 
 def test_attrs_writer_multiple_keys():
@@ -69,7 +69,7 @@ def test_attrs_writer_multiple_keys():
     db, block = _make_db_with_attrs({"k1": "v1", "k2": "v2", "k3": "v3"})
     data = AttrsWriter().serialize(db)
     payload = json.loads(data)
-    assert payload["entries"][0]["attrs"] == {"k1": "v1", "k2": "v2", "k3": "v3"}
+    assert payload["scopes"][0]["attrs"] == {"k1": "v1", "k2": "v2", "k3": "v3"}
 
 
 def test_attrs_reader_applies_attrs():

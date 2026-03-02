@@ -26,6 +26,7 @@ from .varint import encode_varint, decode_varint
 from .constants import (
     SCOPE_MARKER_REGULAR, SCOPE_MARKER_TOGGLE_PAIR,
     PRESENCE_FLAGS, PRESENCE_SOURCE, PRESENCE_WEIGHT, PRESENCE_AT_LEAST,
+    PRESENCE_GOAL, PRESENCE_SOURCE_TYPE,
     TOGGLE_BIN_0_TO_1, TOGGLE_BIN_1_TO_0,
     COVER_TYPE_DEFAULTS,
 )
@@ -117,6 +118,12 @@ class ScopeTreeWriter:
         has_flags  = (hasattr(scope, 'm_flags') and scope.m_flags != 0)
         weight     = scope.getWeight() if hasattr(scope, 'getWeight') else 1
         has_weight = (weight is not None and weight != 1)
+        goal       = scope.getGoal() if hasattr(scope, 'getGoal') else -1
+        has_goal   = (goal is not None and goal != -1)
+
+        source_type = getattr(scope, 'm_source_type', None)
+        has_source_type = (source_type is not None
+                           and int(source_type) != int(SourceT.NONE))
 
         # Cover items under this scope
         cover_items = list(scope.coverItems(CoverTypeT.ALL))
@@ -149,6 +156,8 @@ class ScopeTreeWriter:
         if has_src:    presence |= PRESENCE_SOURCE
         if has_weight: presence |= PRESENCE_WEIGHT
         if has_at_least: presence |= PRESENCE_AT_LEAST
+        if has_goal:     presence |= PRESENCE_GOAL
+        if has_source_type: presence |= PRESENCE_SOURCE_TYPE
 
         # Count child sub-scopes
         child_scopes = list(scope.scopes(ScopeTypeT.ALL))
@@ -170,6 +179,10 @@ class ScopeTreeWriter:
             w(encode_varint(weight))
         if has_at_least:
             w(encode_varint(at_least_override))
+        if has_goal:
+            w(encode_varint(goal))
+        if has_source_type:
+            w(encode_varint(int(source_type)))
 
         w(encode_varint(len(child_scopes)))
         w(encode_varint(num_coveritems))
@@ -252,7 +265,8 @@ class ScopeTreeReader:
         # Create the two implicit TOGGLEBIN coveritems
         for (bin_name, count) in ((TOGGLE_BIN_0_TO_1, count_0to1),
                                    (TOGGLE_BIN_1_TO_0, count_1to0)):
-            cd = CoverData(CoverTypeT.TOGGLEBIN, 0)
+            cd = CoverData(CoverTypeT.TOGGLEBIN,
+                           COVER_TYPE_DEFAULTS.get(CoverTypeT.TOGGLEBIN, (0,0,1))[0])
             cd.data = count
             scope.createNextCover(bin_name, cd, None)
 
@@ -283,11 +297,18 @@ class ScopeTreeReader:
             weight, offset = decode_varint(data, offset)
         if presence & PRESENCE_AT_LEAST:
             at_least_override, offset = decode_varint(data, offset)
+        goal = -1
+        if presence & PRESENCE_GOAL:
+            goal, offset = decode_varint(data, offset)
+        source_type_val = int(SourceT.NONE)
+        if presence & PRESENCE_SOURCE_TYPE:
+            source_type_val, offset = decode_varint(data, offset)
 
         num_children,   offset = decode_varint(data, offset)
         num_coveritems, offset = decode_varint(data, offset)
 
         child_cover_type = None
+        at_least = 0
         if num_coveritems > 0:
             ctv, offset = decode_varint(data, offset)
             child_cover_type = CoverTypeT(ctv)
@@ -295,14 +316,18 @@ class ScopeTreeReader:
             at_least = at_least_override if at_least_override is not None else defaults[1]
 
         if scope_type == ScopeTypeT.INSTANCE:
-            # createInstance() requires a DU reference; find the matching DU
-            # that was already serialized (DU scopes precede INSTANCE in DFS).
             du_scope = None
-            for sibling in parent.scopes(ScopeTypeT.ALL):
-                if (ScopeTypeT.DU_ANY(sibling.getScopeType())
-                        and sibling.getScopeName() == name):
-                    du_scope = sibling
-                    break
+            _du_mask = 0x000000001F000000
+            if hasattr(parent, 'm_children'):
+                for sibling in parent.m_children:
+                    if (int(sibling.getScopeType()) & _du_mask) and sibling.getScopeName() == name:
+                        du_scope = sibling
+                        break
+            else:
+                for sibling in parent.scopes(ScopeTypeT.ALL):
+                    if ScopeTypeT.DU_ANY(sibling.getScopeType()) and sibling.getScopeName() == name:
+                        du_scope = sibling
+                        break
             if du_scope is None:
                 # DU not yet in parent (INSTANCE precedes DU in source ordering).
                 # Create a detached placeholder so createInstance() can succeed
@@ -315,16 +340,22 @@ class ScopeTreeReader:
         else:
             scope = parent.createScope(name, srcinfo, weight, SourceT.NONE, scope_type, flags)
 
+        if goal != -1 and hasattr(scope, 'setGoal'):
+            scope.setGoal(goal)
+        if source_type_val != int(SourceT.NONE) and hasattr(scope, 'm_source_type'):
+            scope.m_source_type = SourceT(source_type_val)
+
         # Coveritems
         for _ in range(num_coveritems):
             ci_name_ref, offset = decode_varint(data, offset)
             ci_name = self._st.get(ci_name_ref)
             count = next(counts_iter, 0)
-            cd = CoverData(child_cover_type, 0)
+            default_flags = COVER_TYPE_DEFAULTS.get(child_cover_type, (0, 0, 1))[0]
+            cd = CoverData(child_cover_type, default_flags)
             cd.data = count
             if at_least_override is not None or (child_cover_type and
                     COVER_TYPE_DEFAULTS.get(child_cover_type, (0,0,1))[1] != 0):
-                cd.at_least = at_least if 'at_least' in dir() else 0
+                cd.at_least = at_least
             scope.createNextCover(ci_name, cd, None)
 
         # Child scopes
