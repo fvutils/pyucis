@@ -308,6 +308,7 @@ class ScopeTreeReader:
         num_coveritems, offset = decode_varint(data, offset)
 
         child_cover_type = None
+        at_least = 0
         if num_coveritems > 0:
             ctv, offset = decode_varint(data, offset)
             child_cover_type = CoverTypeT(ctv)
@@ -315,14 +316,18 @@ class ScopeTreeReader:
             at_least = at_least_override if at_least_override is not None else defaults[1]
 
         if scope_type == ScopeTypeT.INSTANCE:
-            # createInstance() requires a DU reference; find the matching DU
-            # that was already serialized (DU scopes precede INSTANCE in DFS).
             du_scope = None
-            for sibling in parent.scopes(ScopeTypeT.ALL):
-                if (ScopeTypeT.DU_ANY(sibling.getScopeType())
-                        and sibling.getScopeName() == name):
-                    du_scope = sibling
-                    break
+            _du_mask = 0x000000001F000000
+            if hasattr(parent, 'm_children'):
+                for sibling in parent.m_children:
+                    if (int(sibling.getScopeType()) & _du_mask) and sibling.getScopeName() == name:
+                        du_scope = sibling
+                        break
+            else:
+                for sibling in parent.scopes(ScopeTypeT.ALL):
+                    if ScopeTypeT.DU_ANY(sibling.getScopeType()) and sibling.getScopeName() == name:
+                        du_scope = sibling
+                        break
             if du_scope is None:
                 # DU not yet in parent (INSTANCE precedes DU in source ordering).
                 # Create a detached placeholder so createInstance() can succeed
@@ -350,7 +355,7 @@ class ScopeTreeReader:
             cd.data = count
             if at_least_override is not None or (child_cover_type and
                     COVER_TYPE_DEFAULTS.get(child_cover_type, (0,0,1))[1] != 0):
-                cd.at_least = at_least if 'at_least' in dir() else 0
+                cd.at_least = at_least
             scope.createNextCover(ci_name, cd, None)
 
         # Child scopes

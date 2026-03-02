@@ -50,15 +50,16 @@ class MemInstanceScope(MemScope,InstanceScope):
         source : SourceT, 
         type : ScopeTypeT, 
         flags : FlagsT) -> 'Scope':
-        if (type & ScopeTypeT.COVERGROUP) != 0:
+        itype = int(type)
+        if (itype & int(ScopeTypeT.COVERGROUP)) != 0:
             ret = MemCovergroup(self, name, srcinfo, weight, source)
-        elif (type & ScopeTypeT.BLOCK) != 0:
+        elif (itype & int(ScopeTypeT.BLOCK)) != 0:
             ret = MemBlockScope(self, name, srcinfo, weight, source, flags)
-        elif (type & ScopeTypeT.BRANCH) != 0:
+        elif (itype & int(ScopeTypeT.BRANCH)) != 0:
             ret = MemBranchScope(self, name, srcinfo, weight, source, flags)
-        elif (type & ScopeTypeT.TOGGLE) != 0:
+        elif (itype & int(ScopeTypeT.TOGGLE)) != 0:
             ret = MemToggleScope(self, name, srcinfo, weight, source, flags)
-        elif (type & ScopeTypeT.FSM) != 0:
+        elif (itype & int(ScopeTypeT.FSM)) != 0:
             from ucis.mem.mem_fsm_scope import MemFSMScope
             ret = MemFSMScope(self, name, srcinfo, weight, source, flags)
         else:

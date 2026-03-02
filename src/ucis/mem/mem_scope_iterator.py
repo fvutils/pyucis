@@ -11,25 +11,19 @@ class MemScopeIterator(object):
     def __init__(self, nodes : List['MemScope'], mask):
         self.nodes = nodes
         self.idx = 0
-        self.mask = mask
-        
+        self.mask = int(mask)
+
     def __iter__(self):
         return self
-    
+
     def __next__(self):
         next = None
+        mask = self.mask
 
-        while next is None and self.idx < len(self.nodes):
+        while self.idx < len(self.nodes):
             n = self.nodes[self.idx]
-            # TODO: qualify mask
-            if (n.getScopeType() & self.mask) != 0:
-                next = n
-
             self.idx += 1
-            
-            if next is not None:
-                break
+            if (int(n.getScopeType()) & mask) != 0:
+                return n
 
-        if next is None:        
-            raise StopIteration
-        return next
+        raise StopIteration

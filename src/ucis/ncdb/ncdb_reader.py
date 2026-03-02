@@ -44,24 +44,26 @@ def _fixup_instance_du_links(db: MemUCIS) -> None:
     """
     from ucis.mem.mem_instance_scope import MemInstanceScope
 
-    def _fix_parent(parent):
-        # Build name → DU map from real (attached) children
-        du_map = {}
-        for child in parent.scopes(ScopeTypeT.ALL):
-            if ScopeTypeT.DU_ANY(child.getScopeType()):
-                du_map[child.getScopeName()] = child
+    _DU_MASK = 0x000000001F000000
+    _INSTANCE_VAL = int(ScopeTypeT.INSTANCE)
 
-        # Replace placeholder DU refs on INSTANCE scopes
-        for child in parent.scopes(ScopeTypeT.ALL):
-            if isinstance(child, MemInstanceScope):
-                du = child.m_du_scope
-                if du is not None and du.m_parent is None:
-                    # Detached placeholder — replace with real DU if available
-                    real_du = du_map.get(child.getScopeName())
-                    if real_du is not None:
-                        child.m_du_scope = real_du
-            # Recurse
+    def _fix_parent(parent):
+        children = parent.m_children if hasattr(parent, 'm_children') else list(parent.scopes(ScopeTypeT.ALL))
+        du_map = {}
+        instances = []
+        for child in children:
+            st = int(child.getScopeType())
+            if st & _DU_MASK:
+                du_map[child.getScopeName()] = child
+            if st == _INSTANCE_VAL:
+                instances.append(child)
             _fix_parent(child)
+        for child in instances:
+            du = child.m_du_scope
+            if du is not None and du.m_parent is None:
+                real_du = du_map.get(child.getScopeName())
+                if real_du is not None:
+                    child.m_du_scope = real_du
 
     _fix_parent(db)
 

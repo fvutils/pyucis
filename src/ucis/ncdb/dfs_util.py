@@ -32,6 +32,10 @@ def dfs_scope_list(db) -> list:
     Toggle-pair BRANCH scopes are included (they appear in scope_tree.bin
     as TOGGLE_PAIR records but still occupy one DFS slot each).
     """
+    cached = getattr(db, '_dfs_scope_cache', None)
+    if cached is not None:
+        return cached
+
     result = []
 
     def _visit(scope):
@@ -43,4 +47,5 @@ def dfs_scope_list(db) -> list:
     for top_scope in db.scopes(ScopeTypeT.ALL):
         _visit(top_scope)
 
+    db._dfs_scope_cache = result
     return result

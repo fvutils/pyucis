@@ -31,18 +31,26 @@ class CoverageReportBuilder(object):
         
 
     def _build(self)->'CoverageReport':
-        
+
+        all_coverage = 0.0
+        all_div = 0
         for iscope in self.db.scopes(ScopeTypeT.INSTANCE):
-            self.build_covergroups(iscope)
-            
+            cov, div = self.build_covergroups(iscope)
+            all_coverage += cov
+            all_div += div
+
+        if all_div > 0:
+            self.report.coverage = all_coverage / all_div
+        else:
+            self.report.coverage = 0.0
+
         return self.report
-            
 
     def build_covergroups(self, iscope):
-        
+
         coverage = 0.0
         div = 0
-        
+
         for cg_t in iscope.scopes(ScopeTypeT.COVERGROUP):
             cg = self.build_covergroup(cg_t)
             if cg.weight > 0:
@@ -50,13 +58,9 @@ class CoverageReportBuilder(object):
             div += cg.weight
             self.report.covergroups.append(cg)
             self.report.covergroup_m[cg.instname] = cg
-        
-        # Handle case when there are no covergroups
-        if div > 0:
-            self.report.coverage = coverage/div
-        else:
-            self.report.coverage = 0.0
-            
+
+        return coverage, div
+
     def build_covergroup(self, cg_n)->CoverageReport.Covergroup:
         cg_r = CoverageReport.Covergroup(
             cg_n.getScopeName(),
@@ -85,7 +89,12 @@ class CoverageReportBuilder(object):
         for cr in cg_r.crosses:
             coverage += cr.coverage * cr.weight
             div += cr.weight
-            
+
+        for sub in cg_r.covergroups:
+            if sub.weight > 0:
+                coverage += sub.coverage * sub.weight
+            div += sub.weight
+
         if div > 0: coverage /= div
 
         cg_r.coverage = coverage
@@ -96,37 +105,44 @@ class CoverageReportBuilder(object):
         cp_r = CoverageReport.Coverpoint(cp_n.getScopeName())
         cp_r.weight = cp_n.getWeight()
         
-        # Read in bins
+        # Read in bins — check both direct cover items and typed bin
+        # sub-scopes (CVGBINSCOPE, IGNOREBINSCOPE, ILLEGALBINSCOPE).
         num_hit = 0
         total = 0
-        for ci_n in cp_n.coverItems(CoverTypeT.CVGBIN):
-            cvg_data = ci_n.getCoverData()
-            
-            if cvg_data.data >= cvg_data.at_least:
-                num_hit += 1
-                
-            cp_r.bins.append(CoverageReport.CoverBin(
-                    ci_n.getName(),
-                    cvg_data.at_least,
-                    cvg_data.data))
 
-            total += 1
-            
-        for ci_n in cp_n.coverItems(CoverTypeT.IGNOREBIN):
-            cvg_data = ci_n.getCoverData()
-            
-            cp_r.ignore_bins.append(CoverageReport.CoverBin(
-                    ci_n.getName(),
-                    cvg_data.at_least,
-                    cvg_data.data))
-            
-        for ci_n in cp_n.coverItems(CoverTypeT.ILLEGALBIN):
-            cvg_data = ci_n.getCoverData()
-            
-            cp_r.illegal_bins.append(CoverageReport.CoverBin(
-                    ci_n.getName(),
-                    cvg_data.at_least,
-                    cvg_data.data))
+        def _collect_items(scope):
+            """Yield (cover_item, effective_type) from a scope."""
+            for ci in scope.coverItems(CoverTypeT.CVGBIN):
+                yield ci, CoverTypeT.CVGBIN
+            for ci in scope.coverItems(CoverTypeT.IGNOREBIN):
+                yield ci, CoverTypeT.IGNOREBIN
+            for ci in scope.coverItems(CoverTypeT.ILLEGALBIN):
+                yield ci, CoverTypeT.ILLEGALBIN
+
+        # Collect from direct items on the coverpoint
+        sources = [cp_n]
+        # Also collect from typed bin sub-scopes
+        for sub in cp_n.scopes(ScopeTypeT.CVGBINSCOPE):
+            sources.append(sub)
+        for sub in cp_n.scopes(ScopeTypeT.IGNOREBINSCOPE):
+            sources.append(sub)
+        for sub in cp_n.scopes(ScopeTypeT.ILLEGALBINSCOPE):
+            sources.append(sub)
+
+        for src in sources:
+            for ci_n, ct in _collect_items(src):
+                cvg_data = ci_n.getCoverData()
+                bin_obj = CoverageReport.CoverBin(
+                    ci_n.getName(), cvg_data.at_least, cvg_data.data)
+                if ct == CoverTypeT.CVGBIN:
+                    cp_r.bins.append(bin_obj)
+                    total += 1
+                    if cvg_data.data >= cvg_data.at_least:
+                        num_hit += 1
+                elif ct == CoverTypeT.IGNOREBIN:
+                    cp_r.ignore_bins.append(bin_obj)
+                elif ct == CoverTypeT.ILLEGALBIN:
+                    cp_r.illegal_bins.append(bin_obj)
 
         if total > 0:
             cp_r.coverage = (100*num_hit)/total
