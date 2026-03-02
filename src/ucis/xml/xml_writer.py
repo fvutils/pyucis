@@ -202,13 +202,16 @@ class XmlWriter():
         
         self.addId(inst, s.getSourceInfo())
         
-        self.write_covergroups(inst, s)
+        # Write coverage children in schema-required order (UCIS XSD §INSTANCE_COVERAGE):
+        # toggleCoverage, blockCoverage, conditionCoverage, branchCoverage,
+        # fsmCoverage, assertionCoverage, covergroupCoverage, userAttr
         self.write_toggle_coverage(inst, s)
         self.write_block_coverage(inst, s)
+        self.write_condition_coverage(inst, s)
         self.write_branch_coverage(inst, s)
         self.write_fsm_coverage(inst, s)
         self.write_assertion_coverage(inst, s)
-        self.write_condition_coverage(inst, s)
+        self.write_covergroups(inst, s)
         self.write_user_attrs(inst, s)
         
         # Recursively write child instances
@@ -450,9 +453,19 @@ class XmlWriter():
         self.setAttr(cpElem, "key", "0")
         
         self.write_options(cpElem, cp, is_coverpoint=True)
-        
-        self.write_coverpoint_bins(cpElem, cp.coverItems(
-            CoverTypeT.CVGBIN|CoverTypeT.IGNOREBIN|CoverTypeT.ILLEGALBIN))
+
+        _BIN_MASK = CoverTypeT.CVGBIN | CoverTypeT.IGNOREBIN | CoverTypeT.ILLEGALBIN
+        # Bins may live directly on the coverpoint or in child CVGBINSCOPE /
+        # IGNOREBINSCOPE / ILLEGALBINSCOPE scopes (depends on how the DB was
+        # written).  Collect from both places and emit them together.
+        bins = list(cp.coverItems(_BIN_MASK))
+        if not bins:
+            _BINSCOPE_MASK = (ScopeTypeT.CVGBINSCOPE
+                              | ScopeTypeT.IGNOREBINSCOPE
+                              | ScopeTypeT.ILLEGALBINSCOPE)
+            for cs in cp.scopes(_BINSCOPE_MASK):
+                bins.extend(cs.coverItems(_BIN_MASK))
+        self.write_coverpoint_bins(cpElem, iter(bins))
 
     def write_coverpoint_bins(self, cpElem, coveritems : Iterator[CoverIndex]):
         # TODO: should probably organize bins into a structure that fits more nicely into the interchage format
