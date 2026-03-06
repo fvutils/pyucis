@@ -11,8 +11,12 @@ from ucis.scope_type_t import ScopeTypeT
 # ── Format identity ────────────────────────────────────────────────────────
 
 NCDB_FORMAT = "NCDB"
-NCDB_VERSION = "1.0"
+NCDB_VERSION = "2.0"
 NCDB_GENERATOR = "pyucis-ncdb"
+
+# History format versions stored in manifest.json
+HISTORY_FORMAT_V1 = "v1"   # legacy: history.json only
+HISTORY_FORMAT_V2 = "v2"   # binary bucket store + history.json for MERGE nodes
 
 # ── CDB file header magic ──────────────────────────────────────────────────
 
@@ -36,6 +40,36 @@ MEMBER_FORMAL      = "formal.bin"
 MEMBER_DESIGN_UNITS = "design_units.json"
 MEMBER_PROPERTIES  = "properties.json"
 MEMBER_CONTRIB_DIR = "contrib/"
+
+# ── v2 history store ZIP member names ─────────────────────────────────────
+
+MEMBER_TEST_REGISTRY  = "test_registry.bin"
+MEMBER_TEST_STATS     = "test_stats.bin"
+MEMBER_BUCKET_INDEX   = "history/bucket_index.bin"
+MEMBER_CONTRIB_INDEX  = "contrib_index.bin"
+MEMBER_SQUASH_LOG     = "squash_log.bin"
+MEMBER_TESTPLAN       = "testplan.json"
+MEMBER_WAIVERS        = "waivers.json"
+
+# ── v2 history bucket directory prefix ────────────────────────────────────
+
+HISTORY_BUCKET_DIR    = "history/"
+HISTORY_BUCKET_MAX_RECORDS = 10_000
+
+# ── v2 test-run status codes (stored in status_flags nibble) ──────────────
+
+HIST_STATUS_OK      = 0
+HIST_STATUS_FAIL    = 1
+HIST_STATUS_ERROR   = 2
+HIST_STATUS_FATAL   = 3
+HIST_STATUS_COMPILE = 4
+
+# ── v2 test-run flag bits (low nibble of status_flags byte) ───────────────
+
+HIST_FLAG_SEED_IS_HASH        = 0x01
+HIST_FLAG_IS_RERUN             = 0x02
+HIST_FLAG_HAS_COVERAGE         = 0x04
+HIST_FLAG_WAS_SQUASHED         = 0x08
 
 # ── V2 scope_tree.bin encoding markers ────────────────────────────────────
 

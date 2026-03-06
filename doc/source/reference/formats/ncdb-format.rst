@@ -1090,3 +1090,298 @@ To read an NCDB file without PyUCIS:
    * :doc:`sqlite-schema` — SQLite backend schema reference
    * :doc:`xml-interchange` — XML interchange format
    * :ref:`working-with-coverage-merging` — How to merge databases using the CLI
+
+-----------
+
+.. _ncdb-format-v2-history:
+
+***********************
+7. V2 binary test history
+***********************
+
+When ``manifest.json`` contains ``"history_format": "v2"`` the archive holds
+six additional binary members.  All integers are **little-endian** unless
+noted.
+
+7.1 ``history/test_registry.bin``
+==================================
+
+Maps stable integer IDs to test names and seed strings.  IDs are assigned by
+insertion order and never reassigned.
+
+.. code-block:: none
+
+    Header (17 bytes):
+      magic       u32   0x54524547  ('TREG')
+      version     u8    1
+      next_run_id u32   monotonically-increasing run counter
+      num_names   u32
+      num_seeds   u32
+
+    Offset tables (immediately after header):
+      name_offsets  u32[num_names]  byte offset into name heap
+      seed_offsets  u32[num_seeds]  byte offset into seed heap
+
+    Heaps (NUL-terminated UTF-8 strings):
+      name_heap  NUL-terminated strings in name_id order
+      seed_heap  NUL-terminated strings in seed_id order
+
+7.2 ``history/test_stats.bin``
+================================
+
+One 72-byte entry per test name (indexed by name_id).
+
+.. code-block:: none
+
+    Header (9 bytes):
+      magic      u32   0x54535453  ('TSTS')
+      version    u8    1
+      num_entries u32
+
+    Entry (72 bytes, repeated num_entries times):
+      name_id      u32
+      total_runs   u32
+      pass_count   u32
+      fail_count   u32
+      error_count  u32
+      skip_count   u32
+      timeout_count u32
+      _reserved    u32   (padding, always 0)
+      mean_ms      f32   Welford running mean of runtime in milliseconds
+      m2_ms        f32   Welford running sum-of-squares (variance = m2/n)
+      cusum_pos    f32   CUSUM positive accumulator for change detection
+      cusum_neg    f32   CUSUM negative accumulator
+      _pad1        f32   (reserved, 0.0)
+      _pad2        f32   (reserved, 0.0)
+      _pad3        f32   (reserved, 0.0)
+      flakiness_score i16  fixed-point 0–10000 representing 0.00–100.00 %
+      tag          u8[6] short ASCII label (NUL-padded)
+      last_status  u8    most-recent HIST_STATUS_* value
+      _trailing    u8    padding
+
+7.3 ``history/bucket_index.bin``
+==================================
+
+Index over the per-bucket run-record files.
+
+.. code-block:: none
+
+    Header (9 bytes):
+      magic       u32   0x42494458  ('BIDX')
+      version     u8    1
+      num_buckets u32
+
+    Entry (28 bytes, sorted by bucket_seq):
+      bucket_seq  u32
+      ts_start    u32   Unix timestamp of first record in bucket
+      ts_end      u32   Unix timestamp of last record in bucket
+      num_records u32
+      fail_count  u32
+      min_name_id u32
+      max_name_id u32
+
+7.4 ``history/NNNNNN.bin``
+============================
+
+Each bucket holds up to 10 000 run records, compressed with LZMA (sealed
+buckets) or DEFLATE level 1 (current open bucket).  After decompression:
+
+.. code-block:: none
+
+    Header (16 bytes):
+      magic       u32   0x42434B54  ('BCKT')
+      version     u8    1
+      num_records u32
+      num_names   u16
+      _pad        u8    (padding)
+      ts_base     u32   Unix timestamp of first record
+
+    Name index (12 bytes per unique name in this bucket):
+      name_id     u32   global name_id from test_registry
+      offset      u32   byte offset into name's record data
+      count       u16   number of records for this name
+      _pad        u8[2]
+
+    Columnar record data (one column per name, name_id order):
+      seeds[]         u8[count]           local seed index (≤ 255 unique/bucket)
+      ts_deltas[]     varint[count]       delta-encoded seconds from ts_base
+      status_flags[]  u8[count]           nibble-packed (high=status, low=flags)
+
+    Seed dictionary (appended after all record data):
+      num_local_seeds u8
+      seed_ids[]      u32[num_local_seeds]  global seed_ids
+
+Varint encoding: each value uses 1–5 bytes; the high bit of each byte
+indicates that more bytes follow (7 bits of value per byte, little-endian).
+
+7.5 ``history/contrib_index.bin``
+====================================
+
+Tracks which test runs contributed coverage so that squash can be replayed.
+
+.. code-block:: none
+
+    Header (12 bytes):
+      magic        u32   0x43494458  ('CIDX')
+      version      u8    1
+      policy       u8    merge-policy constant
+      watermark    u32   highest squashed run_id
+      num_active   u32
+
+    Entry (16 bytes, one per unsquashed run):
+      run_id    u32
+      name_id   u32
+      status    u8
+      flags     u8
+      _pad      u8[2]
+      ts        u32
+
+7.6 ``history/squash_log.bin``
+================================
+
+Append-only provenance log for squash events.
+
+.. code-block:: none
+
+    Header (9 bytes):
+      magic      u32   0x53514C47  ('SQLG')
+      version    u8    1
+      num_entries u32
+
+    Entry (24 bytes):
+      ts        u32   Unix timestamp of squash operation
+      policy    u8    merge-policy used
+      _pad      u8[3]
+      from_run  u32   first run_id squashed
+      to_run    u32   last run_id squashed (inclusive)
+      num_runs  u32   total runs processed
+      pass_runs u32   runs that passed
+
+----
+
+**********************************
+8. Testplan and Waivers JSON
+**********************************
+
+``testplan.json`` and ``waivers.json`` are optional UTF-8 JSON members
+stored at the ZIP root.  They are written by :class:`~ucis.ncdb.ncdb_writer.NcdbWriter`
+when the corresponding objects are attached to the database and are read
+transparently by :class:`~ucis.ncdb.ncdb_reader.NcdbReader`.
+
+8.1 ``testplan.json``
+======================
+
+.. code-block:: json
+
+    {
+      "format_version": 1,
+      "source_file": "uart.hjson",
+      "import_timestamp": "2025-01-01T00:00:00+00:00",
+      "testpoints": [
+        {
+          "name": "uart_reset",
+          "stage": "V1",
+          "desc": "Verify reset",
+          "tests": ["uart_smoke", "uart_reset_*"],
+          "tags": ["smoke"],
+          "na": false,
+          "source_template": "",
+          "requirements": [
+            {"id": "REQ-001", "desc": "Reset spec"}
+          ]
+        }
+      ],
+      "covergroups": [
+        {"name": "cg_reset", "desc": "Reset coverage"}
+      ]
+    }
+
+.. list-table:: testplan.json — top-level fields
+   :header-rows: 1
+   :widths: 25 15 60
+
+   * - Field
+     - Type
+     - Description
+   * - ``format_version``
+     - int
+     - Schema version; currently ``1``
+   * - ``source_file``
+     - string
+     - Path to the Hjson/JSON source that produced this plan
+   * - ``import_timestamp``
+     - ISO-8601 string
+     - UTC timestamp when the plan was last imported
+   * - ``testpoints``
+     - array
+     - Ordered list of :class:`~ucis.ncdb.testplan.Testpoint` objects
+   * - ``covergroups``
+     - array
+     - Ordered list of :class:`~ucis.ncdb.testplan.CovergroupEntry` objects
+
+Merger behaviour
+   When merging two ``.cdb`` files that both contain ``testplan.json``:
+
+   * **Same ``source_file``** — the entry with the later
+     ``import_timestamp`` is kept.
+   * **Different ``source_file``** — a warning is emitted and the merged
+     output contains no testplan.
+
+8.2 ``waivers.json``
+======================
+
+.. code-block:: json
+
+    {
+      "format_version": 1,
+      "waivers": [
+        {
+          "id": "W-001",
+          "scope_pattern": "top/uart/**",
+          "bin_pattern": "reset_*",
+          "rationale": "Deferred to V2",
+          "approver": "jdoe",
+          "approved_at": "2025-01-01T00:00:00",
+          "expires_at": "2026-01-01T00:00:00",
+          "status": "active"
+        }
+      ]
+    }
+
+.. list-table:: waivers.json — Waiver fields
+   :header-rows: 1
+   :widths: 25 15 60
+
+   * - Field
+     - Type
+     - Description
+   * - ``id``
+     - string
+     - Unique waiver identifier
+   * - ``scope_pattern``
+     - glob string
+     - Hierarchy path pattern; ``*`` = single segment, ``**`` = any depth
+   * - ``bin_pattern``
+     - glob string
+     - Coverage bin name pattern; same glob syntax as scope_pattern
+   * - ``rationale``
+     - string
+     - Human-readable reason for the waiver
+   * - ``approver``
+     - string
+     - Name or email of the approver
+   * - ``approved_at``
+     - ISO-8601 string
+     - Approval timestamp
+   * - ``expires_at``
+     - ISO-8601 string
+     - Expiry timestamp; empty string means no expiry
+   * - ``status``
+     - ``"active"`` | ``"expired"``
+     - Current status; :meth:`~ucis.ncdb.waivers.WaiverSet.active_at` filters
+       on both this field and ``expires_at``
+
+Merger behaviour
+   Waivers are unioned by ``id`` across all source files.  When the same
+   ``id`` appears in multiple sources the entry with the latest
+   ``approved_at`` is kept.

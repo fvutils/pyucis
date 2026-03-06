@@ -47,6 +47,7 @@ class TUIController:
             "metrics",
             "code_coverage",
             "test_history",
+            "testplan",
         ]
     
     def register_view(self, name: str, view):
@@ -187,6 +188,7 @@ class TUIController:
             '5': 'metrics',
             '6': 'code_coverage',
             '7': 'test_history',
+            '8': 'testplan',
         }
         
         if key in view_map:

@@ -92,6 +92,7 @@ class TUIApp:
         from ucis.tui.views.metrics_view import MetricsView
         from ucis.tui.views.code_coverage_view import CodeCoverageView
         from ucis.tui.views.test_history_view import TestHistoryView
+        from ucis.tui.views.testplan_view import TestplanView
         
         # Create views and register with controller
         views = {
@@ -102,6 +103,7 @@ class TUIApp:
             "metrics": MetricsView(self),
             "code_coverage": CodeCoverageView(self),
             "test_history": TestHistoryView(self),
+            "testplan": TestplanView(self),
         }
         
         for name, view in views.items():

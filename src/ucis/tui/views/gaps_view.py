@@ -48,56 +48,24 @@ class GapsView(BaseView):
             self._collect_gaps()
     
     def _collect_gaps(self):
-        """Collect all gaps from the database."""
-        from ucis.scope_type_t import ScopeTypeT
-        
+        """Collect all gaps from the database via the common metrics layer."""
         self.gaps = []
-        
-        def visit_scope(scope, path=""):
-            scope_type = scope.getScopeType()
-            scope_name = scope.getScopeName()
-            current_path = f"{path}/{scope_name}" if path else scope_name
-            
-            # Check coverpoints for gaps
-            if scope_type == ScopeTypeT.COVERPOINT:
-                total_bins = 0
-                covered_bins = 0
-                
-                try:
-                    for bin_idx in scope.coverItems(CoverTypeT.CVGBIN):
-                        total_bins += 1
-                        cover_data = bin_idx.getCoverData()
-                        if cover_data and cover_data.data > 0:
-                            covered_bins += 1
-                except:
-                    pass
-                
-                if total_bins > 0:
-                    coverage = (covered_bins / total_bins) * 100
-                    if coverage < self.threshold:
-                        gap = GapItem(
-                            name=scope_name,
-                            scope_type="Coverpoint",
-                            coverage=coverage,
-                            hits=covered_bins,
-                            goal=total_bins,
-                            path=current_path
-                        )
-                        self.gaps.append(gap)
-            
-            # Recurse into children
-            try:
-                for child in scope.scopes(ScopeTypeT.ALL):
-                    visit_scope(child, current_path)
-            except:
-                pass
-        
+
         try:
-            for scope in self.model.db.scopes(ScopeTypeT.ALL):
-                visit_scope(scope)
-        except:
+            cp_stats = self.model.metrics.coverpoint_stats()
+            for cp in cp_stats:
+                if cp.coverage_pct < self.threshold:
+                    self.gaps.append(GapItem(
+                        name=cp.name,
+                        scope_type="Coverpoint",
+                        coverage=cp.coverage_pct,
+                        hits=cp.bins.covered,
+                        goal=cp.bins.total,
+                        path=cp.path,
+                    ))
+        except Exception:
             pass
-        
+
         # Sort by coverage (lowest first)
         self.gaps.sort(key=lambda g: g.coverage)
     

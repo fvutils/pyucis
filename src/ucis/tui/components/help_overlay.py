@@ -53,6 +53,7 @@ class HelpOverlay:
         view_table.add_row("5", "Metrics - Statistics (coming soon)")
         view_table.add_row("6", "Code Coverage - File-level code coverage")
         view_table.add_row("7", "Test History - Test contribution analysis")
+        view_table.add_row("8", "Testplan - Closure status and stage gates")
         
         # Navigation
         nav_table = Table(show_header=True, header_style="bold yellow", box=None, padding=(0, 2))
@@ -78,6 +79,7 @@ class HelpOverlay:
         view_specific_table.add_row("Hierarchy", "Navigate design structure (E=expand all, C=collapse all, /=search)")
         view_specific_table.add_row("Gaps", "Find uncovered bins, sort by coverage %")
         view_specific_table.add_row("Test History", "View tests (N/D/C/U=sort, F=filter)")
+        view_specific_table.add_row("Testplan", "Testpoint closure (↑↓=navigate, r=refresh)")
         
         # Color coding
         color_table = Table(show_header=True, header_style="bold yellow", box=None, padding=(0, 2))

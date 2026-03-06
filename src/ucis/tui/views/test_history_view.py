@@ -194,6 +194,22 @@ class TestHistoryView(BaseView):
         if total > 0:
             unique_pct = (unique / total) * 100
             details.append(f"  Unique %: {unique_pct:.1f}%\n")
+
+        # v2 history stats (NcdbUCIS only — fails gracefully)
+        try:
+            v2stats = self.model.get_v2_test_stats(test.get('name', ''))
+            if v2stats is not None and v2stats.total_runs > 0:
+                details.append("\nV2 History:\n", style="bold")
+                details.append(f"  Total runs: {v2stats.total_runs}\n")
+                details.append(f"  Pass/Fail:  {v2stats.pass_count}/{v2stats.fail_count}\n")
+                flake = v2stats.flake_score
+                flake_style = "red" if flake >= 0.3 else ("yellow" if flake > 0.1 else "green")
+                details.append(f"  Flake score: ", style="bold")
+                details.append(f"{flake:.3f}\n", style=flake_style)
+                if v2stats.mean_cpu_time > 0:
+                    details.append(f"  Mean CPU:    {v2stats.mean_cpu_time:.1f}s\n")
+        except Exception:
+            pass
         
         details.append("\n")
         
