@@ -195,6 +195,75 @@ In a GitHub Actions workflow::
 -----------
 
 **********************
+Test budget by stage
+**********************
+
+Estimate CPU-hour cost per stage from v2 test history mean CPU times::
+
+    from ucis.ncdb.ncdb_ucis import NcdbUCIS
+    from ucis.ncdb.testplan import get_testplan
+    from ucis.ncdb.reports import report_test_budget, format_test_budget
+
+    db   = NcdbUCIS("coverage.cdb")
+    plan = db.getTestplan()
+    rpt  = report_test_budget(plan, db)
+    print(format_test_budget(rpt))
+
+    # JSON export
+    import json
+    print(json.loads(rpt.to_json())["stage_totals"])
+
+Testpoints whose tests have no CPU time recorded appear in
+``rpt.missing_stats``.
+
+-----------
+
+**********************
+Safety traceability matrix
+**********************
+
+Build a requirement-to-testpoint matrix (suitable for safety audits)::
+
+    from ucis.ncdb.reports import report_safety_matrix, format_safety_matrix
+
+    rpt = report_safety_matrix(results)          # results from compute_closure
+    print(format_safety_matrix(rpt))
+
+    # CSV for a spreadsheet or audit tool
+    with open("traceability.csv", "w") as f:
+        f.write(rpt.to_csv())
+
+    # Add a WaiverSet to flag waived testpoints
+    from ucis.ncdb.waivers import WaiverSet
+    waivers = WaiverSet.from_file("waivers.hjson")
+    rpt = report_safety_matrix(results, waivers=waivers)
+
+-----------
+
+**********************
+Seed reliability heat-map
+**********************
+
+Identify seeds that are disproportionately flaky::
+
+    from ucis.ncdb.ncdb_ucis import NcdbUCIS
+    from ucis.ncdb.reports import report_seed_reliability, format_seed_reliability
+
+    db  = NcdbUCIS("coverage.cdb")
+    rpt = report_seed_reliability(db, "uart_smoke")
+    print(format_seed_reliability(rpt))
+    # Seeds with flake_score ≥ 0.2 are flagged with ⚠
+
+    # JSON heat-map for a custom dashboard
+    import json
+    data = json.loads(rpt.to_json())
+    for row in data["rows"]:
+        if row["flake"] >= 0.2:
+            print(f"Seed {row['seed']}: {row['fail']} failures")
+
+-----------
+
+**********************
 GitHub Step Summary
 **********************
 
@@ -240,6 +309,18 @@ API reference
 .. autofunction:: ucis.ncdb.reports.report_coverage_contribution
 .. autofunction:: ucis.ncdb.reports.format_coverage_contribution
 .. autoclass:: ucis.ncdb.reports.CoverageContribution
+
+.. autofunction:: ucis.ncdb.reports.report_test_budget
+.. autofunction:: ucis.ncdb.reports.format_test_budget
+.. autoclass:: ucis.ncdb.reports.TestBudget
+
+.. autofunction:: ucis.ncdb.reports.report_safety_matrix
+.. autofunction:: ucis.ncdb.reports.format_safety_matrix
+.. autoclass:: ucis.ncdb.reports.SafetyMatrix
+
+.. autofunction:: ucis.ncdb.reports.report_seed_reliability
+.. autofunction:: ucis.ncdb.reports.format_seed_reliability
+.. autoclass:: ucis.ncdb.reports.SeedReliability
 
 .. autofunction:: ucis.ncdb.testplan_export.export_junit_xml
 .. autofunction:: ucis.ncdb.testplan_export.export_github_annotations

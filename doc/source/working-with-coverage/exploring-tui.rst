@@ -53,6 +53,24 @@ Press the number key at any time to switch views.
     Statistical analysis: hit-count distribution histogram, mean/median/stddev,
     coverage tier breakdown (complete / high / medium / low), bin utilization rate.
 
+**6 — Code Coverage**
+    File-level code coverage table showing statement, branch, and toggle hit
+    rates per source file.  Requires a database with code-coverage data (e.g.
+    imported from Verilator).
+
+**7 — Test History**
+    Per-test contribution analysis.  Each row shows total and unique coverage
+    items hit by that test.  When the database includes v2 history (NCDB v2),
+    the detail panel also shows flake score, pass/fail counts, and mean CPU
+    time.  Sort with ``N`` (name), ``D`` (date), ``C`` (coverage), ``U``
+    (unique).
+
+**8 — Testplan**
+    Testplan closure status.  Requires a testplan embedded in the database
+    (see :doc:`testplan`).  Shows every testpoint with its stage, closure
+    status, and pass/fail counts.  The header displays a stage roll-up with
+    colour-coded progress.  Press ``r`` to refresh.
+
 Global Keys
 ===========
 
@@ -62,7 +80,7 @@ Global Keys
 
    * - Key
      - Action
-   * - ``1`` – ``5``
+   * - ``1`` – ``8``
      - Switch view
    * - ``?``
      - Help overlay
