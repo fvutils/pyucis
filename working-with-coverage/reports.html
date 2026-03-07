@@ -1,0 +1,966 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports and CI/CD Integration &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reporting" href="../reporting/index.html" />
+    <link rel="prev" title="Testplan Integration" href="testplan.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exploring-tui.html">Exploring Coverage with TUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analyzing.html">Analyzing Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-history.html">Test History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testplan.html">Testplan Integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Reports and CI/CD Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#closure-and-gate-reports">Closure and gate reports</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regression-delta">Regression delta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reliability-report">Reliability report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unexercised-covergroups">Unexercised covergroups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coverage-contribution">Coverage contribution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#junit-xml-export">JUnit XML export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#github-annotations">GitHub Annotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-budget-by-stage">Test budget by stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#safety-traceability-matrix">Safety traceability matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#seed-reliability-heat-map">Seed reliability heat-map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#github-step-summary">GitHub Step Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_testpoint_closure"><code class="docutils literal notranslate"><span class="pre">report_testpoint_closure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_testpoint_closure"><code class="docutils literal notranslate"><span class="pre">format_testpoint_closure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.ClosureSummary"><code class="docutils literal notranslate"><span class="pre">ClosureSummary</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_stage_gate"><code class="docutils literal notranslate"><span class="pre">report_stage_gate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_stage_gate"><code class="docutils literal notranslate"><span class="pre">format_stage_gate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.StageGateReport"><code class="docutils literal notranslate"><span class="pre">StageGateReport</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_regression_delta"><code class="docutils literal notranslate"><span class="pre">report_regression_delta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_regression_delta"><code class="docutils literal notranslate"><span class="pre">format_regression_delta()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.RegressionDelta"><code class="docutils literal notranslate"><span class="pre">RegressionDelta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_testpoint_reliability"><code class="docutils literal notranslate"><span class="pre">report_testpoint_reliability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_testpoint_reliability"><code class="docutils literal notranslate"><span class="pre">format_testpoint_reliability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.TestpointReliability"><code class="docutils literal notranslate"><span class="pre">TestpointReliability</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_unexercised_covergroups"><code class="docutils literal notranslate"><span class="pre">report_unexercised_covergroups()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_unexercised_covergroups"><code class="docutils literal notranslate"><span class="pre">format_unexercised_covergroups()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.UnexercisedCovergroups"><code class="docutils literal notranslate"><span class="pre">UnexercisedCovergroups</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_coverage_contribution"><code class="docutils literal notranslate"><span class="pre">report_coverage_contribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_coverage_contribution"><code class="docutils literal notranslate"><span class="pre">format_coverage_contribution()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.CoverageContribution"><code class="docutils literal notranslate"><span class="pre">CoverageContribution</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_test_budget"><code class="docutils literal notranslate"><span class="pre">report_test_budget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_test_budget"><code class="docutils literal notranslate"><span class="pre">format_test_budget()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.TestBudget"><code class="docutils literal notranslate"><span class="pre">TestBudget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_safety_matrix"><code class="docutils literal notranslate"><span class="pre">report_safety_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_safety_matrix"><code class="docutils literal notranslate"><span class="pre">format_safety_matrix()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.SafetyMatrix"><code class="docutils literal notranslate"><span class="pre">SafetyMatrix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.report_seed_reliability"><code class="docutils literal notranslate"><span class="pre">report_seed_reliability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.format_seed_reliability"><code class="docutils literal notranslate"><span class="pre">format_seed_reliability()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.reports.SeedReliability"><code class="docutils literal notranslate"><span class="pre">SeedReliability</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_export.export_junit_xml"><code class="docutils literal notranslate"><span class="pre">export_junit_xml()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_export.export_github_annotations"><code class="docutils literal notranslate"><span class="pre">export_github_annotations()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_export.export_summary_markdown"><code class="docutils literal notranslate"><span class="pre">export_summary_markdown()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Working with Coverage</a></li>
+      <li class="breadcrumb-item active">Reports and CI/CD Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/working-with-coverage/reports.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="reports-and-ci-cd-integration">
+<span id="reports"></span><h1>Reports and CI/CD Integration<a class="headerlink" href="#reports-and-ci-cd-integration" title="Link to this heading"></a></h1>
+<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">ucis.ncdb.reports</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">ucis.ncdb.testplan_export</span></code> modules
+provide structured reports for testplan closure, regression delta, and
+CI/CD export.  Every report function returns a typed dataclass with a
+<code class="docutils literal notranslate"><span class="pre">to_json()</span></code> method; companion <code class="docutils literal notranslate"><span class="pre">format_*()</span></code> functions render the
+dataclass to human-readable text.</p>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#closure-and-gate-reports" id="id1">Closure and gate reports</a></p></li>
+<li><p><a class="reference internal" href="#regression-delta" id="id2">Regression delta</a></p></li>
+<li><p><a class="reference internal" href="#reliability-report" id="id3">Reliability report</a></p></li>
+<li><p><a class="reference internal" href="#unexercised-covergroups" id="id4">Unexercised covergroups</a></p></li>
+<li><p><a class="reference internal" href="#coverage-contribution" id="id5">Coverage contribution</a></p></li>
+<li><p><a class="reference internal" href="#junit-xml-export" id="id6">JUnit XML export</a></p></li>
+<li><p><a class="reference internal" href="#github-annotations" id="id7">GitHub Annotations</a></p></li>
+<li><p><a class="reference internal" href="#test-budget-by-stage" id="id8">Test budget by stage</a></p></li>
+<li><p><a class="reference internal" href="#safety-traceability-matrix" id="id9">Safety traceability matrix</a></p></li>
+<li><p><a class="reference internal" href="#seed-reliability-heat-map" id="id10">Seed reliability heat-map</a></p></li>
+<li><p><a class="reference internal" href="#github-step-summary" id="id11">GitHub Step Summary</a></p></li>
+<li><p><a class="reference internal" href="#api-reference" id="id12">API reference</a></p></li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="closure-and-gate-reports">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Closure and gate reports</a><a class="headerlink" href="#closure-and-gate-reports" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_testplan</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_closure</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_closure</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">report_testpoint_closure</span><span class="p">,</span>
+    <span class="n">format_testpoint_closure</span><span class="p">,</span>
+    <span class="n">report_stage_gate</span><span class="p">,</span>
+    <span class="n">format_stage_gate</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">get_testplan</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+
+<span class="c1"># Print the closure table</span>
+<span class="n">summary</span> <span class="o">=</span> <span class="n">report_testpoint_closure</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_testpoint_closure</span><span class="p">(</span><span class="n">summary</span><span class="p">))</span>
+
+<span class="c1"># Evaluate a stage gate</span>
+<span class="n">gate</span> <span class="o">=</span> <span class="n">report_stage_gate</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;V2&quot;</span><span class="p">,</span> <span class="n">plan</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_stage_gate</span><span class="p">(</span><span class="n">gate</span><span class="p">))</span>
+
+<span class="c1"># Machine-readable JSON</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Stage-rollup output example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Testpoint                          Stage  Status     Pass   Fail
+----------------------------------------------------------------
+uart_reset                         V1     ✓ CLOSED      5      0
+uart_loopback                      V2     ✗ FAILING     0      3
+----------------------------------------------------------------
+
+Stage roll-up:
+  V1     [████████████████████] 1/1 (100.0%)
+  V2     [░░░░░░░░░░░░░░░░░░░░] 0/1 (0.0%)
+
+Total: 1/2 closed  (0 N/A)
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="regression-delta">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Regression delta</a><a class="headerlink" href="#regression-delta" title="Link to this heading"></a></h2>
+<p>Compare two closure result sets to find testpoints that changed
+status between runs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="n">report_regression_delta</span><span class="p">,</span> <span class="n">format_regression_delta</span>
+
+<span class="c1"># Load two snapshots</span>
+<span class="n">results_baseline</span> <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db_baseline</span><span class="p">)</span>
+<span class="n">results_current</span>  <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db_current</span><span class="p">)</span>
+
+<span class="n">delta</span> <span class="o">=</span> <span class="n">report_regression_delta</span><span class="p">(</span><span class="n">results_current</span><span class="p">,</span> <span class="n">results_baseline</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_regression_delta</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+<span class="c1"># Regression delta: +1 closed, -0 newly failing, 1 still open</span>
+
+<span class="c1"># Machine-readable</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="reliability-report">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Reliability report</a><a class="headerlink" href="#reliability-report" title="Link to this heading"></a></h2>
+<p>Compute per-testpoint flake scores from v2 history data:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="n">report_testpoint_reliability</span><span class="p">,</span> <span class="n">format_testpoint_reliability</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">report_testpoint_reliability</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_testpoint_reliability</span><span class="p">(</span><span class="n">report</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Output example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Testpoint                          Flake    Pass    Fail
+--------------------------------------------------------
+uart_loopback                      0.800       2       8  ⚠
+uart_reset                         0.000      10       0
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="unexercised-covergroups">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Unexercised covergroups</a><a class="headerlink" href="#unexercised-covergroups" title="Link to this heading"></a></h2>
+<p>Identify zero-hit or low-coverage covergroups:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">report_unexercised_covergroups</span><span class="p">,</span>
+    <span class="n">format_unexercised_covergroups</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">report_unexercised_covergroups</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">plan</span><span class="p">,</span> <span class="n">low_threshold</span><span class="o">=</span><span class="mf">50.0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_unexercised_covergroups</span><span class="p">(</span><span class="n">report</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="coverage-contribution">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Coverage contribution</a><a class="headerlink" href="#coverage-contribution" title="Link to this heading"></a></h2>
+<p>Show which tests contribute the most unique coverage bins
+(requires v2 history with contribution data):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">report_coverage_contribution</span><span class="p">,</span>
+    <span class="n">format_coverage_contribution</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">report_coverage_contribution</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_coverage_contribution</span><span class="p">(</span><span class="n">report</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="junit-xml-export">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">JUnit XML export</a><a class="headerlink" href="#junit-xml-export" title="Link to this heading"></a></h2>
+<p>Export closure results as a JUnit XML file for CI dashboards:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_junit_xml</span>
+
+<span class="n">export_junit_xml</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;closure_results.xml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or via the CLI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pyucis</span> <span class="n">testplan</span> <span class="n">export</span><span class="o">-</span><span class="n">junit</span> <span class="n">coverage</span><span class="o">.</span><span class="n">cdb</span> <span class="o">--</span><span class="n">out</span> <span class="n">closure_results</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>The XML maps each testpoint to a <code class="docutils literal notranslate"><span class="pre">&lt;testcase&gt;</span></code> element.  FAILING and
+PARTIAL testpoints become <code class="docutils literal notranslate"><span class="pre">&lt;failure&gt;</span></code> elements; NOT_RUN becomes
+<code class="docutils literal notranslate"><span class="pre">&lt;skipped&gt;</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="github-annotations">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">GitHub Annotations</a><a class="headerlink" href="#github-annotations" title="Link to this heading"></a></h2>
+<p>Emit GitHub Actions <a class="reference external" href="https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions">workflow commands</a> for inline PR annotations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_github_annotations</span>
+
+<span class="n">export_github_annotations</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>  <span class="c1"># writes to stdout</span>
+
+<span class="c1"># Or capture to a string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="n">buf</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="n">export_github_annotations</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">buf</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">buf</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>In a GitHub Actions workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">name</span><span class="p">:</span> <span class="n">Compute</span> <span class="n">closure</span>
+  <span class="n">run</span><span class="p">:</span> <span class="o">|</span>
+    <span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_testplan</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_closure</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_closure</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_github_annotations</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s1">&#39;coverage.cdb&#39;</span><span class="p">)</span>
+    <span class="n">plan</span> <span class="o">=</span> <span class="n">get_testplan</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+    <span class="n">export_github_annotations</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="s2">&quot;</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="test-budget-by-stage">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Test budget by stage</a><a class="headerlink" href="#test-budget-by-stage" title="Link to this heading"></a></h2>
+<p>Estimate CPU-hour cost per stage from v2 test history mean CPU times:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_testplan</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="n">report_test_budget</span><span class="p">,</span> <span class="n">format_test_budget</span>
+
+<span class="n">db</span>   <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getTestplan</span><span class="p">()</span>
+<span class="n">rpt</span>  <span class="o">=</span> <span class="n">report_test_budget</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_test_budget</span><span class="p">(</span><span class="n">rpt</span><span class="p">))</span>
+
+<span class="c1"># JSON export</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rpt</span><span class="o">.</span><span class="n">to_json</span><span class="p">())[</span><span class="s2">&quot;stage_totals&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Testpoints whose tests have no CPU time recorded appear in
+<code class="docutils literal notranslate"><span class="pre">rpt.missing_stats</span></code>.</p>
+</section>
+<hr class="docutils" />
+<section id="safety-traceability-matrix">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">Safety traceability matrix</a><a class="headerlink" href="#safety-traceability-matrix" title="Link to this heading"></a></h2>
+<p>Build a requirement-to-testpoint matrix (suitable for safety audits):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="n">report_safety_matrix</span><span class="p">,</span> <span class="n">format_safety_matrix</span>
+
+<span class="n">rpt</span> <span class="o">=</span> <span class="n">report_safety_matrix</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>          <span class="c1"># results from compute_closure</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_safety_matrix</span><span class="p">(</span><span class="n">rpt</span><span class="p">))</span>
+
+<span class="c1"># CSV for a spreadsheet or audit tool</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;traceability.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">rpt</span><span class="o">.</span><span class="n">to_csv</span><span class="p">())</span>
+
+<span class="c1"># Add a WaiverSet to flag waived testpoints</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.waivers</span><span class="w"> </span><span class="kn">import</span> <span class="n">WaiverSet</span>
+<span class="n">waivers</span> <span class="o">=</span> <span class="n">WaiverSet</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;waivers.hjson&quot;</span><span class="p">)</span>
+<span class="n">rpt</span> <span class="o">=</span> <span class="n">report_safety_matrix</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">waivers</span><span class="o">=</span><span class="n">waivers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="seed-reliability-heat-map">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Seed reliability heat-map</a><a class="headerlink" href="#seed-reliability-heat-map" title="Link to this heading"></a></h2>
+<p>Identify seeds that are disproportionately flaky:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.reports</span><span class="w"> </span><span class="kn">import</span> <span class="n">report_seed_reliability</span><span class="p">,</span> <span class="n">format_seed_reliability</span>
+
+<span class="n">db</span>  <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">rpt</span> <span class="o">=</span> <span class="n">report_seed_reliability</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;uart_smoke&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_seed_reliability</span><span class="p">(</span><span class="n">rpt</span><span class="p">))</span>
+<span class="c1"># Seeds with flake_score ≥ 0.2 are flagged with ⚠</span>
+
+<span class="c1"># JSON heat-map for a custom dashboard</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">rpt</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;rows&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;flake&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.2</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Seed </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;fail&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> failures&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="github-step-summary">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">GitHub Step Summary</a><a class="headerlink" href="#github-step-summary" title="Link to this heading"></a></h2>
+<p>Write a markdown table to <code class="docutils literal notranslate"><span class="pre">$GITHUB_STEP_SUMMARY</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_summary_markdown</span>
+
+<span class="n">md</span> <span class="o">=</span> <span class="n">export_summary_markdown</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">stage_gate</span><span class="o">=</span><span class="n">gate</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GITHUB_STEP_SUMMARY&quot;</span><span class="p">],</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The output includes a stage roll-up table, per-testpoint status rows,
+and (when <em>stage_gate</em> is supplied) a gate verdict with a list of
+blocking testpoints.</p>
+</section>
+<hr class="docutils" />
+<section id="api-reference">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">API reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_testpoint_closure">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_testpoint_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.ClosureSummary" title="ucis.ncdb.reports.ClosureSummary"><span class="pre">ClosureSummary</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_testpoint_closure" title="Link to this definition"></a></dt>
+<dd><p>Compute a closure summary from testpoint results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>results</strong> – List of <a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestpointResult</span></code></a>
+objects (output of <a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.ClosureSummary" title="ucis.ncdb.reports.ClosureSummary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClosureSummary</span></code></a> with per-stage roll-up and totals.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_testpoint_closure">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_testpoint_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.ClosureSummary" title="ucis.ncdb.reports.ClosureSummary"><span class="pre">ClosureSummary</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_all</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_testpoint_closure" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.ClosureSummary" title="ucis.ncdb.reports.ClosureSummary"><code class="xref py py-class docutils literal notranslate"><span class="pre">ClosureSummary</span></code></a> as a terminal table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>summary</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_testpoint_closure" title="ucis.ncdb.reports.report_testpoint_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_testpoint_closure()</span></code></a>.</p></li>
+<li><p><strong>show_all</strong> – If False (default), skip N/A and UNIMPLEMENTED rows.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.ClosureSummary">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">ClosureSummary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by_stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_na</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.ClosureSummary" title="Link to this definition"></a></dt>
+<dd><p>Result of <code class="docutils literal notranslate"><span class="pre">report_testpoint_closure()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Per-testpoint closure results.</p></li>
+<li><p><strong>by_stage</strong> – Stage-level roll-up: stage → {closed, total, pct}.</p></li>
+<li><p><strong>total_closed</strong> – Number of testpoints with status CLOSED.</p></li>
+<li><p><strong>total_na</strong> – Number of testpoints with status N/A.</p></li>
+<li><p><strong>total</strong> – Total testpoint count.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_stage_gate">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_stage_gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">testplan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="testplan.html#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_flake_score_below</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_coverage_pct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><span class="pre">StageGateReport</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_stage_gate" title="Link to this definition"></a></dt>
+<dd><p>Evaluate a stage gate (go/no-go for advancing to next stage).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of <a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>stage</strong> – Target stage to evaluate (<code class="docutils literal notranslate"><span class="pre">&quot;V1&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;V2&quot;</span></code>, etc.).</p></li>
+<li><p><strong>testplan</strong> – The <a class="reference internal" href="testplan.html#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testplan</span></code></a> being evaluated.</p></li>
+<li><p><strong>require_flake_score_below</strong> – Optional flake threshold (0–1).</p></li>
+<li><p><strong>require_coverage_pct</strong> – Optional minimum coverage percentage.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">StageGateReport</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_stage_gate">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_stage_gate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><span class="pre">StageGateReport</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_stage_gate" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">StageGateReport</span></code></a> as a terminal summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_stage_gate" title="ucis.ncdb.reports.report_stage_gate"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_stage_gate()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.StageGateReport">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">StageGateReport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">passed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_detail</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.StageGateReport" title="Link to this definition"></a></dt>
+<dd><p>Result of <code class="docutils literal notranslate"><span class="pre">report_stage_gate()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage</strong> – Target stage (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;V2&quot;</span></code>).</p></li>
+<li><p><strong>passed</strong> – Whether the gate passes.</p></li>
+<li><p><strong>blocking</strong> – Testpoints that are not yet CLOSED (and not N/A).</p></li>
+<li><p><strong>message</strong> – Human-readable verdict line.</p></li>
+<li><p><strong>gate_detail</strong> – Raw detail dict from
+<a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.stage_gate_status" title="ucis.ncdb.testplan_closure.stage_gate_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">stage_gate_status()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_regression_delta">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_regression_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_new</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">results_old</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.RegressionDelta" title="ucis.ncdb.reports.RegressionDelta"><span class="pre">RegressionDelta</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_regression_delta" title="Link to this definition"></a></dt>
+<dd><p>Compute the testplan closure delta between two regression runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results_new</strong> – Closure results for the current regression.</p></li>
+<li><p><strong>results_old</strong> – Closure results for the baseline regression.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.RegressionDelta" title="ucis.ncdb.reports.RegressionDelta"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionDelta</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_regression_delta">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_regression_delta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.RegressionDelta" title="ucis.ncdb.reports.RegressionDelta"><span class="pre">RegressionDelta</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_regression_delta" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.RegressionDelta" title="ucis.ncdb.reports.RegressionDelta"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegressionDelta</span></code></a> as a terminal summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_regression_delta" title="ucis.ncdb.reports.report_regression_delta"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_regression_delta()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.RegressionDelta">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">RegressionDelta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newly_closed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newly_failing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unchanged_open</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">summary</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.RegressionDelta" title="Link to this definition"></a></dt>
+<dd><p>Delta between two closure result sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>newly_closed</strong> – Testpoints that moved to CLOSED.</p></li>
+<li><p><strong>newly_failing</strong> – Testpoints that were not FAILING but are now.</p></li>
+<li><p><strong>unchanged_open</strong> – Testpoints that remain open/partial.</p></li>
+<li><p><strong>summary</strong> – One-line summary string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_testpoint_reliability">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_testpoint_reliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaky_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.TestpointReliability" title="ucis.ncdb.reports.TestpointReliability"><span class="pre">TestpointReliability</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_testpoint_reliability" title="Link to this definition"></a></dt>
+<dd><p>Compute per-testpoint flake scores from v2 test_stats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of <a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>db</strong> – An open <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbUCIS</span></code> instance.</p></li>
+<li><p><strong>flaky_threshold</strong> – Flake score above which a testpoint is flagged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.TestpointReliability" title="ucis.ncdb.reports.TestpointReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestpointReliability</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_testpoint_reliability">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_testpoint_reliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.TestpointReliability" title="ucis.ncdb.reports.TestpointReliability"><span class="pre">TestpointReliability</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_testpoint_reliability" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.TestpointReliability" title="ucis.ncdb.reports.TestpointReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestpointReliability</span></code></a> as a terminal table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_testpoint_reliability" title="ucis.ncdb.reports.report_testpoint_reliability"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_testpoint_reliability()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.TestpointReliability">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">TestpointReliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flaky_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.TestpointReliability" title="Link to this definition"></a></dt>
+<dd><p>Per-testpoint flake scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows</strong> – List of (testpoint_name, flake_score, pass_count, fail_count).
+Sorted by flake_score descending.</p></li>
+<li><p><strong>flaky_threshold</strong> – Score above which a testpoint is considered flaky.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_unexercised_covergroups">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_unexercised_covergroups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testplan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="testplan.html#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.UnexercisedCovergroups" title="ucis.ncdb.reports.UnexercisedCovergroups"><span class="pre">UnexercisedCovergroups</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_unexercised_covergroups" title="Link to this definition"></a></dt>
+<dd><p>Identify covergroups with zero or low coverage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – An open UCIS database.</p></li>
+<li><p><strong>testplan</strong> – The active testplan (used to filter to plan-tracked groups).</p></li>
+<li><p><strong>low_threshold</strong> – Percentage below which a covergroup is flagged as
+low-hit (default 50%).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.UnexercisedCovergroups" title="ucis.ncdb.reports.UnexercisedCovergroups"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnexercisedCovergroups</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_unexercised_covergroups">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_unexercised_covergroups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.UnexercisedCovergroups" title="ucis.ncdb.reports.UnexercisedCovergroups"><span class="pre">UnexercisedCovergroups</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_unexercised_covergroups" title="Link to this definition"></a></dt>
+<dd><p>Render an <a class="reference internal" href="#ucis.ncdb.reports.UnexercisedCovergroups" title="ucis.ncdb.reports.UnexercisedCovergroups"><code class="xref py py-class docutils literal notranslate"><span class="pre">UnexercisedCovergroups</span></code></a> report as terminal text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_unexercised_covergroups" title="ucis.ncdb.reports.report_unexercised_covergroups"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_unexercised_covergroups()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.UnexercisedCovergroups">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">UnexercisedCovergroups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zero_hit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">low_hit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.UnexercisedCovergroups" title="Link to this definition"></a></dt>
+<dd><p>Covergroups with zero hits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zero_hit</strong> – List of covergroup names with 0% coverage.</p></li>
+<li><p><strong>low_hit</strong> – List of (name, pct) tuples with 0 &lt; pct &lt; threshold.</p></li>
+<li><p><strong>threshold</strong> – Low-hit threshold used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_coverage_contribution">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_coverage_contribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.CoverageContribution" title="ucis.ncdb.reports.CoverageContribution"><span class="pre">CoverageContribution</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_coverage_contribution" title="Link to this definition"></a></dt>
+<dd><p>Report per-test unique coverage bin contribution from v2 contrib data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>db</strong> – An open <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbUCIS</span></code> instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.CoverageContribution" title="ucis.ncdb.reports.CoverageContribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoverageContribution</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_coverage_contribution">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_coverage_contribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.CoverageContribution" title="ucis.ncdb.reports.CoverageContribution"><span class="pre">CoverageContribution</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_coverage_contribution" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.CoverageContribution" title="ucis.ncdb.reports.CoverageContribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">CoverageContribution</span></code></a> as a terminal table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_coverage_contribution" title="ucis.ncdb.reports.report_coverage_contribution"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_coverage_contribution()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.CoverageContribution">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">CoverageContribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.CoverageContribution" title="Link to this definition"></a></dt>
+<dd><p>Per-test unique bin contribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows</strong> – List of (test_name, unique_bins, total_hits) sorted by
+unique_bins descending.</p></li>
+<li><p><strong>total_bins</strong> – Total covered bins in the database.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_test_budget">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_test_budget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testplan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="testplan.html#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.TestBudget" title="ucis.ncdb.reports.TestBudget"><span class="pre">TestBudget</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_test_budget" title="Link to this definition"></a></dt>
+<dd><p>Estimate CPU-hour budget per stage from v2 test_stats mean CPU times.</p>
+<p>For each testpoint the mean CPU time of all its mapped tests is summed.
+Testpoints with no CPU stats are listed in <code class="docutils literal notranslate"><span class="pre">missing_stats</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>testplan</strong> – The active <a class="reference internal" href="testplan.html#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testplan</span></code></a>.</p></li>
+<li><p><strong>db</strong> – An open <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbUCIS</span></code> instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.TestBudget" title="ucis.ncdb.reports.TestBudget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestBudget</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_test_budget">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_test_budget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.TestBudget" title="ucis.ncdb.reports.TestBudget"><span class="pre">TestBudget</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_test_budget" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.TestBudget" title="ucis.ncdb.reports.TestBudget"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestBudget</span></code></a> as a terminal table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_test_budget" title="ucis.ncdb.reports.report_test_budget"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_test_budget()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.TestBudget">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">TestBudget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_totals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">missing_stats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.TestBudget" title="Link to this definition"></a></dt>
+<dd><p>CPU time budget by stage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows</strong> – List of (stage, testpoint_name, mean_cpu_sec, total_runs)
+sorted by stage rank then mean_cpu_sec descending.</p></li>
+<li><p><strong>stage_totals</strong> – Mapping of stage → total estimated CPU seconds.</p></li>
+<li><p><strong>missing_stats</strong> – Testpoint names for which no CPU stats are available.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_safety_matrix">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_safety_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waivers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.SafetyMatrix" title="ucis.ncdb.reports.SafetyMatrix"><span class="pre">SafetyMatrix</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_safety_matrix" title="Link to this definition"></a></dt>
+<dd><p>Build a requirement to testpoint traceability matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of <a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>waivers</strong> – Optional <a class="reference internal" href="testplan.html#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaiverSet</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.SafetyMatrix" title="ucis.ncdb.reports.SafetyMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafetyMatrix</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_safety_matrix">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_safety_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.SafetyMatrix" title="ucis.ncdb.reports.SafetyMatrix"><span class="pre">SafetyMatrix</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_safety_matrix" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.SafetyMatrix" title="ucis.ncdb.reports.SafetyMatrix"><code class="xref py py-class docutils literal notranslate"><span class="pre">SafetyMatrix</span></code></a> as a text table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_safety_matrix" title="ucis.ncdb.reports.report_safety_matrix"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_safety_matrix()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.SafetyMatrix">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">SafetyMatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">untested_requirements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.SafetyMatrix" title="Link to this definition"></a></dt>
+<dd><p>Requirement x testpoint traceability matrix with waiver flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rows</strong> – List of (req_id, req_desc, testpoint_name, status, waived).</p></li>
+<li><p><strong>untested_requirements</strong> – Requirement IDs with no linked testpoints.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.report_seed_reliability">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">report_seed_reliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.reports.SeedReliability" title="ucis.ncdb.reports.SeedReliability"><span class="pre">SeedReliability</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.report_seed_reliability" title="Link to this definition"></a></dt>
+<dd><p>Compute per-seed pass/fail counts from v2 history buckets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – An open <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbUCIS</span></code> instance.</p></li>
+<li><p><strong>test_name</strong> – Name of the test to analyse.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#ucis.ncdb.reports.SeedReliability" title="ucis.ncdb.reports.SeedReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeedReliability</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.format_seed_reliability">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">format_seed_reliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">report</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.SeedReliability" title="ucis.ncdb.reports.SeedReliability"><span class="pre">SeedReliability</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.reports.format_seed_reliability" title="Link to this definition"></a></dt>
+<dd><p>Render a <a class="reference internal" href="#ucis.ncdb.reports.SeedReliability" title="ucis.ncdb.reports.SeedReliability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SeedReliability</span></code></a> as a terminal heat-map table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>report</strong> – Output of <a class="reference internal" href="#ucis.ncdb.reports.report_seed_reliability" title="ucis.ncdb.reports.report_seed_reliability"><code class="xref py py-func docutils literal notranslate"><span class="pre">report_seed_reliability()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Human-readable multiline string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.reports.SeedReliability">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.reports.</span></span><span class="sig-name descname"><span class="pre">SeedReliability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.14)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_seeds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.reports.SeedReliability" title="Link to this definition"></a></dt>
+<dd><p>Per-seed pass/fail counts for a given test name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_name</strong> – The queried test name.</p></li>
+<li><p><strong>rows</strong> – List of (seed_id, pass_count, fail_count, flake_score) sorted
+by fail_count descending.</p></li>
+<li><p><strong>total_seeds</strong> – Total unique seeds seen.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_export.export_junit_xml">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_export.</span></span><span class="sig-name descname"><span class="pre">export_junit_xml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">suite_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'testplan_closure'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan_export.export_junit_xml" title="Link to this definition"></a></dt>
+<dd><p>Write closure results as a JUnit XML file.</p>
+<p>Each testpoint becomes a <code class="docutils literal notranslate"><span class="pre">&lt;testcase&gt;</span></code>.  Testpoints with status
+FAILING or PARTIAL get a <code class="docutils literal notranslate"><span class="pre">&lt;failure&gt;</span></code> element; NOT_RUN gets a
+<code class="docutils literal notranslate"><span class="pre">&lt;skipped&gt;</span></code> element; CLOSED is a plain pass.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of
+<a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>output_path</strong> – Destination <code class="docutils literal notranslate"><span class="pre">.xml</span></code> file path.</p></li>
+<li><p><strong>suite_name</strong> – Value of the <code class="docutils literal notranslate"><span class="pre">name</span></code> attribute on <code class="docutils literal notranslate"><span class="pre">&lt;testsuite&gt;</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_junit_xml</span>
+<span class="n">export_junit_xml</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;closure_results.xml&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_export.export_github_annotations">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_export.</span></span><span class="sig-name descname"><span class="pre">export_github_annotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'testplan'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan_export.export_github_annotations" title="Link to this definition"></a></dt>
+<dd><p>Write GitHub Actions workflow command annotations to <em>output</em>.</p>
+<p>FAILING testpoints emit <code class="docutils literal notranslate"><span class="pre">::error::</span></code> lines; PARTIAL and NOT_RUN emit
+<code class="docutils literal notranslate"><span class="pre">::warning::</span></code> lines.  CLOSED and N/A produce no output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of
+<a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>file</strong> – Value used in the <code class="docutils literal notranslate"><span class="pre">file=</span></code> annotation field (defaults to
+<code class="docutils literal notranslate"><span class="pre">&quot;testplan&quot;</span></code>).</p></li>
+<li><p><strong>output</strong> – File-like object to write to (defaults to <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code>).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_github_annotations</span>
+<span class="n">export_github_annotations</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>  <span class="c1"># writes to stdout</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_export.export_summary_markdown">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_export.</span></span><span class="sig-name descname"><span class="pre">export_summary_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage_gate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><span class="pre">StageGateReport</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan_export.export_summary_markdown" title="Link to this definition"></a></dt>
+<dd><p>Generate a GitHub Actions Job Summary–compatible markdown string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of
+<a class="reference internal" href="testplan.html#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>stage_gate</strong> – Optional <a class="reference internal" href="#ucis.ncdb.reports.StageGateReport" title="ucis.ncdb.reports.StageGateReport"><code class="xref py py-class docutils literal notranslate"><span class="pre">StageGateReport</span></code></a>
+to include a gate verdict section.</p></li>
+<li><p><strong>history_db</strong> – Unused; reserved for future trend lines.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A markdown string suitable for appending to
+<code class="docutils literal notranslate"><span class="pre">$GITHUB_STEP_SUMMARY</span></code>.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_export</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_summary_markdown</span>
+<span class="n">md</span> <span class="o">=</span> <span class="n">export_summary_markdown</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">stage_gate</span><span class="o">=</span><span class="n">gate</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;GITHUB_STEP_SUMMARY&quot;</span><span class="p">],</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="testplan.html#testplan"><span class="std std-ref">Testplan Integration</span></a> — Testplan format and closure computation</p></li>
+<li><p><a class="reference internal" href="test-history.html#test-history"><span class="std std-ref">Test History</span></a> — Binary test history API</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testplan.html" class="btn btn-neutral float-left" title="Testplan Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reporting/index.html" class="btn btn-neutral float-right" title="Reporting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

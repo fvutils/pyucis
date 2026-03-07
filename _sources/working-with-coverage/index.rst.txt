@@ -16,3 +16,6 @@ After importing your coverage data, the typical analysis workflow is:
    exploring-tui
    analyzing
    comparing
+   test-history
+   testplan
+   reports

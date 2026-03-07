@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test History &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Testplan Integration" href="testplan.html" />
+    <link rel="prev" title="Comparing Coverage Databases" href="comparing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exploring-tui.html">Exploring Coverage with TUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analyzing.html">Analyzing Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Test History</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick-start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.add_test_run"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.add_test_run()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.query_test_history"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.query_test_history()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.get_test_stats"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.get_test_stats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.top_flaky_tests"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.top_flaky_tests()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.top_failing_tests"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.top_failing_tests()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.squash_coverage"><code class="docutils literal notranslate"><span class="pre">NcdbUCIS.squash_coverage()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#status-and-flag-values">Status and flag values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-range-queries">Time-range queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#merging-history">Merging history</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#squash-coverage">Squash coverage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#binary-format-overview">Binary format overview</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="testplan.html">Testplan Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Reports and CI/CD Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Working with Coverage</a></li>
+      <li class="breadcrumb-item active">Test History</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/working-with-coverage/test-history.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="test-history">
+<span id="id1"></span><h1>Test History<a class="headerlink" href="#test-history" title="Link to this heading"></a></h1>
+<p>PyUCIS stores a rich, time-series history of every test run inside each NCDB
+<code class="docutils literal notranslate"><span class="pre">.cdb</span></code> file.  Introduced in NCDB v2, this <em>binary test history</em> is separate
+from the legacy UCIS history-node model and is designed for:</p>
+<ul class="simple">
+<li><p><strong>Trend analysis</strong> — identify flaky or consistently-failing tests over
+hundreds or thousands of runs.</p></li>
+<li><p><strong>Regression detection</strong> — spot when a test’s pass rate drops using a
+CUSUM change-point algorithm.</p></li>
+<li><p><strong>Coverage provenance</strong> — trace exactly which test runs contributed to the
+squashed coverage numbers.</p></li>
+</ul>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#quick-start" id="id2">Quick-start</a></p></li>
+<li><p><a class="reference internal" href="#api-reference" id="id3">API reference</a></p></li>
+<li><p><a class="reference internal" href="#status-and-flag-values" id="id4">Status and flag values</a></p></li>
+<li><p><a class="reference internal" href="#time-range-queries" id="id5">Time-range queries</a></p></li>
+<li><p><a class="reference internal" href="#merging-history" id="id6">Merging history</a></p></li>
+<li><p><a class="reference internal" href="#squash-coverage" id="id7">Squash coverage</a></p></li>
+<li><p><a class="reference internal" href="#binary-format-overview" id="id8">Binary format overview</a></p></li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="quick-start">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Quick-start</a><a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Record test results with <a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.add_test_run" title="ucis.ncdb.ncdb_ucis.NcdbUCIS.add_test_run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_test_run()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbWriter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIST_STATUS_OK</span><span class="p">,</span> <span class="n">HIST_STATUS_FAIL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.mem.mem_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemUCIS</span>
+
+<span class="c1"># Create or open a .cdb</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">MemUCIS</span><span class="p">(),</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>   <span class="c1"># once, to initialise</span>
+<span class="n">db</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Record runs</span>
+<span class="n">db</span><span class="o">.</span><span class="n">add_test_run</span><span class="p">(</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="s2">&quot;42&quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">HIST_STATUS_OK</span><span class="p">,</span>
+                <span class="n">ts</span><span class="o">=</span><span class="mi">1700000000</span><span class="p">,</span> <span class="n">has_coverage</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">add_test_run</span><span class="p">(</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="s2">&quot;43&quot;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">HIST_STATUS_FAIL</span><span class="p">,</span>
+                <span class="n">ts</span><span class="o">=</span><span class="mi">1700003600</span><span class="p">,</span> <span class="n">has_coverage</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Save</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Query the results:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db2</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># All runs for one test</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">db2</span><span class="o">.</span><span class="n">query_test_history</span><span class="p">(</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">rec</span> <span class="ow">in</span> <span class="n">history</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">rec</span><span class="o">.</span><span class="n">status</span><span class="p">)</span>
+
+<span class="c1"># Aggregate statistics</span>
+<span class="n">entry</span> <span class="o">=</span> <span class="n">db2</span><span class="o">.</span><span class="n">get_test_stats</span><span class="p">(</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total=</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">total_runs</span><span class="si">}</span><span class="s2">  pass=</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">pass_count</span><span class="si">}</span><span class="s2">  fail=</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">fail_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Top-flaky across all tests</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">db2</span><span class="o">.</span><span class="n">top_flaky_tests</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">name_id</span><span class="p">,</span> <span class="n">entry</span><span class="o">.</span><span class="n">flakiness_score</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="api-reference">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">API reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.add_test_run">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">add_test_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">has_coverage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_rerun</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.add_test_run" title="Link to this definition"></a></dt>
+<dd><p>Record one test run in the binary history store.</p>
+<p>Automatically upgrades the manifest to <code class="docutils literal notranslate"><span class="pre">history_format</span> <span class="pre">=</span> <span class="pre">&quot;v2&quot;</span></code> on
+first call (no explicit opt-in required).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Test base-name (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;uart_smoke&quot;</span></code>).</p></li>
+<li><p><strong>seed</strong> – Test seed string or integer (converted to str).</p></li>
+<li><p><strong>status</strong> – One of the <code class="docutils literal notranslate"><span class="pre">HIST_STATUS_*</span></code> constants.</p></li>
+<li><p><strong>ts</strong> – Unix timestamp; defaults to <code class="docutils literal notranslate"><span class="pre">int(time.time())</span></code>.</p></li>
+<li><p><strong>cpu_time</strong> – CPU/wall time in seconds (optional).</p></li>
+<li><p><strong>has_coverage</strong> – True if this run produced coverage data.</p></li>
+<li><p><strong>is_rerun</strong> – True if this is a retry of a previously-failed run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The run_id assigned to this run.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.query_test_history">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">query_test_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_from</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts_to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.query_test_history" title="Link to this definition"></a></dt>
+<dd><p>Return all BucketRecord objects for <em>name</em> across all buckets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Test name to query.</p></li>
+<li><p><strong>ts_from</strong> – Optional lower bound timestamp (inclusive).</p></li>
+<li><p><strong>ts_to</strong> – Optional upper bound timestamp (inclusive).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of <code class="xref py py-class docutils literal notranslate"><span class="pre">BucketRecord</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.get_test_stats">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">get_test_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.get_test_stats" title="Link to this definition"></a></dt>
+<dd><p>Return the TestStatsEntry for <em>name</em>, or None if not seen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TestStatsEntry</span></code> or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.top_flaky_tests">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">top_flaky_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.top_flaky_tests" title="Link to this definition"></a></dt>
+<dd><p>Return top-<em>n</em> flakiest tests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of <code class="xref py py-class docutils literal notranslate"><span class="pre">TestStatsEntry</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.top_failing_tests">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">top_failing_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.top_failing_tests" title="Link to this definition"></a></dt>
+<dd><p>Return top-<em>n</em> consistently-failing tests.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of <code class="xref py py-class docutils literal notranslate"><span class="pre">TestStatsEntry</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.ncdb_ucis.NcdbUCIS.squash_coverage">
+<span class="sig-prename descclassname"><span class="pre">NcdbUCIS.</span></span><span class="sig-name descname"><span class="pre">squash_coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.squash_coverage" title="Link to this definition"></a></dt>
+<dd><p>Squash all active contrib entries into counts.bin contribution.</p>
+<p>Records the squash in the squash_log for provenance auditing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>policy</strong> – Merge policy constant from <code class="xref py py-mod docutils literal notranslate"><span class="pre">contrib_index</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="status-and-flag-values">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Status and flag values</a><a class="headerlink" href="#status-and-flag-values" title="Link to this heading"></a></h2>
+<p>Status constants (in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ucis.ncdb.constants</span></code>):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_STATUS_OK</span></code></p></td>
+<td><p>Run passed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_STATUS_FAIL</span></code></p></td>
+<td><p>Run failed</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_STATUS_ERROR</span></code></p></td>
+<td><p>Test infrastructure error (not a test-logic failure)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_STATUS_TIMEOUT</span></code></p></td>
+<td><p>Run exceeded wall-clock budget</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_STATUS_SKIP</span></code></p></td>
+<td><p>Run was explicitly skipped</p></td>
+</tr>
+</tbody>
+</table>
+<p>Flag constants (combinable with <code class="docutils literal notranslate"><span class="pre">|</span></code>):</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_FLAG_HAS_COV</span></code></p></td>
+<td><p>Run produced coverage data (counts.bin was updated)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_FLAG_REGRESS</span></code></p></td>
+<td><p>Run is part of a regression sweep</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">HIST_FLAG_RERUN</span></code></p></td>
+<td><p>This is a re-run of a previously recorded test</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="time-range-queries">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Time-range queries</a><a class="headerlink" href="#time-range-queries" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="#ucis.ncdb.ncdb_ucis.NcdbUCIS.query_test_history" title="ucis.ncdb.ncdb_ucis.NcdbUCIS.query_test_history"><code class="xref py py-meth docutils literal notranslate"><span class="pre">query_test_history()</span></code></a> accepts optional
+<code class="docutils literal notranslate"><span class="pre">ts_from</span></code> and <code class="docutils literal notranslate"><span class="pre">ts_to</span></code> Unix-timestamp bounds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="n">yesterday</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="o">-</span> <span class="mi">86400</span>
+
+<span class="c1"># Only runs from the last 24 hours</span>
+<span class="n">recent</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query_test_history</span><span class="p">(</span><span class="s2">&quot;my_test&quot;</span><span class="p">,</span> <span class="n">ts_from</span><span class="o">=</span><span class="n">yesterday</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The call uses the bucket index to skip buckets whose time ranges do not
+overlap, so queries over large history stores are fast even when only a small
+window is requested.</p>
+</section>
+<hr class="docutils" />
+<section id="merging-history">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Merging history</a><a class="headerlink" href="#merging-history" title="Link to this heading"></a></h2>
+<p>History is merged automatically when two or more <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> files are combined
+with <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbMerger</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_merger</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbMerger</span>
+
+<span class="n">NcdbMerger</span><span class="p">()</span><span class="o">.</span><span class="n">merge</span><span class="p">([</span><span class="s2">&quot;run_a.cdb&quot;</span><span class="p">,</span> <span class="s2">&quot;run_b.cdb&quot;</span><span class="p">],</span> <span class="s2">&quot;merged.cdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The merger performs:</p>
+<ol class="arabic simple">
+<li><p><strong>Registry union</strong> — all test names and seed strings from all sources are
+collected into a single merged registry, preserving insertion order.</p></li>
+<li><p><strong>Stats merge</strong> — per-test aggregate metrics (mean runtime, variance, pass
+rate) are combined using Chan’s parallel formula for numerically stable
+Welford-style mean/variance.</p></li>
+<li><p><strong>Bucket remap</strong> — name_ids in each source’s bucket files are remapped to
+the merged registry before being written to the output.</p></li>
+<li><p><strong>Contrib-index remap</strong> — run_ids in the contribution index are offset by
+the source’s base run_id so merged run_ids remain globally unique.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Merging is idempotent: merging a file with itself produces the same
+statistics as the original (though run counts will double).</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="squash-coverage">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Squash coverage</a><a class="headerlink" href="#squash-coverage" title="Link to this heading"></a></h2>
+<p>Over time a <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> accumulates contribution entries for every test run
+that produced coverage.  Squashing compresses these entries into the main
+coverage counts and frees space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">squash_coverage</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">POLICY_PASS_ONLY</span><span class="p">)</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The squash event is recorded in the squash log so that provenance is never
+lost.  The <code class="docutils literal notranslate"><span class="pre">policy</span></code> argument controls which runs are squashed:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 70.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant</p></th>
+<th class="head"><p>Behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">POLICY_PASS_ONLY</span></code></p></td>
+<td><p>Squash only runs with <code class="docutils literal notranslate"><span class="pre">HIST_STATUS_OK</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">POLICY_ALL</span></code></p></td>
+<td><p>Squash all runs regardless of status</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<hr class="docutils" />
+<section id="binary-format-overview">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">Binary format overview</a><a class="headerlink" href="#binary-format-overview" title="Link to this heading"></a></h2>
+<p>The v2 test history is stored as several members inside the NCDB ZIP archive.
+A <code class="docutils literal notranslate"><span class="pre">history_format</span></code> key in <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> selects the version:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;v1&quot;</span></code> — legacy UCIS history-node model (no binary history)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;v2&quot;</span></code> — binary test history (this section)</p></li>
+</ul>
+<p>Binary members added for v2:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 65.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>ZIP member</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">history/test_registry.bin</span></code></p></td>
+<td><p>Ordered list of test names and seed strings with stable integer IDs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">history/test_stats.bin</span></code></p></td>
+<td><p>Per-test aggregate metrics (72 bytes/test)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">history/bucket_index.bin</span></code></p></td>
+<td><p>Index of time-bucketed run-record files (28 bytes/entry)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">history/NNNNNN.bin</span></code></p></td>
+<td><p>Individual run-record buckets (LZMA or DEFLATE compressed)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">history/contrib_index.bin</span></code></p></td>
+<td><p>Per-run coverage-contribution entries</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">history/squash_log.bin</span></code></p></td>
+<td><p>Append-only log of squash events</p></td>
+</tr>
+</tbody>
+</table>
+<p>For the full binary layout see <a class="reference internal" href="../reference/formats/ncdb-format.html#ncdb-format-v2-history"><span class="std std-ref">7. V2 binary test history</span></a> in the format
+reference.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../reference/formats/ncdb-format.html#ncdb-format"><span class="std std-ref">NCDB Coverage File Format</span></a> — Full NCDB binary format specification</p></li>
+<li><p><a class="reference internal" href="merging.html"><span class="doc">Merging Coverage</span></a> — How to merge <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> files on the command line</p></li>
+<li><p><a class="reference internal" href="analyzing.html"><span class="doc">Analyzing Coverage</span></a> — Query and report coverage from the CLI</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="comparing.html" class="btn btn-neutral float-left" title="Comparing Coverage Databases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="testplan.html" class="btn btn-neutral float-right" title="Testplan Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

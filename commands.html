@@ -103,7 +103,7 @@ coverage data.</p>
 <p><p>Manipulate UCIS coverage data</p>
 </p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">ucis</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span>
-            <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">,</span><span class="n">show</span><span class="p">,</span><span class="n">view</span><span class="p">}</span>
+            <span class="p">{</span><span class="n">convert</span><span class="p">,</span><span class="n">merge</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">db</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="nb">list</span><span class="o">-</span><span class="n">rpt</span><span class="o">-</span><span class="n">formats</span><span class="p">,</span><span class="n">report</span><span class="p">,</span><span class="n">show</span><span class="p">,</span><span class="n">view</span><span class="p">,</span><span class="n">history</span><span class="p">,</span><span class="n">testplan</span><span class="p">}</span>
             <span class="o">...</span>
 </pre></div>
 </div>
@@ -720,6 +720,217 @@ coverage data.</p>
 <dd><p>Specifies the format of the input database. Defaults to ‘xml’</p>
 </dd>
 </dl>
+</section>
+</section>
+<section id="history">
+<h3>history<a class="headerlink" href="#history" title="Link to this heading"></a></h3>
+<p>Query and display test history from an NCDB .cdb file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">history</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">query</span><span class="p">,</span><span class="n">stats</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat17">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat17" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>history_cmd</kbd></dt>
+<dd><p>Possible choices: query, stats</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat2">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat2" title="Link to this heading"></a></h4>
+<section id="query">
+<h5>query<a class="headerlink" href="#query" title="Link to this heading"></a></h5>
+<p>Display history records for a specific test</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">history</span> <span class="n">query</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="kn">from</span><span class="w"> </span><span class="nn">DATE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">to</span> <span class="n">DATE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">text</span><span class="p">,</span><span class="n">json</span><span class="p">}]</span>
+                   <span class="n">db</span> <span class="n">test_name</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat18">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat18" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the NCDB .cdb file</p>
+</dd>
+<dt><kbd>test_name</kbd></dt>
+<dd><p>Test name to query</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat16">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat16" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--from</kbd></dt>
+<dd><p>Start date (ISO 8601 or Unix timestamp)</p>
+</dd>
+<dt><kbd>--to</kbd></dt>
+<dd><p>End date (ISO 8601 or Unix timestamp)</p>
+</dd>
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Output file (default: stdout)</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: text, json</p>
+<p>Output format (default: text)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'text'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="stats">
+<h5>stats<a class="headerlink" href="#stats" title="Link to this heading"></a></h5>
+<p>Show test statistics (flaky, failing, or named test)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">history</span> <span class="n">stats</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">top</span><span class="o">-</span><span class="n">flaky</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">top</span><span class="o">-</span><span class="n">failing</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span>
+                   <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">text</span><span class="p">,</span><span class="n">json</span><span class="p">}]</span>
+                   <span class="n">db</span> <span class="p">[</span><span class="n">test_name</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat19">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat19" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the NCDB .cdb file</p>
+</dd>
+<dt><kbd>test_name</kbd></dt>
+<dd><p>Show stats for a specific test name</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat17">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat17" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--top-flaky</kbd></dt>
+<dd><p>Show top N flaky tests</p>
+</dd>
+<dt><kbd>--top-failing</kbd></dt>
+<dd><p>Show top N failing tests</p>
+</dd>
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Output file (default: stdout)</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: text, json</p>
+<p>Output format (default: text)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'text'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
+</section>
+<section id="testplan">
+<h3>testplan<a class="headerlink" href="#testplan" title="Link to this heading"></a></h3>
+<p>Manage and evaluate testplans embedded in NCDB .cdb files</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">testplan</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">import</span><span class="p">,</span><span class="n">closure</span><span class="p">,</span><span class="n">export</span><span class="o">-</span><span class="n">junit</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat20">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat20" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>testplan_cmd</kbd></dt>
+<dd><p>Possible choices: import, closure, export-junit</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands_repeat3">
+<h4>Sub-commands<a class="headerlink" href="#Sub-commands_repeat3" title="Link to this heading"></a></h4>
+<section id="import">
+<h5>import<a class="headerlink" href="#import" title="Link to this heading"></a></h5>
+<p>Import an Hjson/JSON testplan and embed it in a .cdb file</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">testplan</span> <span class="kn">import</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">subs</span> <span class="n">KEY</span><span class="o">=</span><span class="n">VAL</span><span class="p">]</span> <span class="n">db</span> <span class="n">hjson_path</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat21">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat21" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the NCDB .cdb file</p>
+</dd>
+<dt><kbd>hjson_path</kbd></dt>
+<dd><p>Path to the .hjson or .json testplan file</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat18">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat18" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--subs</kbd></dt>
+<dd><p>Template substitution (repeatable): e.g. –subs uart=uart0</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="closure">
+<h5>closure<a class="headerlink" href="#closure" title="Link to this heading"></a></h5>
+<p>Compute and display testpoint closure</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">testplan</span> <span class="n">closure</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">testplan</span> <span class="n">PATH</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">waivers</span> <span class="n">PATH</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">stage</span> <span class="n">STAGE</span><span class="p">]</span>
+                      <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">output</span><span class="o">-</span><span class="nb">format</span> <span class="p">{</span><span class="n">text</span><span class="p">,</span><span class="n">json</span><span class="p">}]</span>
+                      <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat22">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat22" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the NCDB .cdb file</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat19">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat19" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--testplan</kbd></dt>
+<dd><p>External testplan JSON file (overrides embedded)</p>
+</dd>
+<dt><kbd>--waivers</kbd></dt>
+<dd><p>External waivers JSON file (overrides embedded)</p>
+</dd>
+<dt><kbd>--stage</kbd></dt>
+<dd><p>Evaluate a stage gate (e.g. V2)</p>
+</dd>
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Output file (default: stdout)</p>
+</dd>
+<dt><kbd>--output-format, -of</kbd></dt>
+<dd><p>Possible choices: text, json</p>
+<p>Output format (default: text)</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'text'</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="export-junit">
+<h5>export-junit<a class="headerlink" href="#export-junit" title="Link to this heading"></a></h5>
+<p>Export testpoint closure results as JUnit XML</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ucis</span> <span class="n">testplan</span> <span class="n">export</span><span class="o">-</span><span class="n">junit</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">testplan</span> <span class="n">PATH</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">out</span> <span class="n">OUT</span><span class="p">]</span>
+                           <span class="p">[</span><span class="o">--</span><span class="n">suite</span><span class="o">-</span><span class="n">name</span> <span class="n">NAME</span><span class="p">]</span>
+                           <span class="n">db</span>
+</pre></div>
+</div>
+<section id="positional-arguments_repeat23">
+<h6>Positional Arguments<a class="headerlink" href="#positional-arguments_repeat23" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>db</kbd></dt>
+<dd><p>Path to the NCDB .cdb file</p>
+</dd>
+</dl>
+</section>
+<section id="named-arguments_repeat20">
+<h6>Named Arguments<a class="headerlink" href="#named-arguments_repeat20" title="Link to this heading"></a></h6>
+<dl class="option-list">
+<dt><kbd>--testplan</kbd></dt>
+<dd><p>External testplan JSON file (overrides embedded)</p>
+</dd>
+<dt><kbd>--out, -o</kbd></dt>
+<dd><p>Output XML file (default: closure_results.xml)</p>
+</dd>
+<dt><kbd>--suite-name</kbd></dt>
+<dd><p>JUnit testsuite name attribute</p>
+</dd>
+</dl>
+</section>
+</section>
 </section>
 </section>
 </section>

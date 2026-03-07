@@ -68,6 +68,9 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="analyzing.html">Analyzing Coverage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-history.html">Test History</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testplan.html">Testplan Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Reports and CI/CD Integration</a></li>
 </ul>
 </li>
 </ul>
@@ -161,6 +164,21 @@ items (≥90%, easy wins)</p></li>
 <dt><strong>5 — Metrics</strong></dt><dd><p>Statistical analysis: hit-count distribution histogram, mean/median/stddev,
 coverage tier breakdown (complete / high / medium / low), bin utilization rate.</p>
 </dd>
+<dt><strong>6 — Code Coverage</strong></dt><dd><p>File-level code coverage table showing statement, branch, and toggle hit
+rates per source file.  Requires a database with code-coverage data (e.g.
+imported from Verilator).</p>
+</dd>
+<dt><strong>7 — Test History</strong></dt><dd><p>Per-test contribution analysis.  Each row shows total and unique coverage
+items hit by that test.  When the database includes v2 history (NCDB v2),
+the detail panel also shows flake score, pass/fail counts, and mean CPU
+time.  Sort with <code class="docutils literal notranslate"><span class="pre">N</span></code> (name), <code class="docutils literal notranslate"><span class="pre">D</span></code> (date), <code class="docutils literal notranslate"><span class="pre">C</span></code> (coverage), <code class="docutils literal notranslate"><span class="pre">U</span></code>
+(unique).</p>
+</dd>
+<dt><strong>8 — Testplan</strong></dt><dd><p>Testplan closure status.  Requires a testplan embedded in the database
+(see <a class="reference internal" href="testplan.html"><span class="doc">Testplan Integration</span></a>).  Shows every testpoint with its stage, closure
+status, and pass/fail counts.  The header displays a stage roll-up with
+colour-coded progress.  Press <code class="docutils literal notranslate"><span class="pre">r</span></code> to refresh.</p>
+</dd>
 </dl>
 </section>
 <section id="global-keys">
@@ -176,7 +194,7 @@ coverage tier breakdown (complete / high / medium / low), bin utilization rate.<
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">1</span></code> – <code class="docutils literal notranslate"><span class="pre">5</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">1</span></code> – <code class="docutils literal notranslate"><span class="pre">8</span></code></p></td>
 <td><p>Switch view</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">?</span></code></p></td>

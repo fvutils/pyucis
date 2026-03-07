@@ -1,0 +1,791 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Testplan Integration &mdash; pyucis 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Reports and CI/CD Integration" href="reports.html" />
+    <link rel="prev" title="Test History" href="test-history.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            pyucis
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Importing Coverage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../importing/index.html">Importing Coverage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Working with Coverage</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Working with Coverage</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="merging.html">Merging Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exploring-tui.html">Exploring Coverage with TUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="analyzing.html">Analyzing Coverage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="comparing.html">Comparing Coverage Databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test-history.html">Test History</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Testplan Integration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start">Quick-start</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testplan-format">Testplan format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#importing-hjson">Importing Hjson</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#closure-computation">Closure computation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stage-gate-evaluation">Stage gate evaluation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waivers">Waivers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modes-a-and-b">Modes A and B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-reference">API reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_hjson.import_hjson"><code class="docutils literal notranslate"><span class="pre">import_hjson()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan"><code class="docutils literal notranslate"><span class="pre">Testplan</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint"><code class="docutils literal notranslate"><span class="pre">Testpoint</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan.CovergroupEntry"><code class="docutils literal notranslate"><span class="pre">CovergroupEntry</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan.RequirementLink"><code class="docutils literal notranslate"><span class="pre">RequirementLink</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_closure.compute_closure"><code class="docutils literal notranslate"><span class="pre">compute_closure()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_closure.stage_gate_status"><code class="docutils literal notranslate"><span class="pre">stage_gate_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_closure.TPStatus"><code class="docutils literal notranslate"><span class="pre">TPStatus</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.testplan_closure.TestpointResult"><code class="docutils literal notranslate"><span class="pre">TestpointResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet"><code class="docutils literal notranslate"><span class="pre">WaiverSet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ucis.ncdb.waivers.Waiver"><code class="docutils literal notranslate"><span class="pre">Waiver</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="reports.html">Reports and CI/CD Integration</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reporting</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reporting/index.html">Reporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">CI/CD Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cicd/index.html">CI/CD Integration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">AI Integration</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ai-integration/mcp-server.html">MCP Server</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pyucis</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Working with Coverage</a></li>
+      <li class="breadcrumb-item active">Testplan Integration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/working-with-coverage/testplan.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="testplan-integration">
+<span id="testplan"></span><h1>Testplan Integration<a class="headerlink" href="#testplan-integration" title="Link to this heading"></a></h1>
+<p>PyUCIS can embed a structured <em>testplan</em> inside each NCDB <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> file.
+A testplan describes the verification tasks (testpoints) and functional
+coverage groups expected for a design.  Together with the binary test
+history (see <a class="reference internal" href="test-history.html#test-history"><span class="std std-ref">Test History</span></a>) it enables:</p>
+<ul class="simple">
+<li><p><strong>Closure reporting</strong> — did every testpoint’s tests actually pass?</p></li>
+<li><p><strong>Stage gate evaluation</strong> — are all V1/V2/V3 testpoints closed?</p></li>
+<li><p><strong>Merge propagation</strong> — the testplan travels with the database so
+reports always use the correct plan.</p></li>
+</ul>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#quick-start" id="id1">Quick-start</a></p></li>
+<li><p><a class="reference internal" href="#testplan-format" id="id2">Testplan format</a></p></li>
+<li><p><a class="reference internal" href="#importing-hjson" id="id3">Importing Hjson</a></p></li>
+<li><p><a class="reference internal" href="#closure-computation" id="id4">Closure computation</a></p></li>
+<li><p><a class="reference internal" href="#stage-gate-evaluation" id="id5">Stage gate evaluation</a></p></li>
+<li><p><a class="reference internal" href="#waivers" id="id6">Waivers</a></p></li>
+<li><p><a class="reference internal" href="#modes-a-and-b" id="id7">Modes A and B</a></p></li>
+<li><p><a class="reference internal" href="#api-reference" id="id8">API reference</a></p></li>
+</ul>
+</nav>
+<hr class="docutils" />
+<section id="quick-start">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Quick-start</a><a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<p>Import an OpenTitan-style Hjson testplan and embed it in a <code class="docutils literal notranslate"><span class="pre">.cdb</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_hjson</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_hjson</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_ucis</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbUCIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.ncdb_writer</span><span class="w"> </span><span class="kn">import</span> <span class="n">NcdbWriter</span>
+
+<span class="n">plan</span> <span class="o">=</span> <span class="n">import_hjson</span><span class="p">(</span><span class="s2">&quot;uart_testplan.hjson&quot;</span><span class="p">,</span>
+                    <span class="n">substitutions</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;baud&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;9600&quot;</span><span class="p">,</span> <span class="s2">&quot;115200&quot;</span><span class="p">]})</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">db</span><span class="o">.</span><span class="n">setTestplan</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Compute closure against the embedded testplan:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan_closure</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_closure</span><span class="p">,</span> <span class="n">stage_gate_status</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_testplan</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">getTestplan</span><span class="p">()</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">testpoint</span><span class="o">.</span><span class="n">name</span><span class="si">:</span><span class="s2">30s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">gate</span> <span class="o">=</span> <span class="n">stage_gate_status</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;V2&quot;</span><span class="p">,</span> <span class="n">plan</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gate</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="testplan-format">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Testplan format</a><a class="headerlink" href="#testplan-format" title="Link to this heading"></a></h2>
+<p>A testplan is stored as <code class="docutils literal notranslate"><span class="pre">testplan.json</span></code> inside the NCDB ZIP and is also
+exportable as a standalone JSON file.  The schema is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;format_version&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="s2">&quot;source_file&quot;</span><span class="p">:</span> <span class="s2">&quot;path/to/uart.hjson&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;import_timestamp&quot;</span><span class="p">:</span> <span class="s2">&quot;2025-01-01T00:00:00+00:00&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;testpoints&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;uart_reset&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;stage&quot;</span><span class="p">:</span> <span class="s2">&quot;V1&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Verify reset behaviour&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;tests&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">,</span> <span class="s2">&quot;uart_init_*&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;tags&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;smoke&quot;</span><span class="p">],</span>
+      <span class="s2">&quot;na&quot;</span><span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+      <span class="s2">&quot;source_template&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">}</span>
+  <span class="p">],</span>
+  <span class="s2">&quot;covergroups&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cg_uart_reset&quot;</span><span class="p">,</span> <span class="s2">&quot;desc&quot;</span><span class="p">:</span> <span class="s2">&quot;Reset coverage&quot;</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Stages follow the OpenTitan V1 → V2 → V2S → V3 hierarchy; custom strings
+are also accepted and sort after V3 in gate evaluation.</p>
+</section>
+<hr class="docutils" />
+<section id="importing-hjson">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Importing Hjson</a><a class="headerlink" href="#importing-hjson" title="Link to this heading"></a></h2>
+<p>Use <a class="reference internal" href="#ucis.ncdb.testplan_hjson.import_hjson" title="ucis.ncdb.testplan_hjson.import_hjson"><code class="xref py py-func docutils literal notranslate"><span class="pre">import_hjson()</span></code></a> to parse an OpenTitan
+<code class="docutils literal notranslate"><span class="pre">.hjson</span></code> testplan (or a standard <code class="docutils literal notranslate"><span class="pre">.json</span></code> file):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span> <span class="o">=</span> <span class="n">import_hjson</span><span class="p">(</span>
+    <span class="s2">&quot;uart_testplan.hjson&quot;</span><span class="p">,</span>
+    <span class="n">substitutions</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;uart&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="s2">&quot;uart0&quot;</span><span class="p">,</span> <span class="s2">&quot;uart1&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;mode&quot;</span><span class="p">:</span>  <span class="p">[</span><span class="s2">&quot;loopback&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">substitutions</span></code> dict provides values for <code class="docutils literal notranslate"><span class="pre">{key}</span></code> placeholders in
+test name templates.  A list value generates the cartesian product of all
+combinations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Template: &quot;{uart}_{mode}_test&quot;</span>
+<span class="c1"># Substitutions: uart=[&quot;uart0&quot;,&quot;uart1&quot;], mode=[&quot;loopback&quot;,&quot;normal&quot;]</span>
+<span class="c1"># Expands to: uart0_loopback_test, uart0_normal_test,</span>
+<span class="c1">#             uart1_loopback_test, uart1_normal_test</span>
+</pre></div>
+</div>
+<p>Tests listed as <code class="docutils literal notranslate"><span class="pre">[&quot;N/A&quot;]</span></code> are treated as intentionally unmapped
+(<code class="docutils literal notranslate"><span class="pre">testpoint.na</span> <span class="pre">=</span> <span class="pre">True</span></code>).</p>
+</section>
+<hr class="docutils" />
+<section id="closure-computation">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">Closure computation</a><a class="headerlink" href="#closure-computation" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a> evaluates each
+testpoint against the test history stored in the database:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Status</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CLOSED</span></code></p></td>
+<td><p>All mapped tests have at least one passing run</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">PARTIAL</span></code></p></td>
+<td><p>Some passing, some failing</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FAILING</span></code></p></td>
+<td><p>All mapped tests failed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NOT_RUN</span></code></p></td>
+<td><p>None of the mapped tests appear in the database</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">N/A</span></code></p></td>
+<td><p>Testpoint has <code class="docutils literal notranslate"><span class="pre">na</span> <span class="pre">=</span> <span class="pre">True</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UNIMPLEMENTED</span></code></p></td>
+<td><p>Testpoint has an empty <code class="docutils literal notranslate"><span class="pre">tests</span></code> list</p></td>
+</tr>
+</tbody>
+</table>
+<p>Test name matching uses three strategies in order:</p>
+<ol class="arabic simple">
+<li><p><strong>Exact</strong> — the test name appears literally in <code class="docutils literal notranslate"><span class="pre">testpoint.tests</span></code>.</p></li>
+<li><p><strong>Seed-suffix strip</strong> — trailing <code class="docutils literal notranslate"><span class="pre">_\d+</span></code> is removed and the result
+matched exactly (e.g. <code class="docutils literal notranslate"><span class="pre">uart_smoke_42</span></code> → <code class="docutils literal notranslate"><span class="pre">uart_smoke</span></code>).</p></li>
+<li><p><strong>Wildcard</strong> — any <code class="docutils literal notranslate"><span class="pre">testpoint.tests</span></code> entry ending in <code class="docutils literal notranslate"><span class="pre">_*</span></code> is used
+as a prefix match.</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="stage-gate-evaluation">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">Stage gate evaluation</a><a class="headerlink" href="#stage-gate-evaluation" title="Link to this heading"></a></h2>
+<p><a class="reference internal" href="#ucis.ncdb.testplan_closure.stage_gate_status" title="ucis.ncdb.testplan_closure.stage_gate_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">stage_gate_status()</span></code></a> determines whether
+a regression is ready to advance to the next stage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gate</span> <span class="o">=</span> <span class="n">stage_gate_status</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">&quot;V2&quot;</span><span class="p">,</span> <span class="n">plan</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">gate</span><span class="p">[</span><span class="s2">&quot;passed&quot;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ready to tape-out!&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">gate</span><span class="p">[</span><span class="s2">&quot;blocking&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  BLOCKING: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">testpoint</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The gate passes when all testpoints at the target stage <strong>and all stages
+below it</strong> (V1 &lt; V2 &lt; V2S &lt; V3) are CLOSED or N/A.</p>
+</section>
+<hr class="docutils" />
+<section id="waivers">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink">Waivers</a><a class="headerlink" href="#waivers" title="Link to this heading"></a></h2>
+<p>Coverage and test failures can be suppressed with a
+<a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaiverSet</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.waivers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Waiver</span><span class="p">,</span> <span class="n">WaiverSet</span>
+
+<span class="n">ws</span> <span class="o">=</span> <span class="n">WaiverSet</span><span class="p">([</span>
+    <span class="n">Waiver</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;W-001&quot;</span><span class="p">,</span>
+        <span class="n">scope_pattern</span><span class="o">=</span><span class="s2">&quot;top/uart/**&quot;</span><span class="p">,</span>
+        <span class="n">bin_pattern</span><span class="o">=</span><span class="s2">&quot;reset_*&quot;</span><span class="p">,</span>
+        <span class="n">rationale</span><span class="o">=</span><span class="s2">&quot;Reset coverage deferred to V2&quot;</span><span class="p">,</span>
+        <span class="n">approver</span><span class="o">=</span><span class="s2">&quot;eng&quot;</span><span class="p">,</span>
+        <span class="n">approved_at</span><span class="o">=</span><span class="s2">&quot;2025-01-01T00:00:00&quot;</span><span class="p">,</span>
+        <span class="n">expires_at</span><span class="o">=</span><span class="s2">&quot;2026-01-01T00:00:00&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">db</span><span class="o">.</span><span class="n">setWaivers</span><span class="p">(</span><span class="n">ws</span><span class="p">)</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Scope patterns use glob syntax: <code class="docutils literal notranslate"><span class="pre">*</span></code> matches a single path segment,
+<code class="docutils literal notranslate"><span class="pre">**</span></code> matches any number of segments.  Expiry enforcement is the
+caller’s responsibility — use <a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet.active_at" title="ucis.ncdb.waivers.WaiverSet.active_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">active_at()</span></code></a>
+to filter out expired waivers before passing to closure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">T%H:%M:%S&quot;</span><span class="p">)</span>
+<span class="n">active_waivers</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">active_at</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="modes-a-and-b">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">Modes A and B</a><a class="headerlink" href="#modes-a-and-b" title="Link to this heading"></a></h2>
+<p><strong>Mode A (embedded)</strong> — testplan stored inside the <code class="docutils literal notranslate"><span class="pre">.cdb</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">db</span><span class="o">.</span><span class="n">setTestplan</span><span class="p">(</span><span class="n">plan</span><span class="p">)</span>
+<span class="n">NcdbWriter</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Read back — travels with the database</span>
+<span class="n">db2</span> <span class="o">=</span> <span class="n">NcdbUCIS</span><span class="p">(</span><span class="s2">&quot;coverage.cdb&quot;</span><span class="p">)</span>
+<span class="n">plan2</span> <span class="o">=</span> <span class="n">db2</span><span class="o">.</span><span class="n">getTestplan</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Mode B (standalone)</strong> — testplan kept as a separate file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plan</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;uart_testplan_snapshot.json&quot;</span><span class="p">)</span>
+
+<span class="c1"># Load later and pass to analysis functions</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">Testplan</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;uart_testplan_snapshot.json&quot;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">compute_closure</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Both modes produce the same <a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testplan</span></code></a> object.
+The helper <code class="xref py py-func docutils literal notranslate"><span class="pre">get_testplan()</span></code> works with both:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ucis.ncdb.testplan</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_testplan</span>
+<span class="n">plan</span> <span class="o">=</span> <span class="n">get_testplan</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>   <span class="c1"># works for NcdbUCIS or MemUCIS</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="api-reference">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">API reference</a><a class="headerlink" href="#api-reference" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_hjson.import_hjson">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_hjson.</span></span><span class="sig-name descname"><span class="pre">import_hjson</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hjson_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">substitutions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.14)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><span class="pre">object</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan_hjson.import_hjson" title="Link to this definition"></a></dt>
+<dd><p>Parse an OpenTitan-style Hjson testplan and return a <a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testplan</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hjson_path</strong> – Path to the <code class="docutils literal notranslate"><span class="pre">.hjson</span></code> (or <code class="docutils literal notranslate"><span class="pre">.json</span></code>) file.</p></li>
+<li><p><strong>substitutions</strong> – Optional dict of <code class="docutils literal notranslate"><span class="pre">{key:</span> <span class="pre">value_or_list}</span></code> pairs used
+for wildcard expansion in test names.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A fully expanded <a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testplan</span></code></a> with all
+<code class="docutils literal notranslate"><span class="pre">{key}</span></code> templates replaced.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan.</span></span><span class="sig-name descname"><span class="pre">Testplan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">import_timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">testpoints</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">covergroups</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan.CovergroupEntry" title="ucis.ncdb.testplan.CovergroupEntry"><span class="pre">CovergroupEntry</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_tp_by_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_tp_by_test</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_indexed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan" title="Link to this definition"></a></dt>
+<dd><p>Structured verification testplan.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.format_version">
+<span class="sig-name descname"><span class="pre">format_version</span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.format_version" title="Link to this definition"></a></dt>
+<dd><p>Schema version (currently 1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.source_file">
+<span class="sig-name descname"><span class="pre">source_file</span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.source_file" title="Link to this definition"></a></dt>
+<dd><p>Path to the source .hjson (informational only).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.import_timestamp">
+<span class="sig-name descname"><span class="pre">import_timestamp</span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.import_timestamp" title="Link to this definition"></a></dt>
+<dd><p>ISO-8601 UTC timestamp set when embedded in a .cdb.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.testpoints">
+<span class="sig-name descname"><span class="pre">testpoints</span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.testpoints" title="Link to this definition"></a></dt>
+<dd><p>Ordered list of <a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testpoint</span></code></a> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint">ucis.ncdb.testplan.Testpoint</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.covergroups">
+<span class="sig-name descname"><span class="pre">covergroups</span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.covergroups" title="Link to this definition"></a></dt>
+<dd><p>Ordered list of <a class="reference internal" href="#ucis.ncdb.testplan.CovergroupEntry" title="ucis.ncdb.testplan.CovergroupEntry"><code class="xref py py-class docutils literal notranslate"><span class="pre">CovergroupEntry</span></code></a> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="#ucis.ncdb.testplan.CovergroupEntry" title="ucis.ncdb.testplan.CovergroupEntry">ucis.ncdb.testplan.CovergroupEntry</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.add_testpoint">
+<span class="sig-name descname"><span class="pre">add_testpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.add_testpoint" title="Link to this definition"></a></dt>
+<dd><p>Append <em>tp</em> and invalidate the lookup indices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.from_bytes">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">from_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.from_bytes" title="Link to this definition"></a></dt>
+<dd><p>Reconstruct from JSON bytes (inverse of <a class="reference internal" href="#ucis.ncdb.testplan.Testplan.serialize" title="ucis.ncdb.testplan.Testplan.serialize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">serialize()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.getTestpoint">
+<span class="sig-name descname"><span class="pre">getTestpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.getTestpoint" title="Link to this definition"></a></dt>
+<dd><p>Return the testpoint with <em>name</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.load">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.load" title="Link to this definition"></a></dt>
+<dd><p>Load a testplan from a standalone JSON/hjson file (Mode B).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.save" title="Link to this definition"></a></dt>
+<dd><p>Write this testplan to a standalone JSON file (Mode B).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.serialize" title="Link to this definition"></a></dt>
+<dd><p>Serialise to compact JSON bytes (for ZIP embedding).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.stages">
+<span class="sig-name descname"><span class="pre">stages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.stages" title="Link to this definition"></a></dt>
+<dd><p>Return the ordered unique stages present in the testplan.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.stamp_import_time">
+<span class="sig-name descname"><span class="pre">stamp_import_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.stamp_import_time" title="Link to this definition"></a></dt>
+<dd><p>Set <a class="reference internal" href="#ucis.ncdb.testplan.Testplan.import_timestamp" title="ucis.ncdb.testplan.Testplan.import_timestamp"><code class="xref py py-attr docutils literal notranslate"><span class="pre">import_timestamp</span></code></a> to the current UTC time.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.testpointForTest">
+<span class="sig-name descname"><span class="pre">testpointForTest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.testpointForTest" title="Link to this definition"></a></dt>
+<dd><p>Return the testpoint that owns <em>test_name</em>.</p>
+<p>Match order:</p>
+<ol class="arabic simple">
+<li><p><strong>Exact</strong> — <code class="docutils literal notranslate"><span class="pre">test_name</span></code> appears literally in <code class="docutils literal notranslate"><span class="pre">testpoint.tests</span></code>.</p></li>
+<li><p><strong>Seed-suffix strip</strong> — strip a trailing <code class="docutils literal notranslate"><span class="pre">_\d+</span></code> (e.g.
+<code class="docutils literal notranslate"><span class="pre">uart_smoke_42</span></code> → <code class="docutils literal notranslate"><span class="pre">uart_smoke</span></code>) and retry exact match.</p></li>
+<li><p><strong>Wildcard</strong> — any <code class="docutils literal notranslate"><span class="pre">testpoint.tests</span></code> entry ending in <code class="docutils literal notranslate"><span class="pre">_*</span></code>
+whose prefix matches <code class="docutils literal notranslate"><span class="pre">test_name</span></code>.</p></li>
+</ol>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if no testpoint matches.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testplan.testpointsForStage">
+<span class="sig-name descname"><span class="pre">testpointsForStage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ucis.ncdb.testplan.Testplan.testpointsForStage" title="Link to this definition"></a></dt>
+<dd><p>Return all testpoints targeting <em>stage</em> (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;V2&quot;</span></code>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.Testpoint">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan.</span></span><span class="sig-name descname"><span class="pre">Testpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tests</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_template</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requirements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan.RequirementLink" title="ucis.ncdb.testplan.RequirementLink"><span class="pre">RequirementLink</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan.Testpoint" title="Link to this definition"></a></dt>
+<dd><p>One verification task (maps to one or more test names).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.CovergroupEntry">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan.</span></span><span class="sig-name descname"><span class="pre">CovergroupEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan.CovergroupEntry" title="Link to this definition"></a></dt>
+<dd><p>One functional-coverage group expected to be exercised by the design.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan.RequirementLink">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan.</span></span><span class="sig-name descname"><span class="pre">RequirementLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan.RequirementLink" title="Link to this definition"></a></dt>
+<dd><p>Reference to an external requirement item (e.g. ALM/JIRA).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_closure.compute_closure">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_closure.</span></span><span class="sig-name descname"><span class="pre">compute_closure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testplan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waivers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ucis.ncdb.testplan_closure.compute_closure" title="Link to this definition"></a></dt>
+<dd><p>Compute pass/fail closure for every testpoint against <em>db</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>testplan</strong> – The testplan to evaluate.</p></li>
+<li><p><strong>db</strong> – Any UCIS database object (must expose <code class="docutils literal notranslate"><span class="pre">historyNodes()</span></code>).</p></li>
+<li><p><strong>waivers</strong> – Optional <a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaiverSet</span></code></a>; reserved
+for future use (currently ignored).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One <a class="reference internal" href="#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestpointResult</span></code></a> per testpoint, in testplan order.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_closure.stage_gate_status">
+<span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_closure.</span></span><span class="sig-name descname"><span class="pre">stage_gate_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><span class="pre">TestpointResult</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">testplan</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.testplan.Testplan" title="ucis.ncdb.testplan.Testplan"><span class="pre">Testplan</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_flake_score_below</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_coverage_pct</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a></span></span><a class="headerlink" href="#ucis.ncdb.testplan_closure.stage_gate_status" title="Link to this definition"></a></dt>
+<dd><p>Determine whether the gate for <em>stage</em> is met.</p>
+<p>A stage gate passes when ALL testpoints at <em>stage</em> and all stages
+with a lower standard index are CLOSED (or N/A).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>results</strong> – Output of <a class="reference internal" href="#ucis.ncdb.testplan_closure.compute_closure" title="ucis.ncdb.testplan_closure.compute_closure"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_closure()</span></code></a>.</p></li>
+<li><p><strong>stage</strong> – Stage to evaluate (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;V2&quot;</span></code>).</p></li>
+<li><p><strong>testplan</strong> – The testplan (used for stage ordering).</p></li>
+<li><p><strong>require_flake_score_below</strong> – Reserved — flakiness threshold (future).</p></li>
+<li><p><strong>require_coverage_pct</strong> – Reserved — coverage threshold (future).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict with keys <code class="docutils literal notranslate"><span class="pre">passed</span></code> (bool), <code class="docutils literal notranslate"><span class="pre">stage</span></code>, <code class="docutils literal notranslate"><span class="pre">blocking</span></code>
+(list of <a class="reference internal" href="#ucis.ncdb.testplan_closure.TestpointResult" title="ucis.ncdb.testplan_closure.TestpointResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">TestpointResult</span></code></a> that prevent the gate from passing),
+and <code class="docutils literal notranslate"><span class="pre">message</span></code> (human-readable summary string).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_closure.TPStatus">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_closure.</span></span><span class="sig-name descname"><span class="pre">TPStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan_closure.TPStatus" title="Link to this definition"></a></dt>
+<dd><p>Closure status of one testpoint.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.testplan_closure.TestpointResult">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.testplan_closure.</span></span><span class="sig-name descname"><span class="pre">TestpointResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">testpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><span class="pre">Testpoint</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.testplan_closure.TPStatus" title="ucis.ncdb.testplan_closure.TPStatus"><span class="pre">TPStatus</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">matched_tests</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.testplan_closure.TestpointResult" title="Link to this definition"></a></dt>
+<dd><p>Closure result for one testpoint.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.waivers.</span></span><span class="sig-name descname"><span class="pre">WaiverSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waivers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.14)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#ucis.ncdb.waivers.Waiver" title="ucis.ncdb.waivers.Waiver"><span class="pre">Waiver</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet" title="Link to this definition"></a></dt>
+<dd><p>Collection of <a class="reference internal" href="#ucis.ncdb.waivers.Waiver" title="ucis.ncdb.waivers.Waiver"><code class="xref py py-class docutils literal notranslate"><span class="pre">Waiver</span></code></a> objects.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.waivers">
+<span class="sig-name descname"><span class="pre">waivers</span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.waivers" title="Link to this definition"></a></dt>
+<dd><p>Ordered list of waivers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.active_at">
+<span class="sig-name descname"><span class="pre">active_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><span class="pre">WaiverSet</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.active_at" title="Link to this definition"></a></dt>
+<dd><p>Return a new <a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaiverSet</span></code></a> containing only waivers that are
+active at <em>timestamp</em> (ISO-8601 string).</p>
+<p>A waiver is active when:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span> <span class="pre">==</span> <span class="pre">&quot;active&quot;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expires_at</span></code> is empty OR <code class="docutils literal notranslate"><span class="pre">expires_at</span> <span class="pre">&gt;</span> <span class="pre">timestamp</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waiver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#ucis.ncdb.waivers.Waiver" title="ucis.ncdb.waivers.Waiver"><span class="pre">Waiver</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.add" title="Link to this definition"></a></dt>
+<dd><p>Append <em>waiver</em> to the set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waiver_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.waivers.Waiver" title="ucis.ncdb.waivers.Waiver"><span class="pre">Waiver</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.get" title="Link to this definition"></a></dt>
+<dd><p>Return the waiver with <em>waiver_id</em>, or <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.load">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ucis.ncdb.waivers.WaiverSet" title="ucis.ncdb.waivers.WaiverSet"><span class="pre">WaiverSet</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.load" title="Link to this definition"></a></dt>
+<dd><p>Load from a standalone JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.matches_scope">
+<span class="sig-name descname"><span class="pre">matches_scope</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scope_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.matches_scope" title="Link to this definition"></a></dt>
+<dd><p>Return True if any waiver covers <em>scope_path</em> / <em>bin_name</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.save" title="Link to this definition"></a></dt>
+<dd><p>Write to a standalone JSON file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.WaiverSet.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a></span></span><a class="headerlink" href="#ucis.ncdb.waivers.WaiverSet.serialize" title="Link to this definition"></a></dt>
+<dd><p>Serialise to compact JSON bytes (for ZIP embedding).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">ucis.ncdb.waivers.</span></span><span class="sig-name descname"><span class="pre">Waiver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'*'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rationale</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approved_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expires_at</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'active'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver" title="Link to this definition"></a></dt>
+<dd><p>A single waiver entry.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.id" title="Link to this definition"></a></dt>
+<dd><p>Unique identifier (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;W-001&quot;</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.scope_pattern">
+<span class="sig-name descname"><span class="pre">scope_pattern</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.scope_pattern" title="Link to this definition"></a></dt>
+<dd><p>Glob-style pattern matched against UCIS scope paths.
+<code class="docutils literal notranslate"><span class="pre">*</span></code> matches any single path segment; <code class="docutils literal notranslate"><span class="pre">**</span></code> matches
+any number of segments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.bin_pattern">
+<span class="sig-name descname"><span class="pre">bin_pattern</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.bin_pattern" title="Link to this definition"></a></dt>
+<dd><p>Glob-style pattern matched against bin names within the
+matched scope.  Use <code class="docutils literal notranslate"><span class="pre">&quot;*&quot;</span></code> to waive the entire scope.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.rationale">
+<span class="sig-name descname"><span class="pre">rationale</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.rationale" title="Link to this definition"></a></dt>
+<dd><p>Human-readable explanation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.approver">
+<span class="sig-name descname"><span class="pre">approver</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.approver" title="Link to this definition"></a></dt>
+<dd><p>Name/username of approver.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.approved_at">
+<span class="sig-name descname"><span class="pre">approved_at</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.approved_at" title="Link to this definition"></a></dt>
+<dd><p>ISO-8601 UTC timestamp of approval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.expires_at">
+<span class="sig-name descname"><span class="pre">expires_at</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.expires_at" title="Link to this definition"></a></dt>
+<dd><p>ISO-8601 UTC timestamp after which this waiver expires.
+Empty string means “never expires”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ucis.ncdb.waivers.Waiver.status">
+<span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#ucis.ncdb.waivers.Waiver.status" title="Link to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">&quot;active&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;expired&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;revoked&quot;</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="test-history.html#test-history"><span class="std std-ref">Test History</span></a> — Binary test history API</p></li>
+<li><p><a class="reference internal" href="../reference/formats/ncdb-format.html#ncdb-format"><span class="std std-ref">NCDB Coverage File Format</span></a> — NCDB binary format specification</p></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="test-history.html" class="btn btn-neutral float-left" title="Test History" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reports.html" class="btn btn-neutral float-right" title="Reports and CI/CD Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019-2026, Matthew Ballance and Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -93,6 +93,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#version-history">12. Version history</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#size-and-performance-reference">13. Size and performance reference</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#implementing-a-reader">14. Implementing a reader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#v2-binary-test-history">7. V2 binary test history</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#testplan-and-waivers-json">8. Testplan and Waivers JSON</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="xml-interchange.html">XML Interchange Format</a></li>
@@ -151,61 +153,77 @@ sufficient detail to write an independent parser.</p></li>
 <nav class="contents local" id="on-this-page">
 <p class="topic-title">On this page</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#file-identification" id="id1">1. File identification</a></p></li>
-<li><p><a class="reference internal" href="#archive-structure" id="id2">2. Archive structure</a></p></li>
-<li><p><a class="reference internal" href="#primitive-encodings" id="id3">3. Primitive encodings</a></p>
+<li><p><a class="reference internal" href="#file-identification" id="id3">1. File identification</a></p></li>
+<li><p><a class="reference internal" href="#archive-structure" id="id4">2. Archive structure</a></p></li>
+<li><p><a class="reference internal" href="#primitive-encodings" id="id5">3. Primitive encodings</a></p>
 <ul>
-<li><p><a class="reference internal" href="#unsigned-leb128-varint" id="id4">3.1 Unsigned LEB128 varint</a></p></li>
-<li><p><a class="reference internal" href="#utf-8-strings" id="id5">3.2 UTF-8 strings</a></p></li>
+<li><p><a class="reference internal" href="#unsigned-leb128-varint" id="id6">3.1 Unsigned LEB128 varint</a></p></li>
+<li><p><a class="reference internal" href="#utf-8-strings" id="id7">3.2 UTF-8 strings</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#manifest-json" id="id6">4. manifest.json</a></p></li>
-<li><p><a class="reference internal" href="#strings-bin" id="id7">5. strings.bin</a></p></li>
-<li><p><a class="reference internal" href="#scope-tree-bin" id="id8">6. scope_tree.bin</a></p>
+<li><p><a class="reference internal" href="#manifest-json" id="id8">4. manifest.json</a></p></li>
+<li><p><a class="reference internal" href="#strings-bin" id="id9">5. strings.bin</a></p></li>
+<li><p><a class="reference internal" href="#scope-tree-bin" id="id10">6. scope_tree.bin</a></p>
 <ul>
-<li><p><a class="reference internal" href="#scope-record-types" id="id9">6.1 Scope record types</a></p></li>
-<li><p><a class="reference internal" href="#regular-scope-record" id="id10">6.2 REGULAR scope record</a></p></li>
-<li><p><a class="reference internal" href="#toggle-pair-record" id="id11">6.3 TOGGLE_PAIR record</a></p></li>
-<li><p><a class="reference internal" href="#scope-type-integer-values" id="id12">6.4 Scope-type integer values</a></p></li>
+<li><p><a class="reference internal" href="#scope-record-types" id="id11">6.1 Scope record types</a></p></li>
+<li><p><a class="reference internal" href="#regular-scope-record" id="id12">6.2 REGULAR scope record</a></p></li>
+<li><p><a class="reference internal" href="#toggle-pair-record" id="id13">6.3 TOGGLE_PAIR record</a></p></li>
+<li><p><a class="reference internal" href="#scope-type-integer-values" id="id14">6.4 Scope-type integer values</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#counts-bin" id="id13">7. counts.bin</a></p>
+<li><p><a class="reference internal" href="#counts-bin" id="id15">7. counts.bin</a></p>
 <ul>
-<li><p><a class="reference internal" href="#binary-layout" id="id14">7.1 Binary layout</a></p></li>
-<li><p><a class="reference internal" href="#efficient-single-byte-fast-path" id="id15">7.2 Efficient single-byte fast path</a></p></li>
+<li><p><a class="reference internal" href="#binary-layout" id="id16">7.1 Binary layout</a></p></li>
+<li><p><a class="reference internal" href="#efficient-single-byte-fast-path" id="id17">7.2 Efficient single-byte fast path</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#history-json" id="id16">8. history.json</a></p></li>
-<li><p><a class="reference internal" href="#sources-json" id="id17">9. sources.json</a></p></li>
-<li><p><a class="reference internal" href="#merging-ncdb-files" id="id18">10. Merging NCDB files</a></p>
+<li><p><a class="reference internal" href="#history-json" id="id18">8. history.json</a></p></li>
+<li><p><a class="reference internal" href="#sources-json" id="id19">9. sources.json</a></p></li>
+<li><p><a class="reference internal" href="#merging-ncdb-files" id="id20">10. Merging NCDB files</a></p>
 <ul>
-<li><p><a class="reference internal" href="#same-schema-fast-merge" id="id19">10.1 Same-schema fast merge</a></p></li>
-<li><p><a class="reference internal" href="#cross-schema-merge" id="id20">10.2 Cross-schema merge</a></p></li>
-<li><p><a class="reference internal" href="#merge-history-node" id="id21">10.3 Merge history node</a></p></li>
+<li><p><a class="reference internal" href="#same-schema-fast-merge" id="id21">10.1 Same-schema fast merge</a></p></li>
+<li><p><a class="reference internal" href="#cross-schema-merge" id="id22">10.2 Cross-schema merge</a></p></li>
+<li><p><a class="reference internal" href="#merge-history-node" id="id23">10.3 Merge history node</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#optional-binary-members" id="id22">11. Optional binary members</a></p>
+<li><p><a class="reference internal" href="#optional-binary-members" id="id24">11. Optional binary members</a></p>
 <ul>
-<li><p><a class="reference internal" href="#attrs-bin" id="id23">11.1 attrs.bin</a></p></li>
-<li><p><a class="reference internal" href="#tags-json" id="id24">11.2 tags.json</a></p></li>
-<li><p><a class="reference internal" href="#toggle-bin" id="id25">11.3 toggle.bin</a></p></li>
-<li><p><a class="reference internal" href="#fsm-bin" id="id26">11.4 fsm.bin</a></p></li>
-<li><p><a class="reference internal" href="#cross-bin" id="id27">11.5 cross.bin</a></p></li>
-<li><p><a class="reference internal" href="#properties-json" id="id28">11.6 properties.json</a></p></li>
-<li><p><a class="reference internal" href="#design-units-json" id="id29">11.7 design_units.json</a></p></li>
-<li><p><a class="reference internal" href="#formal-bin" id="id30">11.8 formal.bin</a></p></li>
-<li><p><a class="reference internal" href="#coveritem-flags-bin" id="id31">11.9 coveritem_flags.bin</a></p></li>
-<li><p><a class="reference internal" href="#contrib-hist-idx-bin" id="id32">11.10 contrib/&lt;hist_idx&gt;.bin</a></p></li>
+<li><p><a class="reference internal" href="#attrs-bin" id="id25">11.1 attrs.bin</a></p></li>
+<li><p><a class="reference internal" href="#tags-json" id="id26">11.2 tags.json</a></p></li>
+<li><p><a class="reference internal" href="#toggle-bin" id="id27">11.3 toggle.bin</a></p></li>
+<li><p><a class="reference internal" href="#fsm-bin" id="id28">11.4 fsm.bin</a></p></li>
+<li><p><a class="reference internal" href="#cross-bin" id="id29">11.5 cross.bin</a></p></li>
+<li><p><a class="reference internal" href="#properties-json" id="id30">11.6 properties.json</a></p></li>
+<li><p><a class="reference internal" href="#design-units-json" id="id31">11.7 design_units.json</a></p></li>
+<li><p><a class="reference internal" href="#formal-bin" id="id32">11.8 formal.bin</a></p></li>
+<li><p><a class="reference internal" href="#coveritem-flags-bin" id="id33">11.9 coveritem_flags.bin</a></p></li>
+<li><p><a class="reference internal" href="#contrib-hist-idx-bin" id="id34">11.10 contrib/&lt;hist_idx&gt;.bin</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#version-history" id="id33">12. Version history</a></p></li>
-<li><p><a class="reference internal" href="#size-and-performance-reference" id="id34">13. Size and performance reference</a></p></li>
-<li><p><a class="reference internal" href="#implementing-a-reader" id="id35">14. Implementing a reader</a></p></li>
+<li><p><a class="reference internal" href="#version-history" id="id35">12. Version history</a></p></li>
+<li><p><a class="reference internal" href="#size-and-performance-reference" id="id36">13. Size and performance reference</a></p></li>
+<li><p><a class="reference internal" href="#implementing-a-reader" id="id37">14. Implementing a reader</a></p></li>
+<li><p><a class="reference internal" href="#v2-binary-test-history" id="id38">7. V2 binary test history</a></p>
+<ul>
+<li><p><a class="reference internal" href="#history-test-registry-bin" id="id39">7.1 <code class="docutils literal notranslate"><span class="pre">history/test_registry.bin</span></code></a></p></li>
+<li><p><a class="reference internal" href="#history-test-stats-bin" id="id40">7.2 <code class="docutils literal notranslate"><span class="pre">history/test_stats.bin</span></code></a></p></li>
+<li><p><a class="reference internal" href="#history-bucket-index-bin" id="id41">7.3 <code class="docutils literal notranslate"><span class="pre">history/bucket_index.bin</span></code></a></p></li>
+<li><p><a class="reference internal" href="#history-nnnnnn-bin" id="id42">7.4 <code class="docutils literal notranslate"><span class="pre">history/NNNNNN.bin</span></code></a></p></li>
+<li><p><a class="reference internal" href="#history-contrib-index-bin" id="id43">7.5 <code class="docutils literal notranslate"><span class="pre">history/contrib_index.bin</span></code></a></p></li>
+<li><p><a class="reference internal" href="#history-squash-log-bin" id="id44">7.6 <code class="docutils literal notranslate"><span class="pre">history/squash_log.bin</span></code></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#testplan-and-waivers-json" id="id45">8. Testplan and Waivers JSON</a></p>
+<ul>
+<li><p><a class="reference internal" href="#testplan-json" id="id46">8.1 <code class="docutils literal notranslate"><span class="pre">testplan.json</span></code></a></p></li>
+<li><p><a class="reference internal" href="#waivers-json" id="id47">8.2 <code class="docutils literal notranslate"><span class="pre">waivers.json</span></code></a></p></li>
+</ul>
+</li>
 </ul>
 </nav>
 <hr class="docutils" />
 <section id="file-identification">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">1. File identification</a><a class="headerlink" href="#file-identification" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">1. File identification</a><a class="headerlink" href="#file-identification" title="Link to this heading"></a></h2>
 <p>Both NCDB and the legacy SQLite backend use the <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> extension.
 Format discrimination is done by inspecting the first 16 bytes of the file.</p>
 <table class="docutils align-default">
@@ -251,7 +269,7 @@ Format discrimination is done by inspecting the first 16 bytes of the file.</p>
 </section>
 <hr class="docutils" />
 <section id="archive-structure">
-<h2><a class="toc-backref" href="#id2" role="doc-backlink">2. Archive structure</a><a class="headerlink" href="#archive-structure" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">2. Archive structure</a><a class="headerlink" href="#archive-structure" title="Link to this heading"></a></h2>
 <p>An NCDB file is a <strong>standard ZIP archive</strong> (DEFLATE compression) whose members
 are named as follows.  Members marked <em>required</em> must be present in every valid
 NCDB file; others are only written when the corresponding data is non-empty or
@@ -343,9 +361,9 @@ the integer history-node index (not zero-padded).</p></td>
 </section>
 <hr class="docutils" />
 <section id="primitive-encodings">
-<h2><a class="toc-backref" href="#id3" role="doc-backlink">3. Primitive encodings</a><a class="headerlink" href="#primitive-encodings" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">3. Primitive encodings</a><a class="headerlink" href="#primitive-encodings" title="Link to this heading"></a></h2>
 <section id="unsigned-leb128-varint">
-<span id="ncdb-varint"></span><h3><a class="toc-backref" href="#id4" role="doc-backlink">3.1 Unsigned LEB128 varint</a><a class="headerlink" href="#unsigned-leb128-varint" title="Link to this heading"></a></h3>
+<span id="ncdb-varint"></span><h3><a class="toc-backref" href="#id6" role="doc-backlink">3.1 Unsigned LEB128 varint</a><a class="headerlink" href="#unsigned-leb128-varint" title="Link to this heading"></a></h3>
 <p>All variable-length integers in NCDB are encoded as <strong>unsigned LEB128</strong>
 (also called unsigned varint or ULEB128).  This is the same encoding used
 by DWARF, WebAssembly, and Protocol Buffers (field type <code class="docutils literal notranslate"><span class="pre">uint64</span></code>).</p>
@@ -384,7 +402,7 @@ position by 7.  If bit 7 of the byte is set, continue reading; otherwise stop.</
 </div>
 </section>
 <section id="utf-8-strings">
-<h3><a class="toc-backref" href="#id5" role="doc-backlink">3.2 UTF-8 strings</a><a class="headerlink" href="#utf-8-strings" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">3.2 UTF-8 strings</a><a class="headerlink" href="#utf-8-strings" title="Link to this heading"></a></h3>
 <p>All text is UTF-8.  Strings stored inline (e.g. in JSON members) are standard
 JSON strings.  Strings stored in binary members (<code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code>,
 <code class="docutils literal notranslate"><span class="pre">strings.bin</span></code>) are referenced by their <strong>string-table index</strong> (a varint).</p>
@@ -392,7 +410,7 @@ JSON strings.  Strings stored in binary members (<code class="docutils literal n
 </section>
 <hr class="docutils" />
 <section id="manifest-json">
-<h2><a class="toc-backref" href="#id6" role="doc-backlink">4. manifest.json</a><a class="headerlink" href="#manifest-json" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">4. manifest.json</a><a class="headerlink" href="#manifest-json" title="Link to this heading"></a></h2>
 <p>A JSON object with the following fields (all present; unknown fields must be
 ignored by readers for forward compatibility):</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -469,7 +487,7 @@ path to verify schema identity without parsing the scope tree.
 </section>
 <hr class="docutils" />
 <section id="strings-bin">
-<h2><a class="toc-backref" href="#id7" role="doc-backlink">5. strings.bin</a><a class="headerlink" href="#strings-bin" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">5. strings.bin</a><a class="headerlink" href="#strings-bin" title="Link to this heading"></a></h2>
 <p>A deduplicated string table.  Every string used anywhere in <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code>
 (scope names, coveritem names) is stored exactly once here and referenced by a
 zero-based integer index.</p>
@@ -490,7 +508,7 @@ within a single file (indices are assigned in first-encounter DFS order).</p></l
 </section>
 <hr class="docutils" />
 <section id="scope-tree-bin">
-<h2><a class="toc-backref" href="#id8" role="doc-backlink">6. scope_tree.bin</a><a class="headerlink" href="#scope-tree-bin" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">6. scope_tree.bin</a><a class="headerlink" href="#scope-tree-bin" title="Link to this heading"></a></h2>
 <p>The complete scope hierarchy encoded as a depth-first traversal.  The file
 contains a flat sequence of scope records with no explicit end marker; the
 count of child scopes embedded in each record defines the nesting.</p>
@@ -499,7 +517,7 @@ coveritem encountered during DFS appends its hit count to <code class="docutils 
 the same traversal order.  A reader reconstructs the association by walking
 <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code> and consuming counts from <code class="docutils literal notranslate"><span class="pre">counts.bin</span></code> in lockstep.</p>
 <section id="scope-record-types">
-<h3><a class="toc-backref" href="#id9" role="doc-backlink">6.1 Scope record types</a><a class="headerlink" href="#scope-record-types" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">6.1 Scope record types</a><a class="headerlink" href="#scope-record-types" title="Link to this heading"></a></h3>
 <p>Every scope record begins with a one-byte <strong>marker</strong>:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -528,7 +546,7 @@ TOGGLEBIN coveritems with the implicit names <code class="docutils literal notra
 </table>
 </section>
 <section id="regular-scope-record">
-<h3><a class="toc-backref" href="#id10" role="doc-backlink">6.2 REGULAR scope record</a><a class="headerlink" href="#regular-scope-record" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id12" role="doc-backlink">6.2 REGULAR scope record</a><a class="headerlink" href="#regular-scope-record" title="Link to this heading"></a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[marker    : 1 byte  ]  always 0x00
 [scope_type: varint  ]  ScopeTypeT integer value
 [name_ref  : varint  ]  index into strings.bin
@@ -633,7 +651,7 @@ type defaults to <code class="docutils literal notranslate"><span class="pre">So
 </table>
 </section>
 <section id="toggle-pair-record">
-<h3><a class="toc-backref" href="#id11" role="doc-backlink">6.3 TOGGLE_PAIR record</a><a class="headerlink" href="#toggle-pair-record" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id13" role="doc-backlink">6.3 TOGGLE_PAIR record</a><a class="headerlink" href="#toggle-pair-record" title="Link to this heading"></a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[marker   : 1 byte ]  always 0x01
 [name_ref : varint ]  scope name index in strings.bin
 </pre></div>
@@ -649,7 +667,7 @@ order).</p></li>
 <p>No child scope records follow a TOGGLE_PAIR.</p>
 </section>
 <section id="scope-type-integer-values">
-<h3><a class="toc-backref" href="#id12" role="doc-backlink">6.4 Scope-type integer values</a><a class="headerlink" href="#scope-type-integer-values" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id14" role="doc-backlink">6.4 Scope-type integer values</a><a class="headerlink" href="#scope-type-integer-values" title="Link to this heading"></a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">scope_type</span></code> varint uses the integer values of <code class="docutils literal notranslate"><span class="pre">ScopeTypeT</span></code>.
 The most common values are:</p>
 <table class="docutils align-default">
@@ -708,13 +726,13 @@ The most common values are:</p>
 </section>
 <hr class="docutils" />
 <section id="counts-bin">
-<h2><a class="toc-backref" href="#id13" role="doc-backlink">7. counts.bin</a><a class="headerlink" href="#counts-bin" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">7. counts.bin</a><a class="headerlink" href="#counts-bin" title="Link to this heading"></a></h2>
 <p>A flat array of non-negative integers, one per coveritem, in the <strong>same DFS
 order</strong> as the coveritems encountered while reading <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code>.  TOGGLE_PAIR
 scopes contribute two consecutive counts (<code class="docutils literal notranslate"><span class="pre">&quot;0</span> <span class="pre">-&gt;</span> <span class="pre">1&quot;</span></code> then <code class="docutils literal notranslate"><span class="pre">&quot;1</span> <span class="pre">-&gt;</span> <span class="pre">0&quot;</span></code>).</p>
 <p>The array length is given by <code class="docutils literal notranslate"><span class="pre">coveritem_count</span></code> in <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code>.</p>
 <section id="binary-layout">
-<h3><a class="toc-backref" href="#id14" role="doc-backlink">7.1 Binary layout</a><a class="headerlink" href="#binary-layout" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id16" role="doc-backlink">7.1 Binary layout</a><a class="headerlink" href="#binary-layout" title="Link to this heading"></a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[mode  : 1 byte ]  0 = UINT32, 1 = VARINT
 [count : varint ]  number of integers that follow
 [data  : …      ]  mode-dependent encoding (see below)
@@ -738,7 +756,7 @@ the common case for per-test databases.</p>
 falling back to UINT32 otherwise.  A reader must support both modes.</p>
 </section>
 <section id="efficient-single-byte-fast-path">
-<h3><a class="toc-backref" href="#id15" role="doc-backlink">7.2 Efficient single-byte fast path</a><a class="headerlink" href="#efficient-single-byte-fast-path" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id17" role="doc-backlink">7.2 Efficient single-byte fast path</a><a class="headerlink" href="#efficient-single-byte-fast-path" title="Link to this heading"></a></h3>
 <p>When mode is VARINT and all values fit in a single byte (0–127), each byte in
 the data section is equal to the corresponding count value (the high bit is
 never set).  A parser can exploit this: scan the data section for any byte
@@ -748,7 +766,7 @@ can be decoded with a single <code class="docutils literal notranslate"><span cl
 </section>
 <hr class="docutils" />
 <section id="history-json">
-<h2><a class="toc-backref" href="#id16" role="doc-backlink">8. history.json</a><a class="headerlink" href="#history-json" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">8. history.json</a><a class="headerlink" href="#history-json" title="Link to this heading"></a></h2>
 <p>A JSON array of history node records.  Each element represents either a test
 run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <span class="pre">&quot;TEST&quot;</span></code>) or a merge operation (<code class="docutils literal notranslate"><span class="pre">kind:</span> <span class="pre">&quot;MERGE&quot;</span></code>).</p>
 <p><strong>Record schema:</strong></p>
@@ -887,7 +905,7 @@ run (<code class="docutils literal notranslate"><span class="pre">kind:</span> <
 </section>
 <hr class="docutils" />
 <section id="sources-json">
-<h2><a class="toc-backref" href="#id17" role="doc-backlink">9. sources.json</a><a class="headerlink" href="#sources-json" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">9. sources.json</a><a class="headerlink" href="#sources-json" title="Link to this heading"></a></h2>
 <p>A JSON array of strings, where each element is an absolute or relative file
 path.  The position of each path in the array is its <strong>file ID</strong>, which is the
 integer used as <code class="docutils literal notranslate"><span class="pre">file_id</span></code> in <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code> source references.</p>
@@ -903,11 +921,11 @@ is valid when no source information was recorded.</p>
 <hr class="docutils" />
 </section>
 <section id="merging-ncdb-files">
-<span id="ncdb-merge"></span><h2><a class="toc-backref" href="#id18" role="doc-backlink">10. Merging NCDB files</a><a class="headerlink" href="#merging-ncdb-files" title="Link to this heading"></a></h2>
+<span id="ncdb-merge"></span><h2><a class="toc-backref" href="#id20" role="doc-backlink">10. Merging NCDB files</a><a class="headerlink" href="#merging-ncdb-files" title="Link to this heading"></a></h2>
 <p>The key performance advantage of NCDB over SQLite is the <strong>same-schema fast
 merge path</strong>, which reduces a multi-file merge to element-wise integer addition.</p>
 <section id="same-schema-fast-merge">
-<h3><a class="toc-backref" href="#id19" role="doc-backlink">10.1 Same-schema fast merge</a><a class="headerlink" href="#same-schema-fast-merge" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id21" role="doc-backlink">10.1 Same-schema fast merge</a><a class="headerlink" href="#same-schema-fast-merge" title="Link to this heading"></a></h3>
 <p>Two NCDB files are <em>schema-compatible</em> if and only if their <code class="docutils literal notranslate"><span class="pre">schema_hash</span></code>
 values are equal.  The <code class="docutils literal notranslate"><span class="pre">schema_hash</span></code> is <code class="docutils literal notranslate"><span class="pre">&quot;sha256:&quot;</span></code> followed by the
 SHA-256 digest of the uncompressed <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code> bytes; equal hashes
@@ -930,7 +948,7 @@ the merged <code class="docutils literal notranslate"><span class="pre">counts.b
 merge.</p>
 </section>
 <section id="cross-schema-merge">
-<h3><a class="toc-backref" href="#id20" role="doc-backlink">10.2 Cross-schema merge</a><a class="headerlink" href="#cross-schema-merge" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id22" role="doc-backlink">10.2 Cross-schema merge</a><a class="headerlink" href="#cross-schema-merge" title="Link to this heading"></a></h3>
 <p>When the schema hashes differ, the merger must parse both scope trees, match
 scopes by <code class="docutils literal notranslate"><span class="pre">(path,</span> <span class="pre">type,</span> <span class="pre">name)</span></code> key, and add counts for matched coveritems.
 Unmatched coveritems from either source are appended with their original
@@ -938,7 +956,7 @@ counts.  This path is slower but correct for merging databases from designs
 that have evolved between runs.</p>
 </section>
 <section id="merge-history-node">
-<h3><a class="toc-backref" href="#id21" role="doc-backlink">10.3 Merge history node</a><a class="headerlink" href="#merge-history-node" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id23" role="doc-backlink">10.3 Merge history node</a><a class="headerlink" href="#merge-history-node" title="Link to this heading"></a></h3>
 <p>A merge operation appends a <code class="docutils literal notranslate"><span class="pre">&quot;MERGE&quot;</span></code>-kind history node to <code class="docutils literal notranslate"><span class="pre">history.json</span></code>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;logical_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;merge:output.cdb&quot;</span><span class="p">,</span>
@@ -954,12 +972,12 @@ that have evolved between runs.</p>
 </section>
 <hr class="docutils" />
 <section id="optional-binary-members">
-<h2><a class="toc-backref" href="#id22" role="doc-backlink">11. Optional binary members</a><a class="headerlink" href="#optional-binary-members" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id24" role="doc-backlink">11. Optional binary members</a><a class="headerlink" href="#optional-binary-members" title="Link to this heading"></a></h2>
 <p>These members are omitted from the archive when the corresponding data is
 absent or all-default.  Readers must silently skip any optional member they
 do not support, and must not fail if an expected optional member is absent.</p>
 <section id="attrs-bin">
-<h3><a class="toc-backref" href="#id23" role="doc-backlink">11.1 attrs.bin</a><a class="headerlink" href="#attrs-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id25" role="doc-backlink">11.1 attrs.bin</a><a class="headerlink" href="#attrs-bin" title="Link to this heading"></a></h3>
 <p>User-defined attribute assignments.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this
 member is JSON-encoded.</p>
 <p><strong>Format v2</strong> (current):</p>
@@ -985,7 +1003,7 @@ included (sparse).  The reader also accepts legacy <strong>v1</strong> files tha
 only scope-level attributes.</p>
 </section>
 <section id="tags-json">
-<h3><a class="toc-backref" href="#id24" role="doc-backlink">11.2 tags.json</a><a class="headerlink" href="#tags-json" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id26" role="doc-backlink">11.2 tags.json</a><a class="headerlink" href="#tags-json" title="Link to this heading"></a></h3>
 <p>Tag assignments for scopes (sparse, DFS-indexed).</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -999,7 +1017,7 @@ only scope-level attributes.</p>
 included.</p>
 </section>
 <section id="toggle-bin">
-<h3><a class="toc-backref" href="#id25" role="doc-backlink">11.3 toggle.bin</a><a class="headerlink" href="#toggle-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">11.3 toggle.bin</a><a class="headerlink" href="#toggle-bin" title="Link to this heading"></a></h3>
 <p>Per-signal toggle metadata for <code class="docutils literal notranslate"><span class="pre">TOGGLE</span></code>-type scopes.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code>
 extension, this member is JSON-encoded.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1016,7 +1034,7 @@ are omitted when they match the defaults (<code class="docutils literal notransl
 <code class="docutils literal notranslate"><span class="pre">TOGGLE</span></code> scopes with at least one non-default value are included.</p>
 </section>
 <section id="fsm-bin">
-<h3><a class="toc-backref" href="#id26" role="doc-backlink">11.4 fsm.bin</a><a class="headerlink" href="#fsm-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id28" role="doc-backlink">11.4 fsm.bin</a><a class="headerlink" href="#fsm-bin" title="Link to this heading"></a></h3>
 <p>FSM state-index overrides for <code class="docutils literal notranslate"><span class="pre">FSM</span></code>-type scopes.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code>
 extension, this member is JSON-encoded.  State and transition names are
 already stored in <code class="docutils literal notranslate"><span class="pre">scope_tree.bin</span></code> as FSMBIN coveritems under FSM_STATES
@@ -1035,7 +1053,7 @@ whose state indices differ from the default 0, 1, 2, … sequence are included.
 The member is omitted entirely when all indices are sequential.</p>
 </section>
 <section id="cross-bin">
-<h3><a class="toc-backref" href="#id27" role="doc-backlink">11.5 cross.bin</a><a class="headerlink" href="#cross-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id29" role="doc-backlink">11.5 cross.bin</a><a class="headerlink" href="#cross-bin" title="Link to this heading"></a></h3>
 <p>Cross-coverpoint link records for <code class="docutils literal notranslate"><span class="pre">CROSS</span></code>-type scopes.  Despite the
 <code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this member is JSON-encoded.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1051,7 +1069,7 @@ the <code class="docutils literal notranslate"><span class="pre">getScopeName()<
 within the same parent COVERGROUP/COVERINSTANCE).</p>
 </section>
 <section id="properties-json">
-<h3><a class="toc-backref" href="#id28" role="doc-backlink">11.6 properties.json</a><a class="headerlink" href="#properties-json" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id30" role="doc-backlink">11.6 properties.json</a><a class="headerlink" href="#properties-json" title="Link to this heading"></a></h3>
 <p>Typed string property values for scopes (DFS-indexed).</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1065,7 +1083,7 @@ within the same parent COVERGROUP/COVERINSTANCE).</p>
 explicitly-set properties are included.</p>
 </section>
 <section id="design-units-json">
-<h3><a class="toc-backref" href="#id29" role="doc-backlink">11.7 design_units.json</a><a class="headerlink" href="#design-units-json" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id31" role="doc-backlink">11.7 design_units.json</a><a class="headerlink" href="#design-units-json" title="Link to this heading"></a></h3>
 <p>Design-unit name-to-DFS-index lookup table.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1080,7 +1098,7 @@ Only DU_ANY scopes are included.  The member is omitted when no design units
 are present.</p>
 </section>
 <section id="formal-bin">
-<h3><a class="toc-backref" href="#id30" role="doc-backlink">11.8 formal.bin</a><a class="headerlink" href="#formal-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id32" role="doc-backlink">11.8 formal.bin</a><a class="headerlink" href="#formal-bin" title="Link to this heading"></a></h3>
 <p>Formal-verification assertion data.  Despite the <code class="docutils literal notranslate"><span class="pre">.bin</span></code> extension, this
 member is JSON-encoded.</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -1097,7 +1115,7 @@ match the defaults (0, 0, <code class="docutils literal notranslate"><span class
 <code class="docutils literal notranslate"><span class="pre">status</span></code> = <code class="docutils literal notranslate"><span class="pre">FormalStatusT.NONE</span></code> (0), <code class="docutils literal notranslate"><span class="pre">radius</span></code> = 0.</p>
 </section>
 <section id="coveritem-flags-bin">
-<h3><a class="toc-backref" href="#id31" role="doc-backlink">11.9 coveritem_flags.bin</a><a class="headerlink" href="#coveritem-flags-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id33" role="doc-backlink">11.9 coveritem_flags.bin</a><a class="headerlink" href="#coveritem-flags-bin" title="Link to this heading"></a></h3>
 <p>Per-coveritem non-default flags.  This member uses a true binary encoding
 (sparse, delta-encoded varint pairs).</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>[version      : varint]  always 1
@@ -1112,7 +1130,7 @@ cover-type defaults table in Section 6.2) are included.  The member is
 omitted entirely when all coveritems use default flags.</p>
 </section>
 <section id="contrib-hist-idx-bin">
-<h3><a class="toc-backref" href="#id32" role="doc-backlink">11.10 contrib/&lt;hist_idx&gt;.bin</a><a class="headerlink" href="#contrib-hist-idx-bin" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id34" role="doc-backlink">11.10 contrib/&lt;hist_idx&gt;.bin</a><a class="headerlink" href="#contrib-hist-idx-bin" title="Link to this heading"></a></h3>
 <p>Per-test contribution arrays.  One file per history node that recorded
 contributions; <code class="docutils literal notranslate"><span class="pre">&lt;hist_idx&gt;</span></code> is the integer history-node index (not
 zero-padded).  Each file encodes a sparse, delta-encoded array of per-test
@@ -1127,7 +1145,7 @@ per entry (sorted by bin_index, ascending):
 </section>
 <hr class="docutils" />
 <section id="version-history">
-<h2><a class="toc-backref" href="#id33" role="doc-backlink">12. Version history</a><a class="headerlink" href="#version-history" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id35" role="doc-backlink">12. Version history</a><a class="headerlink" href="#version-history" title="Link to this heading"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 15.0%" />
@@ -1164,7 +1182,7 @@ cover-type default flags to <code class="docutils literal notranslate"><span cla
 <hr class="docutils" />
 </section>
 <section id="size-and-performance-reference">
-<span id="ncdb-benchmarks"></span><h2><a class="toc-backref" href="#id34" role="doc-backlink">13. Size and performance reference</a><a class="headerlink" href="#size-and-performance-reference" title="Link to this heading"></a></h2>
+<span id="ncdb-benchmarks"></span><h2><a class="toc-backref" href="#id36" role="doc-backlink">13. Size and performance reference</a><a class="headerlink" href="#size-and-performance-reference" title="Link to this heading"></a></h2>
 <p>Measurements using synthetic BM1–BM6 benchmark databases (pure Python,
 no C accelerator, median of 3 merge runs):</p>
 <table class="docutils align-default">
@@ -1247,7 +1265,7 @@ to drop to ~5 ms (~7.5× faster than SQLite).</p>
 </section>
 <hr class="docutils" />
 <section id="implementing-a-reader">
-<h2><a class="toc-backref" href="#id35" role="doc-backlink">14. Implementing a reader</a><a class="headerlink" href="#implementing-a-reader" title="Link to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id37" role="doc-backlink">14. Implementing a reader</a><a class="headerlink" href="#implementing-a-reader" title="Link to this heading"></a></h2>
 <p>To read an NCDB file without PyUCIS:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">struct</span><span class="o">,</span><span class="w"> </span><span class="nn">hashlib</span>
 
@@ -1312,6 +1330,310 @@ to drop to ~5 ms (~7.5× faster than SQLite).</p>
 <li><p><span class="xref std std-ref">working-with-coverage-merging</span> — How to merge databases using the CLI</p></li>
 </ul>
 </div>
+<hr class="docutils" />
+</section>
+<section id="v2-binary-test-history">
+<span id="ncdb-format-v2-history"></span><h2><a class="toc-backref" href="#id38" role="doc-backlink">7. V2 binary test history</a><a class="headerlink" href="#v2-binary-test-history" title="Link to this heading"></a></h2>
+<p>When <code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> contains <code class="docutils literal notranslate"><span class="pre">&quot;history_format&quot;:</span> <span class="pre">&quot;v2&quot;</span></code> the archive holds
+six additional binary members.  All integers are <strong>little-endian</strong> unless
+noted.</p>
+<section id="history-test-registry-bin">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">7.1 <code class="docutils literal notranslate"><span class="pre">history/test_registry.bin</span></code></a><a class="headerlink" href="#history-test-registry-bin" title="Link to this heading"></a></h3>
+<p>Maps stable integer IDs to test names and seed strings.  IDs are assigned by
+insertion order and never reassigned.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (17 bytes):
+  magic       u32   0x54524547  (&#39;TREG&#39;)
+  version     u8    1
+  next_run_id u32   monotonically-increasing run counter
+  num_names   u32
+  num_seeds   u32
+
+Offset tables (immediately after header):
+  name_offsets  u32[num_names]  byte offset into name heap
+  seed_offsets  u32[num_seeds]  byte offset into seed heap
+
+Heaps (NUL-terminated UTF-8 strings):
+  name_heap  NUL-terminated strings in name_id order
+  seed_heap  NUL-terminated strings in seed_id order
+</pre></div>
+</div>
+</section>
+<section id="history-test-stats-bin">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">7.2 <code class="docutils literal notranslate"><span class="pre">history/test_stats.bin</span></code></a><a class="headerlink" href="#history-test-stats-bin" title="Link to this heading"></a></h3>
+<p>One 72-byte entry per test name (indexed by name_id).</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (9 bytes):
+  magic      u32   0x54535453  (&#39;TSTS&#39;)
+  version    u8    1
+  num_entries u32
+
+Entry (72 bytes, repeated num_entries times):
+  name_id      u32
+  total_runs   u32
+  pass_count   u32
+  fail_count   u32
+  error_count  u32
+  skip_count   u32
+  timeout_count u32
+  _reserved    u32   (padding, always 0)
+  mean_ms      f32   Welford running mean of runtime in milliseconds
+  m2_ms        f32   Welford running sum-of-squares (variance = m2/n)
+  cusum_pos    f32   CUSUM positive accumulator for change detection
+  cusum_neg    f32   CUSUM negative accumulator
+  _pad1        f32   (reserved, 0.0)
+  _pad2        f32   (reserved, 0.0)
+  _pad3        f32   (reserved, 0.0)
+  flakiness_score i16  fixed-point 0–10000 representing 0.00–100.00 %
+  tag          u8[6] short ASCII label (NUL-padded)
+  last_status  u8    most-recent HIST_STATUS_* value
+  _trailing    u8    padding
+</pre></div>
+</div>
+</section>
+<section id="history-bucket-index-bin">
+<h3><a class="toc-backref" href="#id41" role="doc-backlink">7.3 <code class="docutils literal notranslate"><span class="pre">history/bucket_index.bin</span></code></a><a class="headerlink" href="#history-bucket-index-bin" title="Link to this heading"></a></h3>
+<p>Index over the per-bucket run-record files.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (9 bytes):
+  magic       u32   0x42494458  (&#39;BIDX&#39;)
+  version     u8    1
+  num_buckets u32
+
+Entry (28 bytes, sorted by bucket_seq):
+  bucket_seq  u32
+  ts_start    u32   Unix timestamp of first record in bucket
+  ts_end      u32   Unix timestamp of last record in bucket
+  num_records u32
+  fail_count  u32
+  min_name_id u32
+  max_name_id u32
+</pre></div>
+</div>
+</section>
+<section id="history-nnnnnn-bin">
+<h3><a class="toc-backref" href="#id42" role="doc-backlink">7.4 <code class="docutils literal notranslate"><span class="pre">history/NNNNNN.bin</span></code></a><a class="headerlink" href="#history-nnnnnn-bin" title="Link to this heading"></a></h3>
+<p>Each bucket holds up to 10 000 run records, compressed with LZMA (sealed
+buckets) or DEFLATE level 1 (current open bucket).  After decompression:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (16 bytes):
+  magic       u32   0x42434B54  (&#39;BCKT&#39;)
+  version     u8    1
+  num_records u32
+  num_names   u16
+  _pad        u8    (padding)
+  ts_base     u32   Unix timestamp of first record
+
+Name index (12 bytes per unique name in this bucket):
+  name_id     u32   global name_id from test_registry
+  offset      u32   byte offset into name&#39;s record data
+  count       u16   number of records for this name
+  _pad        u8[2]
+
+Columnar record data (one column per name, name_id order):
+  seeds[]         u8[count]           local seed index (≤ 255 unique/bucket)
+  ts_deltas[]     varint[count]       delta-encoded seconds from ts_base
+  status_flags[]  u8[count]           nibble-packed (high=status, low=flags)
+
+Seed dictionary (appended after all record data):
+  num_local_seeds u8
+  seed_ids[]      u32[num_local_seeds]  global seed_ids
+</pre></div>
+</div>
+<p>Varint encoding: each value uses 1–5 bytes; the high bit of each byte
+indicates that more bytes follow (7 bits of value per byte, little-endian).</p>
+</section>
+<section id="history-contrib-index-bin">
+<h3><a class="toc-backref" href="#id43" role="doc-backlink">7.5 <code class="docutils literal notranslate"><span class="pre">history/contrib_index.bin</span></code></a><a class="headerlink" href="#history-contrib-index-bin" title="Link to this heading"></a></h3>
+<p>Tracks which test runs contributed coverage so that squash can be replayed.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (12 bytes):
+  magic        u32   0x43494458  (&#39;CIDX&#39;)
+  version      u8    1
+  policy       u8    merge-policy constant
+  watermark    u32   highest squashed run_id
+  num_active   u32
+
+Entry (16 bytes, one per unsquashed run):
+  run_id    u32
+  name_id   u32
+  status    u8
+  flags     u8
+  _pad      u8[2]
+  ts        u32
+</pre></div>
+</div>
+</section>
+<section id="history-squash-log-bin">
+<h3><a class="toc-backref" href="#id44" role="doc-backlink">7.6 <code class="docutils literal notranslate"><span class="pre">history/squash_log.bin</span></code></a><a class="headerlink" href="#history-squash-log-bin" title="Link to this heading"></a></h3>
+<p>Append-only provenance log for squash events.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Header (9 bytes):
+  magic      u32   0x53514C47  (&#39;SQLG&#39;)
+  version    u8    1
+  num_entries u32
+
+Entry (24 bytes):
+  ts        u32   Unix timestamp of squash operation
+  policy    u8    merge-policy used
+  _pad      u8[3]
+  from_run  u32   first run_id squashed
+  to_run    u32   last run_id squashed (inclusive)
+  num_runs  u32   total runs processed
+  pass_runs u32   runs that passed
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="testplan-and-waivers-json">
+<h2><a class="toc-backref" href="#id45" role="doc-backlink">8. Testplan and Waivers JSON</a><a class="headerlink" href="#testplan-and-waivers-json" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">testplan.json</span></code> and <code class="docutils literal notranslate"><span class="pre">waivers.json</span></code> are optional UTF-8 JSON members
+stored at the ZIP root.  They are written by <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbWriter</span></code>
+when the corresponding objects are attached to the database and are read
+transparently by <code class="xref py py-class docutils literal notranslate"><span class="pre">NcdbReader</span></code>.</p>
+<section id="testplan-json">
+<h3><a class="toc-backref" href="#id46" role="doc-backlink">8.1 <code class="docutils literal notranslate"><span class="pre">testplan.json</span></code></a><a class="headerlink" href="#testplan-json" title="Link to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;format_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source_file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uart.hjson&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;import_timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-01-01T00:00:00+00:00&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;testpoints&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;uart_reset&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;stage&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;V1&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;desc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Verify reset&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;tests&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;uart_smoke&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;uart_reset_*&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;tags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;smoke&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;na&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;source_template&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;requirements&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;REQ-001&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;desc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reset spec&quot;</span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;covergroups&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cg_reset&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;desc&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Reset coverage&quot;</span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">testplan.json — top-level fields</span><a class="headerlink" href="#id1" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">format_version</span></code></p></td>
+<td><p>int</p></td>
+<td><p>Schema version; currently <code class="docutils literal notranslate"><span class="pre">1</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">source_file</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Path to the Hjson/JSON source that produced this plan</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">import_timestamp</span></code></p></td>
+<td><p>ISO-8601 string</p></td>
+<td><p>UTC timestamp when the plan was last imported</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">testpoints</span></code></p></td>
+<td><p>array</p></td>
+<td><p>Ordered list of <a class="reference internal" href="../../working-with-coverage/testplan.html#ucis.ncdb.testplan.Testpoint" title="ucis.ncdb.testplan.Testpoint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Testpoint</span></code></a> objects</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">covergroups</span></code></p></td>
+<td><p>array</p></td>
+<td><p>Ordered list of <a class="reference internal" href="../../working-with-coverage/testplan.html#ucis.ncdb.testplan.CovergroupEntry" title="ucis.ncdb.testplan.CovergroupEntry"><code class="xref py py-class docutils literal notranslate"><span class="pre">CovergroupEntry</span></code></a> objects</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Merger behaviour</dt><dd><p>When merging two <code class="docutils literal notranslate"><span class="pre">.cdb</span></code> files that both contain <code class="docutils literal notranslate"><span class="pre">testplan.json</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Same ``source_file``</strong> — the entry with the later
+<code class="docutils literal notranslate"><span class="pre">import_timestamp</span></code> is kept.</p></li>
+<li><p><strong>Different ``source_file``</strong> — a warning is emitted and the merged
+output contains no testplan.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+<section id="waivers-json">
+<h3><a class="toc-backref" href="#id47" role="doc-backlink">8.2 <code class="docutils literal notranslate"><span class="pre">waivers.json</span></code></a><a class="headerlink" href="#waivers-json" title="Link to this heading"></a></h3>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;format_version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;waivers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;W-001&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;scope_pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;top/uart/**&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;bin_pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;reset_*&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rationale&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Deferred to V2&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;approver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;jdoe&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;approved_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;expires_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-01T00:00:00&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;active&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">waivers.json — Waiver fields</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 25.0%" />
+<col style="width: 15.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Unique waiver identifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scope_pattern</span></code></p></td>
+<td><p>glob string</p></td>
+<td><p>Hierarchy path pattern; <code class="docutils literal notranslate"><span class="pre">*</span></code> = single segment, <code class="docutils literal notranslate"><span class="pre">**</span></code> = any depth</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bin_pattern</span></code></p></td>
+<td><p>glob string</p></td>
+<td><p>Coverage bin name pattern; same glob syntax as scope_pattern</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">rationale</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Human-readable reason for the waiver</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">approver</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Name or email of the approver</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">approved_at</span></code></p></td>
+<td><p>ISO-8601 string</p></td>
+<td><p>Approval timestamp</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">expires_at</span></code></p></td>
+<td><p>ISO-8601 string</p></td>
+<td><p>Expiry timestamp; empty string means no expiry</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">status</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;active&quot;</span></code> | <code class="docutils literal notranslate"><span class="pre">&quot;expired&quot;</span></code></p></td>
+<td><p>Current status; <a class="reference internal" href="../../working-with-coverage/testplan.html#ucis.ncdb.waivers.WaiverSet.active_at" title="ucis.ncdb.waivers.WaiverSet.active_at"><code class="xref py py-meth docutils literal notranslate"><span class="pre">active_at()</span></code></a> filters
+on both this field and <code class="docutils literal notranslate"><span class="pre">expires_at</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="simple">
+<dt>Merger behaviour</dt><dd><p>Waivers are unioned by <code class="docutils literal notranslate"><span class="pre">id</span></code> across all source files.  When the same
+<code class="docutils literal notranslate"><span class="pre">id</span></code> appears in multiple sources the entry with the latest
+<code class="docutils literal notranslate"><span class="pre">approved_at</span></code> is kept.</p>
+</dd>
+</dl>
+</section>
 </section>
 </section>
 
