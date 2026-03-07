@@ -28,6 +28,10 @@ from .constants import (
     MEMBER_CROSS, MEMBER_DESIGN_UNITS, MEMBER_CONTRIB_DIR, MEMBER_FORMAL,
     NCDB_FORMAT,
     MEMBER_COVERITEM_FLAGS,
+    MEMBER_TEST_REGISTRY, MEMBER_TEST_STATS,
+    MEMBER_BUCKET_INDEX, MEMBER_CONTRIB_INDEX, MEMBER_SQUASH_LOG,
+    HISTORY_BUCKET_DIR, HISTORY_FORMAT_V2,
+    MEMBER_TESTPLAN, MEMBER_WAIVERS,
 )
 
 from ucis.mem.mem_ucis import MemUCIS
@@ -74,25 +78,28 @@ class NcdbReader:
     def read(self, path: str) -> MemUCIS:
         with zipfile.ZipFile(path, "r") as zf:
             names = zf.namelist()
-            manifest_bytes    = zf.read(MEMBER_MANIFEST)
-            strings_bytes     = zf.read(MEMBER_STRINGS)
-            scope_tree_bytes  = zf.read(MEMBER_SCOPE_TREE)
-            counts_bytes      = zf.read(MEMBER_COUNTS)
-            history_bytes     = zf.read(MEMBER_HISTORY)
-            sources_bytes     = zf.read(MEMBER_SOURCES)
-            attrs_bytes  = zf.read(MEMBER_ATTRS)       if MEMBER_ATTRS       in names else b''
-            tags_bytes   = zf.read(MEMBER_TAGS)        if MEMBER_TAGS        in names else b''
-            props_bytes  = zf.read(MEMBER_PROPERTIES)  if MEMBER_PROPERTIES  in names else b''
-            toggle_bytes = zf.read(MEMBER_TOGGLE)        if MEMBER_TOGGLE        in names else b''
-            fsm_bytes    = zf.read(MEMBER_FSM)           if MEMBER_FSM           in names else b''
-            cross_bytes  = zf.read(MEMBER_CROSS)         if MEMBER_CROSS         in names else b''
-            du_bytes     = zf.read(MEMBER_DESIGN_UNITS)  if MEMBER_DESIGN_UNITS  in names else b''
-            formal_bytes = zf.read(MEMBER_FORMAL)         if MEMBER_FORMAL         in names else b''
-            ci_flags_bytes = zf.read(MEMBER_COVERITEM_FLAGS) if MEMBER_COVERITEM_FLAGS in names else b''
-            # Collect all contrib/* members
-            contrib_members = {
-                n: zf.read(n) for n in names if n.startswith(MEMBER_CONTRIB_DIR)
-            }
+            # Read all members into a dict for uniform access
+            zf_data = {n: zf.read(n) for n in names}
+
+        manifest_bytes    = zf_data[MEMBER_MANIFEST]
+        strings_bytes     = zf_data[MEMBER_STRINGS]
+        scope_tree_bytes  = zf_data[MEMBER_SCOPE_TREE]
+        counts_bytes      = zf_data[MEMBER_COUNTS]
+        history_bytes     = zf_data[MEMBER_HISTORY]
+        sources_bytes     = zf_data[MEMBER_SOURCES]
+        attrs_bytes  = zf_data.get(MEMBER_ATTRS,             b'')
+        tags_bytes   = zf_data.get(MEMBER_TAGS,              b'')
+        props_bytes  = zf_data.get(MEMBER_PROPERTIES,        b'')
+        toggle_bytes = zf_data.get(MEMBER_TOGGLE,            b'')
+        fsm_bytes    = zf_data.get(MEMBER_FSM,               b'')
+        cross_bytes  = zf_data.get(MEMBER_CROSS,             b'')
+        du_bytes     = zf_data.get(MEMBER_DESIGN_UNITS,      b'')
+        formal_bytes = zf_data.get(MEMBER_FORMAL,            b'')
+        ci_flags_bytes = zf_data.get(MEMBER_COVERITEM_FLAGS, b'')
+        # Collect all contrib/* members
+        contrib_members = {
+            n: zf_data[n] for n in names if n.startswith(MEMBER_CONTRIB_DIR)
+        }
 
         manifest = Manifest.from_bytes(manifest_bytes)
         if manifest.format != NCDB_FORMAT:
@@ -199,4 +206,71 @@ class NcdbReader:
         if attrs_bytes:
             AttrsReader().deserialize(attrs_bytes, db)
 
+        # v2 binary history members (optional — present only in v2 archives)
+        if manifest.history_format == HISTORY_FORMAT_V2:
+            _load_v2_history(db, {name: zf_data.get(name, b'')
+                                  for name in (MEMBER_TEST_REGISTRY,
+                                               MEMBER_TEST_STATS,
+                                               MEMBER_BUCKET_INDEX,
+                                               MEMBER_CONTRIB_INDEX,
+                                               MEMBER_SQUASH_LOG)},
+                             {n: d for n, d in zf_data.items()
+                              if n.startswith(HISTORY_BUCKET_DIR)
+                              and n.endswith(".bin")
+                              and n != MEMBER_BUCKET_INDEX})
+
+        # Testplan (optional)
+        testplan_raw = zf_data.get(MEMBER_TESTPLAN, b'')
+        if testplan_raw:
+            from .testplan import Testplan
+            db._testplan = Testplan.from_bytes(testplan_raw)
+            db._loaded_testplan = True
+
+        # Waivers (optional)
+        waivers_raw = zf_data.get(MEMBER_WAIVERS, b'')
+        if waivers_raw:
+            from .waivers import WaiverSet
+            db._waivers = WaiverSet.from_bytes(waivers_raw)
+            db._loaded_waivers = True
+
         return db
+
+
+def _load_v2_history(db: MemUCIS, v2_members: dict, bucket_data: dict) -> None:
+    """Attach v2 binary history state to *db* (a MemUCIS).
+
+    Uses the same deserialization logic as NcdbUCIS._load_v2_history, but
+    attaches the resulting objects as attributes on a plain MemUCIS so that
+    callers using NcdbReader (not NcdbUCIS) can access v2 data via the same
+    attribute names.
+    """
+    from .test_registry import TestRegistry
+    from .test_stats import TestStatsTable
+    from .bucket_index import BucketIndex
+    from .contrib_index import ContribIndex, POLICY_PASS_ONLY
+    from .squash_log import SquashLog
+
+    reg_data = v2_members.get(MEMBER_TEST_REGISTRY, b'')
+    db._test_registry = TestRegistry.deserialize(reg_data) if reg_data else TestRegistry()
+
+    stats_data = v2_members.get(MEMBER_TEST_STATS, b'')
+    db._test_stats = TestStatsTable.deserialize(stats_data) if stats_data else TestStatsTable()
+
+    bidx_data = v2_members.get(MEMBER_BUCKET_INDEX, b'')
+    db._bucket_index = BucketIndex.deserialize(bidx_data) if bidx_data else BucketIndex()
+
+    cidx_data = v2_members.get(MEMBER_CONTRIB_INDEX, b'')
+    db._contrib_index = (ContribIndex.deserialize(cidx_data) if cidx_data
+                         else ContribIndex(merge_policy=POLICY_PASS_ONLY))
+
+    slog_data = v2_members.get(MEMBER_SQUASH_LOG, b'')
+    db._squash_log = SquashLog.deserialize(slog_data) if slog_data else SquashLog()
+
+    db._sealed_buckets = {}
+    for member, data in bucket_data.items():
+        basename = member[len(HISTORY_BUCKET_DIR):]
+        try:
+            seq = int(basename.split(".")[0])
+            db._sealed_buckets[seq] = data
+        except ValueError:
+            pass

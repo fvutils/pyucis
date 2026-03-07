@@ -258,6 +258,77 @@ NcdbMerger().merge(["run1.cdb", "run2.cdb"], "merged.cdb")
 | `strings.bin` | Deduplicated string table |
 | `history.json` | Test/merge history nodes |
 | `sources.json` | Source file references |
+| `v2/test_registry.bin` | Per-test name and seed registry (v2 history) |
+| `v2/test_stats.bin` | Welford pass/fail/flake statistics per test (v2 history) |
+| `v2/bucket_index.bin` | Time-bucketed history index for fast date-range queries |
+| `v2/history/*.bin` | Compressed per-bucket test run records |
+| `testplan.json` | Embedded testplan with testpoints and stage assignments |
+| `waivers.json` | Glob-pattern coverage waivers with expiry and approver |
+
+### V2 Binary Test History
+
+NCDB `v2` history stores per-test run records in time-bucketed binary files,
+enabling queries over millions of runs without loading full data.  Key APIs:
+
+```python
+from ucis.ncdb.ncdb_ucis import NcdbUCIS
+
+db = NcdbUCIS("coverage.cdb")
+
+# Record a test run
+db.add_test_run("uart_smoke", seed=12345, status=0 /* pass */)
+
+# Query recent history for a test
+records = db.query_test_history("uart_smoke", ts_from=..., ts_to=...)
+
+# Get aggregate stats (flake score, CPU mean, CUSUM)
+stats = db.get_test_stats("uart_smoke")
+print(f"flake={stats.flake_score:.3f}")
+
+# Top flaky and failing tests
+print(db.top_flaky_tests(n=10))
+print(db.top_failing_tests(n=10))
+```
+
+CLI equivalents:
+
+```bash
+# Show recent history for a test
+pyucis history query coverage.cdb uart_smoke --from 2025-01-01
+
+# Show top 10 flaky tests
+pyucis history stats coverage.cdb --top-flaky 10
+```
+
+### Testplan Embedding
+
+```python
+from ucis.ncdb.testplan_hjson import import_hjson
+from ucis.ncdb.testplan_closure import compute_closure
+from ucis.ncdb.reports import report_testpoint_closure, format_testpoint_closure
+
+# Import an OpenTitan-style Hjson testplan
+plan = import_hjson("uart.hjson")
+db.setTestplan(plan)
+
+# Compute closure and format a report
+results = compute_closure(plan, db)
+summary = report_testpoint_closure(results)
+print(format_testpoint_closure(summary))
+```
+
+CLI equivalents:
+
+```bash
+# Embed a testplan
+pyucis testplan import coverage.cdb uart.hjson
+
+# Compute closure with V2 stage gate
+pyucis testplan closure coverage.cdb --stage V2
+
+# Export JUnit XML for CI dashboard
+pyucis testplan export-junit coverage.cdb --out closure_results.xml
+```
 
 ## Documentation
 

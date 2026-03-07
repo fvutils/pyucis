@@ -11,7 +11,7 @@ from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from typing import Optional
 
-from .constants import NCDB_FORMAT, NCDB_VERSION, NCDB_GENERATOR
+from .constants import NCDB_FORMAT, NCDB_VERSION, NCDB_GENERATOR, HISTORY_FORMAT_V1
 
 
 @dataclass
@@ -28,6 +28,7 @@ class Manifest:
     covered_bins:   int = 0
     schema_hash:    str = ""
     generator:      str = NCDB_GENERATOR
+    history_format: str = HISTORY_FORMAT_V1   # "v1" (JSON) or "v2" (binary + JSON)
 
     def serialize(self) -> bytes:
         d = asdict(self)

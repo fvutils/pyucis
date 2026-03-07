@@ -26,7 +26,8 @@ from .constants import (
     MEMBER_COUNTS, MEMBER_HISTORY, MEMBER_SOURCES,
     MEMBER_ATTRS, MEMBER_TAGS, MEMBER_PROPERTIES, MEMBER_TOGGLE, MEMBER_FSM,
     MEMBER_CROSS, MEMBER_DESIGN_UNITS, MEMBER_FORMAL,
-    MEMBER_COVERITEM_FLAGS,
+    MEMBER_COVERITEM_FLAGS, MEMBER_TESTPLAN, MEMBER_WAIVERS,
+    HISTORY_FORMAT_V2,
 )
 
 from ucis.history_node_kind import HistoryNodeKind
@@ -88,6 +89,14 @@ class NcdbWriter:
 
         # 7. Manifest
         manifest = Manifest.build(db, scope_tree_bytes, counts, all_nodes)
+
+        # Check for v2 binary history members (from NcdbUCIS.get_v2_members)
+        v2_members = {}
+        if hasattr(db, 'get_v2_members'):
+            v2_members = db.get_v2_members()
+        if v2_members:
+            manifest.history_format = HISTORY_FORMAT_V2
+
         manifest_bytes = manifest.serialize()
 
         # 8. Write ZIP
@@ -119,3 +128,15 @@ class NcdbWriter:
                 zf.writestr(MEMBER_FORMAL, formal_bytes)
             if ci_flags_bytes:
                 zf.writestr(MEMBER_COVERITEM_FLAGS, ci_flags_bytes)
+            # v2 binary history members (stored uncompressed — pre-compressed)
+            for member_name, member_bytes in v2_members.items():
+                zf.writestr(member_name, member_bytes,
+                            compress_type=zipfile.ZIP_STORED)
+            # Testplan (optional)
+            testplan = getattr(db, '_testplan', None)
+            if testplan is not None:
+                zf.writestr(MEMBER_TESTPLAN, testplan.serialize())
+            # Waivers (optional)
+            waivers = getattr(db, '_waivers', None)
+            if waivers is not None:
+                zf.writestr(MEMBER_WAIVERS, waivers.serialize())

@@ -7,6 +7,7 @@ import argparse
 from ucis.cmd import cmd_list_db_formats
 from ucis.cmd import cmd_list_report_formats
 from ucis.cmd import cmd_report, cmd_merge, cmd_convert, cmd_show
+from ucis.cmd import cmd_history, cmd_testplan
 import sys
 import traceback
 import os
@@ -294,7 +295,121 @@ def get_parser():
         help="Specifies the format of the input database. Defaults to 'xml'")
     view.add_argument("db", help="Path to the coverage database")
     view.set_defaults(func=lambda args: _launch_tui(args))
-    
+
+    # -----------------------------------------------------------------------
+    # history subcommand
+    # -----------------------------------------------------------------------
+    history = subparser.add_parser(
+        "history",
+        help="Query and display test history from an NCDB .cdb file",
+    )
+    history_sub = history.add_subparsers(dest="history_cmd")
+    history_sub.required = True
+
+    history_query = history_sub.add_parser(
+        "query",
+        help="Display history records for a specific test",
+    )
+    history_query.add_argument("db", help="Path to the NCDB .cdb file")
+    history_query.add_argument("test_name", help="Test name to query")
+    history_query.add_argument("--from", dest="from_",
+        metavar="DATE", default=None,
+        help="Start date (ISO 8601 or Unix timestamp)")
+    history_query.add_argument("--to", default=None,
+        metavar="DATE",
+        help="End date (ISO 8601 or Unix timestamp)")
+    history_query.add_argument("--out", "-o", default=None,
+        help="Output file (default: stdout)")
+    history_query.add_argument(
+        "--output-format", "-of", default="text",
+        choices=["text", "json"],
+        help="Output format (default: text)",
+    )
+    history_query.set_defaults(func=cmd_history.cmd_history_query)
+
+    history_stats = history_sub.add_parser(
+        "stats",
+        help="Show test statistics (flaky, failing, or named test)",
+    )
+    history_stats.add_argument("db", help="Path to the NCDB .cdb file")
+    history_stats.add_argument("test_name", nargs="?", default=None,
+        help="Show stats for a specific test name")
+    history_stats.add_argument("--top-flaky", metavar="N", type=int, default=None,
+        help="Show top N flaky tests")
+    history_stats.add_argument("--top-failing", metavar="N", type=int, default=None,
+        help="Show top N failing tests")
+    history_stats.add_argument("--out", "-o", default=None,
+        help="Output file (default: stdout)")
+    history_stats.add_argument(
+        "--output-format", "-of", default="text",
+        choices=["text", "json"],
+        help="Output format (default: text)",
+    )
+    history_stats.set_defaults(func=cmd_history.cmd_history_stats)
+
+    # -----------------------------------------------------------------------
+    # testplan subcommand
+    # -----------------------------------------------------------------------
+    testplan = subparser.add_parser(
+        "testplan",
+        help="Manage and evaluate testplans embedded in NCDB .cdb files",
+    )
+    testplan_sub = testplan.add_subparsers(dest="testplan_cmd")
+    testplan_sub.required = True
+
+    testplan_import = testplan_sub.add_parser(
+        "import",
+        help="Import an Hjson/JSON testplan and embed it in a .cdb file",
+    )
+    testplan_import.add_argument("db", help="Path to the NCDB .cdb file")
+    testplan_import.add_argument("hjson_path",
+        help="Path to the .hjson or .json testplan file")
+    testplan_import.add_argument(
+        "--subs", metavar="KEY=VAL", action="append", default=[],
+        help="Template substitution (repeatable): e.g. --subs uart=uart0",
+    )
+    testplan_import.set_defaults(func=cmd_testplan.cmd_testplan_import)
+
+    testplan_closure = testplan_sub.add_parser(
+        "closure",
+        help="Compute and display testpoint closure",
+    )
+    testplan_closure.add_argument("db", help="Path to the NCDB .cdb file")
+    testplan_closure.add_argument("--testplan", default=None,
+        metavar="PATH",
+        help="External testplan JSON file (overrides embedded)")
+    testplan_closure.add_argument("--waivers", default=None,
+        metavar="PATH",
+        help="External waivers JSON file (overrides embedded)")
+    testplan_closure.add_argument("--stage", default=None,
+        metavar="STAGE",
+        help="Evaluate a stage gate (e.g. V2)")
+    testplan_closure.add_argument("--out", "-o", default=None,
+        help="Output file (default: stdout)")
+    testplan_closure.add_argument(
+        "--output-format", "-of", default="text",
+        choices=["text", "json"],
+        help="Output format (default: text)",
+    )
+    testplan_closure.set_defaults(func=cmd_testplan.cmd_testplan_closure)
+
+    testplan_export_junit = testplan_sub.add_parser(
+        "export-junit",
+        help="Export testpoint closure results as JUnit XML",
+    )
+    testplan_export_junit.add_argument("db", help="Path to the NCDB .cdb file")
+    testplan_export_junit.add_argument("--testplan", default=None,
+        metavar="PATH",
+        help="External testplan JSON file (overrides embedded)")
+    testplan_export_junit.add_argument("--out", "-o", default=None,
+        help="Output XML file (default: closure_results.xml)")
+    testplan_export_junit.add_argument("--suite-name", default=None,
+        metavar="NAME",
+        help="JUnit testsuite name attribute")
+    testplan_export_junit.set_defaults(
+        func=cmd_testplan.cmd_testplan_export_junit
+    )
+
     return parser
 
 def _launch_tui(args):
