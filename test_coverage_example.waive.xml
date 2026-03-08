@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<WaiveData version="1.0" coverageFile="test_coverage_example.xml">
+  <Waive path="TYPE:transaction_cg" waived="true" timestamp="2026-01-01T09:43:14.346044">
+    <Message>unused
+
+
+abc
+
+
+xyz</Message>
+  </Waive>
+</WaiveData>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="TestUser" writtenTime="2025-12-06T16:43:45" ucisVersion="1.0">
+  <sourceFiles fileName="test_design.sv" id="1"/>
+  <historyNodes historyNodeId="0" logicalName="test_run" physicalName="test_run" kind="test" testStatus="true" simtime="1000" timeunit="1" runCwd="/work" cpuTime="100" seed="12345" cmd="vsim" args="-coverage" date="2025-12-06T16:43:45" userName="TestUser" toolCategory="simulator" ucisVersion="1.0" vendorId="test" vendorTool="PyUCIS" vendorToolVersion="1.0"/>
+  
+  <instanceCoverages name="top" key="0">
+    <id file="1" line="1" inlineCount="1"/>
+    <covergroupCoverage>
+      
+      <!-- Covergroup 1: Transaction Monitor with partial coverage -->
+      <cgInstance name="transaction_cg" key="0">
+        <options/>
+        <cgId cgName="transaction_cg" moduleName="transaction_monitor">
+          <cginstSourceId file="1" line="10" inlineCount="1"/>
+          <cgSourceId file="1" line="10" inlineCount="1"/>
+        </cgId>
+        
+        <!-- Coverpoint: Address with some uncovered bins -->
+        <coverpoint name="cp_addr" key="0">
+          <options/>
+          <coverpointBin name="addr_low" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="45"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="addr_mid" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="addr_high" type="bins" key="2">
+            <range from="-1" to="-1">
+              <contents coverageCount="12"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+        <!-- Coverpoint: Command with all bins covered -->
+        <coverpoint name="cp_cmd" key="1">
+          <options/>
+          <coverpointBin name="READ" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="25"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="WRITE" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="30"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+        <!-- Coverpoint: Priority with mostly uncovered bins -->
+        <coverpoint name="cp_priority" key="2">
+          <options/>
+          <coverpointBin name="LOW" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="MEDIUM" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="5"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="HIGH" type="bins" key="2">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="CRITICAL" type="bins" key="3">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+      </cgInstance>
+      
+      <!-- Covergroup 2: Protocol Checker with uncovered bins -->
+      <cgInstance name="protocol_cg" key="1">
+        <options/>
+        <cgId cgName="protocol_cg" moduleName="protocol_checker">
+          <cginstSourceId file="1" line="50" inlineCount="1"/>
+          <cgSourceId file="1" line="50" inlineCount="1"/>
+        </cgId>
+        
+        <coverpoint name="cp_state" key="0">
+          <options/>
+          <coverpointBin name="IDLE" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="100"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="ACTIVE" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="50"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="ERROR" type="bins" key="2">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="RESET" type="bins" key="3">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+        <coverpoint name="cp_handshake" key="1">
+          <options/>
+          <coverpointBin name="REQ_ACK" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="30"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="REQ_NACK" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="TIMEOUT" type="bins" key="2">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+      </cgInstance>
+      
+      <!-- Covergroup 3: Data Path with mixed coverage -->
+      <cgInstance name="datapath_cg" key="2">
+        <options/>
+        <cgId cgName="datapath_cg" moduleName="datapath">
+          <cginstSourceId file="1" line="100" inlineCount="1"/>
+          <cgSourceId file="1" line="100" inlineCount="1"/>
+        </cgId>
+        
+        <coverpoint name="cp_data_size" key="0">
+          <options/>
+          <coverpointBin name="BYTE" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="50"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="WORD" type="bins" key="1">
+            <range from="-1" to="-1">
+              <contents coverageCount="40"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="DWORD" type="bins" key="2">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="QWORD" type="bins" key="3">
+            <range from="-1" to="-1">
+              <contents coverageCount="0"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+        
+      </cgInstance>
+      
+    </covergroupCoverage>
+  </instanceCoverages>
+</UCIS>

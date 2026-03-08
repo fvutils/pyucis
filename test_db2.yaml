@@ -1,0 +1,12 @@
+coverage:
+  covergroups:
+  - name: cvg1
+    instances:
+    - name: inst1
+      coverpoints:
+      - name: cp1
+        bins:
+        - name: b0
+          count: 0
+        - name: b1
+          count: 1

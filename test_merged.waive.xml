@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<WaiveData version="1.0" coverageFile="test_merged.xml">
+  <Waive path="TYPE:cvg1/INST:inst1/CVP:cp1" waived="true" timestamp="2025-11-25T22:26:04.510258">
+    <Message>this item can waive</Message>
+  </Waive>
+</WaiveData>

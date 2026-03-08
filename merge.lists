@@ -1,0 +1,6 @@
+# Test file list for merge
+# This is a comment and should be ignored
+test_db1.yaml
+
+# Another comment
+test_db2.yaml

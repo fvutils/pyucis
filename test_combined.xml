@@ -1,0 +1,29 @@
+<UCIS xmlns:ucis="http://www.w3.org/2001/XMLSchema-instance" writtenBy="HaPham" writtenTime="2025-11-25T00:00:00" ucisVersion="1.0">
+  <sourceFiles fileName="__null__file__" id="1"/>
+  <historyNodes historyNodeId="0" logicalName="dummy" physicalName="dummy" kind="dummy" testStatus="true" simtime="0" timeunit="0" runCwd="" cpuTime="0" seed="0" cmd="" args="" date="2025-11-25T21:42:38" userName="dummy" toolCategory="unknown" ucisVersion="1.0" vendorId="unknown" vendorTool="PyUCIS" vendorToolVersion="unknown"/>
+  <instanceCoverages name="cg_inst" key="0">
+    <id file="1" line="1" inlineCount="1"/>
+    <covergroupCoverage>
+      <cgInstance name="inst1" key="0">
+        <options/>
+        <cgId cgName="cvg1" moduleName="cvg1">
+          <cginstSourceId file="1" line="1" inlineCount="1"/>
+          <cgSourceId file="1" line="1" inlineCount="1"/>
+        </cgId>
+        <coverpoint name="cp1" key="0">
+          <options/>
+          <coverpointBin name="b0" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="2"/>
+            </range>
+          </coverpointBin>
+          <coverpointBin name="b1" type="bins" key="0">
+            <range from="-1" to="-1">
+              <contents coverageCount="1"/>
+            </range>
+          </coverpointBin>
+        </coverpoint>
+      </cgInstance>
+    </covergroupCoverage>
+  </instanceCoverages>
+</UCIS>
