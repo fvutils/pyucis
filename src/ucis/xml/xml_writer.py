@@ -547,9 +547,10 @@ class XmlWriter():
                 goal = 100
             self.setAttr(optionsElem, "goal", str(goal))
             
-            # AtLeast: use 1 as default if <= 0 (UCIS default)
+            # AtLeast: use 1 as default if unset/invalid (UCIS default).
+            # 0 is valid (xsd:nonNegativeInteger) and must be preserved.
             at_least = opts_item.getAtLeast()
-            if at_least <= 0:
+            if at_least is None or at_least < 0:
                 at_least = 1
             self.setAttr(optionsElem, "at_least", str(at_least))
             
@@ -568,7 +569,8 @@ class XmlWriter():
             if is_coverpoint and not is_cross:
                 if hasattr(opts_item, 'getAutoBinMax'):
                     auto_bin_max = opts_item.getAutoBinMax()
-                    if auto_bin_max <= 0:
+                    # 0 is valid (xsd:nonNegativeInteger) and must be preserved
+                    if auto_bin_max is None or auto_bin_max < 0:
                         auto_bin_max = 64  # UCIS default
                     self.setAttr(optionsElem, "auto_bin_max", str(auto_bin_max))
                 if hasattr(opts_item, 'getDetectOverlap'):
