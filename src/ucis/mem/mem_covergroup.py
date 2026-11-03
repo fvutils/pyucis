@@ -22,8 +22,8 @@ class MemCovergroup(MemCvgScope,Covergroup):
         MemCvgScope.__init__(self, parent, name, srcinfo, weight, source, 
                          ScopeTypeT.COVERGROUP, 0)
         Covergroup.__init__(self)
-        self.at_least = 0
-        self.auto_bin_max
+        self.at_least = 1
+        self.auto_bin_max = 64
         self.m_per_instance = True
         self.m_merge_instances = True
         
