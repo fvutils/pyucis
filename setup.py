@@ -21,10 +21,6 @@ setup(
       'pyucis = ucis.__main__:main'
     ]
   },
-  setup_requires=[
-    'setuptools_scm',
-    'ivpm'
-  ],
   install_requires=[
     'lxml',
     'python-jsonschema-objects',
