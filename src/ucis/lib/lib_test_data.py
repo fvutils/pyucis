@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: ballance
 '''
 
-from _ctypes import Structure
+from ctypes import Structure
 from ctypes import c_int, c_ulonglong, c_uint, c_wchar_p, c_double, c_wchar
 from ucis.test_data import TestData
 

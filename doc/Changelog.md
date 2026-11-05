@@ -1,3 +1,8 @@
+## 0.2.1
+- XML writer: preserve `auto_bin_max=0` and `at_least=0` instead of dropping them as falsy (#49)
+- Python 3.14: import `pointer`/`byref`/`Structure`/`Union` from `ctypes`, not the private `_ctypes`, which no longer exports them; `ucis.lib` failed to import
+- Build: drop `setup_requires` from setup.py so the CI wheel build works again (#51)
+
 
 ## 0.1.7 (Unreleased)
 - **File Extension Change:** SQLite databases now use `.cdb` (Coverage DataBase) extension

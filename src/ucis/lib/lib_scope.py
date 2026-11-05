@@ -25,7 +25,7 @@ Created on Jan 11, 2020
 @author: ballance
 '''
 
-from _ctypes import byref, pointer
+from ctypes import byref, pointer
 from ucis.scope import Scope
 from ucis.unimpl_error import UnimplError
 from ucis.cover_data import CoverData
