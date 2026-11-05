@@ -143,10 +143,8 @@ Supported Options
   - ``at_least`` - Minimum hit count for coverage (default: 1)
   - ``per_instance`` - Track per-instance coverage
   - ``merge_instances`` - Merge instance coverage into type coverage
-  - ``get_inst_coverage`` - Enable instance coverage retrieval
   - ``auto_bin_max`` - Maximum auto-generated bins (PyUCIS sets to 64)
   - ``detect_overlap`` - Detect overlapping bins
-  - ``strobe`` - Strobe sampling mode
 
 **Coverpoint Options** (``COVERPOINT_OPTIONS``):
   - ``weight`` - Relative weight for coverage calculation
@@ -368,6 +366,11 @@ Structural Limitations
    Per the schema, coverpoints must contain at least one bin (``minOccurs="1"`` for ``coverpointBin``). 
    Empty coverpoints cannot be serialized to XML.
 
+5. **get_inst_coverage and strobe Not Supported**
+
+   ``CGINST_OPTIONS`` has no ``get_inst_coverage`` or ``strobe`` attribute, so these
+   covergroup options are not written to XML and read back as their defaults.
+
 Feature Support Matrix
 ----------------------
 
@@ -380,7 +383,7 @@ Feature Support Matrix
      - Notes
    * - Covergroup Options
      - ✅ Yes
-     - Full read/write support
+     - All schema options; not ``get_inst_coverage`` or ``strobe``
    * - Coverpoint Options
      - ✅ Yes
      - Full read/write support

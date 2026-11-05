@@ -23,6 +23,7 @@ class MemCvgScope(MemScope,CvgScope):
         self.m_detect_overlap = True
         self.m_strobe = 0
         self.m_comment = ""
+        self.m_get_inst_coverage = False
         
     def getAtLeast(self)->int:
         return self.m_at_least
@@ -48,6 +49,9 @@ class MemCvgScope(MemScope,CvgScope):
     def setStrobe(self, s):
         self.m_strobe = s
         
+    def getGetInstCoverage(self)->bool:
+        return self.m_get_inst_coverage
+
     def setGetInstCoverage(self, en:bool):
         self.m_get_inst_coverage = en
         

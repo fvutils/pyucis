@@ -441,7 +441,7 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         scope_type = row[0]
         
         # Return specialized subclass based on type
-        if scope_type & ScopeTypeT.COVERGROUP:
+        if scope_type & (ScopeTypeT.COVERGROUP | ScopeTypeT.COVERINSTANCE):
             from ucis.sqlite.sqlite_covergroup import SqliteCovergroup
             return SqliteCovergroup(ucis_db, scope_id)
         elif scope_type & ScopeTypeT.CROSS:

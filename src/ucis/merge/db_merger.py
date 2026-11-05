@@ -3,6 +3,7 @@ Created on Jan 5, 2021
 
 @author: mballance
 '''
+import logging
 from typing import Dict, Tuple, List
 
 from ucis import UCIS_OTHER, UCIS_INSTANCE, UCIS_DU_MODULE, UCIS_ENABLED_STMT, \
@@ -16,6 +17,50 @@ from ucis.report.coverage_report import CoverageReport
 from ucis.report.coverage_report_builder import CoverageReportBuilder
 from ucis.scope_type_t import ScopeTypeT
 from ucis.ucis import UCIS
+
+logger = logging.getLogger(__name__)
+
+# (getter, setter) pairs for the options a covergroup, coverpoint or cross
+# carries. Weight is passed to the create call, so it isn't listed here.
+CVG_SCOPE_OPTIONS = (
+    ("getGoal", "setGoal"),
+    ("getAtLeast", "setAtLeast"),
+    ("getAutoBinMax", "setAutoBinMax"),
+    ("getDetectOverlap", "setDetectOverlap"),
+    ("getStrobe", "setStrobe"),
+    ("getComment", "setComment"),
+)
+
+# Options only a covergroup (and a covergroup instance) carries
+COVERGROUP_OPTIONS = (
+    ("getPerInstance", "setPerInstance"),
+    ("getMergeInstances", "setMergeInstances"),
+    ("getGetInstCoverage", "setGetInstCoverage"),
+)
+
+
+def copy_options(dst, src_l, options):
+    """Copy option values from the first source scope to dst.
+
+    The first source wins; a warning is logged when a later source
+    disagrees. An option a backend doesn't implement is skipped.
+    """
+    for getter, setter in options:
+        values = []
+        for src in src_l:
+            try:
+                values.append(getattr(src, getter)())
+            except (NotImplementedError, AttributeError):
+                pass
+        if not values:
+            continue
+        if any(v != values[0] for v in values[1:]):
+            logger.warning("%s: sources disagree on %s (%s); using %r",
+                dst.getScopeName(), getter[3:], values, values[0])
+        try:
+            getattr(dst, setter)(values[0])
+        except (NotImplementedError, AttributeError):
+            pass
 
 
 class DbMerger(object):
@@ -169,6 +214,7 @@ class DbMerger(object):
                 src_cg_l[0].getSourceInfo(), # location
                 src_cg_l[0].getWeight(), # weight
                 UCIS_OTHER)
+            copy_options(dst_cg, src_cg_l, CVG_SCOPE_OPTIONS + COVERGROUP_OPTIONS)
             self._merge_covergroup(dst_cg, src_cg_l)
         
     def _merge_covergroup(self, dst_cg, src_cg_l):
@@ -202,6 +248,7 @@ class DbMerger(object):
                         src_cg_i_l[0].getSourceInfo(), # location
                         src_cg_i_l[0].getWeight(), # weight
                         UCIS_OTHER)
+            copy_options(dst_cg_i, src_cg_i_l, CVG_SCOPE_OPTIONS + COVERGROUP_OPTIONS)
             dst_cp_m = self._merge_coverpoints(dst_cg_i, src_cg_i_l)
 
             self._merge_crosses(dst_cg_i, dst_cp_m, src_cg_i_l)
@@ -230,6 +277,7 @@ class DbMerger(object):
                 src_cp_l[0].getWeight(), # weight
                 UCIS_OTHER) # SourceType
             dst_cp_m[name] = dst_cp
+            copy_options(dst_cp, src_cp_l, CVG_SCOPE_OPTIONS)
             
             self._merge_coverpoint_bins(dst_cp, src_cp_l)
 
@@ -291,6 +339,7 @@ class DbMerger(object):
                 src_cr_l[0].getWeight(), # weight
                 UCIS_OTHER,
                 coverpoint_l)
+            copy_options(dst_cr, src_cr_l, CVG_SCOPE_OPTIONS)
 
             self._merge_cross(dst_cr, src_cr_l)
 
