@@ -22,7 +22,7 @@ Created on Jan 11, 2020
 
 @author: ballance
 '''
-from _ctypes import Structure
+from ctypes import Structure
 from ctypes import c_void_p, c_int
 from ucis.source_info import SourceInfo
 

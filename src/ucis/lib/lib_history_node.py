@@ -3,7 +3,7 @@ Created on Mar 11, 2020
 
 @author: ballance
 '''
-from _ctypes import pointer
+from ctypes import pointer
 from ucis import UCIS_INT_TEST_STATUS
 from ucis.history_node import HistoryNode
 from ucis.lib.lib_obj import LibObj

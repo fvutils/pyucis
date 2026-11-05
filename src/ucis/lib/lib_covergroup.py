@@ -4,7 +4,7 @@ Created on Mar 12, 2020
 @author: ballance
 '''
 from typing import List
-from _ctypes import pointer, byref
+from ctypes import pointer, byref
 
 from ucis import UCIS_VLOG, UCIS_COVERPOINT, UCIS_INT_SCOPE_GOAL, \
     UCIS_INT_CVG_ATLEAST, UCIS_STR_COMMENT, UCIS_INT_CVG_AUTOBINMAX, \

@@ -3,7 +3,7 @@ Created on Jan 11, 2020
 
 @author: ballance
 '''
-from _ctypes import Structure, Union
+from ctypes import Structure, Union
 from ctypes import c_int, c_ulonglong, c_uint, c_wchar_p, c_ulong
 from builtins import staticmethod
 from ucis.cover_data import CoverData
