@@ -68,7 +68,19 @@ jobs:
         ./packages/python/bin/python3 -m pip install wheel twine 
         ./packages/python/bin/python3 -m pip install pip setuptools --upgrade
         rm -rf dist build *.egg-info src/*.egg-info
-        sed -i -e "s/^SUFFIX = \"\"$/SUFFIX = \".${GITHUB_RUN_ID}\"/" src/ucis/__version__.py
+        # A v* tag IS the version: build it clean, and refuse a tag that
+        # disagrees with BASE (it could not be fixed after publishing).
+        # Every other ref gets a .<run-id> dev suffix.
+        case "$GITHUB_REF" in
+          refs/tags/v*)
+            base=$(sed -n 's/^BASE = "\(.*\)"$/\1/p' src/ucis/__version__.py)
+            if [ "${GITHUB_REF#refs/tags/v}" != "$base" ]; then
+              echo "::error::tag ${GITHUB_REF#refs/tags/} does not match BASE=$base"
+              exit 1
+            fi ;;
+          *)
+            sed -i -e "s/^SUFFIX = \"\"$/SUFFIX = \".${GITHUB_RUN_ID}\"/" src/ucis/__version__.py ;;
+        esac
         grep "^SUFFIX = " src/ucis/__version__.py
         ./packages/python/bin/python3 setup.py bdist_wheel --universal
     - name: Run Tests
