@@ -120,12 +120,14 @@ class TestApiCovergroups:
                             f"PerInstance not preserved for {backend_name}"
                         assert cg_read.getMergeInstances() == False, \
                             f"MergeInstances not preserved for {backend_name}"
-                        # getGetInstCoverage not fully implemented
-                        try:
-                            assert cg_read.getGetInstCoverage() == True, \
-                                f"GetInstCoverage not preserved for {backend_name}"
-                        except NotImplementedError:
-                            pass
+                        # The UCIS XML schema has no get_inst_coverage
+                        # attribute, so XML can't carry it
+                        if backend_name != "xml":
+                            try:
+                                assert cg_read.getGetInstCoverage() == True, \
+                                    f"GetInstCoverage not preserved for {backend_name}"
+                            except NotImplementedError:
+                                pass
                     except (NotImplementedError, AttributeError):
                         pytest.skip(f"{backend_name} doesn't support covergroup options")
     

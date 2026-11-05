@@ -148,6 +148,10 @@ class SqliteCoverpoint(SqliteScope, Coverpoint):
         return val if val is not None else ''
     
     def setComment(self, value: str):
+        # Skip the base-class default; it would erase a stored comment
+        # every time an object is built for an existing scope.
+        if getattr(self, '_initializing', False):
+            return
         from ucis.str_property import StrProperty
         self.setStringProperty(-1, StrProperty.COMMENT, value)
     def getScopeGoal(self) -> int:

@@ -560,10 +560,8 @@ class XmlWriter():
                     self.setAttrBool(optionsElem, "per_instance", opts_item.getPerInstance())
                 if hasattr(opts_item, 'getMergeInstances'):
                     self.setAttrBool(optionsElem, "merge_instances", opts_item.getMergeInstances())
-                if hasattr(opts_item, 'getGetInstCoverage'):
-                    self.setAttrBool(optionsElem, "get_inst_coverage", opts_item.getGetInstCoverage())
-                if hasattr(opts_item, 'getStrobe'):
-                    self.setAttrBool(optionsElem, "strobe", opts_item.getStrobe())
+                # get_inst_coverage and strobe are not CGINST_OPTIONS
+                # attributes in the UCIS schema, so they aren't written.
                 
             # Coverpoint-specific options (not for cross)
             if is_coverpoint and not is_cross:

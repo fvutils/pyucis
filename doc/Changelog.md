@@ -1,3 +1,10 @@
+## 0.2.2
+- Merge: carry covergroup, coverpoint and cross options (goal, at_least, auto_bin_max, detect_overlap, strobe, comment, per_instance, merge_instances, get_inst_coverage) into the merged database, instead of resetting them to defaults (#50). Covers `DbMerger` and the SQLite merger used by `ucis merge` and `ucis convert`. When sources disagree the first wins and a warning is logged.
+- SQLite: looking up a covergroup or coverpoint no longer erases its stored comment
+- SQLite: covergroup instances read back from a database are `SqliteCovergroup`s, with their option accessors, rather than plain scopes
+- XML writer: no longer writes `get_inst_coverage` and `strobe`, which the UCIS schema doesn't allow; writing a SQLite database with a covergroup to XML failed schema validation
+- Memory backend: add `getGetInstCoverage()`
+
 ## 0.2.1
 - XML writer: preserve `auto_bin_max=0` and `at_least=0` instead of dropping them as falsy (#49)
 - Python 3.14: import `pointer`/`byref`/`Structure`/`Union` from `ctypes`, not the private `_ctypes`, which no longer exports them; `ucis.lib` failed to import

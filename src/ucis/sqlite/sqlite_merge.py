@@ -24,7 +24,16 @@ import array
 import concurrent.futures
 from datetime import datetime
 from ucis.history_node_kind import HistoryNodeKind
+from ucis.merge.db_merger import copy_options, CVG_SCOPE_OPTIONS, COVERGROUP_OPTIONS
 from ucis.scope_type_t import ScopeTypeT
+
+# scopes columns carried from source to target when a scope is copied.
+# The source-location and file columns are not: file ids differ per DB.
+_SCOPE_OPTION_COLUMNS = (
+    "weight", "goal", "limit_val", "per_instance", "merge_instances",
+    "get_inst_coverage", "at_least", "auto_bin_max", "detect_overlap",
+    "strobe",
+)
 
 
 class MergeConflict:
@@ -725,6 +734,11 @@ class SqliteMerger:
                     flags
                 )
                 tgt_child.setGoal(src_child.getGoal())
+                if src_type in (ScopeTypeT.COVERGROUP, ScopeTypeT.COVERINSTANCE):
+                    copy_options(tgt_child, [src_child],
+                                 CVG_SCOPE_OPTIONS + COVERGROUP_OPTIONS)
+                elif src_type in (ScopeTypeT.COVERPOINT, ScopeTypeT.CROSS):
+                    copy_options(tgt_child, [src_child], CVG_SCOPE_OPTIONS)
                 tgt_children_map[key] = tgt_child
                 self.stats.scopes_added += 1
             else:
@@ -982,6 +996,7 @@ class SqliteMerger:
             src["name"], None, 1, 0, src["type"], 0
         )
         new_id = new_scope.scope_id
+        self._copy_scope_options(source_ucis, src_scope_id, new_id)
         # Update the target tree cache
         self._tgt_tree[new_id] = {
             "name": src["name"],
@@ -992,6 +1007,33 @@ class SqliteMerger:
         self._tgt_tree[tgt_parent_id]["children"].append(new_id)
         return new_id
     
+    def _copy_scope_options(self, source_ucis, src_scope_id, tgt_scope_id):
+        """Copy a scope's options (covergroup/coverpoint/cross settings and
+        scope properties such as the comment) from source to target."""
+        cols = ", ".join(_SCOPE_OPTION_COLUMNS)
+        row = source_ucis.conn.execute(
+            f"SELECT {cols} FROM scopes WHERE scope_id = ?",
+            (src_scope_id,)).fetchone()
+        if row is not None:
+            assign = ", ".join(f"{c} = ?" for c in _SCOPE_OPTION_COLUMNS)
+            self.target.conn.execute(
+                f"UPDATE scopes SET {assign} WHERE scope_id = ?",
+                (*row, tgt_scope_id))
+        # Handle-valued properties refer to ids in the source DB, so they
+        # can't be copied as-is.
+        for prop in source_ucis.conn.execute(
+                """SELECT property_key, property_type, int_value,
+                          real_value, string_value
+                   FROM scope_properties
+                   WHERE scope_id = ? AND handle_value IS NULL""",
+                (src_scope_id,)):
+            self.target.conn.execute(
+                """INSERT OR REPLACE INTO scope_properties
+                   (scope_id, property_key, property_type, int_value,
+                    real_value, string_value)
+                   VALUES (?, ?, ?, ?, ?, ?)""",
+                (tgt_scope_id, *prop))
+
     def _merge_coveritems(self, src_scope, tgt_scope):
         """Merge coverage items using bulk queries."""
 
