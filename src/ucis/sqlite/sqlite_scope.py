@@ -232,13 +232,14 @@ class SqliteScope(AttributeTagMixin, SqliteObj, Scope):
         # Insert coveritem
         cover_type = data.type if data else 0x01  # Default to CVGBIN
         cover_count = data.data if data else 0
-        at_least = data.goal if data else 1
+        at_least = data.at_least if data else 1
+        goal = data.goal if data else 0
         
         cursor = self.ucis_db.conn.execute(
             """INSERT INTO coveritems (scope_id, cover_index, cover_type, cover_name, 
-                                       cover_data, at_least, source_file_id, source_line, source_token)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (self.scope_id, next_index, cover_type, name, cover_count, at_least,
+                                       cover_data, at_least, goal, source_file_id, source_line, source_token)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (self.scope_id, next_index, cover_type, name, cover_count, at_least, goal,
              source_file_id, source_line, source_token)
         )
         

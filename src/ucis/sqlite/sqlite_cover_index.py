@@ -43,7 +43,7 @@ class SqliteCoverIndex(CoverIndex):
         
         cursor = self.ucis_db.conn.execute(
             """SELECT cover_name, cover_type, cover_data, at_least,
-                      source_file_id, source_line, source_token
+                      source_file_id, source_line, source_token, goal
                FROM coveritems WHERE cover_id = ?""",
             (self.cover_id,)
         )
@@ -59,7 +59,9 @@ class SqliteCoverIndex(CoverIndex):
         
         self._cover_data = CoverData(cover_type, 0)
         self._cover_data.data = cover_count
-        self._cover_data.goal = at_least
+        self._cover_data.at_least = at_least
+        if row[7] is not None:
+            self._cover_data.goal = row[7]
         
         # Load source info
         if row[4] is not None:

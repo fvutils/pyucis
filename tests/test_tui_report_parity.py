@@ -8,14 +8,8 @@ These tests load the same database in both:
 and assert they agree on every significant metric.  Disagreements would mean
 the TUI is showing different numbers than the CLI text report.
 
-IMPORTANT NOTE – bin "hit" semantics
--------------------------------------
-CoverageModel counts a bin as covered when cover_data > 0.
-CoverageReportBuilder counts a bin as covered when data >= at_least.
-
-These differ when at_least > 1 (e.g. at_least=5 but only 3 hits: model
-says covered, builder says not covered).  The parity tests below use
-at_least=1 so both agree; a dedicated test documents the known divergence.
+Both consumers count a bin as covered when data >= at_least. Tests also
+check that SQLite preserves thresholds greater than one across a reopen.
 """
 import pytest
 from ucis.cover_type_t import CoverTypeT
@@ -220,15 +214,13 @@ class TestOverallCoverageParity:
 
 
 # ---------------------------------------------------------------------------
-# Document known divergence: at_least > 1
+# Threshold parity: at_least > 1
 # ---------------------------------------------------------------------------
 
-class TestKnownDivergenceAtLeastGt1:
+class TestAtLeastGt1Parity:
     """
-    When at_least > 1 the two counters diverge:
-      CoverageModel:       bin is "covered" if data > 0
-      CoverageReportBuilder: bin is "covered" if data >= at_least
-    This test documents and verifies that divergence.
+    The model and report must agree when at_least > 1, including after
+    persistence. SQLite must retain the requested threshold.
     """
 
     def _make_at_least_db(self, tmp_path, backend):
@@ -236,9 +228,8 @@ class TestKnownDivergenceAtLeastGt1:
         Create a DB with one coverpoint whose bin is intended to have at_least=5
         and data=2.
 
-        NOTE: Both the XML and SQLite backends currently store ``at_least`` as
-        the ``goal`` field of ``CoverData`` (which defaults to 1), so the
-        requested ``at_least=5`` is silently stored as 1.  As a result the
+        NOTE: The XML round trip currently loses the per-bin ``at_least=5``
+        requested here and restores the default threshold of 1. As a result the
         bin is seen as covered by *both* the model and the report (2 >= 1).
         This is a known backend limitation; it does not affect the correctness
         of the common-metrics layer design (which correctly uses
@@ -268,7 +259,7 @@ class TestKnownDivergenceAtLeastGt1:
             inst = db.createInstance("tb", None, 1, UCIS_OTHER, UCIS_INSTANCE, du, UCIS_INST_ONCE)
             cg = inst.createCovergroup("cg", src, 1, UCIS_OTHER)
             cp = cg.createCoverpoint("cp_al5", src, 1, UCIS_VLOG)
-            # Intended: at_least=5, data=2.  Both backends store at_least as 1.
+            # at_least=5, data=2: the bin has not reached its threshold.
             cp.createBin("bin_partial", src, 5, 2, "bin_partial")
             return {"at_least": 5, "data": 2}
 
@@ -299,6 +290,8 @@ class TestKnownDivergenceAtLeastGt1:
         assert model_covered == report_covered, (
             f"Model ({model_covered}) and report ({report_covered}) disagree"
         )
+        if backend == "sqlite":
+            assert model_covered == 0
 
 
 # ---------------------------------------------------------------------------
